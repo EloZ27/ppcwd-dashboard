@@ -434,10 +434,11 @@ const COL = {
   week: 0, date: 1, period: 2,
   wtp1: 3, wtp2: 4, infilCity: 5, lapulapu: 6, montible: 7, stalucia: 8, swCitySub: 9,
   sabangSW: 10, sanrafael: 11, bahile: 12, napsan: 13, binduyan: 14, bacungan: 15, maoyon: 16, swSatSub: 17,
-  nma: 18, princeville: 19, villaprin: 20, sanjose: 21, esteban: 22, baldosano: 23, stamonica: 24, otherGW: 25, gwCitySub: 26,
-  visapa: 27, augSub: 28,
-  sabangGW: 29, inagawan: 30, gwSatSub: 31,
-  totalSW: 32, totalGW: 33, grandTotal: 34, mld: 35, swPct: 36, gwPct: 37
+  macasaet: 18, pc5: 19, pc6: 20, da1: 21, sicsican: 22, villaello: 23, nha: 24, princeville: 25, villaprin: 26, 
+  sanjose: 27, bos: 28, esteban: 29, kaakbayan: 30, newmarket: 31, pablico: 32, baldosano: 33, stamonica: 34, gwCitySub: 35,
+  abueg: 36, visapa: 37, acacia: 38, citywoods: 39, virginia: 40, augSub: 41,
+  lucbuan: 42, sabangGW: 43, inagawan: 44, gwSatSub: 45,
+  totalSW: 46, totalGW: 47, grandTotal: 48, mld: 49, swPct: 50, gwPct: 51
 };
 
 function num(v) {
@@ -613,7 +614,7 @@ function renderTable(d) {
     { name: "Irawan WTP-2",            cat: "sw",  val: num(d.wtp2) },
     { name: "Irawan Infiltration Wells",cat:"sw",  val: num(d.infilCity) },
     { name: "Lapu-Lapu Source",        cat: "sw",  val: num(d.lapulapu) },
-    { name: "Montible (Terusan)",      cat: "sw",  val: num(d.montible) },
+    { name: "Montible (Teruvian)",      cat: "sw",  val: num(d.montible) },
     { name: "Sta. Lucia PS",           cat: "sw",  val: num(d.stalucia) },
     { name: "SW City Sub-total",       cat: "sw",  val: num(d.swCitySub), bold: true },
     { name: "Sabang SW",               cat: "sw",  val: num(d.sabangSW) },
@@ -624,7 +625,7 @@ function renderTable(d) {
     { name: "Bacungan SW",             cat: "sw",  val: num(d.bacungan) },
     { name: "Maoyon Infiltration Wells",cat:"sw",  val: num(d.maoyon) },
     { name: "SW Satellite Sub-total",  cat: "sw",  val: num(d.swSatSub), bold: true },
-    { name: "NMA",                     cat: "gw",  val: num(d.nma) },
+    { name: "NHA",                     cat: "gw",  val: num(d.nma) },
     { name: "Princeville",             cat: "gw",  val: num(d.princeville) },
     { name: "Villa Princesa",          cat: "gw",  val: num(d.villaprin) },
     { name: "San Jose",                cat: "gw",  val: num(d.sanjose) },
