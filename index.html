@@ -653,7 +653,7 @@ function renderTable(d) {
     { name: "Sabang GW",               cat: "gw",  val: num(d.sabangGW) },
     { name: "Inagawan",                cat: "gw",  val: num(d.inagawan) },
     { name: "GW Satellite Sub-total",  cat: "gw",  val: num(d.gwSatSub), bold: true },
-  ].filter(r => r.val > 0);
+  ]
 
   const tbody = document.getElementById("source-table");
   tbody.innerHTML = rows.map(r => {
