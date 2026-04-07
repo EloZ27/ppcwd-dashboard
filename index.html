@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPCWD Water Production Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #0D1B2A;
+    --navy2:   #152336;
+    --navy3:   #1E3554;
+    --teal:    #1B8C7D;
+    --teal2:   #24B5A3;
+    --teal3:   #D0F0EC;
+    --blue:    #1560BD;
+    --blue2:   #4A90D9;
+    --blue3:   #D6E8FA;
+    --amber:   #D97706;
+    --amber2:  #FCD34D;
+    --green:   #059669;
+    --green2:  #D1FAE5;
+    --red:     #DC2626;
+    --red2:    #FEE2E2;
+    --slate:   #64748B;
+    --slate2:  #CBD5E1;
+    --white:   #F8FAFC;
+    --text:    #E2E8F0;
+    --text2:   #94A3B8;
+    --border:  rgba(255,255,255,0.08);
+    --card:    rgba(255,255,255,0.04);
+    --card2:   rgba(255,255,255,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(27,140,125,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 90% 90%, rgba(21,96,189,0.1) 0%, transparent 50%);
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    background: rgba(13,27,42,0.8);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo-block { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600; font-size: 13px;
+    color: white; letter-spacing: -0.5px;
+  }
+  .logo-text { line-height: 1.2; }
+  .logo-text strong {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--white); letter-spacing: 0.5px;
+  }
+  .logo-text span { font-size: 11px; color: var(--text2); }
+
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .status-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text2);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  .week-selector {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: var(--text);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+  }
+  .week-selector option { background: var(--navy2); }
+
+  /* ── Main layout ── */
+  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── Period bar ── */
+  .period-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .period-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; color: var(--teal2);
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .period-value {
+    font-size: 22px; font-weight: 300; color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  .target-pill {
+    background: rgba(27,140,125,0.15);
+    border: 1px solid rgba(27,140,125,0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; color: var(--teal2);
+  }
+
+  /* ── KPI row ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(255,255,255,0.15); }
+  .kpi-card::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .kpi-card.teal::before  { background: linear-gradient(90deg, var(--teal), var(--teal2)); }
+  .kpi-card.blue::before  { background: linear-gradient(90deg, var(--blue), var(--blue2)); }
+  .kpi-card.amber::before { background: linear-gradient(90deg, var(--amber), var(--amber2)); }
+  .kpi-card.green::before { background: linear-gradient(90deg, var(--green), #34D399); }
+  .kpi-card.slate::before { background: linear-gradient(90deg, var(--slate), var(--slate2)); }
+
+  .kpi-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text2);
+    margin-bottom: 10px; font-family: "IBM Plex Mono", monospace;
+  }
+  .kpi-value {
+    font-size: 28px; font-weight: 300; color: var(--white);
+    letter-spacing: -1px; line-height: 1;
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .kpi-value .unit { font-size: 12px; color: var(--text2); font-weight: 400; margin-left: 4px; }
+  .kpi-sub { font-size: 11px; color: var(--text2); margin-top: 8px; }
+  .kpi-sub.ok { color: var(--green); }
+  .kpi-sub.warn { color: var(--amber); }
+  .kpi-sub.bad  { color: var(--red); }
+
+  /* ── Chart grid ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .chart-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 16px;
+    font-family: "IBM Plex Mono", monospace;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-title::before {
+    content: ""; width: 3px; height: 12px;
+    background: var(--teal2); border-radius: 2px;
+  }
+  .chart-wrap { position: relative; }
+
+  /* ── Source table ── */
+  .table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .table-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .table-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text2); font-family: "IBM Plex Mono", monospace;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .table-title::before {
+    content: ""; width: 3px; height: 12px;
+    background: var(--blue2); border-radius: 2px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    padding: 10px 16px;
+    text-align: left; font-size: 10px;
+    font-weight: 500; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--text2);
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  thead th.right { text-align: right; }
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(255,255,255,0.04); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 10px 16px; font-size: 13px; }
+  tbody td.right { text-align: right; font-family: "IBM Plex Mono", monospace; }
+  tbody td.mono  { font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+  .cat-pill {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 10px;
+    font-family: "IBM Plex Mono", monospace; font-weight: 500;
+  }
+  .cat-sw  { background: rgba(27,140,125,0.2);  color: var(--teal2); }
+  .cat-gw  { background: rgba(21,96,189,0.2);   color: var(--blue2); }
+  .cat-aug { background: rgba(124,58,237,0.2);   color: #A78BFA; }
+  .bar-cell { display: flex; align-items: center; gap: 8px; }
+  .mini-bar-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+  .mini-bar    { height: 4px; border-radius: 2px; transition: width 0.8s ease; }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--text2); font-size: 11px;
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  /* ── Loading & error ── */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 999;
+    transition: opacity 0.5s;
+  }
+  .loading-screen.hidden { opacity: 0; pointer-events: none; }
+  .loading-spinner {
+    width: 36px; height: 36px;
+    border: 2px solid var(--border);
+    border-top-color: var(--teal2);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--text2); }
+
+  .error-banner {
+    background: rgba(220,38,38,0.1);
+    border: 1px solid rgba(220,38,38,0.3);
+    border-radius: 8px; padding: 16px 20px;
+    color: #FCA5A5; font-size: 13px; margin-bottom: 20px;
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    main { padding: 16px; }
+    header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loader">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading production data...</div>
+</div>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-mark">PPCWD</div>
+    <div class="logo-text">
+      <strong>Puerto Princesa City Water District</strong>
+      <span>Engineering Services Dept &mdash; Production Division</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      <span id="last-updated">Connecting...</span>
+    </div>
+    <select class="week-selector" id="week-select" onchange="renderWeek(this.value)">
+      <option value="all">All Weeks</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <div class="error-banner" id="error-banner"></div>
+
+  <div class="period-bar">
+    <div>
+      <div class="period-label">Reporting Period</div>
+      <div class="period-value" id="period-display">—</div>
+    </div>
+    <div class="target-pill">Target: 55.33 MLD</div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <div class="kpi-card teal">
+      <div class="kpi-label">Grand Total</div>
+      <div class="kpi-value" id="kpi-total">—<span class="unit">m³</span></div>
+      <div class="kpi-sub" id="kpi-total-sub"></div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Present MLD</div>
+      <div class="kpi-value" id="kpi-mld">—<span class="unit">MLD</span></div>
+      <div class="kpi-sub" id="kpi-mld-sub"></div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Surface Water</div>
+      <div class="kpi-value" id="kpi-sw">—<span class="unit">m³</span></div>
+      <div class="kpi-sub" id="kpi-sw-pct"></div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Ground Water</div>
+      <div class="kpi-value" id="kpi-gw">—<span class="unit">m³</span></div>
+      <div class="kpi-sub" id="kpi-gw-pct"></div>
+    </div>
+    <div class="kpi-card slate">
+      <div class="kpi-label">MLD vs Target</div>
+      <div class="kpi-value" id="kpi-target-pct">—<span class="unit">%</span></div>
+      <div class="kpi-sub" id="kpi-target-sub"></div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">Weekly Production (m³)</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chart-bar"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">SW vs GW Split</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chart-pie-swgw"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Source Breakdown</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chart-pie-sources"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- MLD trend -->
+  <div class="chart-card" style="margin-bottom:16px">
+    <div class="chart-title">MLD Trend vs 55.33 Target</div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="chart-mld"></canvas>
+    </div>
+  </div>
+
+  <!-- Source table -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Production by Source Group</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Category</th>
+          <th class="right">Production (m³)</th>
+          <th class="right">MLD</th>
+          <th class="right">% of Total</th>
+          <th style="width:160px">Share</th>
+        </tr>
+      </thead>
+      <tbody id="source-table"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  <span>PPCWD &mdash; Engineering Services Department / Production Division</span>
+  <span id="footer-updated">Data from Google Sheets</span>
+</footer>
+
+<script>
+const SHEET_ID = "1CtR3_lNWm9zbL4rZhlQ0-Rw9BSDtAnRa5vnQa9Ox20c";
+const SHEET_NAME = encodeURIComponent("Looker Data");
+const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+
+const TARGET_MLD = 55.33;
+
+let allData = [];
+let barChart, pieSwGw, pieSources, mldChart;
+
+const COL = {
+  week: 0, date: 1, period: 2,
+  wtp1: 3, wtp2: 4, infilCity: 5, lapulapu: 6, montible: 7, stalucia: 8, swCitySub: 9,
+  sabangSW: 10, sanrafael: 11, bahile: 12, napsan: 13, binduyan: 14, bacungan: 15, maoyon: 16, swSatSub: 17,
+  nma: 18, princeville: 19, villaprin: 20, sanjose: 21, esteban: 22, baldosano: 23, stamonica: 24, otherGW: 25, gwCitySub: 26,
+  visapa: 27, augSub: 28,
+  sabangGW: 29, inagawan: 30, gwSatSub: 31,
+  totalSW: 32, totalGW: 33, grandTotal: 34, mld: 35, swPct: 36, gwPct: 37
+};
+
+function num(v) {
+  if (v === null || v === undefined || v === "") return 0;
+  const n = parseFloat(String(v).replace(/,/g, ""));
+  return isNaN(n) ? 0 : n;
+}
+function fmt(n, decimals=0) {
+  return n.toLocaleString("en-PH", {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+}
+
+async function fetchData() {
+  const res = await fetch(API_URL);
+  const text = await res.text();
+  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  const rows = json.table.rows;
+  return rows.map(r => r.c.map(c => c ? (c.v !== undefined ? c.v : c.f) : null));
+}
+
+function aggregateWeeks(rows) {
+  const agg = {};
+  for (const k of Object.keys(COL)) agg[k] = 0;
+  let periods = [], weeks = [];
+  for (const row of rows) {
+    if (!row[COL.week]) continue;
+    weeks.push(row[COL.week]);
+    if (row[COL.period]) periods.push(row[COL.period]);
+    for (const [k, i] of Object.entries(COL)) {
+      if (i >= 3) agg[k] += num(row[i]);
+    }
+  }
+  agg.mld = agg.grandTotal > 0 ? agg.grandTotal / 7 / rows.length / 1000 : 0;
+  agg.swPct = agg.grandTotal > 0 ? agg.totalSW / agg.grandTotal : 0;
+  agg.gwPct = agg.grandTotal > 0 ? agg.totalGW / agg.grandTotal : 0;
+  agg._period = periods.length > 1 ? `${periods[0]} → ${periods[periods.length-1]}` : (periods[0] || "All weeks");
+  agg._week = "All Weeks";
+  return agg;
+}
+
+function rowToObj(row) {
+  const obj = {};
+  for (const [k, i] of Object.entries(COL)) obj[k] = row[i];
+  obj._period = row[COL.period] || row[COL.date] || "—";
+  obj._week = row[COL.week] || "—";
+  return obj;
+}
+
+function renderKPIs(d) {
+  const mld = num(d.mld);
+  const total = num(d.grandTotal);
+  const sw = num(d.totalSW);
+  const gw = num(d.totalGW);
+  const swPct = num(d.swPct);
+  const gwPct = num(d.gwPct);
+  const targetPct = mld / TARGET_MLD * 100;
+
+  document.getElementById("period-display").textContent = d._period || "—";
+  document.getElementById("kpi-total").innerHTML = `${fmt(total)}<span class="unit">m³</span>`;
+  document.getElementById("kpi-mld").innerHTML = `${fmt(mld,2)}<span class="unit">MLD</span>`;
+  document.getElementById("kpi-sw").innerHTML = `${fmt(sw)}<span class="unit">m³</span>`;
+  document.getElementById("kpi-gw").innerHTML = `${fmt(gw)}<span class="unit">m³</span>`;
+  document.getElementById("kpi-target-pct").innerHTML = `${fmt(targetPct,1)}<span class="unit">%</span>`;
+
+  const mldStatus = mld >= TARGET_MLD ? "ok" : mld >= TARGET_MLD * 0.9 ? "warn" : "bad";
+  document.getElementById("kpi-mld-sub").className = `kpi-sub ${mldStatus}`;
+  document.getElementById("kpi-mld-sub").textContent = mld >= TARGET_MLD ? "▲ Above target" : `▼ ${fmt(TARGET_MLD - mld, 2)} MLD below target`;
+  document.getElementById("kpi-sw-pct").textContent = `${fmt(swPct*100,1)}% of total`;
+  document.getElementById("kpi-gw-pct").textContent = `${fmt(gwPct*100,1)}% of total`;
+  document.getElementById("kpi-target-sub").className = `kpi-sub ${mldStatus}`;
+  document.getElementById("kpi-target-sub").textContent = `Target: ${TARGET_MLD} MLD`;
+  document.getElementById("kpi-total-sub").textContent = `${allData.length} week(s) of data`;
+}
+
+function destroyChart(c) { if (c) c.destroy(); }
+
+function renderBarChart(rows) {
+  destroyChart(barChart);
+  const labels = rows.map(r => r[COL.week] || "");
+  const swData = rows.map(r => num(r[COL.totalSW]));
+  const gwData = rows.map(r => num(r[COL.totalGW]));
+  barChart = new Chart(document.getElementById("chart-bar"), {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        { label: "Surface Water", data: swData, backgroundColor: "rgba(27,140,125,0.75)", borderRadius: 4, borderSkipped: false },
+        { label: "Ground Water",  data: gwData, backgroundColor: "rgba(21,96,189,0.75)",  borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 11 } } } },
+      scales: {
+        x: { stacked: true, grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 11 } } },
+        y: { stacked: true, grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 11 }, callback: v => v >= 1000 ? (v/1000)+"K" : v } }
+      }
+    }
+  });
+}
+
+function renderPieSwGw(d) {
+  destroyChart(pieSwGw);
+  const sw = num(d.totalSW), gw = num(d.totalGW);
+  pieSwGw = new Chart(document.getElementById("chart-pie-swgw"), {
+    type: "doughnut",
+    data: {
+      labels: ["Surface Water", "Ground Water"],
+      datasets: [{ data: [sw, gw], backgroundColor: ["rgba(27,140,125,0.85)", "rgba(21,96,189,0.85)"], borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: "65%",
+      plugins: {
+        legend: { position: "bottom", labels: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 10 }, padding: 12 } },
+        tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} m³ (${fmt(ctx.raw/(sw+gw)*100,1)}%)` } }
+      }
+    }
+  });
+}
+
+function renderPieSources(d) {
+  destroyChart(pieSources);
+  const sources = [
+    { label: "SW City Proper", val: num(d.swCitySub), color: "rgba(27,140,125,0.9)" },
+    { label: "SW Satellite",   val: num(d.swSatSub),  color: "rgba(36,181,163,0.8)" },
+    { label: "GW City Proper", val: num(d.gwCitySub), color: "rgba(21,96,189,0.9)" },
+    { label: "GW Augmented",   val: num(d.augSub),    color: "rgba(124,58,237,0.8)" },
+    { label: "GW Satellite",   val: num(d.gwSatSub),  color: "rgba(74,144,217,0.8)" },
+  ].filter(s => s.val > 0);
+  pieSources = new Chart(document.getElementById("chart-pie-sources"), {
+    type: "doughnut",
+    data: {
+      labels: sources.map(s => s.label),
+      datasets: [{ data: sources.map(s => s.val), backgroundColor: sources.map(s => s.color), borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: "60%",
+      plugins: {
+        legend: { position: "bottom", labels: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 10 }, padding: 8 } },
+        tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)} m³` } }
+      }
+    }
+  });
+}
+
+function renderMldChart(rows) {
+  destroyChart(mldChart);
+  const labels = rows.map(r => r[COL.week] || "");
+  const mlds   = rows.map(r => num(r[COL.mld]));
+  mldChart = new Chart(document.getElementById("chart-mld"), {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        { label: "MLD", data: mlds, borderColor: "rgba(27,140,125,1)", backgroundColor: "rgba(27,140,125,0.1)", borderWidth: 2, pointBackgroundColor: "rgba(27,140,125,1)", pointRadius: 5, tension: 0.4, fill: true },
+        { label: "Target (55.33)", data: labels.map(() => TARGET_MLD), borderColor: "rgba(217,119,6,0.6)", borderWidth: 1.5, borderDash: [6,4], pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 11 } } } },
+      scales: {
+        x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 11 } } },
+        y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#94A3B8", font: { family: "IBM Plex Mono", size: 11 } }, suggestedMin: 40, suggestedMax: 70 }
+      }
+    }
+  });
+}
+
+function renderTable(d) {
+  const total = num(d.grandTotal);
+  const rows = [
+    { name: "Irawan WTP-1",            cat: "sw",  val: num(d.wtp1) },
+    { name: "Irawan WTP-2",            cat: "sw",  val: num(d.wtp2) },
+    { name: "Irawan Infiltration Wells",cat:"sw",  val: num(d.infilCity) },
+    { name: "Lapu-Lapu Source",        cat: "sw",  val: num(d.lapulapu) },
+    { name: "Montible (Terusan)",      cat: "sw",  val: num(d.montible) },
+    { name: "Sta. Lucia PS",           cat: "sw",  val: num(d.stalucia) },
+    { name: "SW City Sub-total",       cat: "sw",  val: num(d.swCitySub), bold: true },
+    { name: "Sabang SW",               cat: "sw",  val: num(d.sabangSW) },
+    { name: "San Rafael SW",           cat: "sw",  val: num(d.sanrafael) },
+    { name: "Bahile SW",               cat: "sw",  val: num(d.bahile) },
+    { name: "Napsan",                  cat: "sw",  val: num(d.napsan) },
+    { name: "Binduyan",                cat: "sw",  val: num(d.binduyan) },
+    { name: "Bacungan SW",             cat: "sw",  val: num(d.bacungan) },
+    { name: "Maoyon Infiltration Wells",cat:"sw",  val: num(d.maoyon) },
+    { name: "SW Satellite Sub-total",  cat: "sw",  val: num(d.swSatSub), bold: true },
+    { name: "NMA",                     cat: "gw",  val: num(d.nma) },
+    { name: "Princeville",             cat: "gw",  val: num(d.princeville) },
+    { name: "Villa Princesa",          cat: "gw",  val: num(d.villaprin) },
+    { name: "San Jose",                cat: "gw",  val: num(d.sanjose) },
+    { name: "Esteban",                 cat: "gw",  val: num(d.esteban) },
+    { name: "Baldosano PS",            cat: "gw",  val: num(d.baldosano) },
+    { name: "Sta. Monica PS",          cat: "gw",  val: num(d.stamonica) },
+    { name: "Other GW City Proper",    cat: "gw",  val: num(d.otherGW) },
+    { name: "GW City Sub-total",       cat: "gw",  val: num(d.gwCitySub), bold: true },
+    { name: "Visapa PS (Augmented)",   cat: "aug", val: num(d.visapa) },
+    { name: "Sabang GW",               cat: "gw",  val: num(d.sabangGW) },
+    { name: "Inagawan",                cat: "gw",  val: num(d.inagawan) },
+    { name: "GW Satellite Sub-total",  cat: "gw",  val: num(d.gwSatSub), bold: true },
+  ].filter(r => r.val > 0);
+
+  const tbody = document.getElementById("source-table");
+  tbody.innerHTML = rows.map(r => {
+    const pct = total > 0 ? r.val / total * 100 : 0;
+    const mld = r.val / 7 / 1000;
+    const barColor = r.cat === "sw" ? "var(--teal)" : r.cat === "aug" ? "#7C3AED" : "var(--blue)";
+    const catLabel = r.cat === "sw" ? "Surface Water" : r.cat === "aug" ? "Augmented" : "Ground Water";
+    return `<tr style="${r.bold ? "background:rgba(255,255,255,0.03)" : ""}">
+      <td style="${r.bold ? "font-weight:500;color:var(--white)" : ""}">${r.name}</td>
+      <td><span class="cat-pill cat-${r.cat}">${catLabel}</span></td>
+      <td class="right mono">${fmt(r.val)}</td>
+      <td class="right mono">${fmt(mld, 2)}</td>
+      <td class="right mono">${fmt(pct,1)}%</td>
+      <td>
+        <div class="bar-cell">
+          <div class="mini-bar-bg"><div class="mini-bar" style="width:${Math.min(pct*3,100)}%;background:${barColor}"></div></div>
+          <span style="font-family:IBM Plex Mono;font-size:10px;color:var(--text2);min-width:32px">${fmt(pct,1)}%</span>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function renderWeek(weekVal) {
+  let d, rows;
+  if (weekVal === "all" || !weekVal) {
+    rows = allData;
+    d = aggregateWeeks(allData);
+  } else {
+    rows = allData.filter(r => r[COL.week] === weekVal);
+    d = rows.length ? rowToObj(rows[0]) : aggregateWeeks(allData);
+  }
+  renderKPIs(d);
+  renderBarChart(allData);
+  renderPieSwGw(d);
+  renderPieSources(d);
+  renderMldChart(allData);
+  renderTable(d);
+}
+
+async function init() {
+  try {
+    const raw = await fetchData();
+    allData = raw.filter(r => r[COL.week] && String(r[COL.week]).startsWith("Week"));
+
+    if (allData.length === 0) throw new Error("No week data found in sheet.");
+
+    const sel = document.getElementById("week-select");
+    allData.forEach(r => {
+      const opt = document.createElement("option");
+      opt.value = r[COL.week];
+      opt.textContent = `${r[COL.week]}${r[COL.period] ? " — " + r[COL.period] : ""}`;
+      sel.appendChild(opt);
+    });
+
+    renderWeek("all");
+
+    const now = new Date();
+    document.getElementById("last-updated").textContent =
+      "Updated " + now.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+    document.getElementById("footer-updated").textContent =
+      "Source: PPCWD_Weekly_Monitoring_v2 · Google Sheets · " + now.toLocaleDateString("en-PH");
+
+  } catch (err) {
+    document.getElementById("error-banner").style.display = "block";
+    document.getElementById("error-banner").textContent =
+      "Could not load data: " + err.message + " — Make sure the Google Sheet is shared publicly (Anyone with link → Viewer).";
+    console.error(err);
+  } finally {
+    document.getElementById("loader").classList.add("hidden");
+  }
+}
+
+init();
+</script>
+</body>
+</html>
