@@ -163,6 +163,36 @@
     main{padding:16px;}header{padding:0 16px;}
     .period-bar{grid-template-columns:1fr;gap:12px;}
     .period-right{justify-content:flex-start;}
+
+/* Navigation Tabs */
+  .nav-tabs {
+    display: flex; gap: 24px; padding: 0 32px;
+    background: rgba(21, 35, 54, 0.8); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 64px; z-index: 90;
+  }
+  .tab-btn {
+    background: none; border: none; color: var(--text2);
+    padding: 16px 4px; font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.5px;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.2s ease; text-transform: uppercase;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--teal2); border-bottom-color: var(--teal2); }
+  
+  /* Tab Content Containers */
+  .tab-content { display: none; animation: fadeIn 0.3s ease; }
+  .tab-content.active { display: block; }
+  
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* Placeholder states */
+  .placeholder-box {
+    border: 1px dashed var(--border); border-radius: 10px;
+    padding: 60px 20px; text-align: center; color: var(--text2);
+    font-family: "IBM Plex Mono", monospace; font-size: 13px;
+  }
   }
 </style>
 </head>
@@ -187,10 +217,67 @@
       <span id="last-updated">Connecting...</span>
     </div>
   </div>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-production', this)">Water Production</button>
+  <button class="tab-btn" onclick="switchTab('tab-pressure', this)">Pressure Monitoring</button>
+  <button class="tab-btn" onclick="switchTab('tab-river', this)">River Flow (Upcoming)</button>
+</div>
+
 </header>
 
 <main>
   <div class="error-banner" id="error-banner"></div>
+
+  <div id="tab-production" class="tab-content active">
+    <div class="error-banner" id="error-banner"></div>
+    <div class="period-bar">...</div>
+    <div class="kpi-row">...</div>
+    <div class="chart-grid">...</div>
+    </div>
+
+  <div id="tab-pressure" class="tab-content">
+    <div class="period-bar">
+      <div>
+        <div class="period-label">Daily Pressure Updates</div>
+        <div class="period-value">7 AM · 12 NN · 6 PM</div>
+      </div>
+    </div>
+    
+    <div class="chart-card" style="margin-bottom:16px">
+      <div class="chart-title blue-accent">Daily Pressure Trend</div>
+      <div class="chart-wrap" style="height:400px">
+         <canvas id="chart-pressure"></canvas>
+      </div>
+    </div>
+    
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Pressure Point Logs</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th class="right">7:00 AM (psi)</th>
+            <th class="right">12:00 NN (psi)</th>
+            <th class="right">6:00 PM (psi)</th>
+            <th class="right">Average</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="pressure-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-river" class="tab-content">
+    <div class="placeholder-box">
+      <div style="font-size: 24px; margin-bottom: 12px;">🌊</div>
+      <div>River Flow Monitoring datasets are currently being established.</div>
+      <div style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Check back once weekly reports are finalized.</div>
+    </div>
+  </div>
 
   <div class="period-bar">
     <div>
@@ -248,7 +335,7 @@
 
   <div class="chart-card" style="margin-bottom:16px">
     <div class="chart-title">MLD Trend vs 55.33 Target</div>
-    <div class="chart-wrap" style="height:300px"><canvas id="chart-mld"></canvas></div>
+    <div class="chart-wrap" style="height:160px"><canvas id="chart-mld"></canvas></div>
   </div>
 
   <div class="table-card">
@@ -372,6 +459,54 @@ async function fetchData(){
   const text=await res.text();
   const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
   return json.table.rows.map(r=>r.c.map(c=>c?(c.v!==undefined?c.v:c.f):null));
+
+  // --- Configuration for Pressure Data ---
+const SHEET_NAME_PRESSURE = encodeURIComponent("Pressure Points");
+const API_URL_PRESSURE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME_PRESSURE}`;
+
+let pressureDataLoaded = false;
+
+// --- Tab Switching Logic ---
+function switchTab(targetId, btnElement) {
+  // Hide all tabs
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  // Remove active state from all buttons
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  
+  // Show target tab and activate button
+  document.getElementById(targetId).classList.add('active');
+  btnElement.classList.add('active');
+
+  // Lazy-load pressure data only when the tab is clicked for the first time
+  if (targetId === 'tab-pressure' && !pressureDataLoaded) {
+    initPressureData();
+  }
+}
+// --- Fetch and Render Pressure Data ---
+async function initPressureData() {
+  document.getElementById("loader").classList.remove("hidden");
+  document.querySelector(".loading-text").textContent = "Loading pressure data...";
+  
+  try {
+    const res = await fetch(API_URL_PRESSURE);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    
+    // Parse the json.table.rows here similarly to how you mapped the Production data.
+    // Example: const pressureRows = json.table.rows.map(...)
+    
+    // Call your rendering functions for the pressure canvas and table here
+    // renderPressureChart(pressureRows);
+    // renderPressureTable(pressureRows);
+    
+    pressureDataLoaded = true;
+  } catch (err) {
+    console.error("Error loading pressure data:", err);
+    // Handle error (e.g., show error banner in the pressure tab)
+  } finally {
+    document.getElementById("loader").classList.add("hidden");
+  }
+}
 }
 
 function aggregateWeeks(rows){
