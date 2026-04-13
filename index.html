@@ -3,174 +3,287 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PPCWD Water Production Dashboard</title>
+<title>PPCWD Monitoring Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy:#0D1B2A;--navy2:#152336;--navy3:#1E3554;
-    --teal:#1B8C7D;--teal2:#24B5A3;--teal3:#D0F0EC;
-    --blue:#1560BD;--blue2:#4A90D9;--blue3:#D6E8FA;
-    --amber:#D97706;--amber2:#FCD34D;
-    --green:#059669;--green2:#D1FAE5;
-    --red:#DC2626;--red2:#FEE2E2;
-    --slate:#64748B;--slate2:#CBD5E1;
-    --white:#F8FAFC;--text:#E2E8F0;--text2:#94A3B8;
-    --border:rgba(255,255,255,0.08);
-    --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    background:var(--navy);color:var(--text);
-    font-family:"IBM Plex Sans",sans-serif;font-size:14px;min-height:100vh;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%,rgba(27,140,125,0.15) 0%,transparent 60%),
-      radial-gradient(ellipse 40% 30% at 90% 90%,rgba(21,96,189,0.1) 0%,transparent 50%);
-  }
-  header{
-    border-bottom:1px solid var(--border);padding:0 32px;
-    display:flex;align-items:center;justify-content:space-between;height:64px;
-    background:rgba(13,27,42,0.8);backdrop-filter:blur(12px);
-    position:sticky;top:0;z-index:100;
-  }
-  .logo-block{display:flex;align-items:center;gap:14px;}
-  .logo-mark{
-    width:38px;height:38px;
-    background:linear-gradient(135deg,var(--teal),var(--blue));
-    border-radius:8px;display:flex;align-items:center;justify-content:center;
-    font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;
-    color:white;letter-spacing:-0.5px;line-height:1.1;text-align:center;
-  }
-  .logo-text{line-height:1.2;}
-  .logo-text strong{display:block;font-size:13px;font-weight:600;color:var(--white);letter-spacing:0.5px;}
-  .logo-text span{font-size:11px;color:var(--text2);}
-  .header-right{display:flex;align-items:center;gap:20px;}
-  .status-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);font-family:"IBM Plex Mono",monospace;}
-  .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+:root{
+  --navy:#0D1B2A;--navy2:#152336;--navy3:#1E3554;
+  --teal:#1B8C7D;--teal2:#24B5A3;
+  --blue:#1560BD;--blue2:#4A90D9;
+  --amber:#D97706;--amber2:#FCD34D;
+  --green:#059669;--red:#DC2626;--red2:#FCA5A5;
+  --slate:#64748B;--slate2:#CBD5E1;
+  --white:#F8FAFC;--text:#E2E8F0;--text2:#94A3B8;
+  --border:rgba(255,255,255,0.08);
+  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--navy);color:var(--text);
+  font-family:"IBM Plex Sans",sans-serif;font-size:14px;min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(27,140,125,0.15) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 90%,rgba(21,96,189,0.1) 0%,transparent 50%);
+}
 
-  main{padding:28px 32px;max-width:1400px;margin:0 auto;}
+/* ── Header ── */
+header{
+  border-bottom:1px solid var(--border);padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;background:rgba(13,27,42,0.92);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:200;
+}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-mark{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;
+  color:white;line-height:1.1;text-align:center;
+}
+.logo-text strong{display:block;font-size:13px;font-weight:600;color:var(--white);}
+.logo-text span{font-size:10px;color:var(--text2);}
+.header-right{display:flex;align-items:center;gap:16px;}
+.status-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);font-family:"IBM Plex Mono",monospace;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-  /* Period bar — 3-column grid so buttons sit perfectly centered */
-  .period-bar{
-    display:grid;grid-template-columns:1fr auto 1fr;
-    align-items:center;gap:20px;margin-bottom:24px;
-  }
-  .period-label{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--teal2);letter-spacing:1.5px;text-transform:uppercase;}
-  .period-value{font-size:22px;font-weight:300;color:var(--white);letter-spacing:-0.5px;}
-  .period-right{display:flex;justify-content:flex-end;align-items:center;}
-  .target-pill{
-    background:rgba(27,140,125,0.15);border:1px solid rgba(27,140,125,0.3);
-    border-radius:20px;padding:6px 16px;
-    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--teal2);
-  }
+/* ── Nav tabs ── */
+.nav-tabs{
+  display:flex;align-items:center;gap:2px;
+  background:rgba(13,27,42,0.95);border-bottom:1px solid var(--border);
+  padding:0 24px;position:sticky;top:60px;z-index:190;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.nav-tab{
+  padding:12px 20px;font-size:12px;font-weight:500;
+  font-family:"IBM Plex Mono",monospace;color:var(--text2);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;
+}
+.nav-tab:hover{color:var(--white);}
+.nav-tab.active{color:var(--teal2);border-bottom-color:var(--teal2);}
+.nav-tab .tab-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  margin-right:6px;vertical-align:middle;
+}
 
-  /* Week buttons */
-  .week-btn-group{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;}
-  .week-btn{
-    background:var(--card2);border:1px solid var(--border);border-radius:6px;
-    padding:6px 14px;color:var(--text2);
-    font-family:"IBM Plex Mono",monospace;font-size:11px;
-    cursor:pointer;transition:all 0.15s;white-space:nowrap;
-  }
-  .week-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
-  .week-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
-  .week-btn.all-btn{background:rgba(21,96,189,0.15);border-color:rgba(21,96,189,0.3);color:var(--blue2);}
-  .week-btn.all-btn.active{background:var(--blue);border-color:var(--blue);color:white;}
+/* ── Pages ── */
+.page{display:none;padding:24px;max-width:1400px;margin:0 auto;}
+.page.active{display:block;}
 
-  /* KPI */
-  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
-  .kpi-card{
-    background:var(--card);border:1px solid var(--border);border-radius:10px;
-    padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.2s;
-  }
-  .kpi-card:hover{border-color:rgba(255,255,255,0.15);}
-  .kpi-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;}
-  .kpi-card.teal::before {background:linear-gradient(90deg,var(--teal),var(--teal2));}
-  .kpi-card.blue::before {background:linear-gradient(90deg,var(--blue),var(--blue2));}
-  .kpi-card.amber::before{background:linear-gradient(90deg,var(--amber),var(--amber2));}
-  .kpi-card.green::before{background:linear-gradient(90deg,var(--green),#34D399);}
-  .kpi-card.slate::before{background:linear-gradient(90deg,var(--slate),var(--slate2));}
-  .kpi-label{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:10px;font-family:"IBM Plex Mono",monospace;}
-  .kpi-value{font-size:28px;font-weight:300;color:var(--white);letter-spacing:-1px;line-height:1;font-family:"IBM Plex Mono",monospace;}
-  .kpi-value .unit{font-size:12px;color:var(--text2);font-weight:400;margin-left:4px;}
-  .kpi-sub{font-size:11px;color:var(--text2);margin-top:8px;}
-  .kpi-sub.ok{color:var(--green);}.kpi-sub.warn{color:var(--amber);}.kpi-sub.bad{color:var(--red);}
+/* ── Period bar / week buttons ── */
+.period-bar{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:16px;margin-bottom:20px;
+}
+.period-label{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--teal2);letter-spacing:1.5px;text-transform:uppercase;}
+.period-value{font-size:20px;font-weight:300;color:var(--white);}
+.period-right{display:flex;justify-content:flex-end;}
+.target-pill{
+  background:rgba(27,140,125,0.15);border:1px solid rgba(27,140,125,0.3);
+  border-radius:20px;padding:5px 14px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--teal2);
+}
+.week-btn-group{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+.week-btn{
+  background:var(--card2);border:1px solid var(--border);border-radius:6px;
+  padding:5px 12px;color:var(--text2);font-family:"IBM Plex Mono",monospace;
+  font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.week-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.week-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+.week-btn.all-btn{background:rgba(21,96,189,0.15);border-color:rgba(21,96,189,0.3);color:var(--blue2);}
+.week-btn.all-btn.active{background:var(--blue);border-color:var(--blue);color:white;}
 
-  /* Charts */
-  .chart-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;}
-  .chart-title{
-    font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;
-    color:var(--text2);margin-bottom:16px;font-family:"IBM Plex Mono",monospace;
-    display:flex;align-items:center;gap:8px;
-  }
-  .chart-title::before{content:"";width:3px;height:12px;background:var(--teal2);border-radius:2px;}
-  .chart-wrap{position:relative;}
+/* ── KPI row ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+.kpi-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;position:relative;overflow:hidden;transition:border-color .2s;
+}
+.kpi-card:hover{border-color:rgba(255,255,255,0.15);}
+.kpi-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.teal::before{background:linear-gradient(90deg,var(--teal),var(--teal2));}
+.kpi-card.blue::before{background:linear-gradient(90deg,var(--blue),var(--blue2));}
+.kpi-card.amber::before{background:linear-gradient(90deg,var(--amber),var(--amber2));}
+.kpi-card.green::before{background:linear-gradient(90deg,var(--green),#34D399);}
+.kpi-card.slate::before{background:linear-gradient(90deg,var(--slate),var(--slate2));}
+.kpi-label{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;font-family:"IBM Plex Mono",monospace;}
+.kpi-value{font-size:26px;font-weight:300;color:var(--white);letter-spacing:-1px;line-height:1;font-family:"IBM Plex Mono",monospace;}
+.kpi-value .unit{font-size:11px;color:var(--text2);font-weight:400;margin-left:3px;}
+.kpi-sub{font-size:10px;color:var(--text2);margin-top:6px;}
+.kpi-sub.ok{color:var(--green);}.kpi-sub.warn{color:var(--amber);}.kpi-sub.bad{color:var(--red);}
 
-  /* Tables */
-  .table-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;}
-  .table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .table-title{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);font-family:"IBM Plex Mono",monospace;display:flex;align-items:center;gap:8px;}
-  .table-title::before{content:"";width:3px;height:12px;border-radius:2px;}
-  .table-title.blue-accent::before{background:var(--blue2);}
-  .table-title.amber-accent::before{background:var(--amber2);}
-  table{width:100%;border-collapse:collapse;}
-  thead th{
-    padding:10px 16px;text-align:left;font-size:10px;font-weight:500;
-    letter-spacing:0.8px;text-transform:uppercase;color:var(--text2);
-    background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);
-    font-family:"IBM Plex Mono",monospace;
-  }
-  thead th.right{text-align:right;}
-  tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:background 0.15s;}
-  tbody tr:hover{background:rgba(255,255,255,0.04);}
-  tbody tr:last-child{border-bottom:none;}
-  tbody td{padding:10px 16px;font-size:13px;}
-  tbody td.right{text-align:right;font-family:"IBM Plex Mono",monospace;}
-  tbody td.mono{font-family:"IBM Plex Mono",monospace;font-size:12px;}
-  .cat-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:"IBM Plex Mono",monospace;font-weight:500;}
-  .cat-sw {background:rgba(27,140,125,0.2);color:var(--teal2);}
-  .cat-gw {background:rgba(21,96,189,0.2); color:var(--blue2);}
-  .cat-aug{background:rgba(124,58,237,0.2);color:#A78BFA;}
-  .bar-cell{display:flex;align-items:center;gap:8px;}
-  .mini-bar-bg{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;}
-  .mini-bar{height:4px;border-radius:2px;transition:width 0.8s ease;}
+/* ── Charts ── */
+.chart-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;}
+.chart-title{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:14px;font-family:"IBM Plex Mono",monospace;display:flex;align-items:center;gap:8px;}
+.chart-title::before{content:"";width:3px;height:11px;background:var(--teal2);border-radius:2px;}
 
-  /* Capacity table specific */
-  .diff-pos{color:#34D399;font-weight:500;}
-  .diff-neg{color:#FCA5A5;font-weight:500;}
-  .diff-neu{color:var(--text2);}
-  .pct-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-family:"IBM Plex Mono",monospace;font-weight:600;}
-  .pct-over {background:rgba(5,150,105,0.18); color:#34D399;}
-  .pct-near {background:rgba(217,119,6,0.18); color:var(--amber2);}
-  .pct-under{background:rgba(220,38,38,0.18); color:#FCA5A5;}
-  .cap-note{font-size:10px;color:var(--text2);font-family:"IBM Plex Mono",monospace;padding:10px 20px;border-top:1px solid var(--border);background:rgba(255,255,255,0.01);}
+/* ── Tables — desktop ── */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.table-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.table-title{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);font-family:"IBM Plex Mono",monospace;display:flex;align-items:center;gap:8px;}
+.table-title::before{content:"";width:3px;height:11px;border-radius:2px;}
+.table-title.blue-accent::before{background:var(--blue2);}
+.table-title.amber-accent::before{background:var(--amber2);}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:600px;}
+thead th{padding:9px 14px;text-align:left;font-size:9px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);font-family:"IBM Plex Mono",monospace;}
+thead th.right{text-align:right;}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,0.04);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:9px 14px;font-size:12px;}
+tbody td.right{text-align:right;font-family:"IBM Plex Mono",monospace;}
+tbody td.mono{font-family:"IBM Plex Mono",monospace;font-size:11px;}
+.cat-pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-family:"IBM Plex Mono",monospace;font-weight:500;}
+.cat-sw{background:rgba(27,140,125,0.2);color:var(--teal2);}
+.cat-gw{background:rgba(21,96,189,0.2);color:var(--blue2);}
+.cat-aug{background:rgba(124,58,237,0.2);color:#A78BFA;}
+.bar-cell{display:flex;align-items:center;gap:6px;}
+.mini-bar-bg{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;}
+.mini-bar{height:4px;border-radius:2px;}
+.diff-pos{color:#34D399;font-weight:500;}
+.diff-neg{color:#FCA5A5;font-weight:500;}
+.pct-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-family:"IBM Plex Mono",monospace;font-weight:600;}
+.pct-over{background:rgba(5,150,105,0.18);color:#34D399;}
+.pct-near{background:rgba(217,119,6,0.18);color:var(--amber2);}
+.pct-under{background:rgba(220,38,38,0.18);color:#FCA5A5;}
+.cap-note{font-size:9px;color:var(--text2);font-family:"IBM Plex Mono",monospace;padding:9px 18px;border-top:1px solid var(--border);background:rgba(255,255,255,0.01);}
 
-  footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;color:var(--text2);font-size:11px;font-family:"IBM Plex Mono",monospace;}
+/* ── Mobile card view (replaces table rows on small screens) ── */
+.mobile-cards{display:none;}
+.mob-card{
+  background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  padding:14px;margin-bottom:8px;
+}
+.mob-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.mob-card-name{font-size:13px;font-weight:500;color:var(--white);}
+.mob-card-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.mob-card-row:last-child{border-bottom:none;}
+.mob-card-label{font-size:10px;color:var(--text2);font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.6px;}
+.mob-card-val{font-size:12px;font-family:"IBM Plex Mono",monospace;color:var(--text);}
+.mob-section-title{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);font-family:"IBM Plex Mono",monospace;padding:12px 0 6px;display:flex;align-items:center;gap:6px;}
+.mob-section-title::before{content:"";width:3px;height:10px;border-radius:2px;background:var(--teal2);}
 
-  .loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;transition:opacity 0.5s;}
-  .loading-screen.hidden{opacity:0;pointer-events:none;}
-  .loading-spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--teal2);border-radius:50%;animation:spin 0.8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .loading-text{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--text2);}
-  .error-banner{background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:16px 20px;color:#FCA5A5;font-size:13px;margin-bottom:20px;display:none;}
+/* ── PRESSURE TAB ── */
+.pressure-layout{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:16px;}
+.pressure-main{}
+.pressure-sidebar{}
 
-  @media(max-width:900px){
-    .kpi-row{grid-template-columns:repeat(2,1fr);}
-    .chart-grid{grid-template-columns:1fr;}
-    main{padding:16px;}header{padding:0 16px;}
-    .period-bar{grid-template-columns:1fr;gap:12px;}
-    .period-right{justify-content:flex-start;}
-  }
+/* Station grid */
+.station-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px;}
+.station-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+}
+.station-card:hover{border-color:rgba(255,255,255,0.18);background:var(--card2);}
+.station-card.selected{border-color:var(--teal2);background:rgba(36,181,163,0.08);}
+.station-card.alert{border-color:rgba(220,38,38,0.5);}
+.station-card.alert::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--red);
+}
+.station-card.ok::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--green);
+}
+.station-name{font-size:11px;font-weight:500;color:var(--white);margin-bottom:8px;line-height:1.3;}
+.station-psi{font-size:28px;font-weight:300;font-family:"IBM Plex Mono",monospace;line-height:1;}
+.station-psi .psi-unit{font-size:12px;color:var(--text2);margin-left:2px;}
+.station-psi.alert-val{color:#FCA5A5;}
+.station-psi.ok-val{color:#34D399;}
+.station-psi.no-val{color:var(--text2);font-size:18px;}
+.station-time{font-size:9px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:6px;}
+.station-glow{
+  position:absolute;inset:0;border-radius:10px;pointer-events:none;
+  animation:glow-red 1.5s ease-in-out infinite;opacity:0;
+}
+.station-card.alert .station-glow{opacity:1;}
+@keyframes glow-red{0%,100%{box-shadow:inset 0 0 0 1px rgba(220,38,38,0);}50%{box-shadow:inset 0 0 8px 1px rgba(220,38,38,0.25);}}
+
+/* Map */
+.map-container{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;height:380px;position:relative;
+}
+.map-container iframe{width:100%;height:100%;border:none;}
+.map-title{
+  position:absolute;top:10px;left:10px;z-index:10;
+  background:rgba(13,27,42,0.9);backdrop-filter:blur(8px);
+  border:1px solid var(--border);border-radius:6px;
+  padding:5px 10px;font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);
+}
+
+/* Pressure chart card */
+.pressure-chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px;}
+.pressure-controls{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.pressure-station-label{font-size:12px;font-weight:500;color:var(--white);flex:1;}
+.time-range-btn{
+  background:var(--card2);border:1px solid var(--border);border-radius:5px;
+  padding:4px 10px;font-size:10px;font-family:"IBM Plex Mono",monospace;
+  color:var(--text2);cursor:pointer;transition:all .15s;
+}
+.time-range-btn:hover{color:var(--white);}
+.time-range-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+.alert-line-note{
+  display:flex;align-items:center;gap:6px;font-size:10px;
+  font-family:"IBM Plex Mono",monospace;color:#FCA5A5;
+}
+.alert-line-note::before{content:"";width:20px;height:2px;background:var(--red);border-radius:1px;}
+
+/* ── RIVER FLOW TAB ── */
+.placeholder-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:48px 24px;text-align:center;margin-bottom:16px;
+}
+.placeholder-icon{font-size:40px;margin-bottom:16px;opacity:.4;}
+.placeholder-title{font-size:16px;font-weight:500;color:var(--white);margin-bottom:8px;}
+.placeholder-desc{font-size:13px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto;}
+
+/* ── Error & loading ── */
+.error-banner{background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:14px 18px;color:#FCA5A5;font-size:13px;margin-bottom:16px;display:none;}
+.loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .5s;}
+.loading-screen.hidden{opacity:0;pointer-events:none;}
+.loading-spinner{width:34px;height:34px;border:2px solid var(--border);border-top-color:var(--teal2);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--text2);}
+
+footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;color:var(--text2);font-size:10px;font-family:"IBM Plex Mono",monospace;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .chart-grid{grid-template-columns:1fr;}
+  .period-bar{grid-template-columns:1fr;gap:10px;}
+  .period-right{justify-content:flex-start;}
+  .pressure-layout{grid-template-columns:1fr;}
+  .pressure-sidebar{order:-1;}
+  .map-container{height:280px;}
+
+  /* Hide desktop tables, show mobile cards */
+  .table-wrap{display:none;}
+  .mobile-cards{display:block;}
+  .station-grid{grid-template-columns:repeat(2,1fr);}
+  .page{padding:14px;}
+}
+@media(max-width:480px){
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .station-grid{grid-template-columns:1fr 1fr;}
+  header{padding:0 14px;}
+  .nav-tabs{padding:0 14px;}
+}
 </style>
 </head>
 <body>
 
 <div class="loading-screen" id="loader">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Loading production data...</div>
+  <div class="loading-text">Loading PPCWD monitoring data...</div>
 </div>
 
 <header>
@@ -178,7 +291,7 @@
     <div class="logo-mark">PPCWD</div>
     <div class="logo-text">
       <strong>Puerto Princesa City Water District</strong>
-      <span>Engineering Services Dept &mdash; Production Division</span>
+      <span>Integrated Monitoring Dashboard</span>
     </div>
   </div>
   <div class="header-right">
@@ -189,8 +302,23 @@
   </div>
 </header>
 
-<main>
-  <div class="error-banner" id="error-banner"></div>
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('production')">
+    <span class="tab-dot" style="background:#24B5A3"></span>Production
+  </button>
+  <button class="nav-tab" onclick="switchTab('pressure')">
+    <span class="tab-dot" style="background:#4A90D9"></span>Pressure Monitoring
+  </button>
+  <button class="nav-tab" onclick="switchTab('riverflow')">
+    <span class="tab-dot" style="background:#D97706"></span>River Flow
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 1 — PRODUCTION
+══════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-production">
+  <div class="error-banner" id="prod-error"></div>
 
   <div class="period-bar">
     <div>
@@ -204,97 +332,145 @@
   </div>
 
   <div class="kpi-row">
-    <div class="kpi-card teal">
-      <div class="kpi-label">Grand Total</div>
-      <div class="kpi-value" id="kpi-total">—<span class="unit">m³</span></div>
-      <div class="kpi-sub" id="kpi-total-sub"></div>
-    </div>
-    <div class="kpi-card blue">
-      <div class="kpi-label">Present MLD</div>
-      <div class="kpi-value" id="kpi-mld">—<span class="unit">MLD</span></div>
-      <div class="kpi-sub" id="kpi-mld-sub"></div>
-    </div>
-    <div class="kpi-card green">
-      <div class="kpi-label">Surface Water</div>
-      <div class="kpi-value" id="kpi-sw">—<span class="unit">m³</span></div>
-      <div class="kpi-sub" id="kpi-sw-pct"></div>
-    </div>
-    <div class="kpi-card amber">
-      <div class="kpi-label">Ground Water</div>
-      <div class="kpi-value" id="kpi-gw">—<span class="unit">m³</span></div>
-      <div class="kpi-sub" id="kpi-gw-pct"></div>
-    </div>
-    <div class="kpi-card slate">
-      <div class="kpi-label">MLD vs Target</div>
-      <div class="kpi-value" id="kpi-target-pct">—<span class="unit">%</span></div>
-      <div class="kpi-sub" id="kpi-target-sub"></div>
-    </div>
+    <div class="kpi-card teal"><div class="kpi-label">Grand Total</div><div class="kpi-value" id="kpi-total">—<span class="unit">m³</span></div><div class="kpi-sub" id="kpi-total-sub"></div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Present MLD</div><div class="kpi-value" id="kpi-mld">—<span class="unit">MLD</span></div><div class="kpi-sub" id="kpi-mld-sub"></div></div>
+    <div class="kpi-card green"><div class="kpi-label">Surface Water</div><div class="kpi-value" id="kpi-sw">—<span class="unit">m³</span></div><div class="kpi-sub" id="kpi-sw-pct"></div></div>
+    <div class="kpi-card amber"><div class="kpi-label">Ground Water</div><div class="kpi-value" id="kpi-gw">—<span class="unit">m³</span></div><div class="kpi-sub" id="kpi-gw-pct"></div></div>
+    <div class="kpi-card slate"><div class="kpi-label">MLD vs Target</div><div class="kpi-value" id="kpi-target-pct">—<span class="unit">%</span></div><div class="kpi-sub" id="kpi-target-sub"></div></div>
   </div>
 
   <div class="chart-grid">
-    <div class="chart-card">
-      <div class="chart-title">Weekly Production (m³)</div>
-      <div class="chart-wrap" style="height:220px"><canvas id="chart-bar"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">SW vs GW Split</div>
-      <div class="chart-wrap" style="height:220px"><canvas id="chart-pie-swgw"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Source Breakdown</div>
-      <div class="chart-wrap" style="height:220px"><canvas id="chart-pie-sources"></canvas></div>
-    </div>
+    <div class="chart-card"><div class="chart-title">Weekly Production (m³)</div><div style="height:210px"><canvas id="chart-bar"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">SW vs GW Split</div><div style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Source Breakdown</div><div style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
   </div>
 
-  <div class="chart-card" style="margin-bottom:16px">
+  <div class="chart-card" style="margin-bottom:14px">
     <div class="chart-title">MLD Trend vs 55.33 Target</div>
-    <div class="chart-wrap" style="height:300px"><canvas id="chart-mld"></canvas></div>
+    <div style="height:150px"><canvas id="chart-mld"></canvas></div>
   </div>
 
+  <!-- Production table — desktop -->
   <div class="table-card">
-    <div class="table-header">
-      <div class="table-title blue-accent">Production by Source Group</div>
+    <div class="table-header"><div class="table-title blue-accent">Production by Source Group</div></div>
+    <div class="table-wrap">
+      <table><thead><tr>
+        <th>Source</th><th>Category</th>
+        <th class="right">Production (m³)</th><th class="right">MLD</th>
+        <th class="right">% of Total</th><th style="width:140px">Share</th>
+      </tr></thead><tbody id="source-table"></tbody></table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Source</th><th>Category</th>
-          <th class="right">Production (m³)</th>
-          <th class="right">MLD</th>
-          <th class="right">% of Total</th>
-          <th style="width:160px">Share</th>
-        </tr>
-      </thead>
-      <tbody id="source-table"></tbody>
-    </table>
+    <!-- Mobile cards -->
+    <div class="mobile-cards" id="source-cards"></div>
   </div>
 
+  <!-- Capacity table — desktop -->
   <div class="table-card">
-    <div class="table-header">
-      <div class="table-title amber-accent">Rated Capacity vs Actual Production — Weekly Comparison</div>
+    <div class="table-header"><div class="table-title amber-accent">Rated Capacity vs Actual — Weekly Comparison</div></div>
+    <div class="table-wrap">
+      <table><thead><tr>
+        <th>Station</th><th>Category</th>
+        <th class="right">Rated (m³/hr)</th><th class="right">Weekly Rated (m³)</th>
+        <th class="right">Actual (m³)</th><th class="right">Difference</th>
+        <th class="right">Utilization</th><th class="right">Status</th>
+      </tr></thead><tbody id="capacity-table"></tbody></table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Station</th><th>Category</th>
-          <th class="right">Rated Capacity (m³/hr)</th>
-          <th class="right">Weekly Rated (m³/wk)</th>
-          <th class="right">Actual This Week (m³)</th>
-          <th class="right">Difference (m³)</th>
-          <th class="right">Utilization (%)</th>
-          <th class="right">Status</th>
-        </tr>
-      </thead>
-      <tbody id="capacity-table"></tbody>
-    </table>
-    <div class="cap-note">
-      Weekly rated capacity = Rated (m³/hr) &times; 168 hrs (7 days &times; 24 hrs) &nbsp;|&nbsp;
-      Utilization % = Actual &divide; Weekly Rated &times; 100 &nbsp;|&nbsp;
-      Difference = Actual &minus; Weekly Rated &nbsp;|&nbsp;
-      Update RATED_CAPACITY values in the HTML source as station records are confirmed.
+    <div class="mobile-cards" id="capacity-cards"></div>
+    <div class="cap-note">Weekly rated = Rated (m³/hr) × 168 hrs &nbsp;|&nbsp; Utilization = Actual ÷ Weekly Rated × 100 &nbsp;|&nbsp; Update RATED values in HTML source as confirmed.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 2 — PRESSURE MONITORING
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-pressure">
+  <div class="error-banner" id="press-error"></div>
+
+  <!-- Station status grid -->
+  <div class="station-grid" id="station-grid">
+    <!-- injected by JS -->
+  </div>
+
+  <div class="pressure-layout">
+    <!-- Chart -->
+    <div>
+      <div class="pressure-chart-card">
+        <div class="pressure-controls">
+          <div class="pressure-station-label" id="chart-station-label">Select a station above</div>
+          <button class="time-range-btn active" onclick="setRange(this,'24h')">24 hrs</button>
+          <button class="time-range-btn" onclick="setRange(this,'7d')">7 days</button>
+          <button class="time-range-btn" onclick="setRange(this,'14d')">14 days</button>
+          <button class="time-range-btn" onclick="setRange(this,'all')">All</button>
+        </div>
+        <div class="alert-line-note">Critical threshold: 6.5 PSI</div>
+        <div style="height:280px;margin-top:12px"><canvas id="chart-pressure"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div>
+      <div class="map-container">
+        <div class="map-title">Pressure Monitoring Points</div>
+        <iframe
+          id="pressure-map"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=9.7367449,118.7403653&z=14&output=embed">
+        </iframe>
+      </div>
     </div>
   </div>
-</main>
+
+  <!-- Raw readings table -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title blue-accent" id="raw-table-title">Recent Readings — All Stations</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="press-thead"><th>Date</th><th>Time</th></tr></thead>
+        <tbody id="press-tbody"></tbody>
+      </table>
+    </div>
+    <div class="mobile-cards" id="press-cards"></div>
+    <div class="cap-note">Alert threshold: ≤ 6.5 PSI (red) &nbsp;|&nbsp; Critical level: 6 PSI — consumers experience low flow or no water. &nbsp;|&nbsp; Readings at 7:00 AM, 12:00 NN, 6:00 PM daily.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 3 — RIVER FLOW
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-riverflow">
+  <div class="placeholder-card">
+    <div class="placeholder-icon">🌊</div>
+    <div class="placeholder-title">River Flow Monitoring — Awaiting Data</div>
+    <div class="placeholder-desc">
+      Weekly river flow reports from EWRD are not yet available. Once the division submits their first report
+      and data is entered into the <strong>River Flow</strong> sheet, this tab will automatically
+      display discharge (m³/s) and water level (m) trends for Iwahig River, Babuyan River, and Sta. Lourdes Intake.
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:14px;opacity:.4;pointer-events:none">
+    <div class="chart-title">River Discharge Trend (m³/s) — pending data</div>
+    <div style="height:160px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-family:'IBM Plex Mono',monospace;font-size:12px">
+      No data available yet
+    </div>
+  </div>
+
+  <div class="table-card" style="opacity:.4;pointer-events:none">
+    <div class="table-header"><div class="table-title blue-accent">River Stations — Weekly Readings</div></div>
+    <div class="table-wrap">
+      <table><thead><tr>
+        <th>Station</th><th>River / Location</th>
+        <th class="right">Discharge (m³/s)</th><th class="right">Water Level (m)</th>
+        <th class="right">Week</th>
+      </tr></thead>
+      <tbody><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2);font-family:'IBM Plex Mono',monospace;font-size:11px">Awaiting EWRD weekly report</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <footer>
   <span>PPCWD &mdash; Engineering Services Department / Production Division</span>
@@ -302,81 +478,101 @@
 </footer>
 
 <script>
+// ════════════════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════════════════
 const SHEET_ID = "1CtR3_lNWm9zbL4rZhlQ0-Rw9BSDtAnRa5vnQa9Ox20c";
-const SHEET_NAME = encodeURIComponent("Looker Data");
-const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 const TARGET_MLD = 55.33;
+const ALERT_PSI  = 6.5;
 
-// ── Rated capacity (m³/hr) per station ────────────────────────────────────────
-// Weekly rated = value × 168 hrs. Update these as records are confirmed.
+function sheetUrl(name){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
+}
+
+// ── Pressure station definitions ──────────────────────────────────────────────
+// col index in sheet (0-based after Date/Time cols A=0,B=1)
+const PRESSURE_STATIONS = [
+  {name:"Manalo Booster Station",   col:2, lat:9.7367449,  lng:118.7403653},
+  {name:"Beside Marianne Hotel",    col:3, lat:9.726422,   lng:118.7636752},
+  {name:"Burgos cor Abad Santos",   col:4, lat:9.73642521, lng:118.733794},
+  {name:"Fernandez cor Manalo",     col:5, lat:9.73550822, lng:118.743405},
+  {name:"Front of Camella Homes",   col:6, lat:9.72811667, lng:118.7643383},
+  {name:"Liberty Poloy Health Ctr", col:7, lat:9.73099058, lng:118.7443523},
+  {name:"Near Lacharica Inn",       col:8, lat:9.73503512, lng:118.7405949},
+  {name:"Near PPCI Manalo St",      col:9, lat:9.73561271, lng:118.7516594},
+  {name:"Near Tanduay Warehouse",   col:10,lat:9.73263945, lng:118.7388065},
+  {name:"PPCWD Rizal Office",       col:11,lat:9.74023368, lng:118.7404575},
+  {name:"Princesa Garden",          col:12,lat:9.73151975, lng:118.7707484},
+  {name:"Rizal Ave near Ms. Lagan", col:13,lat:9.7397,     lng:118.751522},
+  {name:"Rizal Ave near RCBC",      col:14,lat:9.74009217, lng:118.7445802},
+  {name:"Roxas cor Manalo St",      col:15,lat:9.73817791, lng:118.7332659},
+  {name:"Saturn Mktng Abad Santos", col:16,lat:9.73358429, lng:118.7522724},
+  {name:"Valencia cor Manalo St",   col:17,lat:9.73743677, lng:118.7360058},
+  {name:"Villarosa Rd cor Manalo",  col:18,lat:9.7358717,  lng:118.7563164},
+  {name:"Waling Waling Rd Mabini",  col:19,lat:9.73347736, lng:118.7412882},
+];
+
+// ── Rated capacity (m³/hr) ────────────────────────────────────────────────────
 const RATED = {
-  "Irawan WTP-1":               700.00,
-  "Irawan WTP-2":                 0.00,
-  "Irawan Infiltration Wells":   85.00,
-  "Lapu-Lapu Source":          1100.00,
-  "Montible (Teruvian)":       1250.00,
-  "Sta. Lucia PS":               73.78,
-  "Sabang SW":                   24.00,
-  "San Rafael SW":               17.95,
-  "Bahile SW":                   52.39,
-  "Napsan":                       8.39,
-  "Binduyan":                     8.83,
-  "Bacungan SW":                  4.90,
-  "Maoyon Infiltration Wells":    6.27,
-  "Macasaet-I":                  99.90,
-  "Pump Center #5":              47.88,
-  "Pump Center #6":              77.85,
-  "DA":                          90.00,
-  "Sicsican":                    12.50,
-  "Villa Ello":                  52.00,
-  "NHA":                         96.43,
-  "Princeville":                 86.83,
-  "Villa Princesa":              88.54,
-  "San Jose":                    72.00,
-  "BOS":                         48.23,
-  "Esteban":                     98.97,
-  "Kaakbayan":                   62.00,
-  "New Market":                  63.75,
-  "Pablico":                     42.90,
-  "Baldosano PS":                99.00,
-  "Sta. Monica PS":              38.19,
-  "Abueg":                           0,
-  "Visapa PS":                    0.00,
-  "Acacia":                          0,
-  "Citywoods":                       0,
-  "Virginia":                        0,
-  "Lucbuan":                      0.00,
-  "Sabang GW":                   28.91,
-  "Inagawan":                    12.91,
+  "Irawan WTP-1":210,"Irawan WTP-2":210,"Irawan Infiltration Wells":35,
+  "Lapu-Lapu Source":380,"Montible (Teruvian)":378,"Sta. Lucia PS":42,
+  "Sabang SW":6.25,"San Rafael SW":0.64,"Bahile SW":12.30,"Napsan":3.61,
+  "Binduyan":1.59,"Bacungan SW":4.90,"Maoyon Infiltration Wells":2.96,
+  "Macasaet-I":8.33,"Pump Center #5":41.67,"Pump Center #6":41.67,
+  "DA":20.83,"Sicsican":12.50,"Villa Ello":12.50,"NHA":96.43,
+  "Princeville":110,"Villa Princesa":47.92,"San Jose":20.24,
+  "BOS":139.35,"Esteban":243.06,"Kaakbayan":45.63,"New Market":16.26,
+  "Pablico":13.89,"Baldosano PS":138.19,"Sta. Monica PS":37.04,
+  "Abueg":20.83,"Visapa PS":0,"Acacia":12.50,"Citywoods":12.50,"Virginia":12.50,
+  "Lucbuan":0,"Sabang GW":30.21,"Inagawan":13.69,
 };
 
-let allData=[], barChart, pieSwGw, pieSources, mldChart;
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let allProdData=[], pressureRaw=[], pressureChart=null;
+let selectedStation=null, currentRange="24h";
+let barChart,pieSwGw,pieSources,mldChart;
 
 const COL={
-  week: 0, date: 1, period: 2,
-  wtp1: 3, wtp2: 4, infilCity: 5, lapulapu: 6, montible: 7, stalucia: 8, swCitySub: 9,
-  sabangSW: 10, sanrafael: 11, bahile: 12, napsan: 13, binduyan: 14, bacungan: 15, maoyon: 16, swSatSub: 17,
-  macasaet: 18, pc5: 19, pc6: 20, da1: 21, sicsican: 22, villaello: 23, nha: 24, princeville: 25, villaprin: 26, 
-  sanjose: 27, bos: 28, esteban: 29, kaakbayan: 30, newmarket: 31, pablico: 32, baldosano: 33, stamonica: 34, gwCitySub: 35,
-  abueg: 36, visapa: 37, acacia: 38, citywoods: 39, virginia: 40, augSub: 41,
-  lucbuan: 42, sabangGW: 43, inagawan: 44, gwSatSub: 45,
-  totalSW: 46, totalGW: 47, grandTotal: 48, mld: 49, swPct: 50, gwPct: 51
+  week:0,date:1,period:2,
+  wtp1:3,wtp2:4,infilCity:5,lapulapu:6,montible:7,stalucia:8,swCitySub:9,
+  sabangSW:10,sanrafael:11,bahile:12,napsan:13,binduyan:14,bacuncan:15,maoyon:16,swSatSub:17,
+  nma:18,princeville:19,villaprin:20,sanjose:21,esteban:22,baldosano:23,stamonica:24,otherGW:25,gwCitySub:26,
+  visapa:27,augSub:28,sabangGW:29,inagawan:30,gwSatSub:31,
+  totalSW:32,totalGW:33,grandTotal:34,mld:35,swPct:36,gwPct:37
 };
 
+// ════════════════════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════════════════════
 function num(v){if(v===null||v===undefined||v==="")return 0;const n=parseFloat(String(v).replace(/,/g,""));return isNaN(n)?0:n;}
 function fmt(n,d=0){return n.toLocaleString("en-PH",{minimumFractionDigits:d,maximumFractionDigits:d});}
 function fmtDiff(n){return(n>=0?"+":"")+fmt(n,0);}
 
-async function fetchData(){
-  const res=await fetch(API_URL);
+async function fetchSheet(name){
+  const res=await fetch(sheetUrl(name));
   const text=await res.text();
   const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
   return json.table.rows.map(r=>r.c.map(c=>c?(c.v!==undefined?c.v:c.f):null));
 }
 
+// ════════════════════════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════════════════════════
+function switchTab(tab){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  event.currentTarget.classList.add("active");
+  if(tab==="pressure" && pressureRaw.length===0) loadPressure();
+}
+
+// ════════════════════════════════════════════════════════════
+// PRODUCTION TAB
+// ════════════════════════════════════════════════════════════
 function aggregateWeeks(rows){
-  const agg={};for(const k of Object.keys(COL))agg[k]=0;
-  let periods=[];
+  const agg={};for(const k of Object.keys(COL))agg[k]=0;let periods=[];
   for(const row of rows){
     if(!row[COL.week])continue;
     if(row[COL.period])periods.push(row[COL.period]);
@@ -389,12 +585,9 @@ function aggregateWeeks(rows){
   return agg;
 }
 function rowToObj(row){
-  const obj={};
-  for(const[k,i]of Object.entries(COL))obj[k]=row[i];
-  obj._period=row[COL.period]||row[COL.date]||"—";
-  return obj;
+  const obj={};for(const[k,i]of Object.entries(COL))obj[k]=row[i];
+  obj._period=row[COL.period]||row[COL.date]||"—";return obj;
 }
-
 function renderKPIs(d){
   const mld=num(d.mld),total=num(d.grandTotal),sw=num(d.totalSW),gw=num(d.totalGW);
   const swPct=num(d.swPct),gwPct=num(d.gwPct),tPct=mld/TARGET_MLD*100;
@@ -404,272 +597,447 @@ function renderKPIs(d){
   document.getElementById("kpi-sw").innerHTML=`${fmt(sw)}<span class="unit">m³</span>`;
   document.getElementById("kpi-gw").innerHTML=`${fmt(gw)}<span class="unit">m³</span>`;
   document.getElementById("kpi-target-pct").innerHTML=`${fmt(tPct,1)}<span class="unit">%</span>`;
-  const st=mld>=TARGET_MLD?"ok":mld>=TARGET_MLD*0.9?"warn":"bad";
+  const st=mld>=TARGET_MLD?"ok":mld>=TARGET_MLD*.9?"warn":"bad";
   document.getElementById("kpi-mld-sub").className=`kpi-sub ${st}`;
   document.getElementById("kpi-mld-sub").textContent=mld>=TARGET_MLD?`▲ ${fmt(mld-TARGET_MLD,2)} MLD above target`:`▼ ${fmt(TARGET_MLD-mld,2)} MLD below target`;
   document.getElementById("kpi-sw-pct").textContent=`${fmt(swPct*100,1)}% of total`;
   document.getElementById("kpi-gw-pct").textContent=`${fmt(gwPct*100,1)}% of total`;
   document.getElementById("kpi-target-sub").className=`kpi-sub ${st}`;
   document.getElementById("kpi-target-sub").textContent=`Target: ${TARGET_MLD} MLD`;
-  document.getElementById("kpi-total-sub").textContent=`${allData.length} week(s) of data`;
+  document.getElementById("kpi-total-sub").textContent=`${allProdData.length} week(s) of data`;
 }
-
 function dc(c){if(c)c.destroy();}
-
 function renderBarChart(rows){
   dc(barChart);
-  barChart=new Chart(document.getElementById("chart-bar"),{
-    type:"bar",
-    data:{
-      labels:rows.map(r=>r[COL.week]||""),
-      datasets:[
-        {label:"Surface Water",data:rows.map(r=>num(r[COL.totalSW])),backgroundColor:"rgba(27,140,125,0.75)",borderRadius:4,borderSkipped:false},
-        {label:"Ground Water", data:rows.map(r=>num(r[COL.totalGW])),backgroundColor:"rgba(21,96,189,0.75)", borderRadius:4,borderSkipped:false}
-      ]
-    },
+  barChart=new Chart(document.getElementById("chart-bar"),{type:"bar",
+    data:{labels:rows.map(r=>r[COL.week]||""),datasets:[
+      {label:"Surface Water",data:rows.map(r=>num(r[COL.totalSW])),backgroundColor:"rgba(27,140,125,0.75)",borderRadius:4,borderSkipped:false},
+      {label:"Ground Water", data:rows.map(r=>num(r[COL.totalGW])),backgroundColor:"rgba(21,96,189,0.75)", borderRadius:4,borderSkipped:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}}},
+      scales:{
+        x:{stacked:true,grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}},
+        y:{stacked:true,grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10},callback:v=>v>=1000?(v/1000)+"K":v}}
+      }}});
+}
+function renderPieSwGw(d){
+  dc(pieSwGw);
+  const sw=num(d.totalSW),gw=num(d.totalGW);
+  pieSwGw=new Chart(document.getElementById("chart-pie-swgw"),{type:"doughnut",
+    data:{labels:["Surface Water","Ground Water"],datasets:[{data:[sw,gw],backgroundColor:["rgba(27,140,125,0.85)","rgba(21,96,189,0.85)"],borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"65%",
+      plugins:{legend:{position:"bottom",labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},padding:10}},
+        tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} m³ (${fmt(ctx.raw/(sw+gw)*100,1)}%)`}}}}});
+}
+function renderPieSources(d){
+  dc(pieSources);
+  const sources=[
+    {label:"SW City",  val:num(d.swCitySub),color:"rgba(27,140,125,0.9)"},
+    {label:"SW Sat.",  val:num(d.swSatSub), color:"rgba(36,181,163,0.8)"},
+    {label:"GW City",  val:num(d.gwCitySub),color:"rgba(21,96,189,0.9)"},
+    {label:"Augmented",val:num(d.augSub),   color:"rgba(124,58,237,0.8)"},
+    {label:"GW Sat.",  val:num(d.gwSatSub), color:"rgba(74,144,217,0.8)"},
+  ].filter(s=>s.val>0);
+  pieSources=new Chart(document.getElementById("chart-pie-sources"),{type:"doughnut",
+    data:{labels:sources.map(s=>s.label),datasets:[{data:sources.map(s=>s.val),backgroundColor:sources.map(s=>s.color),borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"60%",
+      plugins:{legend:{position:"bottom",labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},padding:6}},
+        tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} m³`}}}}});
+}
+function renderMldChart(rows){
+  dc(mldChart);
+  const labels=rows.map(r=>r[COL.week]||"");
+  mldChart=new Chart(document.getElementById("chart-mld"),{type:"line",
+    data:{labels,datasets:[
+      {label:"MLD",data:rows.map(r=>num(r[COL.mld])),borderColor:"rgba(27,140,125,1)",backgroundColor:"rgba(27,140,125,0.1)",borderWidth:2,pointBackgroundColor:"rgba(27,140,125,1)",pointRadius:4,tension:.4,fill:true},
+      {label:"Target (55.33)",data:labels.map(()=>TARGET_MLD),borderColor:"rgba(217,119,6,0.6)",borderWidth:1.5,borderDash:[6,4],pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}}},
+      scales:{
+        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}},
+        y:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},suggestedMin:40,suggestedMax:70}
+      }}});
+}
+
+function getStationRows(){
+  return [
+    {name:"Irawan WTP-1",             cat:"sw", val:0,key:"wtp1"},
+    {name:"Irawan WTP-2",             cat:"sw", val:0,key:"wtp2"},
+    {name:"Irawan Infiltration Wells",cat:"sw", val:0,key:"infilCity"},
+    {name:"Lapu-Lapu Source",         cat:"sw", val:0,key:"lapulapu"},
+    {name:"Montible (Teruvian)",      cat:"sw", val:0,key:"montible"},
+    {name:"Sta. Lucia PS",            cat:"sw", val:0,key:"stalucia"},
+    {name:"SW City Sub-total",        cat:"sw", val:0,key:"swCitySub",bold:true},
+    {name:"Sabang SW",                cat:"sw", val:0,key:"sabangSW"},
+    {name:"San Rafael SW",            cat:"sw", val:0,key:"sanrafael"},
+    {name:"Bahile SW",                cat:"sw", val:0,key:"bahile"},
+    {name:"Napsan",                   cat:"sw", val:0,key:"napsan"},
+    {name:"Binduyan",                 cat:"sw", val:0,key:"binduyan"},
+    {name:"Bacungan SW",              cat:"sw", val:0,key:"bacuncan"},
+    {name:"Maoyon Infiltration Wells",cat:"sw", val:0,key:"maoyon"},
+    {name:"SW Satellite Sub-total",   cat:"sw", val:0,key:"swSatSub",bold:true},
+    {name:"Macasaet-I",               cat:"gw", val:0,key:"macasaet"},
+    {name:"Pump Center #5",           cat:"gw", val:0,key:"pc5"},
+    {name:"Pump Center #6",           cat:"gw", val:0,key:"pc6"},
+    {name:"DA",                       cat:"gw", val:0,key:"da1"},
+    {name:"Sicsican",                 cat:"gw", val:0,key:"sicsican"},
+    {name:"Villa Ello",               cat:"gw", val:0,key:"villaello"},
+    {name:"NHA",                      cat:"gw", val:0,key:"nha"},
+    {name:"Princeville",              cat:"gw", val:0,key:"princeville"},
+    {name:"Villa Princesa",           cat:"gw", val:0,key:"villaprin"},
+    {name:"San Jose",                 cat:"gw", val:0,key:"sanjose"},
+    {name:"BOS",                      cat:"gw", val:0,key:"bos"},
+    {name:"Esteban",                  cat:"gw", val:0,key:"esteban"},
+    {name:"Kaakbayan",                cat:"gw", val:0,key:"kaakbayan"},
+    {name:"New Market",               cat:"gw", val:0,key:"newmarket"},
+    {name:"Pablico",                  cat:"gw", val:0,key:"pablico"},
+    {name:"Baldosano PS",             cat:"gw", val:0,key:"baldosano"},
+    {name:"Sta. Monica PS",           cat:"gw", val:0,key:"stamonica"},
+    {name:"GW City Sub-total",        cat:"gw", val:0,key:"gwCitySub",bold:true},
+    {name:"Abueg",                    cat:"aug",val:0,key:"abueg"},
+    {name:"Visapa PS",                cat:"aug",val:0,key:"visapa"},
+    {name:"Acacia",                   cat:"aug",val:0,key:"acacia"},
+    {name:"Citywoods",                cat:"aug",val:0,key:"citywoods"},
+    {name:"Virginia",                 cat:"aug",val:0,key:"virginia"},
+    {name:"Augmented Stations",       cat:"aug",val:0,key:"augSub",bold:true},
+    {name:"Lucbuan",                  cat:"gw", val:0,key:"lucbuan"},
+    {name:"Sabang GW",                cat:"gw", val:0,key:"sabangGW"},
+    {name:"Inagawan",                 cat:"gw", val:0,key:"inagawan"},
+    {name:"GW Satellite Sub-total",   cat:"gw", val:0,key:"gwSatSub",bold:true},
+  ];
+}
+
+function renderSourceTable(d){
+  const total=num(d.grandTotal);
+  const rows=getStationRows().map(r=>({...r,val:num(d[r.key])}));
+  const cl={sw:"Surface Water",gw:"Ground Water",aug:"Augmented"};
+
+  // Desktop table
+  document.getElementById("source-table").innerHTML=rows.map(r=>{
+    if(r.val===0&&!r.bold)return"";
+    const pct=total>0?r.val/total*100:0,mld=r.val/7/1000;
+    const bc=r.cat==="sw"?"var(--teal)":r.cat==="aug"?"#7C3AED":"var(--blue)";
+    return`<tr style="${r.bold?"background:rgba(255,255,255,0.03)":""}">
+      <td style="${r.bold?"font-weight:500;color:var(--white)":""}">${r.name}</td>
+      <td><span class="cat-pill cat-${r.cat}">${cl[r.cat]}</span></td>
+      <td class="right mono">${fmt(r.val)}</td><td class="right mono">${fmt(mld,2)}</td>
+      <td class="right mono">${fmt(pct,1)}%</td>
+      <td><div class="bar-cell"><div class="mini-bar-bg"><div class="mini-bar" style="width:${Math.min(pct*3,100)}%;background:${bc}"></div></div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text2)">${fmt(pct,1)}%</span></div></td>
+    </tr>`;
+  }).join("");
+
+  // Mobile cards
+  document.getElementById("source-cards").innerHTML=
+    `<div style="padding:10px 14px">`+
+    rows.filter(r=>r.val>0||r.bold).map(r=>{
+      const pct=total>0?r.val/total*100:0,mld=r.val/7/1000;
+      if(r.bold)return`<div class="mob-section-title">${r.name}: ${fmt(r.val)} m³</div>`;
+      return`<div class="mob-card">
+        <div class="mob-card-header"><span class="mob-card-name">${r.name}</span><span class="cat-pill cat-${r.cat}">${cl[r.cat]}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">Production</span><span class="mob-card-val">${fmt(r.val)} m³</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">MLD</span><span class="mob-card-val">${fmt(mld,2)}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">% of Total</span><span class="mob-card-val">${fmt(pct,1)}%</span></div>
+      </div>`;
+    }).join("")+`</div>`;
+}
+
+function renderCapacityTable(d){
+  const stations=getStationRows().filter(r=>!r.bold).map(r=>({...r,val:num(d[r.key])}));
+  const cl={sw:"Surface Water",gw:"Ground Water",aug:"Augmented"};
+
+  document.getElementById("capacity-table").innerHTML=stations.map(s=>{
+    const rHr=RATED[s.name]||0,rWk=rHr*168,actual=s.val;
+    if(rHr===0&&actual===0)return"";
+    const diff=actual-rWk,util=rWk>0?(actual/rWk*100):null;
+    let pCls,pLbl;
+    if(util===null){pCls="";pLbl="—";}
+    else if(util>=95){pCls="pct-over";pLbl=`${fmt(util,1)}%`;}
+    else if(util>=70){pCls="pct-near";pLbl=`${fmt(util,1)}%`;}
+    else{pCls="pct-under";pLbl=`${fmt(util,1)}%`;}
+    let stTxt,stCol;
+    if(util===null){stTxt="No rated data";stCol="var(--text2)";}
+    else if(util>=95){stTxt="✓ At capacity";stCol="var(--green)";}
+    else if(util>=70){stTxt="~ Near capacity";stCol="var(--amber)";}
+    else if(actual>0){stTxt="▼ Under capacity";stCol="var(--red)";}
+    else{stTxt="— Standby/Off";stCol="var(--text2)";}
+    return`<tr>
+      <td>${s.name}</td><td><span class="cat-pill cat-${s.cat}">${cl[s.cat]}</span></td>
+      <td class="right mono">${rHr>0?fmt(rHr,2):"—"}</td>
+      <td class="right mono">${rWk>0?fmt(rWk,0):"—"}</td>
+      <td class="right mono">${actual>0?fmt(actual,0):"—"}</td>
+      <td class="right mono ${diff>=0?"diff-pos":"diff-neg"}">${rWk>0&&actual>0?fmtDiff(diff):"—"}</td>
+      <td class="right"><span class="pct-badge ${pCls}">${pLbl}</span></td>
+      <td style="font-size:10px;color:${stCol};font-family:'IBM Plex Mono',monospace;white-space:nowrap">${stTxt}</td>
+    </tr>`;
+  }).join("");
+
+  // Mobile capacity cards
+  document.getElementById("capacity-cards").innerHTML=
+    `<div style="padding:10px 14px">`+
+    stations.filter(s=>(RATED[s.name]||0)>0||s.val>0).map(s=>{
+      const rHr=RATED[s.name]||0,rWk=rHr*168,actual=s.val,diff=actual-rWk;
+      const util=rWk>0?(actual/rWk*100):null;
+      return`<div class="mob-card">
+        <div class="mob-card-header"><span class="mob-card-name">${s.name}</span><span class="cat-pill cat-${s.cat}">${cl[s.cat]}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">Rated (m³/hr)</span><span class="mob-card-val">${rHr>0?fmt(rHr,2):"—"}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">Weekly Rated</span><span class="mob-card-val">${rWk>0?fmt(rWk,0):"—"} m³</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">Actual</span><span class="mob-card-val">${actual>0?fmt(actual,0):"—"} m³</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">Difference</span><span class="mob-card-val ${diff>=0?"diff-pos":"diff-neg"}">${rWk>0&&actual>0?fmtDiff(diff):"—"}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">Utilization</span><span class="mob-card-val">${util!==null?fmt(util,1)+"%":"—"}</span></div>
+      </div>`;
+    }).join("")+`</div>`;
+}
+
+function setActive(weekVal){document.querySelectorAll(".week-btn").forEach(b=>b.classList.toggle("active",b.dataset.week===weekVal));}
+
+function renderWeek(weekVal){
+  setActive(weekVal);
+  let d;
+  if(weekVal==="all"){d=aggregateWeeks(allProdData);}
+  else{const rows=allProdData.filter(r=>r[COL.week]===weekVal);d=rows.length?rowToObj(rows[0]):aggregateWeeks(allProdData);}
+  renderKPIs(d);renderBarChart(allProdData);renderPieSwGw(d);
+  renderPieSources(d);renderMldChart(allProdData);
+  renderSourceTable(d);renderCapacityTable(d);
+}
+
+function buildWeekBtns(weeks){
+  const grp=document.getElementById("week-btn-group");grp.innerHTML="";
+  weeks.forEach(wk=>{
+    const b=document.createElement("button");b.className="week-btn";b.dataset.week=wk;b.textContent=wk;
+    b.onclick=()=>renderWeek(wk);grp.appendChild(b);
+  });
+  const all=document.createElement("button");all.className="week-btn all-btn";all.dataset.week="all";all.textContent="All";
+  all.onclick=()=>renderWeek("all");grp.appendChild(all);
+}
+
+// ════════════════════════════════════════════════════════════
+// PRESSURE TAB
+// ════════════════════════════════════════════════════════════
+function parseDateTime(dateStr, timeStr){
+  // dateStr from sheet may be a Date object serialized or string like "27/03/2026"
+  // timeStr like "7:00:00 AM"
+  try{
+    let d;
+    if(typeof dateStr==="string"){
+      const parts=dateStr.split("/");
+      if(parts.length===3) d=new Date(`${parts[2]}-${parts[1].padStart(2,"0")}-${parts[0].padStart(2,"0")}`);
+      else d=new Date(dateStr);
+    } else if(dateStr instanceof Date) d=new Date(dateStr);
+    else d=new Date(dateStr);
+    if(timeStr){
+      const tStr=String(timeStr).trim();
+      const match=tStr.match(/(\d+):(\d+)(?::(\d+))?\s*(AM|PM)?/i);
+      if(match){
+        let h=parseInt(match[1]),m=parseInt(match[2]);
+        const ampm=match[4]?match[4].toUpperCase():null;
+        if(ampm==="PM"&&h!==12)h+=12;
+        if(ampm==="AM"&&h===12)h=0;
+        d.setHours(h,m,0,0);
+      }
+    }
+    return d;
+  }catch(e){return null;}
+}
+
+function filterByRange(data, range){
+  if(range==="all")return data;
+  const now=new Date();
+  const hours={"24h":24,"7d":168,"14d":336}[range]||24;
+  const cutoff=new Date(now.getTime()-hours*3600*1000);
+  // If all data is old (no recent readings), return last N points instead
+  const filtered=data.filter(r=>r.dt&&r.dt>=cutoff);
+  if(filtered.length===0){
+    // fallback: return last slice proportional to range
+    const slice={"24h":3,"7d":21,"14d":42,"all":data.length}[range]||21;
+    return data.slice(-slice);
+  }
+  return filtered;
+}
+
+function buildPressureChart(station){
+  if(pressureChart)pressureChart.destroy();
+  const filtered=filterByRange(pressureRaw,currentRange);
+  const labels=filtered.map(r=>{
+    if(!r.dt)return"";
+    const d=r.dt;
+    return `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}`;
+  });
+  const vals=filtered.map(r=>r.vals[station.col]!==null?r.vals[station.col]:null);
+  document.getElementById("chart-station-label").textContent=station.name;
+
+  pressureChart=new Chart(document.getElementById("chart-pressure"),{
+    type:"line",
+    data:{labels,datasets:[
+      {
+        label:`${station.name} (PSI)`,
+        data:vals,
+        borderColor:"rgba(74,144,217,0.9)",
+        backgroundColor:"rgba(74,144,217,0.08)",
+        borderWidth:2,pointRadius:3,
+        pointBackgroundColor:vals.map(v=>v!==null&&v<=ALERT_PSI?"#DC2626":"rgba(74,144,217,0.9)"),
+        pointBorderColor:"transparent",
+        tension:.3,fill:true,spanGaps:true
+      },
+      {
+        label:`Alert (${ALERT_PSI} PSI)`,
+        data:labels.map(()=>ALERT_PSI),
+        borderColor:"rgba(220,38,38,0.7)",
+        borderWidth:1.5,borderDash:[6,3],pointRadius:0
+      }
+    ]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:11}}}},
+      plugins:{
+        legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}},
+        tooltip:{callbacks:{label:ctx=>{
+          const v=ctx.raw;if(v===null)return" No data";
+          return` ${fmt(v,2)} PSI${v<=ALERT_PSI?" ⚠️ ALERT":""}`;
+        }}}
+      },
       scales:{
-        x:{stacked:true,grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:11}}},
-        y:{stacked:true,grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:11},callback:v=>v>=1000?(v/1000)+"K":v}}
+        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},maxTicksLimit:12,maxRotation:45}},
+        y:{
+          grid:{color:"rgba(255,255,255,0.04)"},
+          ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
+          suggestedMin:0,suggestedMax:20,
+          title:{display:true,text:"PSI",color:"#64748B",font:{family:"IBM Plex Mono",size:10}}
+        }
       }
     }
   });
 }
 
-function renderPieSwGw(d){
-  dc(pieSwGw);
-  const sw=num(d.totalSW),gw=num(d.totalGW);
-  pieSwGw=new Chart(document.getElementById("chart-pie-swgw"),{
-    type:"doughnut",
-    data:{labels:["Surface Water","Ground Water"],datasets:[{data:[sw,gw],backgroundColor:["rgba(27,140,125,0.85)","rgba(21,96,189,0.85)"],borderWidth:0,hoverOffset:6}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:"65%",
-      plugins:{legend:{position:"bottom",labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10},padding:12}},
-        tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} m³ (${fmt(ctx.raw/(sw+gw)*100,1)}%)`}}}}
-  });
+function setRange(btn, range){
+  currentRange=range;
+  document.querySelectorAll(".time-range-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  if(selectedStation)buildPressureChart(selectedStation);
 }
 
-function renderPieSources(d){
-  dc(pieSources);
-  const sources=[
-    {label:"SW City Proper",val:num(d.swCitySub),color:"rgba(27,140,125,0.9)"},
-    {label:"SW Satellite",  val:num(d.swSatSub), color:"rgba(36,181,163,0.8)"},
-    {label:"GW City Proper",val:num(d.gwCitySub),color:"rgba(21,96,189,0.9)"},
-    {label:"GW Augmented",  val:num(d.augSub),   color:"rgba(124,58,237,0.8)"},
-    {label:"GW Satellite",  val:num(d.gwSatSub), color:"rgba(74,144,217,0.8)"},
-  ].filter(s=>s.val>0);
-  pieSources=new Chart(document.getElementById("chart-pie-sources"),{
-    type:"doughnut",
-    data:{labels:sources.map(s=>s.label),datasets:[{data:sources.map(s=>s.val),backgroundColor:sources.map(s=>s.color),borderWidth:0,hoverOffset:6}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:"60%",
-      plugins:{legend:{position:"bottom",labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10},padding:8}},
-        tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} m³`}}}}
-  });
+function selectStation(station){
+  selectedStation=station;
+  document.querySelectorAll(".station-card").forEach(c=>c.classList.remove("selected"));
+  document.getElementById(`sc-${station.col}`).classList.add("selected");
+  buildPressureChart(station);
+  // Pan map
+  const mapSrc=`https://maps.google.com/maps?q=${station.lat},${station.lng}&z=16&output=embed`;
+  document.getElementById("pressure-map").src=mapSrc;
 }
 
-function renderMldChart(rows){
-  dc(mldChart);
-  const labels=rows.map(r=>r[COL.week]||"");
-  mldChart=new Chart(document.getElementById("chart-mld"),{
-    type:"line",
-    data:{labels,datasets:[
-      {label:"MLD",data:rows.map(r=>num(r[COL.mld])),borderColor:"rgba(27,140,125,1)",backgroundColor:"rgba(27,140,125,0.1)",borderWidth:2,pointBackgroundColor:"rgba(27,140,125,1)",pointRadius:5,tension:0.4,fill:true},
-      {label:"Target (55.33)",data:labels.map(()=>TARGET_MLD),borderColor:"rgba(217,119,6,0.6)",borderWidth:1.5,borderDash:[6,4],pointRadius:0}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:11}}}},
-      scales:{
-        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:11}}},
-        y:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:11}},suggestedMin:40,suggestedMax:70}
-      }}
-  });
-}
-
-function renderSourceTable(d){
-  const total=num(d.grandTotal);
-  const rows=[
-    {name:"Irawan WTP-1",             cat:"sw", val:num(d.wtp1)},
-    {name:"Irawan WTP-2",             cat:"sw", val:num(d.wtp2)},
-    {name:"Irawan Infiltration Wells",cat:"sw", val:num(d.infilCity)},
-    {name:"Lapu-Lapu Source",         cat:"sw", val:num(d.lapulapu)},
-    {name:"Montible (Teruvian)",      cat:"sw", val:num(d.montible)},
-    {name:"Sta. Lucia PS",            cat:"sw", val:num(d.stalucia)},
-    {name:"SW City Sub-total",        cat:"sw", val:num(d.swCitySub),bold:true},
-    {name:"Sabang SW",                cat:"sw", val:num(d.sabangSW)},
-    {name:"San Rafael SW",            cat:"sw", val:num(d.sanrafael)},
-    {name:"Bahile SW",                cat:"sw", val:num(d.bahile)},
-    {name:"Napsan",                   cat:"sw", val:num(d.napsan)},
-    {name:"Binduyan",                 cat:"sw", val:num(d.binduyan)},
-    {name:"Bacungan SW",              cat:"sw", val:num(d.bacuncan)},
-    {name:"Maoyon Infiltration Wells",cat:"sw", val:num(d.maoyon)},
-    {name:"SW Satellite Sub-total",   cat:"sw", val:num(d.swSatSub),bold:true},
-    {name:"Macasaet-I",               cat:"gw", val:num(d.macasaet)},
-    {name:"Pump Center #5",           cat:"gw", val:num(d.pc5)},
-    {name:"Pump Center #6",           cat:"gw", val:num(d.pc6)},
-    {name:"DA",                       cat:"gw", val:num(d.da1)},
-    {name:"Sicsican",                 cat:"gw", val:num(d.sicsican)},
-    {name:"Villa Ello",               cat:"gw", val:num(d.villaello)},
-    {name:"NHA",                      cat:"gw", val:num(d.nha)},
-    {name:"Princeville",              cat:"gw", val:num(d.princeville)},
-    {name:"Villa Princesa",           cat:"gw", val:num(d.villaprin)},
-    {name:"San Jose",                 cat:"gw", val:num(d.sanjose)},
-    {name:"BOS",                      cat:"gw", val:num(d.bos)},
-    {name:"Esteban",                  cat:"gw", val:num(d.esteban)},
-    {name:"Kaakbayan",                cat:"gw", val:num(d.kaakbayan)},
-    {name:"New Market",               cat:"gw", val:num(d.newmarket)},
-    {name:"Pablico",                  cat:"gw", val:num(d.pablico)},
-    {name:"Baldosano PS",             cat:"gw", val:num(d.baldosano)},
-    {name:"Sta. Monica PS",           cat:"gw", val:num(d.stamonica)},
-    {name:"GW City Sub-total",        cat:"gw", val:num(d.gwCitySub),bold:true},
-    {name:"Abueg",                    cat:"aug",val:num(d.abueg)},
-    {name:"Visapa PS",                cat:"aug",val:num(d.visapa)},
-    {name:"Acacia",                   cat:"aug",val:num(d.acacia)},
-    {name:"Citywoods",                cat:"aug",val:num(d.citywoods)},
-    {name:"Virginia",                 cat:"aug",val:num(d.virginia)},
-    {name:"Augmented Stations",       cat:"aug",val:num(d.augSub),bold:true},
-    {name:"Lucbuan",                  cat:"gw", val:num(d.lucbuan)},
-    {name:"Sabang GW",                cat:"gw", val:num(d.sabangGW)},
-    {name:"Inagawan",                 cat:"gw", val:num(d.inagawan)},
-    {name:"GW Satellite Sub-total",   cat:"gw", val:num(d.gwSatSub),bold:true},
-  ];
-  document.getElementById("source-table").innerHTML=rows.map(r=>{
-    if(r.val===0&&!r.bold)return"";
-    const pct=total>0?r.val/total*100:0;
-    const mld=r.val/7/1000;
-    const bc=r.cat==="sw"?"var(--teal)":r.cat==="aug"?"#7C3AED":"var(--blue)";
-    const cl=r.cat==="sw"?"Surface Water":r.cat==="aug"?"Augmented":"Ground Water";
-    return`<tr style="${r.bold?"background:rgba(255,255,255,0.03)":""}">
-      <td style="${r.bold?"font-weight:500;color:var(--white)":""}">${r.name}</td>
-      <td><span class="cat-pill cat-${r.cat}">${cl}</span></td>
-      <td class="right mono">${fmt(r.val)}</td>
-      <td class="right mono">${fmt(mld,2)}</td>
-      <td class="right mono">${fmt(pct,1)}%</td>
-      <td><div class="bar-cell"><div class="mini-bar-bg"><div class="mini-bar" style="width:${Math.min(pct*3,100)}%;background:${bc}"></div></div>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text2);min-width:32px">${fmt(pct,1)}%</span></div></td>
-    </tr>`;
+function buildStationGrid(){
+  const grid=document.getElementById("station-grid");
+  grid.innerHTML=PRESSURE_STATIONS.map(s=>{
+    // Get most recent reading
+    const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
+    const val=recent?recent.vals[s.col]:null;
+    const isAlert=val!==null&&val<=ALERT_PSI;
+    const timeStr=recent&&recent.dt?
+      `${recent.dt.toLocaleDateString("en-PH")} ${recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"})}`
+      :"No data";
+    return`<div class="station-card ${val===null?"":isAlert?"alert":"ok"}" id="sc-${s.col}" onclick="selectStation(PRESSURE_STATIONS.find(x=>x.col===${s.col}))">
+      <div class="station-glow"></div>
+      <div class="station-name">${s.name}</div>
+      <div class="station-psi ${val===null?"no-val":isAlert?"alert-val":"ok-val"}">
+        ${val!==null?fmt(val,2):"—"}<span class="psi-unit">${val!==null?"PSI":""}</span>
+      </div>
+      <div class="station-time">${timeStr}</div>
+    </div>`;
   }).join("");
 }
 
-function renderCapacityTable(d){
-  const stations=[
-    {name:"Irawan WTP-1",             cat:"sw", val:num(d.wtp1)},
-    {name:"Irawan WTP-2",             cat:"sw", val:num(d.wtp2)},
-    {name:"Irawan Infiltration Wells",cat:"sw", val:num(d.infilCity)},
-    {name:"Lapu-Lapu Source",         cat:"sw", val:num(d.lapulapu)},
-    {name:"Montible (Teruvian)",      cat:"sw", val:num(d.montible)},
-    {name:"Sta. Lucia PS",            cat:"sw", val:num(d.stalucia)},
-    {name:"Sabang SW",                cat:"sw", val:num(d.sabangSW)},
-    {name:"San Rafael SW",            cat:"sw", val:num(d.sanrafael)},
-    {name:"Bahile SW",                cat:"sw", val:num(d.bahile)},
-    {name:"Napsan",                   cat:"sw", val:num(d.napsan)},
-    {name:"Binduyan",                 cat:"sw", val:num(d.binduyan)},
-    {name:"Bacungan SW",              cat:"sw", val:num(d.bacuncan)},
-    {name:"Maoyon Infiltration Wells",cat:"sw", val:num(d.maoyon)},
-    {name:"Macasaet-I",               cat:"gw", val:num(d.macasaet)},
-    {name:"Pump Center #5",           cat:"gw", val:num(d.pc5)},
-    {name:"Pump Center #6",           cat:"gw", val:num(d.pc6)},
-    {name:"DA",                       cat:"gw", val:num(d.da1)},
-    {name:"Sicsican",                 cat:"gw", val:num(d.sicsican)},
-    {name:"Villa Ello",               cat:"gw", val:num(d.villaello)},
-    {name:"NHA",                      cat:"gw", val:num(d.nha)},
-    {name:"Princeville",              cat:"gw", val:num(d.princeville)},
-    {name:"Villa Princesa",           cat:"gw", val:num(d.villaprin)},
-    {name:"San Jose",                 cat:"gw", val:num(d.sanjose)},
-    {name:"BOS",                      cat:"gw", val:num(d.bos)},
-    {name:"Esteban",                  cat:"gw", val:num(d.esteban)},
-    {name:"Kaakbayan",                cat:"gw", val:num(d.kaakbayan)},
-    {name:"New Market",               cat:"gw", val:num(d.newmarket)},
-    {name:"Pablico",                  cat:"gw", val:num(d.pablico)},
-    {name:"Baldosano PS",             cat:"gw", val:num(d.baldosano)},
-    {name:"Sta. Monica PS",           cat:"gw", val:num(d.stamonica)},
-    {name:"Abueg",                    cat:"aug",val:num(d.abueg)},
-    {name:"Visapa PS",                cat:"aug",val:num(d.visapa)},
-    {name:"Acacia",                   cat:"aug",val:num(d.acacia)},
-    {name:"Citywoods",                cat:"aug",val:num(d.citywoods)},
-    {name:"Virginia",                 cat:"aug",val:num(d.virginia)},
-    {name:"Sabang GW",                cat:"gw", val:num(d.sabangGW)},
-    {name:"Inagawan",                 cat:"gw", val:num(d.inagawan)},
-    {name:"Lucbuan",                  cat:"gw", val:num(d.lucbuan)},
-  ];
+function buildPressureRawTable(){
+  // Build headers
+  const thead=document.getElementById("press-thead");
+  thead.innerHTML=`<th>Date</th><th>Time</th>`+
+    PRESSURE_STATIONS.map(s=>`<th class="right" style="font-size:9px">${s.name.split(" ").slice(0,2).join(" ")}</th>`).join("");
 
-  document.getElementById("capacity-table").innerHTML=stations.map(s=>{
-    const rHr=RATED[s.name]||0;
-    const rWk=rHr*168;
-    const actual=s.val;
-    if(rHr===0&&actual===0)return"";
-    const diff=actual-rWk;
-    const utilPct=rWk>0?(actual/rWk*100):null;
-    const cl=s.cat==="sw"?"Surface Water":s.cat==="aug"?"Augmented":"Ground Water";
-    let pClass,pLabel;
-    if(utilPct===null){pClass="diff-neu";pLabel="—";}
-    else if(utilPct>=95){pClass="pct-over"; pLabel=`${fmt(utilPct,1)}%`;}
-    else if(utilPct>=70){pClass="pct-near"; pLabel=`${fmt(utilPct,1)}%`;}
-    else                {pClass="pct-under";pLabel=`${fmt(utilPct,1)}%`;}
-    const dClass=diff>=0?"diff-pos":"diff-neg";
-    let stText,stColor;
-    if(utilPct===null)       {stText="No rated data";     stColor="var(--text2)";}
-    else if(utilPct>=95)     {stText="✓ At capacity";     stColor="var(--green)";}
-    else if(utilPct>=70)     {stText="~ Near capacity";   stColor="var(--amber)";}
-    else if(actual>0)        {stText="▼ Under capacity";  stColor="var(--red)";}
-    else                     {stText="— Standby / Off";   stColor="var(--text2)";}
-    return`<tr>
-      <td>${s.name}</td>
-      <td><span class="cat-pill cat-${s.cat}">${cl}</span></td>
-      <td class="right mono">${rHr>0?fmt(rHr,2):"—"}</td>
-      <td class="right mono">${rWk>0?fmt(rWk,0):"—"}</td>
-      <td class="right mono">${actual>0?fmt(actual,0):"—"}</td>
-      <td class="right mono ${dClass}">${rWk>0&&actual>0?fmtDiff(diff):"—"}</td>
-      <td class="right"><span class="pct-badge ${pClass}">${pLabel}</span></td>
-      <td style="font-size:11px;color:${stColor};font-family:'IBM Plex Mono',monospace;white-space:nowrap">${stText}</td>
-    </tr>`;
+  // Last 21 rows (1 week)
+  const slice=pressureRaw.slice(-21);
+  document.getElementById("press-tbody").innerHTML=slice.map(r=>{
+    const dateStr=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
+    const timeStr=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
+    const cells=PRESSURE_STATIONS.map(s=>{
+      const v=r.vals[s.col];
+      const isAlert=v!==null&&v<=ALERT_PSI;
+      return`<td class="right mono" style="${isAlert?"color:#FCA5A5;font-weight:600":""}">${v!==null?fmt(v,2):"—"}</td>`;
+    }).join("");
+    return`<tr><td class="mono">${dateStr}</td><td class="mono">${timeStr}</td>${cells}</tr>`;
   }).join("");
+
+  // Mobile pressure cards
+  document.getElementById("press-cards").innerHTML=
+    `<div style="padding:10px 14px">`+
+    slice.map(r=>{
+      const dateStr=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
+      const timeStr=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
+      const readings=PRESSURE_STATIONS.map(s=>{
+        const v=r.vals[s.col];
+        if(v===null)return"";
+        const isAlert=v<=ALERT_PSI;
+        return`<div class="mob-card-row">
+          <span class="mob-card-label">${s.name.split(" ").slice(0,3).join(" ")}</span>
+          <span class="mob-card-val" style="${isAlert?"color:#FCA5A5;font-weight:600":""}">${fmt(v,2)} PSI${isAlert?" ⚠️":""}</span>
+        </div>`;
+      }).join("");
+      return`<div class="mob-card">
+        <div class="mob-card-header"><span class="mob-card-name">${dateStr}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">${timeStr}</span></div>
+        ${readings}
+      </div>`;
+    }).join("")+`</div>`;
 }
 
-function setActive(weekVal){
-  document.querySelectorAll(".week-btn").forEach(b=>b.classList.toggle("active",b.dataset.week===weekVal));
+async function loadPressure(){
+  try{
+    const raw=await fetchSheet("Pressure Points");
+    // Skip header rows — find first row where col 0 looks like a date
+    pressureRaw=raw.filter(r=>r[0]&&r[1]).map(row=>{
+      const dt=parseDateTime(row[0],row[1]);
+      const vals={};
+      PRESSURE_STATIONS.forEach(s=>{
+        const v=row[s.col];
+        vals[s.col]=(v!==null&&v!==undefined&&v!=="")?num(v):null;
+      });
+      return{dt,vals,raw:row};
+    }).filter(r=>r.dt&&!isNaN(r.dt.getTime()));
+
+    if(pressureRaw.length===0){
+      document.getElementById("press-error").style.display="block";
+      document.getElementById("press-error").textContent="Pressure Points sheet is empty or date format not recognized. Expected: dd/mm/yyyy in col A, hh:mm:ss AM/PM in col B.";
+      return;
+    }
+
+    buildStationGrid();
+    buildPressureRawTable();
+    // Auto-select first station
+    selectStation(PRESSURE_STATIONS[0]);
+  }catch(err){
+    document.getElementById("press-error").style.display="block";
+    document.getElementById("press-error").textContent="Could not load Pressure Points: "+err.message;
+    console.error(err);
+  }
 }
 
-function renderWeek(weekVal){
-  setActive(weekVal);
-  let d;
-  if(weekVal==="all"){d=aggregateWeeks(allData);}
-  else{const rows=allData.filter(r=>r[COL.week]===weekVal);d=rows.length?rowToObj(rows[0]):aggregateWeeks(allData);}
-  renderKPIs(d);
-  renderBarChart(allData);
-  renderPieSwGw(d);
-  renderPieSources(d);
-  renderMldChart(allData);
-  renderSourceTable(d);
-  renderCapacityTable(d);
-}
-
-function buildButtons(weeks){
-  const grp=document.getElementById("week-btn-group");
-  grp.innerHTML="";
-  weeks.forEach(wk=>{
-    const b=document.createElement("button");
-    b.className="week-btn";b.dataset.week=wk;b.textContent=wk;
-    b.onclick=()=>renderWeek(wk);grp.appendChild(b);
-  });
-  const all=document.createElement("button");
-  all.className="week-btn all-btn";all.dataset.week="all";all.textContent="All";
-  all.onclick=()=>renderWeek("all");grp.appendChild(all);
-}
-
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
 async function init(){
   try{
-    const raw=await fetchData();
-    allData=raw.filter(r=>r[COL.week]&&String(r[COL.week]).startsWith("Week"));
-    if(allData.length===0)throw new Error("No week data found in sheet.");
-    buildButtons(allData.map(r=>r[COL.week]));
-    renderWeek(allData[0][COL.week]);
+    const raw=await fetchSheet("Looker Data");
+    allProdData=raw.filter(r=>r[COL.week]&&String(r[COL.week]).startsWith("Week"));
+    if(allProdData.length===0)throw new Error("No week data found in Looker Data sheet.");
+    buildWeekBtns(allProdData.map(r=>r[COL.week]));
+    renderWeek(allProdData[0][COL.week]);
     const now=new Date();
-    document.getElementById("last-updated").textContent="Updated "+now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
-    document.getElementById("footer-updated").textContent="Source: PPCWD_Weekly_Monitoring_v2 · Google Sheets · "+now.toLocaleDateString("en-PH");
+    document.getElementById("last-updated").textContent=
+      "Updated "+now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
+    document.getElementById("footer-updated").textContent=
+      "PPCWD_Weekly_Monitoring_v2 · Google Sheets · "+now.toLocaleDateString("en-PH");
   }catch(err){
-    document.getElementById("error-banner").style.display="block";
-    document.getElementById("error-banner").textContent="Could not load data: "+err.message+" — Make sure the Google Sheet is shared publicly (Anyone with link → Viewer).";
+    document.getElementById("prod-error").style.display="block";
+    document.getElementById("prod-error").textContent="Production data error: "+err.message;
     console.error(err);
   }finally{
     document.getElementById("loader").classList.add("hidden");
