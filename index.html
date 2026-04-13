@@ -288,7 +288,7 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
 
 <header>
   <div class="logo-block">
-    <div class="logo-mark">PPCWD</div>
+    <div class="logo-mark">PP<br>CWD</div>
     <div class="logo-text">
       <strong>Puerto Princesa City Water District</strong>
       <span>Integrated Monitoring Dashboard</span>
@@ -514,17 +514,44 @@ const PRESSURE_STATIONS = [
 
 // ── Rated capacity (m³/hr) ────────────────────────────────────────────────────
 const RATED = {
-  "Irawan WTP-1":210,"Irawan WTP-2":210,"Irawan Infiltration Wells":35,
-  "Lapu-Lapu Source":380,"Montible (Teruvian)":378,"Sta. Lucia PS":42,
-  "Sabang SW":6.25,"San Rafael SW":0.64,"Bahile SW":12.30,"Napsan":3.61,
-  "Binduyan":1.59,"Bacungan SW":4.90,"Maoyon Infiltration Wells":2.96,
-  "Macasaet-I":8.33,"Pump Center #5":41.67,"Pump Center #6":41.67,
-  "DA":20.83,"Sicsican":12.50,"Villa Ello":12.50,"NHA":96.43,
-  "Princeville":110,"Villa Princesa":47.92,"San Jose":20.24,
-  "BOS":139.35,"Esteban":243.06,"Kaakbayan":45.63,"New Market":16.26,
-  "Pablico":13.89,"Baldosano PS":138.19,"Sta. Monica PS":37.04,
-  "Abueg":20.83,"Visapa PS":0,"Acacia":12.50,"Citywoods":12.50,"Virginia":12.50,
-  "Lucbuan":0,"Sabang GW":30.21,"Inagawan":13.69,
+  "Irawan WTP-1":               700.00,
+  "Irawan WTP-2":                 0.00,
+  "Irawan Infiltration Wells":   85.00,
+  "Lapu-Lapu Source":          1100.00,
+  "Montible (Teruvian)":       1250.00,
+  "Sta. Lucia PS":               73.78,
+  "Sabang SW":                   24.00,
+  "San Rafael SW":               17.95,
+  "Bahile SW":                   52.39,
+  "Napsan":                       8.39,
+  "Binduyan":                     8.83,
+  "Bacungan SW":                  4.90,
+  "Maoyon Infiltration Wells":    6.27,
+  "Macasaet-I":                  99.90,
+  "Pump Center #5":              47.88,
+  "Pump Center #6":              77.85,
+  "DA":                          90.00,
+  "Sicsican":                    12.50,
+  "Villa Ello":                  52.00,
+  "NHA":                         96.43,
+  "Princeville":                 86.83,
+  "Villa Princesa":              88.54,
+  "San Jose":                    72.00,
+  "BOS":                         48.23,
+  "Esteban":                     98.97,
+  "Kaakbayan":                   62.00,
+  "New Market":                  63.75,
+  "Pablico":                     42.90,
+  "Baldosano PS":                99.00,
+  "Sta. Monica PS":              38.19,
+  "Abueg":                           0,
+  "Visapa PS":                    0.00,
+  "Acacia":                          0,
+  "Citywoods":                       0,
+  "Virginia":                        0,
+  "Lucbuan":                      0.00,
+  "Sabang GW":                   28.91,
+  "Inagawan":                    12.91,
 };
 
 // ════════════════════════════════════════════════════════════
@@ -535,12 +562,14 @@ let selectedStation=null, currentRange="24h";
 let barChart,pieSwGw,pieSources,mldChart;
 
 const COL={
-  week:0,date:1,period:2,
-  wtp1:3,wtp2:4,infilCity:5,lapulapu:6,montible:7,stalucia:8,swCitySub:9,
-  sabangSW:10,sanrafael:11,bahile:12,napsan:13,binduyan:14,bacuncan:15,maoyon:16,swSatSub:17,
-  nma:18,princeville:19,villaprin:20,sanjose:21,esteban:22,baldosano:23,stamonica:24,otherGW:25,gwCitySub:26,
-  visapa:27,augSub:28,sabangGW:29,inagawan:30,gwSatSub:31,
-  totalSW:32,totalGW:33,grandTotal:34,mld:35,swPct:36,gwPct:37
+  week: 0, date: 1, period: 2,
+  wtp1: 3, wtp2: 4, infilCity: 5, lapulapu: 6, montible: 7, stalucia: 8, swCitySub: 9,
+  sabangSW: 10, sanrafael: 11, bahile: 12, napsan: 13, binduyan: 14, bacungan: 15, maoyon: 16, swSatSub: 17,
+  macasaet: 18, pc5: 19, pc6: 20, da1: 21, sicsican: 22, villaello: 23, nha: 24, princeville: 25, villaprin: 26, 
+  sanjose: 27, bos: 28, esteban: 29, kaakbayan: 30, newmarket: 31, pablico: 32, baldosano: 33, stamonica: 34, gwCitySub: 35,
+  abueg: 36, visapa: 37, acacia: 38, citywoods: 39, virginia: 40, augSub: 41,
+  lucbuan: 42, sabangGW: 43, inagawan: 44, gwSatSub: 45,
+  totalSW: 46, totalGW: 47, grandTotal: 48, mld: 49, swPct: 50, gwPct: 51
 };
 
 // ════════════════════════════════════════════════════════════
@@ -1025,7 +1054,7 @@ async function loadPressure(){
 // ════════════════════════════════════════════════════════════
 async function init(){
   try{
-    const raw=await fetchSheet("Looker Data");
+    const raw=await fetchSheet("📈 Looker Data");
     allProdData=raw.filter(r=>r[COL.week]&&String(r[COL.week]).startsWith("Week"));
     if(allProdData.length===0)throw new Error("No week data found in Looker Data sheet.");
     buildWeekBtns(allProdData.map(r=>r[COL.week]));
