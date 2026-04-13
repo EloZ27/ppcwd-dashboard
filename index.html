@@ -1054,7 +1054,7 @@ async function loadPressure(){
 // ════════════════════════════════════════════════════════════
 async function init(){
   try{
-    const raw=await fetchSheet("📈 Looker Data");
+    const raw=await fetchSheet("Looker Data");
     allProdData=raw.filter(r=>r[COL.week]&&String(r[COL.week]).startsWith("Week"));
     if(allProdData.length===0)throw new Error("No week data found in Looker Data sheet.");
     buildWeekBtns(allProdData.map(r=>r[COL.week]));
