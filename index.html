@@ -277,6 +277,155 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
   header{padding:0 14px;}
   .nav-tabs{padding:0 14px;}
 }
+
+/* ══════════════════════════════════════════
+   PRESSURE MAP — NEW INTERACTIVE LAYOUT
+══════════════════════════════════════════ */
+
+/* Top bar */
+.press-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;margin-bottom:14px;
+  padding:10px 14px;background:var(--card);
+  border:1px solid var(--border);border-radius:8px;
+}
+.press-legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.ok-dot   {background:#059669;box-shadow:0 0 5px #059669;}
+.alert-dot{background:#DC2626;box-shadow:0 0 5px #DC2626;}
+.nodata-dot{background:#64748B;}
+.press-legend-label{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);margin-right:8px;}
+.compare-hint{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);}
+.compare-clear-btn{
+  background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);
+  border-radius:5px;padding:4px 10px;color:#FCA5A5;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;cursor:pointer;
+  transition:all .15s;
+}
+.compare-clear-btn:hover{background:rgba(220,38,38,0.25);}
+
+/* Main layout: map left, chart right */
+.press-main-layout{
+  display:grid;grid-template-columns:1fr 380px;
+  gap:14px;margin-bottom:14px;height:500px;
+}
+.press-map-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;display:flex;flex-direction:column;position:relative;
+}
+.press-map-title{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);
+  background:rgba(13,27,42,0.6);flex-shrink:0;
+}
+.press-map-count{
+  background:rgba(36,181,163,0.15);border:1px solid rgba(36,181,163,0.3);
+  border-radius:12px;padding:2px 8px;font-size:9px;color:var(--teal2);
+}
+.press-map-wrap{flex:1;position:relative;overflow:hidden;}
+
+/* SVG overlay sits on top of the iframe */
+#press-svg-overlay{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:5;
+}
+/* Dots drawn by JS need pointer-events */
+#press-svg-overlay circle.map-dot{pointer-events:all;cursor:pointer;}
+
+/* Station popup */
+.station-popup{
+  position:absolute;z-index:20;
+  background:rgba(13,27,42,0.97);backdrop-filter:blur(12px);
+  border:1px solid var(--border);border-radius:10px;
+  padding:14px;min-width:200px;max-width:240px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+.popup-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.popup-name{font-size:12px;font-weight:500;color:var(--white);line-height:1.3;}
+.popup-time{font-size:9px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:3px;}
+.popup-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;padding:0;line-height:1;}
+.popup-psi{font-size:32px;font-weight:300;font-family:"IBM Plex Mono",monospace;line-height:1;margin-bottom:4px;}
+.popup-psi.ok-psi{color:#34D399;}.popup-psi.alert-psi{color:#FCA5A5;}.popup-psi.no-psi{color:var(--text2);font-size:20px;}
+.popup-status{font-size:10px;font-family:"IBM Plex Mono",monospace;margin-bottom:12px;}
+.popup-actions{display:flex;gap:6px;}
+.popup-btn{flex:1;padding:6px 0;border-radius:6px;font-size:10px;font-family:"IBM Plex Mono",monospace;cursor:pointer;border:none;transition:all .15s;font-weight:500;}
+.popup-btn.primary{background:var(--teal);color:white;}
+.popup-btn.primary:hover{background:var(--teal2);}
+.popup-btn.compare{background:rgba(21,96,189,0.2);border:1px solid rgba(21,96,189,0.4);color:var(--blue2);}
+.popup-btn.compare:hover{background:rgba(21,96,189,0.35);}
+.popup-btn.compare.active-compare{background:rgba(220,38,38,0.2);border-color:rgba(220,38,38,0.4);color:#FCA5A5;}
+
+/* Chart panel */
+.press-chart-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:16px;display:flex;flex-direction:column;overflow:hidden;
+}
+.chart-placeholder{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+}
+.chart-placeholder-icon{font-size:32px;opacity:.3;}
+.chart-placeholder-text{font-size:12px;color:var(--text2);text-align:center;line-height:1.6;font-family:"IBM Plex Mono",monospace;}
+.panel-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+.panel-station-name{font-size:13px;font-weight:500;color:var(--white);}
+.panel-station-sub{font-size:10px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:2px;}
+
+/* Compare banner */
+.compare-banner{margin-top:10px;}
+.compare-banner-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(21,96,189,0.12);border:1px solid rgba(21,96,189,0.25);
+  border-radius:6px;padding:6px 10px;
+  font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--blue2);
+}
+
+/* Latest reading strip */
+.latest-strip{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;
+}
+.latest-chip{
+  background:var(--card2);border:1px solid var(--border);border-radius:6px;
+  padding:4px 8px;font-size:10px;font-family:"IBM Plex Mono",monospace;
+  display:flex;align-items:center;gap:5px;
+}
+.latest-chip .chip-dot{width:7px;height:7px;border-radius:50%;}
+.latest-chip .chip-val{font-weight:600;}
+
+/* Station scroll row */
+.station-scroll-row{margin-bottom:0;}
+.station-scroll-label{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;}
+.station-scroll{
+  display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.1) transparent;
+}
+.station-scroll::-webkit-scrollbar{height:4px;}
+.station-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+.scroll-station-card{
+  flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;cursor:pointer;transition:all .15s;min-width:130px;position:relative;
+}
+.scroll-station-card:hover{border-color:rgba(255,255,255,0.18);}
+.scroll-station-card.selected{border-color:var(--teal2);background:rgba(36,181,163,0.08);}
+.scroll-station-card.alert-card{border-color:rgba(220,38,38,0.4);}
+.scroll-station-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;border-radius:8px 8px 0 0;}
+.scroll-station-card.ok-card::before{background:var(--green);}
+.scroll-station-card.alert-card::before{background:var(--red);}
+.scroll-sname{font-size:10px;color:var(--text2);margin-bottom:5px;line-height:1.3;}
+.scroll-psi{font-size:20px;font-weight:300;font-family:"IBM Plex Mono",monospace;line-height:1;}
+.scroll-psi.ok-v{color:#34D399;}.scroll-psi.al-v{color:#FCA5A5;}.scroll-psi.no-v{color:var(--text2);font-size:14px;}
+.scroll-time{font-size:8px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:4px;}
+
+/* time-range-btn already defined — ensure active works */
+.time-range-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+
+/* Responsive pressure */
+@media(max-width:900px){
+  .press-main-layout{grid-template-columns:1fr;height:auto;}
+  .press-map-card{height:340px;}
+  .press-chart-panel{min-height:360px;}
+  .compare-hint{display:none;}
+}
 </style>
 </head>
 <body>
@@ -386,45 +535,105 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
 <div class="page" id="page-pressure">
   <div class="error-banner" id="press-error"></div>
 
-  <!-- Station status grid -->
-  <div class="station-grid" id="station-grid">
-    <!-- injected by JS -->
+  <!-- ── Top bar: compare mode toggle + legend ── -->
+  <div class="press-topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="press-legend-dot ok-dot"></div><span class="press-legend-label">Normal (&gt; 6.5 PSI)</span>
+      <div class="press-legend-dot alert-dot"></div><span class="press-legend-label">Alert (≤ 6.5 PSI)</span>
+      <div class="press-legend-dot nodata-dot"></div><span class="press-legend-label">No data</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="compare-hint" id="compare-hint">Click a station to view. Hold Shift + click second station to compare.</span>
+      <button class="compare-clear-btn" id="compare-clear" onclick="clearCompare()" style="display:none">✕ Clear compare</button>
+    </div>
   </div>
 
-  <div class="pressure-layout">
-    <!-- Chart -->
-    <div>
-      <div class="pressure-chart-card">
-        <div class="pressure-controls">
-          <div class="pressure-station-label" id="chart-station-label">Select a station above</div>
-          <button class="time-range-btn active" onclick="setRange(this,'24h')">24 hrs</button>
-          <button class="time-range-btn" onclick="setRange(this,'7d')">7 days</button>
-          <button class="time-range-btn" onclick="setRange(this,'14d')">14 days</button>
-          <button class="time-range-btn" onclick="setRange(this,'all')">All</button>
+  <!-- ── Main layout: interactive map + chart panel ── -->
+  <div class="press-main-layout">
+
+    <!-- Interactive SVG map -->
+    <div class="press-map-card" id="press-map-card">
+      <div class="press-map-title">
+        <span>Puerto Princesa — Pressure Monitoring Network</span>
+        <span class="press-map-count" id="press-map-count">18 stations</span>
+      </div>
+      <div class="press-map-wrap">
+        <iframe
+          id="press-basemap"
+          src="https://maps.google.com/maps?q=9.7340,118.7430&z=15&output=embed"
+          style="width:100%;height:100%;border:none;border-radius:0 0 10px 10px;"
+          loading="lazy">
+        </iframe>
+        <!-- SVG overlay for dots -->
+        <svg id="press-svg-overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+        <!-- Station popup -->
+        <div class="station-popup" id="station-popup" style="display:none">
+          <div class="popup-header">
+            <div>
+              <div class="popup-name" id="popup-name">—</div>
+              <div class="popup-time" id="popup-time">—</div>
+            </div>
+            <button class="popup-close" onclick="closePopup()">✕</button>
+          </div>
+          <div class="popup-psi" id="popup-psi">—</div>
+          <div class="popup-status" id="popup-status"></div>
+          <div class="popup-actions">
+            <button class="popup-btn primary" onclick="viewHistory()">View History</button>
+            <button class="popup-btn compare" id="popup-compare-btn" onclick="addToCompare()">+ Compare</button>
+          </div>
         </div>
-        <div class="alert-line-note">Critical threshold: 6.5 PSI</div>
-        <div style="height:280px;margin-top:12px"><canvas id="chart-pressure"></canvas></div>
       </div>
     </div>
 
-    <!-- Map -->
-    <div>
-      <div class="map-container">
-        <div class="map-title">Pressure Monitoring Points</div>
-        <iframe
-          id="pressure-map"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          src="https://maps.google.com/maps?q=9.7367449,118.7403653&z=14&output=embed">
-        </iframe>
+    <!-- Chart panel (right side) -->
+    <div class="press-chart-panel" id="press-chart-panel">
+      <!-- Placeholder when nothing selected -->
+      <div class="chart-placeholder" id="chart-placeholder">
+        <div class="chart-placeholder-icon">📍</div>
+        <div class="chart-placeholder-text">Click a station dot on the map<br>to view pressure history</div>
+      </div>
+
+      <!-- Chart when station selected -->
+      <div id="chart-active-panel" style="display:none">
+        <div class="panel-header">
+          <div>
+            <div class="panel-station-name" id="panel-station-name">—</div>
+            <div class="panel-station-sub" id="panel-station-sub">Pressure history</div>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button class="time-range-btn active" onclick="setRange(this,'24h')">24h</button>
+            <button class="time-range-btn" onclick="setRange(this,'7d')">7 days</button>
+            <button class="time-range-btn" onclick="setRange(this,'14d')">14 days</button>
+            <button class="time-range-btn" onclick="setRange(this,'all')">All</button>
+          </div>
+        </div>
+        <div class="alert-line-note" style="margin-bottom:10px">Critical threshold: 6.5 PSI</div>
+        <div style="height:260px"><canvas id="chart-pressure"></canvas></div>
+
+        <!-- Compare mode banner -->
+        <div class="compare-banner" id="compare-banner" style="display:none">
+          <div class="compare-banner-inner">
+            <span id="compare-banner-text">Comparing 2 stations</span>
+            <button class="compare-clear-btn" onclick="clearCompare()">✕ Clear</button>
+          </div>
+        </div>
+
+        <!-- Latest reading strip -->
+        <div class="latest-strip" id="latest-strip"></div>
       </div>
     </div>
+  </div>
+
+  <!-- Station status cards (scrollable row) -->
+  <div class="station-scroll-row">
+    <div class="station-scroll-label">All Stations — Latest Reading</div>
+    <div class="station-scroll" id="station-scroll"></div>
   </div>
 
   <!-- Raw readings table -->
-  <div class="table-card">
+  <div class="table-card" style="margin-top:14px">
     <div class="table-header">
-      <div class="table-title blue-accent" id="raw-table-title">Recent Readings — All Stations</div>
+      <div class="table-title blue-accent">Recent Readings — All Stations</div>
     </div>
     <div class="table-wrap">
       <table>
@@ -433,7 +642,7 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
       </table>
     </div>
     <div class="mobile-cards" id="press-cards"></div>
-    <div class="cap-note">Alert threshold: ≤ 6.5 PSI (red) &nbsp;|&nbsp; Critical level: 6 PSI — consumers experience low flow or no water. &nbsp;|&nbsp; Readings at 7:00 AM, 12:00 NN, 6:00 PM daily.</div>
+    <div class="cap-note">Alert threshold: ≤ 6.5 PSI (red) &nbsp;|&nbsp; Critical level: 6 PSI — consumers may experience low flow or no water. &nbsp;|&nbsp; Readings at 7:00 AM, 12:00 NN, 6:00 PM daily.</div>
   </div>
 </div>
 
@@ -843,21 +1052,37 @@ function buildWeekBtns(weeks){
 }
 
 // ════════════════════════════════════════════════════════════
-// PRESSURE TAB
+// PRESSURE TAB — INTERACTIVE MAP + COMPARE
 // ════════════════════════════════════════════════════════════
+
+// Map bounds for Puerto Princesa pressure network
+// SW corner: 9.7250, 118.7300   NE corner: 9.7450, 118.7750
+const MAP_BOUNDS = {latMin:9.725, latMax:9.745, lngMin:9.7300, lngMax:118.775};
+
+// State
+let compareStations=[];   // 0, 1, or 2 stations for compare mode
+let popupStation=null;    // station currently shown in popup
+
+// ── Date parser (M/DD/YYYY format from Google Sheets) ──────────────────────────
 function parseDateTime(dateStr, timeStr){
-  // dateStr from sheet may be a Date object serialized or string like "27/03/2026"
-  // timeStr like "7:00:00 AM"
   try{
     let d;
-    if(typeof dateStr==="string"){
-      const parts=dateStr.split("/");
-      if(parts.length===3) d=new Date(`${parts[2]}-${parts[1].padStart(2,"0")}-${parts[0].padStart(2,"0")}`);
-      else d=new Date(dateStr);
-    } else if(dateStr instanceof Date) d=new Date(dateStr);
-    else d=new Date(dateStr);
+    if(dateStr instanceof Date){
+      d=new Date(dateStr);
+    } else if(typeof dateStr==="string"){
+      const s=dateStr.trim();
+      const parts=s.split("/");
+      if(parts.length===3){
+        // M/DD/YYYY — month=parts[0], day=parts[1], year=parts[2]
+        d=new Date(`${parts[2]}-${parts[0].padStart(2,"0")}-${parts[1].padStart(2,"0")}`);
+      } else { d=new Date(s); }
+    } else { d=new Date(dateStr); }
+    if(isNaN(d.getTime()))return null;
     if(timeStr){
-      const tStr=String(timeStr).trim();
+      let tStr;
+      if(timeStr instanceof Date){
+        tStr=timeStr.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});
+      } else { tStr=String(timeStr).trim(); }
       const match=tStr.match(/(\d+):(\d+)(?::(\d+))?\s*(AM|PM)?/i);
       if(match){
         let h=parseInt(match[1]),m=parseInt(match[2]);
@@ -876,114 +1101,340 @@ function filterByRange(data, range){
   const now=new Date();
   const hours={"24h":24,"7d":168,"14d":336}[range]||24;
   const cutoff=new Date(now.getTime()-hours*3600*1000);
-  // If all data is old (no recent readings), return last N points instead
   const filtered=data.filter(r=>r.dt&&r.dt>=cutoff);
   if(filtered.length===0){
-    // fallback: return last slice proportional to range
     const slice={"24h":3,"7d":21,"14d":42,"all":data.length}[range]||21;
     return data.slice(-slice);
   }
   return filtered;
 }
 
-function buildPressureChart(station){
+// ── Coordinate → SVG pixel projection ─────────────────────────────────────────
+function latLngToSVG(lat, lng, svgW, svgH){
+  // Bounding box of our network
+  const latMin=9.724, latMax=9.743, lngMin=118.728, lngMax=118.776;
+  const x=((lng-lngMin)/(lngMax-lngMin))*svgW;
+  const y=((latMax-lat)/(latMax-latMin))*svgH;
+  return{x,y};
+}
+
+// ── Build SVG dot overlay ──────────────────────────────────────────────────────
+function buildSVGOverlay(){
+  const svg=document.getElementById("press-svg-overlay");
+  const wrap=document.querySelector(".press-map-wrap");
+  if(!svg||!wrap)return;
+  const W=wrap.offsetWidth||600, H=wrap.offsetHeight||400;
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.innerHTML="";
+
+  PRESSURE_STATIONS.forEach(s=>{
+    const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
+    const val=recent?recent.vals[s.col]:null;
+    const isAlert=val!==null&&val<=ALERT_PSI;
+    const hasData=val!==null;
+    const pos=latLngToSVG(s.lat,s.lng,W,H);
+    const color=hasData?(isAlert?"#DC2626":"#059669"):"#64748B";
+    const glowColor=hasData?(isAlert?"rgba(220,38,38,0.4)":"rgba(5,150,105,0.3)"):"transparent";
+
+    // Glow ring for alerts
+    if(isAlert){
+      const glow=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      glow.setAttribute("cx",pos.x);glow.setAttribute("cy",pos.y);
+      glow.setAttribute("r","14");glow.setAttribute("fill",glowColor);
+      glow.style.animation="svg-pulse 1.5s ease-in-out infinite";
+      svg.appendChild(glow);
+    }
+
+    // Outer ring
+    const ring=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    ring.setAttribute("cx",pos.x);ring.setAttribute("cy",pos.y);
+    ring.setAttribute("r","9");ring.setAttribute("fill","rgba(13,27,42,0.7)");
+    ring.setAttribute("stroke",color);ring.setAttribute("stroke-width","1.5");
+    svg.appendChild(ring);
+
+    // Inner dot
+    const dot=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    dot.setAttribute("cx",pos.x);dot.setAttribute("cy",pos.y);
+    dot.setAttribute("r","5");dot.setAttribute("fill",color);
+    dot.setAttribute("class","map-dot");
+    dot.style.cursor="pointer";
+    dot.setAttribute("data-col",s.col);
+    dot.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      if(e.shiftKey){
+        addStationToCompare(s);
+      } else {
+        showStationPopup(s, pos, W, H);
+      }
+    });
+    // Tooltip on hover
+    const title=document.createElementNS("http://www.w3.org/2000/svg","title");
+    title.textContent=`${s.name}${val!==null?" — "+fmt(val,2)+" PSI":""}`;
+    dot.appendChild(title);
+    svg.appendChild(dot);
+
+    // PSI label for selected/compare stations
+    const isSelected=compareStations.some(cs=>cs.col===s.col);
+    if(isSelected||compareStations.length===0&&popupStation?.col===s.col){
+      const label=document.createElementNS("http://www.w3.org/2000/svg","text");
+      label.setAttribute("x",pos.x);label.setAttribute("y",pos.y-13);
+      label.setAttribute("text-anchor","middle");
+      label.setAttribute("font-size","9");label.setAttribute("fill",color);
+      label.setAttribute("font-family","IBM Plex Mono,monospace");label.setAttribute("font-weight","600");
+      label.textContent=val!==null?fmt(val,1):"—";
+      svg.appendChild(label);
+    }
+  });
+
+  // Add SVG pulse keyframes via style
+  if(!document.getElementById("svg-pulse-style")){
+    const style=document.createElement("style");
+    style.id="svg-pulse-style";
+    style.textContent="@keyframes svg-pulse{0%,100%{opacity:.6;r:14}50%{opacity:.2;r:18}}";
+    document.head.appendChild(style);
+  }
+}
+
+// ── Station popup ──────────────────────────────────────────────────────────────
+function showStationPopup(station, pos, svgW, svgH){
+  popupStation=station;
+  const popup=document.getElementById("station-popup");
+  const recent=pressureRaw.filter(r=>r.vals[station.col]!==null).slice(-1)[0];
+  const val=recent?recent.vals[station.col]:null;
+  const isAlert=val!==null&&val<=ALERT_PSI;
+  const timeStr=recent&&recent.dt?
+    recent.dt.toLocaleDateString("en-PH")+" "+recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"})
+    :"No recent data";
+
+  document.getElementById("popup-name").textContent=station.name;
+  document.getElementById("popup-time").textContent=timeStr;
+
+  const psiEl=document.getElementById("popup-psi");
+  psiEl.className="popup-psi "+(val===null?"no-psi":isAlert?"alert-psi":"ok-psi");
+  psiEl.textContent=val!==null?fmt(val,2)+" PSI":"No data";
+
+  const statusEl=document.getElementById("popup-status");
+  if(val===null){statusEl.textContent="No reading available";statusEl.style.color="var(--text2)";}
+  else if(isAlert){statusEl.textContent="⚠️ Below alert threshold (6.5 PSI)";statusEl.style.color="#FCA5A5";}
+  else{statusEl.textContent="✓ Normal pressure";statusEl.style.color="#34D399";}
+
+  // Compare button state
+  const cBtn=document.getElementById("popup-compare-btn");
+  const inCompare=compareStations.some(cs=>cs.col===station.col);
+  cBtn.className="popup-btn compare"+(inCompare?" active-compare":"");
+  cBtn.textContent=inCompare?"✕ Remove":"+ Compare";
+
+  // Position popup — avoid edge overflow
+  const wrap=document.querySelector(".press-map-wrap");
+  const wW=wrap.offsetWidth, wH=wrap.offsetHeight;
+  let pxX=(pos.x/svgW)*wW, pxY=(pos.y/svgH)*wH;
+  let left=pxX+14, top=pxY-20;
+  if(left+250>wW)left=pxX-260;
+  if(top+180>wH)top=wH-190;
+  if(top<8)top=8;
+  popup.style.left=left+"px";popup.style.top=top+"px";
+  popup.style.display="block";
+  buildSVGOverlay(); // refresh to show label
+}
+
+function closePopup(){
+  document.getElementById("station-popup").style.display="none";
+  popupStation=null;
+}
+
+function viewHistory(){
+  if(!popupStation)return;
+  closePopup();
+  showChartPanel(popupStation);
+}
+
+function addToCompare(){
+  if(!popupStation)return;
+  addStationToCompare(popupStation);
+  closePopup();
+}
+
+// ── Compare mode ───────────────────────────────────────────────────────────────
+const COMPARE_COLORS=[
+  {border:"rgba(74,144,217,0.9)",bg:"rgba(74,144,217,0.08)"},
+  {border:"rgba(36,181,163,0.9)",bg:"rgba(36,181,163,0.08)"}
+];
+
+function addStationToCompare(station){
+  if(compareStations.some(s=>s.col===station.col)){
+    // Already in compare — remove it
+    compareStations=compareStations.filter(s=>s.col!==station.col);
+  } else {
+    if(compareStations.length>=2){
+      compareStations.shift(); // drop oldest
+    }
+    compareStations.push(station);
+  }
+  updateScrollCards();
+  buildSVGOverlay();
+  document.getElementById("compare-clear").style.display=compareStations.length>0?"block":"none";
+
+  if(compareStations.length===0){
+    // Back to placeholder
+    document.getElementById("chart-placeholder").style.display="flex";
+    document.getElementById("chart-active-panel").style.display="none";
+  } else {
+    buildCompareChart();
+  }
+}
+
+function clearCompare(){
+  compareStations=[];
+  if(pressureChart){pressureChart.destroy();pressureChart=null;}
+  document.getElementById("chart-placeholder").style.display="flex";
+  document.getElementById("chart-active-panel").style.display="none";
+  document.getElementById("compare-clear").style.display="none";
+  document.getElementById("compare-banner").style.display="none";
+  updateScrollCards();
+  buildSVGOverlay();
+}
+
+function buildCompareChart(){
   if(pressureChart)pressureChart.destroy();
   const filtered=filterByRange(pressureRaw,currentRange);
   const labels=filtered.map(r=>{
     if(!r.dt)return"";
     const d=r.dt;
-    return `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}`;
+    return`${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}`;
   });
-  const vals=filtered.map(r=>r.vals[station.col]!==null?r.vals[station.col]:null);
-  document.getElementById("chart-station-label").textContent=station.name;
+
+  const datasets=compareStations.map((s,i)=>{
+    const c=COMPARE_COLORS[i];
+    const vals=filtered.map(r=>r.vals[s.col]!==null?r.vals[s.col]:null);
+    return{
+      label:`${s.name}`,
+      data:vals,
+      borderColor:c.border,backgroundColor:c.bg,
+      borderWidth:2,pointRadius:2.5,
+      pointBackgroundColor:vals.map(v=>v!==null&&v<=ALERT_PSI?"#DC2626":c.border),
+      pointBorderColor:"transparent",
+      tension:.3,fill:false,spanGaps:true
+    };
+  });
+
+  // Alert line
+  datasets.push({
+    label:"Alert (6.5 PSI)",
+    data:labels.map(()=>ALERT_PSI),
+    borderColor:"rgba(220,38,38,0.6)",borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false
+  });
+
+  // Panel header
+  document.getElementById("chart-placeholder").style.display="none";
+  document.getElementById("chart-active-panel").style.display="block";
+  if(compareStations.length===1){
+    document.getElementById("panel-station-name").textContent=compareStations[0].name;
+    document.getElementById("panel-station-sub").textContent="Pressure history";
+    document.getElementById("compare-banner").style.display="none";
+  } else {
+    document.getElementById("panel-station-name").textContent="Comparison";
+    document.getElementById("panel-station-sub").textContent=compareStations.map(s=>s.name.split(" ")[0]).join(" vs ");
+    document.getElementById("compare-banner").style.display="block";
+    document.getElementById("compare-banner-text").textContent=
+      `Comparing: ${compareStations[0].name.split(" ").slice(0,2).join(" ")} vs ${compareStations[1].name.split(" ").slice(0,2).join(" ")}`;
+  }
 
   pressureChart=new Chart(document.getElementById("chart-pressure"),{
-    type:"line",
-    data:{labels,datasets:[
-      {
-        label:`${station.name} (PSI)`,
-        data:vals,
-        borderColor:"rgba(74,144,217,0.9)",
-        backgroundColor:"rgba(74,144,217,0.08)",
-        borderWidth:2,pointRadius:3,
-        pointBackgroundColor:vals.map(v=>v!==null&&v<=ALERT_PSI?"#DC2626":"rgba(74,144,217,0.9)"),
-        pointBorderColor:"transparent",
-        tension:.3,fill:true,spanGaps:true
-      },
-      {
-        label:`Alert (${ALERT_PSI} PSI)`,
-        data:labels.map(()=>ALERT_PSI),
-        borderColor:"rgba(220,38,38,0.7)",
-        borderWidth:1.5,borderDash:[6,3],pointRadius:0
-      }
-    ]},
+    type:"line",data:{labels,datasets},
     options:{
       responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}},
         tooltip:{callbacks:{label:ctx=>{
+          if(ctx.datasetIndex>=compareStations.length)return` Alert: ${ctx.raw} PSI`;
           const v=ctx.raw;if(v===null)return" No data";
-          return` ${fmt(v,2)} PSI${v<=ALERT_PSI?" ⚠️ ALERT":""}`;
+          return` ${ctx.dataset.label}: ${fmt(v,2)} PSI${v<=ALERT_PSI?" ⚠️":""}`;
         }}}
       },
       scales:{
         x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},maxTicksLimit:12,maxRotation:45}},
-        y:{
-          grid:{color:"rgba(255,255,255,0.04)"},
-          ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
+        y:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
           suggestedMin:0,suggestedMax:20,
-          title:{display:true,text:"PSI",color:"#64748B",font:{family:"IBM Plex Mono",size:10}}
-        }
+          title:{display:true,text:"PSI",color:"#64748B",font:{family:"IBM Plex Mono",size:10}}}
       }
     }
   });
+
+  // Latest reading strip
+  const strip=document.getElementById("latest-strip");
+  strip.innerHTML=compareStations.map((s,i)=>{
+    const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
+    const val=recent?recent.vals[s.col]:null;
+    const c=COMPARE_COLORS[i];
+    const isAlert=val!==null&&val<=ALERT_PSI;
+    return`<div class="latest-chip">
+      <div class="chip-dot" style="background:${c.border.replace("0.9","1")}"></div>
+      <span style="color:var(--text2);font-size:9px">${s.name.split(" ").slice(0,2).join(" ")}</span>
+      <span class="chip-val" style="color:${isAlert?"#FCA5A5":"#34D399"}">${val!==null?fmt(val,2)+" PSI":"—"}</span>
+    </div>`;
+  }).join("");
+}
+
+function showChartPanel(station){
+  compareStations=[station];
+  buildCompareChart();
+  buildSVGOverlay();
+  updateScrollCards();
+  document.getElementById("compare-clear").style.display="block";
 }
 
 function setRange(btn, range){
   currentRange=range;
   document.querySelectorAll(".time-range-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
-  if(selectedStation)buildPressureChart(selectedStation);
+  if(compareStations.length>0)buildCompareChart();
 }
 
-function selectStation(station){
-  selectedStation=station;
-  document.querySelectorAll(".station-card").forEach(c=>c.classList.remove("selected"));
-  document.getElementById(`sc-${station.col}`).classList.add("selected");
-  buildPressureChart(station);
-  // Pan map
-  const mapSrc=`https://maps.google.com/maps?q=${station.lat},${station.lng}&z=16&output=embed`;
-  document.getElementById("pressure-map").src=mapSrc;
-}
-
-function buildStationGrid(){
-  const grid=document.getElementById("station-grid");
-  grid.innerHTML=PRESSURE_STATIONS.map(s=>{
-    // Get most recent reading
+// ── Station scroll row ─────────────────────────────────────────────────────────
+function buildScrollRow(){
+  const scroll=document.getElementById("station-scroll");
+  scroll.innerHTML=PRESSURE_STATIONS.map(s=>{
     const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
     const val=recent?recent.vals[s.col]:null;
     const isAlert=val!==null&&val<=ALERT_PSI;
+    const hasData=val!==null;
     const timeStr=recent&&recent.dt?
-      `${recent.dt.toLocaleDateString("en-PH")} ${recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"})}`
-      :"No data";
-    return`<div class="station-card ${val===null?"":isAlert?"alert":"ok"}" id="sc-${s.col}" onclick="selectStation(PRESSURE_STATIONS.find(x=>x.col===${s.col}))">
-      <div class="station-glow"></div>
-      <div class="station-name">${s.name}</div>
-      <div class="station-psi ${val===null?"no-val":isAlert?"alert-val":"ok-val"}">
-        ${val!==null?fmt(val,2):"—"}<span class="psi-unit">${val!==null?"PSI":""}</span>
-      </div>
-      <div class="station-time">${timeStr}</div>
+      recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
+    const cls=hasData?(isAlert?"alert-card":"ok-card"):"";
+    const psiCls=hasData?(isAlert?"al-v":"ok-v"):"no-v";
+    return`<div class="scroll-station-card ${cls}" id="ss-${s.col}"
+      onclick="handleScrollCardClick(event,${s.col})">
+      <div class="scroll-sname">${s.name}</div>
+      <div class="scroll-psi ${psiCls}">${val!==null?fmt(val,2):"—"}<span style="font-size:9px;color:var(--text2);margin-left:2px">${val!==null?"PSI":""}</span></div>
+      <div class="scroll-time">${timeStr}</div>
     </div>`;
   }).join("");
 }
 
+function updateScrollCards(){
+  PRESSURE_STATIONS.forEach(s=>{
+    const el=document.getElementById(`ss-${s.col}`);
+    if(!el)return;
+    const inSel=compareStations.some(cs=>cs.col===s.col);
+    el.classList.toggle("selected",inSel);
+  });
+}
+
+function handleScrollCardClick(e, col){
+  const station=PRESSURE_STATIONS.find(s=>s.col===col);
+  if(!station)return;
+  if(e.shiftKey){
+    addStationToCompare(station);
+  } else {
+    showChartPanel(station);
+  }
+}
+
+// ── Raw readings table ─────────────────────────────────────────────────────────
 function buildPressureRawTable(){
-  // Build headers
   const thead=document.getElementById("press-thead");
   thead.innerHTML=`<th>Date</th><th>Time</th>`+
     PRESSURE_STATIONS.map(s=>`<th class="right" style="font-size:9px">${s.name.split(" ").slice(0,2).join(" ")}</th>`).join("");
-
-  // Last 21 rows (1 week)
   const slice=pressureRaw.slice(-21);
   document.getElementById("press-tbody").innerHTML=slice.map(r=>{
     const dateStr=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
@@ -995,33 +1446,23 @@ function buildPressureRawTable(){
     }).join("");
     return`<tr><td class="mono">${dateStr}</td><td class="mono">${timeStr}</td>${cells}</tr>`;
   }).join("");
-
-  // Mobile pressure cards
+  // Mobile cards
   document.getElementById("press-cards").innerHTML=
     `<div style="padding:10px 14px">`+
     slice.map(r=>{
       const dateStr=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
       const timeStr=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
-      const readings=PRESSURE_STATIONS.map(s=>{
-        const v=r.vals[s.col];
-        if(v===null)return"";
-        const isAlert=v<=ALERT_PSI;
-        return`<div class="mob-card-row">
-          <span class="mob-card-label">${s.name.split(" ").slice(0,3).join(" ")}</span>
-          <span class="mob-card-val" style="${isAlert?"color:#FCA5A5;font-weight:600":""}">${fmt(v,2)} PSI${isAlert?" ⚠️":""}</span>
-        </div>`;
-      }).join("");
       return`<div class="mob-card">
         <div class="mob-card-header"><span class="mob-card-name">${dateStr}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">${timeStr}</span></div>
-        ${readings}
+        ${PRESSURE_STATIONS.map(s=>{const v=r.vals[s.col];if(v===null)return"";const a=v<=ALERT_PSI;return`<div class="mob-card-row"><span class="mob-card-label">${s.name.split(" ").slice(0,2).join(" ")}</span><span class="mob-card-val" style="${a?"color:#FCA5A5;font-weight:600":""}">${fmt(v,2)} PSI${a?" ⚠️":""}</span></div>`;}).join("")}
       </div>`;
     }).join("")+`</div>`;
 }
 
+// ── Load pressure data ─────────────────────────────────────────────────────────
 async function loadPressure(){
   try{
     const raw=await fetchSheet("Pressure Points");
-    // Skip header rows — find first row where col 0 looks like a date
     pressureRaw=raw.filter(r=>r[0]&&r[1]).map(row=>{
       const dt=parseDateTime(row[0],row[1]);
       const vals={};
@@ -1034,14 +1475,23 @@ async function loadPressure(){
 
     if(pressureRaw.length===0){
       document.getElementById("press-error").style.display="block";
-      document.getElementById("press-error").textContent="Pressure Points sheet is empty or date format not recognized. Expected: dd/mm/yyyy in col A, hh:mm:ss AM/PM in col B.";
+      document.getElementById("press-error").textContent="Pressure Points sheet empty or date not recognized. Expected: M/DD/YYYY in col A, H:MM:SS AM/PM in col B.";
       return;
     }
 
-    buildStationGrid();
+    buildScrollRow();
     buildPressureRawTable();
-    // Auto-select first station
-    selectStation(PRESSURE_STATIONS[0]);
+    // Build SVG overlay after a tick (iframe needs to render)
+    setTimeout(()=>{
+      buildSVGOverlay();
+      // Auto-show first station
+      showChartPanel(PRESSURE_STATIONS[0]);
+    }, 800);
+
+    // Rebuild overlay on resize
+    window.addEventListener("resize",()=>buildSVGOverlay());
+
+    document.getElementById("press-map-count").textContent=PRESSURE_STATIONS.length+" stations";
   }catch(err){
     document.getElementById("press-error").style.display="block";
     document.getElementById("press-error").textContent="Could not load Pressure Points: "+err.message;
