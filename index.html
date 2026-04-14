@@ -1112,23 +1112,38 @@ let popupStation = null;
 
 // ── Date parser: M/DD/YYYY + H:MM:SS AM/PM ────────────────────────────────────
 function parseDateTime(dateStr, timeStr){
+  // Sheet format confirmed from gviz API debug:
+  //   col[0] type=string  value="23/03/2026"  → DD/MM/YYYY
+  //   col[1] type=string  value="1:00:00 AM"  → H:MM:SS AM/PM
   try{
     let d;
-    if(dateStr instanceof Date){ d=new Date(dateStr); }
-    else if(typeof dateStr==="string"){
-      const p=dateStr.trim().split("/");
-      if(p.length===3) d=new Date(`${p[2]}-${p[0].padStart(2,"0")}-${p[1].padStart(2,"0")}`);
-      else d=new Date(dateStr);
-    } else { d=new Date(dateStr); }
-    if(isNaN(d.getTime())) return null;
+    if(typeof dateStr==="string"){
+      const s=dateStr.trim();
+      const p=s.split("/");
+      if(p.length===3){
+        // DD/MM/YYYY  →  p[0]=day, p[1]=month, p[2]=year
+        const day=p[0].padStart(2,"0");
+        const mon=p[1].padStart(2,"0");
+        const yr=p[2];
+        // Build as ISO to avoid browser locale ambiguity
+        d=new Date(`${yr}-${mon}-${day}T00:00:00`);
+      } else {
+        d=new Date(s);
+      }
+    } else if(dateStr instanceof Date){
+      d=new Date(dateStr);
+    } else {
+      d=new Date(dateStr);
+    }
+    if(!d||isNaN(d.getTime())) return null;
+
+    // Apply time string: "H:MM:SS AM/PM" or "HH:MM:SS"
     if(timeStr){
-      let tStr = timeStr instanceof Date
-        ? timeStr.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true})
-        : String(timeStr).trim();
-      const m=tStr.match(/(\d+):(\d+)(?::(\d+))?\s*(AM|PM)?/i);
+      const tStr=String(timeStr).trim();
+      const m=tStr.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?/i);
       if(m){
-        let h=parseInt(m[1]), mn=parseInt(m[2]);
-        const ap=m[4]?m[4].toUpperCase():null;
+        let h=parseInt(m[1],10), mn=parseInt(m[2],10);
+        const ap=m[4]?m[4].toUpperCase():"";
         if(ap==="PM"&&h!==12) h+=12;
         if(ap==="AM"&&h===12) h=0;
         d.setHours(h,mn,0,0);
@@ -1229,7 +1244,7 @@ function initLeafletMap(){
   }).addTo(leafletMap);
 
   // Dark overlay for style consistency
-  L.tileLayer("https://api.stadiamaps.com/tz/lookup/v1?lat=59.43696&lng=24.75357&api_key=37b0767e-1086-42e4-9098-479261f291d1",{
+  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",{
     maxZoom:19,
     opacity:0.85,
     attribution:""
