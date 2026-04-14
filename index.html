@@ -1219,7 +1219,7 @@ function initLeafletMap(){
   }).addTo(leafletMap);
 
   // Dark overlay for style consistency
-  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",{
+  L.tileLayer("https://api.stadiamaps.com/tz/lookup/v1?lat=59.43696&lng=24.75357&api_key=37b0767e-1086-42e4-9098-479261f291d1",{
     maxZoom:19,
     opacity:0.85,
     attribution:""
