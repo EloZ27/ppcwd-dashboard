@@ -1111,6 +1111,8 @@ let leafletMap = null;
 let leafletMarkers = {};       // col -> L.marker
 let compareStations = [];      // max 2 stations
 let popupStation = null;
+let pressureChart = null;
+let currentRange = "24h";
 
 // ── Date parser: M/DD/YYYY + H:MM:SS AM/PM ────────────────────────────────────
 function parseDateTime(dateStr, timeStr){
@@ -1143,29 +1145,33 @@ function parseDateTime(dateStr, timeStr){
 // ── State for date filter ────────────────────────────────────────────────────
 let activeDateFilter = null;  // null = no filter, else Date object (midnight)
 
-// ── Filter by time range — relative to LATEST reading, not today's clock ─────
-// This handles datasets that are days/weeks old (data entered retrospectively)
+// ── Filter by time range ────────────────────────────────────────────────────
+// Data: 1 row per hour, all 18 stations share the same timestamp per row.
+// Ranges: 24h=24 rows, 7d=168 rows, 14d=336 rows.
+// Always relative to the LATEST timestamp in the data — not wall-clock time —
+// so retrospectively-entered data (March records viewed in April) works correctly.
 function filterByRange(data, range){
-  // First apply date filter if active
+  // Step 1: apply active date filter (single-day view) if set
   let pool = activeDateFilter ? data.filter(r=>{
     if(!r.dt) return false;
-    const rd = new Date(r.dt); rd.setHours(0,0,0,0);
-    const fd = new Date(activeDateFilter); fd.setHours(0,0,0,0);
-    return rd.getTime() === fd.getTime();
+    const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+    const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+    return rd.getTime()===fd.getTime();
   }) : data;
 
   if(range==="all" || !pool.length) return pool;
 
-  // Find the latest timestamp in the filtered pool
-  const latest = pool.reduce((max,r)=>r.dt&&r.dt>max?r.dt:max, new Date(0));
-  const hourMap={"24h":24,"7d":168,"14d":336};
-  const hours=hourMap[range]||24;
+  // Step 2: find latest timestamp in pool (not today's clock)
+  const latest=pool.reduce((max,r)=>r.dt&&r.dt>max?r.dt:max, new Date(0));
+
+  // Step 3: cut off using hours relative to latest reading
+  const hours={"24h":24,"7d":168,"14d":336}[range]||24;
   const cutoff=new Date(latest.getTime()-hours*3600*1000);
   const byTime=pool.filter(r=>r.dt&&r.dt>=cutoff);
 
-  // If range is narrower than data granularity, return what we have
-  if(byTime.length===0) return pool.slice(-Math.min(pool.length, {"24h":3,"7d":21,"14d":42}[range]||3));
-  return byTime;
+  // Step 4: fallback — if range > available window (e.g. date filter is 1 day,
+  // range is 7d), just return the full pool rather than nothing
+  return byTime.length>0 ? byTime : pool;
 }
 
 // ── Date filter handlers ──────────────────────────────────────────────────────
@@ -1176,15 +1182,23 @@ function applyDateFilter(){
   activeDateFilter = new Date(val+"T00:00:00");
   document.getElementById("date-filter-clear").style.display="block";
 
-  // Count how many readings exist on this date
-  const count = pressureRaw.filter(r=>{
+  // Count hourly rows on this date (1 row = 1 timestamp for all 18 stations)
+  const rows = pressureRaw.filter(r=>{
     if(!r.dt) return false;
     const rd=new Date(r.dt); rd.setHours(0,0,0,0);
     const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
     return rd.getTime()===fd.getTime();
-  }).length;
+  });
+  const count = rows.length;
+  // Find hour range for display
+  let rangeStr = "";
+  if(count > 0){
+    const times = rows.map(r=>r.dt).sort((a,b)=>a-b);
+    const fmtH = d => d.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
+    rangeStr = count===1 ? fmtH(times[0]) : `${fmtH(times[0])} – ${fmtH(times[times.length-1])}`;
+  }
   const info = document.getElementById("date-filter-info");
-  info.textContent = count>0 ? `${count} reading${count!==1?"s":""} on this date` : "No readings on this date";
+  info.textContent = count>0 ? `${count} hour${count!==1?"s":""} of data  (${rangeStr})` : "No readings on this date";
   info.style.color = count>0 ? "var(--teal2)" : "#FCA5A5";
 
   // Rebuild map dots to show latest value ON that date per station
@@ -1403,7 +1417,12 @@ function buildCompareChart(){
         }}}
       },
       scales:{
-        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},maxTicksLimit:14,maxRotation:45}},
+        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},maxTicksLimit:12,maxRotation:45,callback:function(val,i){
+          // For large datasets show fewer labels to avoid crowding
+          const total=this.chart.data.labels.length;
+          const step=total<=24?1:total<=168?12:24;
+          return i%step===0?this.getLabelForValue(val):"";
+        }}},
         y:{grid:{color:"rgba(255,255,255,0.04)"},
           ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
           suggestedMin:0,suggestedMax:20,
