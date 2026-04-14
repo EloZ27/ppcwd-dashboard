@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PPCWD Monitoring Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -324,13 +326,46 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
 }
 .press-map-wrap{flex:1;position:relative;overflow:hidden;}
 
-/* SVG overlay sits on top of the iframe */
-#press-svg-overlay{
-  position:absolute;top:0;left:0;width:100%;height:100%;
-  pointer-events:none;z-index:5;
+/* Leaflet map container */
+#leaflet-map{ position:absolute;top:0;left:0;width:100%;height:100%; }
+
+/* Override Leaflet popup to match dashboard dark theme */
+.leaflet-popup-content-wrapper{
+  background:rgba(13,27,42,0.97)!important;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.08)!important;
+  border-radius:10px!important;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5)!important;
+  color:var(--text)!important;
+  padding:0!important;
 }
-/* Dots drawn by JS need pointer-events */
-#press-svg-overlay circle.map-dot{pointer-events:all;cursor:pointer;}
+.leaflet-popup-content{margin:0!important;width:220px!important;}
+.leaflet-popup-tip-container{display:none!important;}
+.leaflet-popup-close-button{
+  color:var(--text2)!important;font-size:16px!important;
+  top:10px!important;right:10px!important;
+}
+.leaflet-popup-close-button:hover{color:var(--white)!important;}
+.leaflet-container{background:#0D1B2A!important;}
+.leaflet-tile{filter:brightness(0.85) saturate(0.9);}
+
+/* Custom dot markers */
+.pressure-dot{
+  border-radius:50%;border:2px solid rgba(13,27,42,0.7);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-size:8px;font-weight:600;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+}
+.pressure-dot:hover{transform:scale(1.3);z-index:1000!important;}
+.pressure-dot.dot-ok{background:#059669;border-color:#065f46;box-shadow:0 0 8px rgba(5,150,105,0.6);}
+.pressure-dot.dot-alert{background:#DC2626;border-color:#7f1d1d;box-shadow:0 0 10px rgba(220,38,38,0.7);animation:dot-pulse 1.4s ease-in-out infinite;}
+.pressure-dot.dot-nodata{background:#334155;border-color:#1e293b;}
+.pressure-dot.dot-selected{transform:scale(1.4);outline:2px solid #24B5A3;outline-offset:2px;z-index:999!important;}
+@keyframes dot-pulse{0%,100%{box-shadow:0 0 8px rgba(220,38,38,0.5);}50%{box-shadow:0 0 18px rgba(220,38,38,0.9);}}
+
+/* Compare ring on selected dots */
+.pressure-dot.dot-compare-1{outline:2px solid #4A90D9;outline-offset:2px;}
+.pressure-dot.dot-compare-2{outline:2px solid #24B5A3;outline-offset:2px;}
 
 /* Station popup */
 .station-popup{
@@ -558,14 +593,7 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
         <span class="press-map-count" id="press-map-count">18 stations</span>
       </div>
       <div class="press-map-wrap">
-        <iframe
-          id="press-basemap"
-          src="https://maps.google.com/maps?q=9.7340,118.7430&z=15&output=embed"
-          style="width:100%;height:100%;border:none;border-radius:0 0 10px 10px;"
-          loading="lazy">
-        </iframe>
-        <!-- SVG overlay for dots -->
-        <svg id="press-svg-overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="leaflet-map" style="width:100%;height:100%;z-index:1;"></div>
         <!-- Station popup -->
         <div class="station-popup" id="station-popup" style="display:none">
           <div class="popup-header">
@@ -1052,206 +1080,159 @@ function buildWeekBtns(weeks){
 }
 
 // ════════════════════════════════════════════════════════════
-// PRESSURE TAB — INTERACTIVE MAP + COMPARE
+// PRESSURE TAB — LEAFLET MAP + COMPARE MODE
 // ════════════════════════════════════════════════════════════
 
-// Map bounds for Puerto Princesa pressure network
-// SW corner: 9.7250, 118.7300   NE corner: 9.7450, 118.7750
-const MAP_BOUNDS = {latMin:9.725, latMax:9.745, lngMin:9.7300, lngMax:118.775};
+let leafletMap = null;
+let leafletMarkers = {};       // col -> L.marker
+let compareStations = [];      // max 2 stations
+let popupStation = null;
+let pressureChart = null;
+let currentRange = "24h";
 
-// State
-let compareStations=[];   // 0, 1, or 2 stations for compare mode
-let popupStation=null;    // station currently shown in popup
-
-// ── Date parser (M/DD/YYYY format from Google Sheets) ──────────────────────────
+// ── Date parser: M/DD/YYYY + H:MM:SS AM/PM ────────────────────────────────────
 function parseDateTime(dateStr, timeStr){
   try{
     let d;
-    if(dateStr instanceof Date){
-      d=new Date(dateStr);
-    } else if(typeof dateStr==="string"){
-      const s=dateStr.trim();
-      const parts=s.split("/");
-      if(parts.length===3){
-        // M/DD/YYYY — month=parts[0], day=parts[1], year=parts[2]
-        d=new Date(`${parts[2]}-${parts[0].padStart(2,"0")}-${parts[1].padStart(2,"0")}`);
-      } else { d=new Date(s); }
+    if(dateStr instanceof Date){ d=new Date(dateStr); }
+    else if(typeof dateStr==="string"){
+      const p=dateStr.trim().split("/");
+      if(p.length===3) d=new Date(`${p[2]}-${p[0].padStart(2,"0")}-${p[1].padStart(2,"0")}`);
+      else d=new Date(dateStr);
     } else { d=new Date(dateStr); }
-    if(isNaN(d.getTime()))return null;
+    if(isNaN(d.getTime())) return null;
     if(timeStr){
-      let tStr;
-      if(timeStr instanceof Date){
-        tStr=timeStr.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});
-      } else { tStr=String(timeStr).trim(); }
-      const match=tStr.match(/(\d+):(\d+)(?::(\d+))?\s*(AM|PM)?/i);
-      if(match){
-        let h=parseInt(match[1]),m=parseInt(match[2]);
-        const ampm=match[4]?match[4].toUpperCase():null;
-        if(ampm==="PM"&&h!==12)h+=12;
-        if(ampm==="AM"&&h===12)h=0;
-        d.setHours(h,m,0,0);
+      let tStr = timeStr instanceof Date
+        ? timeStr.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true})
+        : String(timeStr).trim();
+      const m=tStr.match(/(\d+):(\d+)(?::(\d+))?\s*(AM|PM)?/i);
+      if(m){
+        let h=parseInt(m[1]), mn=parseInt(m[2]);
+        const ap=m[4]?m[4].toUpperCase():null;
+        if(ap==="PM"&&h!==12) h+=12;
+        if(ap==="AM"&&h===12) h=0;
+        d.setHours(h,mn,0,0);
       }
     }
     return d;
-  }catch(e){return null;}
+  }catch(e){ return null; }
 }
 
+// ── Filter by time range — always falls back to row count if no recent data ───
 function filterByRange(data, range){
-  if(range==="all")return data;
-  const now=new Date();
-  const hours={"24h":24,"7d":168,"14d":336}[range]||24;
-  const cutoff=new Date(now.getTime()-hours*3600*1000);
-  const filtered=data.filter(r=>r.dt&&r.dt>=cutoff);
-  if(filtered.length===0){
-    const slice={"24h":3,"7d":21,"14d":42,"all":data.length}[range]||21;
-    return data.slice(-slice);
-  }
-  return filtered;
+  if(range==="all" || !data.length) return data;
+  const sliceMap={"24h":3,"7d":21,"14d":42};
+  const hourMap={"24h":24,"7d":168,"14d":336};
+  const hours=hourMap[range]||24;
+  const cutoff=new Date(new Date().getTime()-hours*3600*1000);
+  const byTime=data.filter(r=>r.dt&&r.dt>=cutoff);
+  // Always return at least the slice amount so old data still shows
+  if(byTime.length>0) return byTime;
+  return data.slice(-(sliceMap[range]||3));
 }
 
-// ── Coordinate → SVG pixel projection ─────────────────────────────────────────
-function latLngToSVG(lat, lng, svgW, svgH){
-  // Bounding box of our network
-  const latMin=9.724, latMax=9.743, lngMin=118.728, lngMax=118.776;
-  const x=((lng-lngMin)/(lngMax-lngMin))*svgW;
-  const y=((latMax-lat)/(latMax-latMin))*svgH;
-  return{x,y};
+// ── Leaflet map init ──────────────────────────────────────────────────────────
+function initLeafletMap(){
+  if(leafletMap) return;
+  leafletMap = L.map("leaflet-map",{
+    center:[9.7340, 118.7450],
+    zoom:15,
+    zoomControl:true,
+    attributionControl:false
+  });
+
+  // OpenStreetMap tiles — free, no API key needed
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,
+    attribution:"© OpenStreetMap"
+  }).addTo(leafletMap);
+
+  // Dark overlay for style consistency
+  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",{
+    maxZoom:19,
+    opacity:0.85,
+    attribution:""
+  }).addTo(leafletMap);
 }
 
-// ── Build SVG dot overlay ──────────────────────────────────────────────────────
-function buildSVGOverlay(){
-  const svg=document.getElementById("press-svg-overlay");
-  const wrap=document.querySelector(".press-map-wrap");
-  if(!svg||!wrap)return;
-  const W=wrap.offsetWidth||600, H=wrap.offsetHeight||400;
-  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-  svg.innerHTML="";
+// ── Build/refresh Leaflet markers ─────────────────────────────────────────────
+function buildLeafletMarkers(){
+  // Remove existing markers
+  Object.values(leafletMarkers).forEach(m=>leafletMap.removeLayer(m));
+  leafletMarkers={};
 
   PRESSURE_STATIONS.forEach(s=>{
     const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
     const val=recent?recent.vals[s.col]:null;
     const isAlert=val!==null&&val<=ALERT_PSI;
     const hasData=val!==null;
-    const pos=latLngToSVG(s.lat,s.lng,W,H);
-    const color=hasData?(isAlert?"#DC2626":"#059669"):"#64748B";
-    const glowColor=hasData?(isAlert?"rgba(220,38,38,0.4)":"rgba(5,150,105,0.3)"):"transparent";
 
-    // Glow ring for alerts
-    if(isAlert){
-      const glow=document.createElementNS("http://www.w3.org/2000/svg","circle");
-      glow.setAttribute("cx",pos.x);glow.setAttribute("cy",pos.y);
-      glow.setAttribute("r","14");glow.setAttribute("fill",glowColor);
-      glow.style.animation="svg-pulse 1.5s ease-in-out infinite";
-      svg.appendChild(glow);
-    }
+    // Determine classes
+    let dotClass="pressure-dot dot-nodata";
+    if(hasData) dotClass=isAlert?"pressure-dot dot-alert":"pressure-dot dot-ok";
+    const cIdx=compareStations.findIndex(cs=>cs.col===s.col);
+    if(cIdx===0) dotClass+=" dot-compare-1";
+    if(cIdx===1) dotClass+=" dot-compare-2";
 
-    // Outer ring
-    const ring=document.createElementNS("http://www.w3.org/2000/svg","circle");
-    ring.setAttribute("cx",pos.x);ring.setAttribute("cy",pos.y);
-    ring.setAttribute("r","9");ring.setAttribute("fill","rgba(13,27,42,0.7)");
-    ring.setAttribute("stroke",color);ring.setAttribute("stroke-width","1.5");
-    svg.appendChild(ring);
+    // Label: show PSI value inside dot
+    const label=val!==null?fmt(val,0):"?";
 
-    // Inner dot
-    const dot=document.createElementNS("http://www.w3.org/2000/svg","circle");
-    dot.setAttribute("cx",pos.x);dot.setAttribute("cy",pos.y);
-    dot.setAttribute("r","5");dot.setAttribute("fill",color);
-    dot.setAttribute("class","map-dot");
-    dot.style.cursor="pointer";
-    dot.setAttribute("data-col",s.col);
-    dot.addEventListener("click",(e)=>{
-      e.stopPropagation();
-      if(e.shiftKey){
-        addStationToCompare(s);
-      } else {
-        showStationPopup(s, pos, W, H);
-      }
+    const icon=L.divIcon({
+      className:"",
+      html:`<div class="${dotClass}" style="width:28px;height:28px;line-height:28px;text-align:center;color:white;">${label}</div>`,
+      iconSize:[28,28],
+      iconAnchor:[14,14],
+      popupAnchor:[0,-16]
     });
-    // Tooltip on hover
-    const title=document.createElementNS("http://www.w3.org/2000/svg","title");
-    title.textContent=`${s.name}${val!==null?" — "+fmt(val,2)+" PSI":""}`;
-    dot.appendChild(title);
-    svg.appendChild(dot);
 
-    // PSI label for selected/compare stations
-    const isSelected=compareStations.some(cs=>cs.col===s.col);
-    if(isSelected||compareStations.length===0&&popupStation?.col===s.col){
-      const label=document.createElementNS("http://www.w3.org/2000/svg","text");
-      label.setAttribute("x",pos.x);label.setAttribute("y",pos.y-13);
-      label.setAttribute("text-anchor","middle");
-      label.setAttribute("font-size","9");label.setAttribute("fill",color);
-      label.setAttribute("font-family","IBM Plex Mono,monospace");label.setAttribute("font-weight","600");
-      label.textContent=val!==null?fmt(val,1):"—";
-      svg.appendChild(label);
-    }
+    const timeStr=recent&&recent.dt?
+      recent.dt.toLocaleDateString("en-PH")+" "+
+      recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"})
+      :"No recent data";
+
+    const isAlertStatus=val!==null&&val<=ALERT_PSI;
+    const psiColor=val===null?"#94A3B8":isAlertStatus?"#FCA5A5":"#34D399";
+    const statusTxt=val===null?"No reading available":isAlertStatus?"⚠️ Below alert threshold (6.5 PSI)":"✓ Normal pressure";
+    const statusColor=val===null?"#94A3B8":isAlertStatus?"#FCA5A5":"#34D399";
+    const inCompare=compareStations.some(cs=>cs.col===s.col);
+
+    const popupHtml=`<div style="padding:14px;font-family:'IBM Plex Sans',sans-serif;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
+        <div>
+          <div style="font-size:12px;font-weight:500;color:#F8FAFC;line-height:1.3;">${s.name}</div>
+          <div style="font-size:9px;color:#94A3B8;font-family:'IBM Plex Mono',monospace;margin-top:2px;">${timeStr}</div>
+        </div>
+      </div>
+      <div style="font-size:30px;font-weight:300;font-family:'IBM Plex Mono',monospace;color:${psiColor};line-height:1;margin-bottom:4px;">
+        ${val!==null?fmt(val,2)+" PSI":"No data"}
+      </div>
+      <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:${statusColor};margin-bottom:12px;">${statusTxt}</div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="viewHistoryFromPopup(${s.col})" style="flex:1;padding:7px 0;border-radius:6px;background:#1B8C7D;color:white;border:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;cursor:pointer;">View History</button>
+        <button id="cmp-btn-${s.col}" onclick="toggleCompareFromPopup(${s.col})" style="flex:1;padding:7px 0;border-radius:6px;background:${inCompare?"rgba(220,38,38,0.2)":"rgba(21,96,189,0.2)"};border:1px solid ${inCompare?"rgba(220,38,38,0.4)":"rgba(21,96,189,0.4)"};color:${inCompare?"#FCA5A5":"#4A90D9"};font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;cursor:pointer;">${inCompare?"✕ Remove":"+ Compare"}</button>
+      </div>
+    </div>`;
+
+    const marker=L.marker([s.lat, s.lng],{icon}).addTo(leafletMap);
+    marker.bindPopup(popupHtml,{maxWidth:240,minWidth:220,closeButton:true,className:"dark-popup"});
+    marker.on("popupopen",()=>{ popupStation=s; });
+    marker.on("popupclose",()=>{ popupStation=null; });
+    leafletMarkers[s.col]=marker;
   });
-
-  // Add SVG pulse keyframes via style
-  if(!document.getElementById("svg-pulse-style")){
-    const style=document.createElement("style");
-    style.id="svg-pulse-style";
-    style.textContent="@keyframes svg-pulse{0%,100%{opacity:.6;r:14}50%{opacity:.2;r:18}}";
-    document.head.appendChild(style);
-  }
 }
 
-// ── Station popup ──────────────────────────────────────────────────────────────
-function showStationPopup(station, pos, svgW, svgH){
-  popupStation=station;
-  const popup=document.getElementById("station-popup");
-  const recent=pressureRaw.filter(r=>r.vals[station.col]!==null).slice(-1)[0];
-  const val=recent?recent.vals[station.col]:null;
-  const isAlert=val!==null&&val<=ALERT_PSI;
-  const timeStr=recent&&recent.dt?
-    recent.dt.toLocaleDateString("en-PH")+" "+recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"})
-    :"No recent data";
-
-  document.getElementById("popup-name").textContent=station.name;
-  document.getElementById("popup-time").textContent=timeStr;
-
-  const psiEl=document.getElementById("popup-psi");
-  psiEl.className="popup-psi "+(val===null?"no-psi":isAlert?"alert-psi":"ok-psi");
-  psiEl.textContent=val!==null?fmt(val,2)+" PSI":"No data";
-
-  const statusEl=document.getElementById("popup-status");
-  if(val===null){statusEl.textContent="No reading available";statusEl.style.color="var(--text2)";}
-  else if(isAlert){statusEl.textContent="⚠️ Below alert threshold (6.5 PSI)";statusEl.style.color="#FCA5A5";}
-  else{statusEl.textContent="✓ Normal pressure";statusEl.style.color="#34D399";}
-
-  // Compare button state
-  const cBtn=document.getElementById("popup-compare-btn");
-  const inCompare=compareStations.some(cs=>cs.col===station.col);
-  cBtn.className="popup-btn compare"+(inCompare?" active-compare":"");
-  cBtn.textContent=inCompare?"✕ Remove":"+ Compare";
-
-  // Position popup — avoid edge overflow
-  const wrap=document.querySelector(".press-map-wrap");
-  const wW=wrap.offsetWidth, wH=wrap.offsetHeight;
-  let pxX=(pos.x/svgW)*wW, pxY=(pos.y/svgH)*wH;
-  let left=pxX+14, top=pxY-20;
-  if(left+250>wW)left=pxX-260;
-  if(top+180>wH)top=wH-190;
-  if(top<8)top=8;
-  popup.style.left=left+"px";popup.style.top=top+"px";
-  popup.style.display="block";
-  buildSVGOverlay(); // refresh to show label
+// Called from popup buttons
+function viewHistoryFromPopup(col){
+  const station=PRESSURE_STATIONS.find(s=>s.col===col);
+  if(!station)return;
+  leafletMap.closePopup();
+  showChartPanel(station);
 }
-
-function closePopup(){
-  document.getElementById("station-popup").style.display="none";
-  popupStation=null;
-}
-
-function viewHistory(){
-  if(!popupStation)return;
-  closePopup();
-  showChartPanel(popupStation);
-}
-
-function addToCompare(){
-  if(!popupStation)return;
-  addStationToCompare(popupStation);
-  closePopup();
+function toggleCompareFromPopup(col){
+  const station=PRESSURE_STATIONS.find(s=>s.col===col);
+  if(!station)return;
+  leafletMap.closePopup();
+  addStationToCompare(station);
 }
 
 // ── Compare mode ───────────────────────────────────────────────────────────────
@@ -1261,26 +1242,20 @@ const COMPARE_COLORS=[
 ];
 
 function addStationToCompare(station){
-  if(compareStations.some(s=>s.col===station.col)){
-    // Already in compare — remove it
-    compareStations=compareStations.filter(s=>s.col!==station.col);
-  } else {
-    if(compareStations.length>=2){
-      compareStations.shift(); // drop oldest
-    }
+  const idx=compareStations.findIndex(s=>s.col===station.col);
+  if(idx>=0){ compareStations.splice(idx,1); }
+  else{
+    if(compareStations.length>=2) compareStations.shift();
     compareStations.push(station);
   }
   updateScrollCards();
-  buildSVGOverlay();
+  buildLeafletMarkers();
   document.getElementById("compare-clear").style.display=compareStations.length>0?"block":"none";
-
   if(compareStations.length===0){
-    // Back to placeholder
     document.getElementById("chart-placeholder").style.display="flex";
     document.getElementById("chart-active-panel").style.display="none";
-  } else {
-    buildCompareChart();
-  }
+    if(pressureChart){pressureChart.destroy();pressureChart=null;}
+  } else { buildCompareChart(); }
 }
 
 function clearCompare(){
@@ -1291,11 +1266,11 @@ function clearCompare(){
   document.getElementById("compare-clear").style.display="none";
   document.getElementById("compare-banner").style.display="none";
   updateScrollCards();
-  buildSVGOverlay();
+  buildLeafletMarkers();
 }
 
 function buildCompareChart(){
-  if(pressureChart)pressureChart.destroy();
+  if(pressureChart){pressureChart.destroy();pressureChart=null;}
   const filtered=filterByRange(pressureRaw,currentRange);
   const labels=filtered.map(r=>{
     if(!r.dt)return"";
@@ -1307,36 +1282,34 @@ function buildCompareChart(){
     const c=COMPARE_COLORS[i];
     const vals=filtered.map(r=>r.vals[s.col]!==null?r.vals[s.col]:null);
     return{
-      label:`${s.name}`,
-      data:vals,
+      label:s.name,data:vals,
       borderColor:c.border,backgroundColor:c.bg,
       borderWidth:2,pointRadius:2.5,
       pointBackgroundColor:vals.map(v=>v!==null&&v<=ALERT_PSI?"#DC2626":c.border),
       pointBorderColor:"transparent",
-      tension:.3,fill:false,spanGaps:true
+      tension:.3,fill:compareStations.length===1,spanGaps:true
     };
   });
-
-  // Alert line
   datasets.push({
-    label:"Alert (6.5 PSI)",
+    label:"Alert 6.5 PSI",
     data:labels.map(()=>ALERT_PSI),
     borderColor:"rgba(220,38,38,0.6)",borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false
   });
 
-  // Panel header
   document.getElementById("chart-placeholder").style.display="none";
   document.getElementById("chart-active-panel").style.display="block";
+
   if(compareStations.length===1){
     document.getElementById("panel-station-name").textContent=compareStations[0].name;
     document.getElementById("panel-station-sub").textContent="Pressure history";
     document.getElementById("compare-banner").style.display="none";
   } else {
-    document.getElementById("panel-station-name").textContent="Comparison";
-    document.getElementById("panel-station-sub").textContent=compareStations.map(s=>s.name.split(" ")[0]).join(" vs ");
+    document.getElementById("panel-station-name").textContent="Compare";
+    document.getElementById("panel-station-sub").textContent=
+      compareStations.map(s=>s.name.split(" ").slice(0,2).join(" ")).join(" vs ");
     document.getElementById("compare-banner").style.display="block";
     document.getElementById("compare-banner-text").textContent=
-      `Comparing: ${compareStations[0].name.split(" ").slice(0,2).join(" ")} vs ${compareStations[1].name.split(" ").slice(0,2).join(" ")}`;
+      compareStations.map(s=>s.name.split(" ").slice(0,2).join(" ")).join(" vs ");
   }
 
   pressureChart=new Chart(document.getElementById("chart-pressure"),{
@@ -1352,8 +1325,9 @@ function buildCompareChart(){
         }}}
       },
       scales:{
-        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},maxTicksLimit:12,maxRotation:45}},
-        y:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
+        x:{grid:{color:"rgba(255,255,255,0.04)"},ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:9},maxTicksLimit:14,maxRotation:45}},
+        y:{grid:{color:"rgba(255,255,255,0.04)"},
+          ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
           suggestedMin:0,suggestedMax:20,
           title:{display:true,text:"PSI",color:"#64748B",font:{family:"IBM Plex Mono",size:10}}}
       }
@@ -1378,7 +1352,7 @@ function buildCompareChart(){
 function showChartPanel(station){
   compareStations=[station];
   buildCompareChart();
-  buildSVGOverlay();
+  buildLeafletMarkers();
   updateScrollCards();
   document.getElementById("compare-clear").style.display="block";
 }
@@ -1387,7 +1361,7 @@ function setRange(btn, range){
   currentRange=range;
   document.querySelectorAll(".time-range-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
-  if(compareStations.length>0)buildCompareChart();
+  if(compareStations.length>0) buildCompareChart();
 }
 
 // ── Station scroll row ─────────────────────────────────────────────────────────
@@ -1401,11 +1375,10 @@ function buildScrollRow(){
     const timeStr=recent&&recent.dt?
       recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
     const cls=hasData?(isAlert?"alert-card":"ok-card"):"";
-    const psiCls=hasData?(isAlert?"al-v":"ok-v"):"no-v";
     return`<div class="scroll-station-card ${cls}" id="ss-${s.col}"
-      onclick="handleScrollCardClick(event,${s.col})">
+      onclick="handleScrollCardClick(event,${s.col})" title="${s.name}">
       <div class="scroll-sname">${s.name}</div>
-      <div class="scroll-psi ${psiCls}">${val!==null?fmt(val,2):"—"}<span style="font-size:9px;color:var(--text2);margin-left:2px">${val!==null?"PSI":""}</span></div>
+      <div class="scroll-psi ${val===null?"no-v":isAlert?"al-v":"ok-v"}">${val!==null?fmt(val,2):"—"}<span style="font-size:9px;color:var(--text2);margin-left:2px">${val!==null?"PSI":""}</span></div>
       <div class="scroll-time">${timeStr}</div>
     </div>`;
   }).join("");
@@ -1415,19 +1388,15 @@ function updateScrollCards(){
   PRESSURE_STATIONS.forEach(s=>{
     const el=document.getElementById(`ss-${s.col}`);
     if(!el)return;
-    const inSel=compareStations.some(cs=>cs.col===s.col);
-    el.classList.toggle("selected",inSel);
+    el.classList.toggle("selected",compareStations.some(cs=>cs.col===s.col));
   });
 }
 
 function handleScrollCardClick(e, col){
   const station=PRESSURE_STATIONS.find(s=>s.col===col);
   if(!station)return;
-  if(e.shiftKey){
-    addStationToCompare(station);
-  } else {
-    showChartPanel(station);
-  }
+  if(e.shiftKey){ addStationToCompare(station); }
+  else { showChartPanel(station); if(leafletMap) leafletMap.flyTo([station.lat,station.lng],16,{duration:0.8}); }
 }
 
 // ── Raw readings table ─────────────────────────────────────────────────────────
@@ -1437,29 +1406,27 @@ function buildPressureRawTable(){
     PRESSURE_STATIONS.map(s=>`<th class="right" style="font-size:9px">${s.name.split(" ").slice(0,2).join(" ")}</th>`).join("");
   const slice=pressureRaw.slice(-21);
   document.getElementById("press-tbody").innerHTML=slice.map(r=>{
-    const dateStr=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
-    const timeStr=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
-    const cells=PRESSURE_STATIONS.map(s=>{
-      const v=r.vals[s.col];
-      const isAlert=v!==null&&v<=ALERT_PSI;
-      return`<td class="right mono" style="${isAlert?"color:#FCA5A5;font-weight:600":""}">${v!==null?fmt(v,2):"—"}</td>`;
-    }).join("");
-    return`<tr><td class="mono">${dateStr}</td><td class="mono">${timeStr}</td>${cells}</tr>`;
+    const ds=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
+    const ts=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
+    return`<tr><td class="mono">${ds}</td><td class="mono">${ts}</td>`+
+      PRESSURE_STATIONS.map(s=>{
+        const v=r.vals[s.col];const ia=v!==null&&v<=ALERT_PSI;
+        return`<td class="right mono" style="${ia?"color:#FCA5A5;font-weight:600":""}">${v!==null?fmt(v,2):"—"}</td>`;
+      }).join("")+`</tr>`;
   }).join("");
-  // Mobile cards
   document.getElementById("press-cards").innerHTML=
     `<div style="padding:10px 14px">`+
     slice.map(r=>{
-      const dateStr=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
-      const timeStr=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
+      const ds=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
+      const ts=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
       return`<div class="mob-card">
-        <div class="mob-card-header"><span class="mob-card-name">${dateStr}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">${timeStr}</span></div>
-        ${PRESSURE_STATIONS.map(s=>{const v=r.vals[s.col];if(v===null)return"";const a=v<=ALERT_PSI;return`<div class="mob-card-row"><span class="mob-card-label">${s.name.split(" ").slice(0,2).join(" ")}</span><span class="mob-card-val" style="${a?"color:#FCA5A5;font-weight:600":""}">${fmt(v,2)} PSI${a?" ⚠️":""}</span></div>`;}).join("")}
+        <div class="mob-card-header"><span class="mob-card-name">${ds}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">${ts}</span></div>
+        ${PRESSURE_STATIONS.map(s=>{const v=r.vals[s.col];if(v===null)return"";const a=v<=ALERT_PSI;
+          return`<div class="mob-card-row"><span class="mob-card-label">${s.name.split(" ").slice(0,2).join(" ")}</span><span class="mob-card-val" style="${a?"color:#FCA5A5;font-weight:600":""}">${fmt(v,2)} PSI${a?" ⚠️":""}</span></div>`;}).join("")}
       </div>`;
     }).join("")+`</div>`;
 }
 
-// ── Load pressure data ─────────────────────────────────────────────────────────
 async function loadPressure(){
   try{
     const raw=await fetchSheet("Pressure Points");
@@ -1475,22 +1442,15 @@ async function loadPressure(){
 
     if(pressureRaw.length===0){
       document.getElementById("press-error").style.display="block";
-      document.getElementById("press-error").textContent="Pressure Points sheet empty or date not recognized. Expected: M/DD/YYYY in col A, H:MM:SS AM/PM in col B.";
+      document.getElementById("press-error").textContent="Pressure Points sheet empty or date not recognized. Expected: M/DD/YYYY in col A.";
       return;
     }
 
+    initLeafletMap();
+    buildLeafletMarkers();
     buildScrollRow();
     buildPressureRawTable();
-    // Build SVG overlay after a tick (iframe needs to render)
-    setTimeout(()=>{
-      buildSVGOverlay();
-      // Auto-show first station
-      showChartPanel(PRESSURE_STATIONS[0]);
-    }, 800);
-
-    // Rebuild overlay on resize
-    window.addEventListener("resize",()=>buildSVGOverlay());
-
+    showChartPanel(PRESSURE_STATIONS[0]);
     document.getElementById("press-map-count").textContent=PRESSURE_STATIONS.length+" stations";
   }catch(err){
     document.getElementById("press-error").style.display="block";
