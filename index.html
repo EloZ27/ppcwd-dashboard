@@ -211,7 +211,7 @@ tbody td.mono{font-family:"IBM Plex Mono",monospace;font-size:11px;}
 /* Map */
 .map-container{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
-  overflow:hidden;height:450px;position:relative;
+  overflow:hidden;height:380px;position:relative;
 }
 .map-container iframe{width:100%;height:100%;border:none;}
 .map-title{
@@ -307,7 +307,7 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
 
 /* Main layout: map left, chart right */
 .press-main-layout{
-  display:grid;grid-template-columns:1fr 380px;
+  display:grid;grid-template-columns:1fr 2fr;
   gap:14px;margin-bottom:14px;height:500px;
 }
 .press-map-card{
@@ -461,6 +461,22 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
   .press-chart-panel{min-height:360px;}
   .compare-hint{display:none;}
 }
+
+/* ── Date filter ── */
+.date-filter-group{display:flex;flex-direction:column;gap:3px;}
+.date-filter-label{font-size:9px;font-family:"IBM Plex Mono",monospace;color:var(--text2);letter-spacing:.6px;text-transform:uppercase;}
+.date-filter-input{
+  background:var(--card2);border:1px solid var(--border);border-radius:5px;
+  padding:4px 8px;color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:11px;
+  outline:none;cursor:pointer;
+}
+.date-filter-input::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer;}
+.date-filter-input:focus{border-color:var(--teal2);}
+.date-filter-clear{
+  background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:5px;
+  padding:4px 8px;color:#FCA5A5;font-family:"IBM Plex Mono",monospace;font-size:11px;cursor:pointer;
+}
+.date-filter-info{font-size:9px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);min-height:12px;}
 </style>
 </head>
 <body>
@@ -472,7 +488,7 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
 
 <header>
   <div class="logo-block">
-    <div class="logo-mark">PPCWD</div>
+    <div class="logo-mark">PP<br>CWD</div>
     <div class="logo-text">
       <strong>Puerto Princesa City Water District</strong>
       <span>Integrated Monitoring Dashboard</span>
@@ -570,15 +586,23 @@ footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-i
 <div class="page" id="page-pressure">
   <div class="error-banner" id="press-error"></div>
 
-  <!-- ── Top bar: compare mode toggle + legend ── -->
+  <!-- ── Top bar: legend + date filter + compare ── -->
   <div class="press-topbar">
-    <div style="display:flex;align-items:center;gap:10px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <div class="press-legend-dot ok-dot"></div><span class="press-legend-label">Normal (&gt; 6.5 PSI)</span>
       <div class="press-legend-dot alert-dot"></div><span class="press-legend-label">Alert (≤ 6.5 PSI)</span>
       <div class="press-legend-dot nodata-dot"></div><span class="press-legend-label">No data</span>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="compare-hint" id="compare-hint">Click a station to view. Hold Shift + click second station to compare.</span>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div class="date-filter-group">
+        <label class="date-filter-label">Filter by date</label>
+        <div style="display:flex;gap:5px;align-items:center">
+          <input type="date" id="date-filter-input" class="date-filter-input" onchange="applyDateFilter()" title="Show only readings from this date">
+          <button class="date-filter-clear" onclick="clearDateFilter()" id="date-filter-clear" style="display:none" title="Clear date filter">✕</button>
+        </div>
+        <div class="date-filter-info" id="date-filter-info"></div>
+      </div>
+      <span class="compare-hint" id="compare-hint">Click dot → View History or + Compare. Shift+click to compare.</span>
       <button class="compare-clear-btn" id="compare-clear" onclick="clearCompare()" style="display:none">✕ Clear compare</button>
     </div>
   </div>
@@ -1116,17 +1140,66 @@ function parseDateTime(dateStr, timeStr){
   }catch(e){ return null; }
 }
 
-// ── Filter by time range — always falls back to row count if no recent data ───
+// ── State for date filter ────────────────────────────────────────────────────
+let activeDateFilter = null;  // null = no filter, else Date object (midnight)
+
+// ── Filter by time range — relative to LATEST reading, not today's clock ─────
+// This handles datasets that are days/weeks old (data entered retrospectively)
 function filterByRange(data, range){
-  if(range==="all" || !data.length) return data;
-  const sliceMap={"24h":3,"7d":21,"14d":42};
+  // First apply date filter if active
+  let pool = activeDateFilter ? data.filter(r=>{
+    if(!r.dt) return false;
+    const rd = new Date(r.dt); rd.setHours(0,0,0,0);
+    const fd = new Date(activeDateFilter); fd.setHours(0,0,0,0);
+    return rd.getTime() === fd.getTime();
+  }) : data;
+
+  if(range==="all" || !pool.length) return pool;
+
+  // Find the latest timestamp in the filtered pool
+  const latest = pool.reduce((max,r)=>r.dt&&r.dt>max?r.dt:max, new Date(0));
   const hourMap={"24h":24,"7d":168,"14d":336};
   const hours=hourMap[range]||24;
-  const cutoff=new Date(new Date().getTime()-hours*3600*1000);
-  const byTime=data.filter(r=>r.dt&&r.dt>=cutoff);
-  // Always return at least the slice amount so old data still shows
-  if(byTime.length>0) return byTime;
-  return data.slice(-(sliceMap[range]||3));
+  const cutoff=new Date(latest.getTime()-hours*3600*1000);
+  const byTime=pool.filter(r=>r.dt&&r.dt>=cutoff);
+
+  // If range is narrower than data granularity, return what we have
+  if(byTime.length===0) return pool.slice(-Math.min(pool.length, {"24h":3,"7d":21,"14d":42}[range]||3));
+  return byTime;
+}
+
+// ── Date filter handlers ──────────────────────────────────────────────────────
+function applyDateFilter(){
+  const val = document.getElementById("date-filter-input").value;
+  if(!val){ clearDateFilter(); return; }
+  // val is "YYYY-MM-DD"
+  activeDateFilter = new Date(val+"T00:00:00");
+  document.getElementById("date-filter-clear").style.display="block";
+
+  // Count how many readings exist on this date
+  const count = pressureRaw.filter(r=>{
+    if(!r.dt) return false;
+    const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+    const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+    return rd.getTime()===fd.getTime();
+  }).length;
+  const info = document.getElementById("date-filter-info");
+  info.textContent = count>0 ? `${count} reading${count!==1?"s":""} on this date` : "No readings on this date";
+  info.style.color = count>0 ? "var(--teal2)" : "#FCA5A5";
+
+  // Rebuild map dots to show latest value ON that date per station
+  buildLeafletMarkers();
+  // Rebuild chart if station selected
+  if(compareStations.length>0) buildCompareChart();
+}
+
+function clearDateFilter(){
+  activeDateFilter=null;
+  document.getElementById("date-filter-input").value="";
+  document.getElementById("date-filter-clear").style.display="none";
+  document.getElementById("date-filter-info").textContent="";
+  buildLeafletMarkers();
+  if(compareStations.length>0) buildCompareChart();
 }
 
 // ── Leaflet map init ──────────────────────────────────────────────────────────
@@ -1146,7 +1219,7 @@ function initLeafletMap(){
   }).addTo(leafletMap);
 
   // Dark overlay for style consistency
-  L.tileLayer("https://api.stadiamaps.com/tz/lookup/v1?lat=59.43696&lng=24.75357&api_key=37b0767e-1086-42e4-9098-479261f291d1",{
+  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",{
     maxZoom:19,
     opacity:0.85,
     attribution:""
@@ -1160,7 +1233,14 @@ function buildLeafletMarkers(){
   leafletMarkers={};
 
   PRESSURE_STATIONS.forEach(s=>{
-    const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
+    // If date filter active, get latest reading on that date; else global latest
+    const pool = activeDateFilter ? pressureRaw.filter(r=>{
+      if(!r.dt||r.vals[s.col]===null) return false;
+      const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+      const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+      return rd.getTime()===fd.getTime();
+    }) : pressureRaw.filter(r=>r.vals[s.col]!==null);
+    const recent=pool.slice(-1)[0];
     const val=recent?recent.vals[s.col]:null;
     const isAlert=val!==null&&val<=ALERT_PSI;
     const hasData=val!==null;
@@ -1335,7 +1415,13 @@ function buildCompareChart(){
   // Latest reading strip
   const strip=document.getElementById("latest-strip");
   strip.innerHTML=compareStations.map((s,i)=>{
-    const recent=pressureRaw.filter(r=>r.vals[s.col]!==null).slice(-1)[0];
+        const spool2 = activeDateFilter ? pressureRaw.filter(r=>{
+      if(!r.dt||r.vals[s.col]===null) return false;
+      const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+      const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+      return rd.getTime()===fd.getTime();
+    }) : pressureRaw.filter(r=>r.vals[s.col]!==null);
+    const recent=spool2.slice(-1)[0];
     const val=recent?recent.vals[s.col]:null;
     const c=COMPARE_COLORS[i];
     const isAlert=val!==null&&val<=ALERT_PSI;
