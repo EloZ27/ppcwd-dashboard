@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPCWD — Pressure Data Uploader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1B2A;--navy2:#152336;
+  --teal:#1B8C7D;--teal2:#24B5A3;
+  --blue:#1560BD;--blue2:#4A90D9;
+  --green:#059669;--red:#DC2626;
+  --amber:#D97706;--amber2:#FCD34D;
+  --white:#F8FAFC;--text:#E2E8F0;--text2:#94A3B8;
+  --border:rgba(255,255,255,0.08);
+  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--navy);color:var(--text);
+  font-family:"IBM Plex Sans",sans-serif;font-size:14px;min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(27,140,125,0.12) 0%,transparent 60%);
+}
+header{
+  border-bottom:1px solid var(--border);padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;background:rgba(13,27,42,0.92);backdrop-filter:blur(12px);
+}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-mark{
+  width:36px;height:36px;background:linear-gradient(135deg,var(--teal),var(--blue));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;
+  color:white;line-height:1.1;text-align:center;
+}
+.logo-text strong{font-size:13px;font-weight:600;color:var(--white);display:block;}
+.logo-text span{font-size:10px;color:var(--text2);}
+.conn-badge{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);
+}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:#64748B;}
+.conn-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+
+main{max-width:960px;margin:0 auto;padding:32px 24px;}
+
+.page-title{font-size:20px;font-weight:300;color:var(--white);margin-bottom:4px;}
+.page-sub{font-size:12px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-bottom:28px;}
+
+/* Step cards */
+.step-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:24px;margin-bottom:16px;position:relative;
+}
+.step-num{
+  position:absolute;top:20px;right:20px;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-family:"IBM Plex Mono",monospace;color:var(--text2);
+}
+.step-title{
+  font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px;
+  display:flex;align-items:center;gap:8px;
+}
+.step-title::before{content:"";width:3px;height:14px;background:var(--teal2);border-radius:2px;}
+.step-desc{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6;}
+
+/* Drop zone */
+.drop-zone{
+  border:2px dashed rgba(36,181,163,0.3);border-radius:8px;
+  padding:36px 24px;text-align:center;cursor:pointer;
+  transition:all .2s;background:rgba(36,181,163,0.03);
+}
+.drop-zone:hover,.drop-zone.drag-over{
+  border-color:var(--teal2);background:rgba(36,181,163,0.08);
+}
+.drop-icon{font-size:32px;margin-bottom:10px;opacity:.5;}
+.drop-text{font-size:13px;color:var(--text2);}
+.drop-text strong{color:var(--teal2);}
+.drop-hint{font-size:10px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:6px;}
+input[type=file]{display:none;}
+
+/* Preview table */
+.preview-card{
+  background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;margin-top:16px;
+}
+.preview-header{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.preview-title{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);letter-spacing:.8px;text-transform:uppercase;}
+.preview-count{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);}
+.preview-scroll{overflow-x:auto;max-height:240px;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;min-width:500px;}
+thead th{
+  padding:8px 12px;text-align:left;font-size:9px;font-weight:500;
+  letter-spacing:.8px;text-transform:uppercase;color:var(--text2);
+  background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);
+  font-family:"IBM Plex Mono",monospace;position:sticky;top:0;
+}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{
+  padding:7px 12px;font-size:11px;
+  font-family:"IBM Plex Mono",monospace;color:var(--text);
+  white-space:nowrap;
+}
+tbody td.alert-val{color:#FCA5A5;font-weight:600;}
+tbody td.ok-val{color:#34D399;}
+
+/* Mapping section */
+.mapping-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.map-row{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.03);border-radius:6px;padding:8px 10px;
+  border:1px solid var(--border);
+}
+.map-label{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);flex:1;}
+.map-select{
+  background:var(--navy2);border:1px solid var(--border);border-radius:5px;
+  padding:4px 8px;color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:10px;
+  outline:none;flex:1.2;cursor:pointer;
+}
+
+/* Upload name */
+.upload-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.meta-input{
+  background:var(--card2);border:1px solid var(--border);border-radius:6px;
+  padding:8px 12px;color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:12px;
+  outline:none;width:100%;transition:border-color .2s;
+}
+.meta-input:focus{border-color:var(--teal2);}
+.meta-label{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);margin-bottom:4px;letter-spacing:.5px;}
+
+/* Upload button */
+.upload-btn{
+  width:100%;padding:14px;border-radius:8px;
+  background:var(--teal);color:white;border:none;
+  font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;margin-top:16px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.upload-btn:hover{background:var(--teal2);}
+.upload-btn:disabled{background:rgba(255,255,255,0.1);color:var(--text2);cursor:not-allowed;}
+
+/* Progress */
+.progress-wrap{margin-top:16px;display:none;}
+.progress-bar-bg{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;}
+.progress-bar{height:6px;background:var(--teal);border-radius:3px;transition:width .3s;width:0%;}
+.progress-text{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);margin-top:6px;}
+
+/* Results */
+.result-card{
+  border-radius:8px;padding:16px;margin-top:16px;display:none;
+}
+.result-card.success{background:rgba(5,150,105,0.1);border:1px solid rgba(5,150,105,0.3);}
+.result-card.error{background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);}
+.result-title{font-size:13px;font-weight:500;margin-bottom:8px;}
+.result-card.success .result-title{color:#34D399;}
+.result-card.error .result-title{color:#FCA5A5;}
+.result-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;}
+.result-stat{font-size:11px;font-family:"IBM Plex Mono",monospace;color:var(--text2);}
+.result-stat strong{color:var(--white);}
+.result-errors{font-size:11px;color:#FCA5A5;margin-top:8px;font-family:"IBM Plex Mono",monospace;line-height:1.6;}
+
+/* Upload history */
+.history-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.history-header{padding:14px 18px;border-bottom:1px solid var(--border);font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);text-transform:uppercase;letter-spacing:.8px;}
+.history-empty{padding:24px;text-align:center;font-size:12px;color:var(--text2);font-family:"IBM Plex Mono",monospace;}
+
+footer{
+  border-top:1px solid var(--border);padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  color:var(--text2);font-size:10px;font-family:"IBM Plex Mono",monospace;
+  margin-top:32px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-mark">PP<br>CWD</div>
+    <div class="logo-text">
+      <strong>Puerto Princesa City Water District</strong>
+      <span>Pressure Data Uploader — Supabase Sync</span>
+    </div>
+  </div>
+  <div class="conn-badge">
+    <div class="conn-dot" id="conn-dot"></div>
+    <span id="conn-label">Connecting...</span>
+  </div>
+</header>
+
+<main>
+  <div class="page-title">Upload Pressure Monitoring CSV</div>
+  <div class="page-sub">Sync supplier CSV exports → Supabase database → Dashboard auto-updates</div>
+
+  <!-- Step 1: Drop file -->
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <div class="step-title">Select or drop your CSV file</div>
+    <div class="step-desc">
+      Drag and drop the CSV exported from your pressure monitoring supplier's cloud.
+      Expected format: Date (DD/MM/YYYY), Time (H:MM:SS AM/PM), then one column per station.
+      Duplicate timestamps are automatically skipped — safe to re-upload the same file.
+    </div>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="drop-icon">📄</div>
+      <div class="drop-text"><strong>Click to browse</strong> or drag &amp; drop CSV here</div>
+      <div class="drop-hint">Accepts: .csv &nbsp;|&nbsp; Max size: 10 MB &nbsp;|&nbsp; Encoding: UTF-8</div>
+    </div>
+    <input type="file" id="file-input" accept=".csv" onchange="handleFile(this.files[0])">
+
+    <!-- Preview -->
+    <div class="preview-card" id="preview-card" style="display:none">
+      <div class="preview-header">
+        <span class="preview-title">Preview — first 5 rows</span>
+        <span class="preview-count" id="preview-count"></span>
+      </div>
+      <div class="preview-scroll">
+        <table id="preview-table"><thead><tr id="preview-head"></tr></thead><tbody id="preview-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Column mapping -->
+  <div class="step-card" id="step-mapping" style="display:none">
+    <div class="step-num">2</div>
+    <div class="step-title">Confirm column mapping</div>
+    <div class="step-desc">
+      Auto-detected from your CSV headers. Adjust if any column is mapped incorrectly.
+      Columns not mapped to a station will be ignored.
+    </div>
+    <div class="mapping-grid" id="mapping-grid"></div>
+  </div>
+
+  <!-- Step 3: Upload details -->
+  <div class="step-card" id="step-meta" style="display:none">
+    <div class="step-num">3</div>
+    <div class="step-title">Upload details</div>
+    <div class="step-desc">Add your name and any notes for the upload audit log.</div>
+    <div class="upload-meta">
+      <div>
+        <div class="meta-label">Uploaded by</div>
+        <input class="meta-input" id="uploaded-by" type="text" placeholder="e.g. Adrian Fernandez" value="">
+      </div>
+      <div>
+        <div class="meta-label">Notes (optional)</div>
+        <input class="meta-input" id="upload-notes" type="text" placeholder="e.g. Week of Apr 12 supplier export">
+      </div>
+    </div>
+
+    <button class="upload-btn" id="upload-btn" onclick="startUpload()" disabled>
+      <span id="upload-btn-text">⬆ Upload to Supabase</span>
+    </button>
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-text" id="progress-text">Preparing...</div>
+    </div>
+
+    <div class="result-card" id="result-card">
+      <div class="result-title" id="result-title"></div>
+      <div id="result-body"></div>
+    </div>
+  </div>
+
+  <!-- Upload history -->
+  <div class="history-card">
+    <div class="history-header">Upload history</div>
+    <div id="history-body">
+      <div class="history-empty">Loading history...</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>PPCWD &mdash; Engineering Services Department</span>
+  <span id="footer-db">Supabase: jaegxtxrqujkwsxfbvkk.supabase.co</span>
+</footer>
+
+<script>
+const SUPA_URL = "https://jaegxtxrqujkwsxfbvkk.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphZWd4dHhycXVqa3dzeGZidmtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxODk4MjEsImV4cCI6MjA5MTc2NTgyMX0.-kYlc6FAaLTx9G4xB-V3GseS7cKVUqHMrUqASqF3WQ0";
+const ALERT_PSI = 6.5;
+
+// Column name → Supabase db_column mapping
+const COL_MAP = {
+  "manalo booster station":          "manalo_booster",
+  "beside marianne hotel":           "beside_marianne_hotel",
+  "burgos cor abad santos":          "burgos_abad_santos",
+  "fernandez cor manalo":            "fernandez_manalo",
+  "front of camella homes":          "camella_homes",
+  "liberty poloy health center":     "liberty_poloy",
+  "near lacharica inn":              "lacharica_inn",
+  "near ppci manalo":                "ppci_manalo",
+  "near tanduay warehouse":          "tanduay_warehouse",
+  "ppcwd rizal office":              "ppcwd_rizal_office",
+  "princesa garden":                 "princesa_garden",
+  "rizal ave near ms. lagan":        "rizal_ms_lagan",
+  "rizal avenue near rcbc":          "rizal_rcbc",
+  "roxas cor manalo":                "roxas_manalo",
+  "saturn mktng":                    "saturn_mktng",
+  "valencia cor manalo":             "valencia_manalo",
+  "villarosa rd cor manalo":         "villarosa_manalo",
+  "waling waling rd mabini":         "waling_waling_mabini",
+};
+
+const DB_COLS = Object.values(COL_MAP);
+const DB_DISPLAY = {
+  "manalo_booster":"Manalo Booster","beside_marianne_hotel":"Beside Marianne Hotel",
+  "burgos_abad_santos":"Burgos/Abad Santos","fernandez_manalo":"Fernandez/Manalo",
+  "camella_homes":"Camella Homes","liberty_poloy":"Liberty Poloy HC",
+  "lacharica_inn":"Lacharica Inn","ppci_manalo":"PPCI Manalo",
+  "tanduay_warehouse":"Tanduay Warehouse","ppcwd_rizal_office":"PPCWD Rizal Office",
+  "princesa_garden":"Princesa Garden","rizal_ms_lagan":"Rizal/Ms. Lagan",
+  "rizal_rcbc":"Rizal/RCBC","roxas_manalo":"Roxas/Manalo",
+  "saturn_mktng":"Saturn Mktng","valencia_manalo":"Valencia/Manalo",
+  "villarosa_manalo":"Villarosa/Manalo","waling_waling_mabini":"Waling Waling/Mabini",
+};
+
+let parsedRows = [];
+let csvHeaders = [];
+let detectedMapping = {};  // dbCol -> csvColIndex
+
+// ── Supabase helpers ──────────────────────────────────────────────────────────
+async function supaFetch(path, opts={}){
+  const res = await fetch(`${SUPA_URL}/rest/v1/${path}`, {
+    headers:{
+      "apikey": SUPA_KEY,
+      "Authorization": `Bearer ${SUPA_KEY}`,
+      "Content-Type": "application/json",
+      "Prefer": opts.prefer || "return=minimal",
+      ...opts.headers
+    },
+    ...opts
+  });
+  return res;
+}
+
+// ── Connection check ───────────────────────────────────────────────────────────
+async function checkConnection(){
+  try{
+    const res = await supaFetch("pressure_stations?select=id&limit=1");
+    if(res.ok){
+      document.getElementById("conn-dot").className="conn-dot ok";
+      document.getElementById("conn-label").textContent="Connected to Supabase";
+    } else {
+      document.getElementById("conn-label").textContent="DB not set up — run schema SQL first";
+    }
+  }catch(e){
+    document.getElementById("conn-label").textContent="Connection failed";
+  }
+}
+
+// ── Load upload history ────────────────────────────────────────────────────────
+async function loadHistory(){
+  try{
+    const res = await supaFetch("upload_log?select=*&order=uploaded_at.desc&limit=20",
+      {headers:{"Prefer":"return=representation"}});
+    if(!res.ok){ document.getElementById("history-body").innerHTML=
+      '<div class="history-empty">Run schema SQL in Supabase first to enable history.</div>'; return; }
+    const logs = await res.json();
+    if(!logs.length){
+      document.getElementById("history-body").innerHTML='<div class="history-empty">No uploads yet.</div>';
+      return;
+    }
+    const tbl = `<div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th>Uploaded at</th><th>File</th><th>Uploaded by</th>
+        <th style="text-align:right">Rows in</th>
+        <th style="text-align:right">Inserted</th>
+        <th style="text-align:right">Skipped</th>
+        <th>Date range</th><th>Notes</th>
+      </tr></thead><tbody>`+
+      logs.map(l=>`<tr>
+        <td>${new Date(l.uploaded_at).toLocaleString("en-PH")}</td>
+        <td>${l.filename||"—"}</td>
+        <td>${l.uploaded_by||"—"}</td>
+        <td style="text-align:right;font-family:'IBM Plex Mono',monospace">${l.rows_in_file??""}</td>
+        <td style="text-align:right;font-family:'IBM Plex Mono',monospace;color:#34D399">${l.rows_inserted??""}</td>
+        <td style="text-align:right;font-family:'IBM Plex Mono',monospace;color:#94A3B8">${l.rows_skipped??""}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:10px">${l.date_range_start||""} → ${l.date_range_end||""}</td>
+        <td style="color:#94A3B8;font-size:11px">${l.notes||""}</td>
+      </tr>`).join("")+
+      `</tbody></table></div>`;
+    document.getElementById("history-body").innerHTML=tbl;
+  }catch(e){ document.getElementById("history-body").innerHTML='<div class="history-empty">Could not load history.</div>'; }
+}
+
+// ── CSV parser ────────────────────────────────────────────────────────────────
+function parseCSV(text){
+  const lines = text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n").filter(l=>l.trim());
+  if(!lines.length) return {headers:[], rows:[]};
+  // Find header row (first row with "date" or "day" in it)
+  let headerIdx=0;
+  for(let i=0;i<Math.min(5,lines.length);i++){
+    const lower=lines[i].toLowerCase();
+    if(lower.includes("date")||lower.includes("day")||lower.includes("time")){headerIdx=i;break;}
+  }
+  const headers = lines[headerIdx].split(",").map(h=>h.trim().replace(/^"|"$/g,""));
+  const rows = [];
+  for(let i=headerIdx+1;i<lines.length;i++){
+    const vals = lines[i].split(",").map(v=>v.trim().replace(/^"|"$/g,""));
+    if(vals.length < 2 || !vals[0]) continue;
+    const obj={};
+    headers.forEach((h,idx)=>{ obj[h]=vals[idx]||""; });
+    rows.push(obj);
+  }
+  return {headers, rows};
+}
+
+// ── Date/time parser — DD/MM/YYYY + H:MM:SS AM/PM ────────────────────────────
+function parseTimestamp(dateStr, timeStr){
+  try{
+    const p=dateStr.trim().split("/");
+    if(p.length!==3) return null;
+    const day=p[0].padStart(2,"0"), mon=p[1].padStart(2,"0"), yr=p[2];
+    let d=new Date(`${yr}-${mon}-${day}T00:00:00`);
+    if(isNaN(d.getTime())) return null;
+    const m=timeStr.trim().match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?/i);
+    if(m){
+      let h=parseInt(m[1],10), mn=parseInt(m[2],10);
+      const ap=(m[4]||"").toUpperCase();
+      if(ap==="PM"&&h!==12)h+=12;
+      if(ap==="AM"&&h===12)h=0;
+      d.setHours(h,mn,0,0);
+    }
+    return d;
+  }catch(e){return null;}
+}
+
+// ── Auto-detect column mapping ─────────────────────────────────────────────────
+function detectMapping(headers){
+  const mapping={};
+  headers.forEach((h,idx)=>{
+    const lower=h.toLowerCase();
+    for(const [keyword,dbCol] of Object.entries(COL_MAP)){
+      if(lower.includes(keyword.split(" ")[0]) && lower.includes(keyword.split(" ").slice(-1)[0])){
+        if(!Object.values(mapping).includes(idx)) mapping[dbCol]=idx;
+      }
+    }
+    // Fallback: partial match on first significant word
+    if(!Object.values(mapping).includes(idx)){
+      for(const [keyword,dbCol] of Object.entries(COL_MAP)){
+        const words=keyword.split(" ").filter(w=>w.length>4);
+        if(words.some(w=>lower.includes(w)) && !Object.values(mapping).includes(idx)){
+          mapping[dbCol]=idx;
+        }
+      }
+    }
+  });
+  return mapping;
+}
+
+// ── Handle file drop/select ────────────────────────────────────────────────────
+function handleFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const {headers,rows}=parseCSV(e.target.result);
+    if(!rows.length){ alert("No data rows found in CSV."); return; }
+    csvHeaders=headers;
+    parsedRows=rows;
+    detectedMapping=detectMapping(headers);
+    renderPreview(headers,rows);
+    renderMapping(headers);
+    document.getElementById("step-mapping").style.display="block";
+    document.getElementById("step-meta").style.display="block";
+    document.getElementById("upload-btn").disabled=false;
+    window._csvFilename=file.name;
+  };
+  reader.readAsText(file);
+}
+
+function renderPreview(headers, rows){
+  const head=document.getElementById("preview-head");
+  const body=document.getElementById("preview-body");
+  head.innerHTML=headers.slice(0,8).map(h=>`<th>${h}</th>`).join("")+(headers.length>8?`<th>…+${headers.length-8} cols</th>`:"");
+  body.innerHTML=rows.slice(0,5).map(r=>{
+    const cells=headers.slice(0,8).map(h=>{
+      const v=r[h]||"";
+      const n=parseFloat(v);
+      const isAlert=!isNaN(n)&&n<=ALERT_PSI&&n>0;
+      return`<td class="${isAlert?"alert-val":!isNaN(n)&&n>0?"ok-val":""}">${v}</td>`;
+    }).join("");
+    return`<tr>${cells}${headers.length>8?"<td>…</td>":""}</tr>`;
+  }).join("");
+  document.getElementById("preview-count").textContent=`${rows.length} rows total`;
+  document.getElementById("preview-card").style.display="block";
+}
+
+function renderMapping(headers){
+  const grid=document.getElementById("mapping-grid");
+  grid.innerHTML=DB_COLS.map(dbCol=>{
+    const detectedIdx=detectedMapping[dbCol]??-1;
+    const opts=`<option value="-1">— skip —</option>`+
+      headers.map((h,i)=>`<option value="${i}" ${i===detectedIdx?"selected":""}>${h}</option>`).join("");
+    return`<div class="map-row">
+      <span class="map-label">${DB_DISPLAY[dbCol]||dbCol}</span>
+      <select class="map-select" id="map-${dbCol}">${opts}</select>
+    </div>`;
+  }).join("");
+}
+
+// ── Upload to Supabase ────────────────────────────────────────────────────────
+async function startUpload(){
+  const btn=document.getElementById("upload-btn");
+  const progressWrap=document.getElementById("progress-wrap");
+  const progressBar=document.getElementById("progress-bar");
+  const progressText=document.getElementById("progress-text");
+  const resultCard=document.getElementById("result-card");
+  resultCard.style.display="none";
+
+  // Build final mapping from selects
+  const finalMap={};
+  DB_COLS.forEach(dbCol=>{
+    const sel=document.getElementById(`map-${dbCol}`);
+    const idx=parseInt(sel.value,10);
+    if(idx>=0) finalMap[dbCol]=csvHeaders[idx];
+  });
+
+  // Find date and time columns (first two cols that look like date/time)
+  let dateCol=csvHeaders[0], timeCol=csvHeaders[1];
+  // Try to find by content
+  for(const h of csvHeaders){
+    const lower=h.toLowerCase();
+    if(lower.includes("date")||lower.includes("day")) dateCol=h;
+    if(lower.includes("time")) timeCol=h;
+  }
+
+  const uploadedBy=document.getElementById("uploaded-by").value.trim()||"anonymous";
+  const notes=document.getElementById("upload-notes").value.trim();
+  const batchId=crypto.randomUUID();
+  const filename=window._csvFilename||"upload.csv";
+
+  // Build records
+  const records=[];
+  const errors=[];
+  let minDate=null, maxDate=null;
+
+  parsedRows.forEach((row,i)=>{
+    const dt=parseTimestamp(row[dateCol]||"",row[timeCol]||"");
+    if(!dt){errors.push(`Row ${i+2}: invalid date/time "${row[dateCol]} ${row[timeCol]}"`);return;}
+
+    const rec={
+      recorded_at: dt.toISOString(),
+      recorded_date: dt.toISOString().slice(0,10),
+      recorded_hour: dt.getHours(),
+      source: "csv_upload",
+      uploaded_by: uploadedBy,
+      upload_batch_id: batchId,
+    };
+    Object.entries(finalMap).forEach(([dbCol,csvCol])=>{
+      const v=parseFloat(row[csvCol]);
+      if(!isNaN(v)) rec[dbCol]=v;
+    });
+    records.push(rec);
+    if(!minDate||dt<minDate) minDate=dt;
+    if(!maxDate||dt>maxDate) maxDate=dt;
+  });
+
+  if(!records.length){
+    showResult("error","No valid rows to upload",`${errors.length} parse errors.`,errors);return;
+  }
+
+  btn.disabled=true;
+  progressWrap.style.display="block";
+
+  // Upload in batches of 200
+  const BATCH=200;
+  let inserted=0, skipped=0;
+  const uploadErrors=[];
+
+  for(let i=0;i<records.length;i+=BATCH){
+    const chunk=records.slice(i,i+BATCH);
+    const pct=Math.round((i/records.length)*90);
+    progressBar.style.width=pct+"%";
+    progressText.textContent=`Uploading rows ${i+1}–${Math.min(i+BATCH,records.length)} of ${records.length}…`;
+
+    const res=await supaFetch("pressure_readings",{
+      method:"POST",
+      prefer:"resolution=ignore-duplicates,return=representation",
+      headers:{"Prefer":"resolution=ignore-duplicates,return=representation"},
+      body:JSON.stringify(chunk)
+    });
+
+    if(res.ok){
+      const data=await res.json().catch(()=>[]);
+      inserted+=Array.isArray(data)?data.length:chunk.length;
+    } else {
+      const err=await res.text().catch(()=>"unknown error");
+      // On conflict ignore — Supabase returns 409 for duplicates with ignore
+      if(res.status===409||err.includes("duplicate")){
+        skipped+=chunk.length;
+      } else {
+        uploadErrors.push(`Batch ${Math.floor(i/BATCH)+1}: ${err.slice(0,120)}`);
+      }
+    }
+  }
+
+  // Best estimate for skipped (Supabase ignore-duplicates doesn't always return exact count)
+  skipped = records.length - inserted;
+  if(skipped<0) skipped=0;
+
+  progressBar.style.width="95%";
+  progressText.textContent="Logging upload…";
+
+  // Log to upload_log
+  await supaFetch("upload_log",{
+    method:"POST",
+    body:JSON.stringify({
+      batch_id:batchId, filename, rows_in_file:parsedRows.length,
+      rows_inserted:inserted, rows_skipped:skipped,
+      date_range_start:minDate?.toISOString().slice(0,10),
+      date_range_end:maxDate?.toISOString().slice(0,10),
+      uploaded_by:uploadedBy, notes
+    })
+  });
+
+  progressBar.style.width="100%";
+  progressText.textContent="Done.";
+  btn.disabled=false;
+
+  if(uploadErrors.length){
+    showResult("error",`Upload completed with errors`,
+      `Inserted: ${inserted} &nbsp;|&nbsp; Skipped (duplicates): ${skipped} &nbsp;|&nbsp; Errors: ${uploadErrors.length}`,
+      uploadErrors);
+  } else {
+    showResult("success",`✓ Upload successful`,
+      `${inserted} new rows inserted &nbsp;|&nbsp; ${skipped} duplicates skipped &nbsp;|&nbsp; Date range: ${minDate?.toLocaleDateString("en-PH")} → ${maxDate?.toLocaleDateString("en-PH")}`,
+      []);
+    loadHistory();
+  }
+}
+
+function showResult(type,title,body,errs){
+  const card=document.getElementById("result-card");
+  card.className=`result-card ${type}`;
+  card.style.display="block";
+  document.getElementById("result-title").textContent=title;
+  document.getElementById("result-body").innerHTML=
+    `<div style="font-size:12px;color:var(--text2)">${body}</div>`+
+    (errs.length?`<div class="result-errors">${errs.slice(0,10).join("<br>")}</div>`:"");
+}
+
+// ── Drag and drop ─────────────────────────────────────────────────────────────
+const dz=document.getElementById("drop-zone");
+dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag-over");});
+dz.addEventListener("dragleave",()=>dz.classList.remove("drag-over"));
+dz.addEventListener("drop",e=>{
+  e.preventDefault();dz.classList.remove("drag-over");
+  const f=e.dataTransfer.files[0];
+  if(f&&f.name.endsWith(".csv")) handleFile(f);
+  else alert("Please drop a .csv file.");
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+checkConnection();
+loadHistory();
+</script>
+</body>
+</html>
