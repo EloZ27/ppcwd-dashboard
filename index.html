@@ -851,7 +851,7 @@
 
   <div class="page" id="page-crisis">
     <div class="cap-note" style="border-top:none; border-bottom:1px solid var(--border); padding: 0 0 16px 0; margin-bottom: 24px; font-size: 11px;">
-      <strong>Alert Criteria:</strong> 🟢 Level 1 (Normal): 75% to 100% capacity | 🟡 Level 2 (Warning): 50% to 74.9% | 🔴 Level 3 (Critical): Below 50%.<br>
+      <strong>LWUA Advisory Alert Criteria:</strong> 🟢 Level 1 (Watch): &lt; 10% drop (≥90% capacity) | 🟡 Level 2 (Alert): 10% to 25% drop (75% to 89.9%) | 🔴 Level 3 (Critical Emergency): &gt; 25% drop (&lt; 75%).<br>
       <em>Note: The City Proper Surface Water has an independent indicator. If Campo Uno & Lapu-Lapu fall below 75%, Montible Teruvian is automatically accounted as a substitute.</em>
     </div>
 
@@ -1102,45 +1102,45 @@ const RIVER_STATIONS = [
 
   // ── Rated capacity (m³/hr) ────────────────────────────────────────────────────
   const RATED = {
-    "Irawan WTP-1":               750.00,
-    "Irawan WTP-2":                 0.00,
-    "Irawan Infiltration Wells":   83.48,
-    "Lapu-Lapu Source":          1178.57,
-    "Montible (Teruvian)":       1339.29,
-    "Sta. Lucia PS":               38.76,
-    "Sabang SW":                   25.71,
-    "San Rafael SW":               19.23,
-    "Bahile SW":                   56.13,
-    "Napsan":                       8.99,
-    "Binduyan":                     9.46,
-    "Bacungan SW":                 54.91,
-    "Maoyon Infiltration Wells":   12.94,
-    "Macasaet-I":                  98.12,
-    "Pump Center #5":              47.03,
-    "Pump Center #6":              76.46,
-    "DA":                          96.43,
-    "Sicsican":                     0.00,
-    "Villa Ello":                  51.07,
-    "NHA":                         94.71,
-    "Princeville":                 84.83,
-    "Villa Princesa":              86.96,
-    "San Jose":                    70.71,
-    "BOS":                         47.37,
-    "Esteban":                     97.20,
-    "Kaakbayan":                   60.89,
-    "New Market":                  62.61,
-    "Pablico":                     42.13,
-    "Baldosano PS":                88.39,
-    "Sta. Monica PS":              37.51,
+    "Irawan WTP-1":               699.18,
+    "Irawan WTP-2":                35.07,
+    "Irawan Infiltration Wells":  172.60,
+    "Lapu-Lapu Source":          1232.88,
+    "Montible (Teruvian)":        976.04,
+    "Sta. Lucia PS":               20.47,
+    "Sabang SW":                   15.78,
+    "San Rafael SW":                6.51,
+    "Bahile SW":                   16.27,
+    "Napsan":                       2.12,
+    "Binduyan":                     7.73,
+    "Bacungan SW":                 23.67,
+    "Maoyon Infiltration Wells":   31.56,
+    "Macasaet-I":                  44.38,
+    "Pump Center #5":              19.73,
+    "Pump Center #6":              19.73,
+    "DA":                          34.52,
+    "Sicsican":                    19.92,
+    "Villa Ello":                  47.84,
+    "NHA":                         59.18,
+    "Princeville":                 29.59,
+    "Villa Princesa":              17.01,
+    "San Jose":                    51.02,
+    "BOS":                         11.84,
+    "Esteban":                     29.59,
+    "Kaakbayan":                   11.84,
+    "New Market":                  39.45,
+    "Pablico":                     19.73,
+    "Baldosano PS":                59.18,
+    "Sta. Monica PS":              19.13,
     "Abueg":                        0.00,
-    "Visapa PS":                    0.00,
-    "Acacia":                       0.00,
-    "Citywoods":                    0.00,
-    "Virginia":                     0.00,
-    "Lucbuan":                      0.00,
-    "Sabang GW":                   20.65,
-    "Inagawan":                      4.61,
-    "Macarascas":                      0,
+    "Visapa PS":                    8.28,
+    "Acacia":                       9.07,
+    "Citywoods":                    9.86,
+    "Virginia":                    12.03,
+    "Lucbuan":                      1.09,
+    "Sabang GW":                    8.21,
+    "Inagawan":                     6.90,
+    "Macarascas":                   2.88,
   };
 
   // ════════════════════════════════════════════════════════════
@@ -1177,7 +1177,7 @@ const RIVER_STATIONS = [
       name: "City Proper - Surface Water",
       group: "city",
       keys: ["wtp1", "wtp2", "infilCity", "lapulapu"],
-      ratedHr: 2012.05, // (Campo Uno + Lapu Lapu base capacity)
+      ratedHr: 2139.73, // (Campo Uno + Lapu Lapu base capacity)
       isBaseSW: true 
     },
     {
@@ -1185,18 +1185,18 @@ const RIVER_STATIONS = [
       name: "City Proper - Total Water Supply",
       group: "city",
       keys: ["wtp1", "wtp2", "infilCity", "lapulapu", "montible", "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", "acacia", "citywoods", "virginia"],
-      isCityTotal: true // Combined SW + Montible + GW
+      isCityTotal: true 
     },
     // SATELLITES
-    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 38.76 },
-    { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 4.61 },
-    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 8.99 },
-    { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 54.91 },
-    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 56.13 },
-    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 46.36 },
-    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 12.94 },
-    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 19.23 },
-    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 9.46 }
+    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 20.47 },
+    { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 6.90 },
+    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 2.12 },
+    { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 23.67 },
+    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 19.15 },
+    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 23.99 },
+    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 32.65 },
+    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 6.51 },
+    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 7.73 }
   ];
 
 
@@ -1492,9 +1492,9 @@ const RIVER_STATIONS = [
   }
 
   function getAlertInfo(pct) {
-    if (pct >= 75) return { lvl: 1, name: "Alert Level 1", cls: "lvl-1" };
-    if (pct >= 50) return { lvl: 2, name: "Alert Level 2", cls: "lvl-2" };
-    return { lvl: 3, name: "Alert Level 3", cls: "lvl-3" };
+    if (pct >= 90) return { lvl: 1, name: "Level 1: Watch", cls: "lvl-1" };
+    if (pct >= 75) return { lvl: 2, name: "Level 2: Alert", cls: "lvl-2" };
+    return { lvl: 3, name: "Level 3: Critical", cls: "lvl-3" };
   }
 
   function renderCrisisMonitoring(d, numWeeks) {
@@ -1510,7 +1510,7 @@ const RIVER_STATIONS = [
 
 // NEW LOGIC: Dynamic Rated Capacity for City Total
     if (sys.isCityTotal) {
-      const ratedSwWeekly = 2012.05 * hrsInPeriod; // Base SW Rated (338,024.4 m³ per week)
+      const ratedSwWeekly = 2139.73 * hrsInPeriod; // Base SW Rated (338,024.4 m³ per week)
       
       // Explicitly define Groundwater and Augmented keys only (excluding Montible from denominator)
       const gwAndAugKeys = [
