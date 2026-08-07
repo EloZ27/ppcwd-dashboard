@@ -1,0 +1,3339 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPCWD Monitoring Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+  /* ── Brand colours (fixed) ── */
+  :root{
+    --teal:#1B8C7D;--teal2:#24B5A3;--teal3:#D0F0EC;
+    --blue:#1560BD;--blue2:#4A90D9;--blue3:#DBEAFE;
+    --amber:#D97706;--amber2:#F59E0B;--amber3:#FEF3C7;
+    --green:#059669;--green2:#D1FAE5;
+    --red:#DC2626;--red2:#FEE2E2;--red3:#FCA5A5;
+    --slate:#64748B;--slate2:#CBD5E1;
+    --font-sans:"Montserrat",sans-serif;
+    --font-mono:"JetBrains Mono",monospace;
+  }
+  /* ── Dark mode (default) ── */
+  :root,[data-theme="dark"]{
+    --navy:#0D1B2A;--navy2:#152336;--navy3:#1E3554;
+    --white:#F8FAFC;--text:#E2E8F0;--text2:#94A3B8;
+    --border:rgba(255,255,255,0.08);
+    --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
+    --bg:var(--navy);
+    --bg-grad1:rgba(27,140,125,0.15);--bg-grad2:rgba(21,96,189,0.10);
+    --header-bg:rgba(13,27,42,0.92);
+    --nav-bg:rgba(13,27,42,0.95);
+    --input-bg:rgba(255,255,255,0.07);
+    --chart-grid:rgba(255,255,255,0.04);
+    --chart-tick:#94A3B8;
+    --shadow:0 4px 24px rgba(0,0,0,0.4);
+    --tbl-head:rgba(255,255,255,0.02);
+    --tbl-hover:rgba(255,255,255,0.04);
+    --tbl-row:rgba(255,255,255,0.03);
+  }
+  /* ── Light mode ── */
+  [data-theme="light"]{
+    --navy:#F0F4F8;--navy2:#E2EAF0;--navy3:#DBEAFE;
+    --white:#1E293B;--text:#1E293B;--text2:#64748B;
+    --border:rgba(0,0,0,0.10);
+    --card:rgba(255,255,255,0.80);--card2:rgba(255,255,255,0.95);
+    --bg:#F0F4F8;
+    --bg-grad1:rgba(27,140,125,0.06);--bg-grad2:rgba(21,96,189,0.04);
+    --header-bg:rgba(255,255,255,0.95);
+    --nav-bg:rgba(255,255,255,0.97);
+    --input-bg:rgba(255,255,255,0.90);
+    --chart-grid:rgba(0,0,0,0.06);
+    --chart-tick:#64748B;
+    --shadow:0 4px 24px rgba(0,0,0,0.10);
+    --tbl-head:rgba(0,0,0,0.02);
+    --tbl-hover:rgba(0,0,0,0.03);
+    --tbl-row:rgba(0,0,0,0.02);
+  }
+
+  /* ── Theme toggle button ── */
+  .theme-toggle{
+    display:flex;align-items:center;gap:7px;
+    background:var(--card2);border:1px solid var(--border);
+    border-radius:20px;padding:5px 12px;cursor:pointer;
+    font-family:var(--font-mono);font-size:10px;color:var(--text2);
+    transition:all .2s;user-select:none;
+  }
+  .theme-toggle:hover{border-color:var(--teal2);color:var(--teal2);}
+  .theme-toggle .toggle-track{
+    width:28px;height:16px;border-radius:8px;position:relative;
+    background:var(--slate);transition:background .2s;flex-shrink:0;
+  }
+  .theme-toggle .toggle-thumb{
+    position:absolute;top:2px;left:2px;
+    width:12px;height:12px;border-radius:50%;
+    background:white;transition:left .2s;
+  }
+  [data-theme="light"] .theme-toggle .toggle-track{background:var(--teal);}
+  [data-theme="light"] .theme-toggle .toggle-thumb{left:14px;}
+  .theme-toggle .toggle-icon{font-size:12px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:var(--font-sans);font-size:14px;min-height:100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%,var(--bg-grad1) 0%,transparent 60%),
+      radial-gradient(ellipse 40% 30% at 90% 90%,var(--bg-grad2) 0%,transparent 50%);
+  }
+
+  /* ── Header ── */
+  header{
+    border-bottom:1px solid var(--border);padding:0 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    height:60px;background:var(--header-bg);backdrop-filter:blur(12px);
+    position:sticky;top:0;z-index:200;
+  }
+  .logo-block{display:flex;align-items:center;gap:12px;}
+  .logo-mark{
+    width:36px;height:36px;
+    background:linear-gradient(135deg,var(--teal),var(--blue));
+    border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:600;font-size:12px;
+    color:white;line-height:1.1;text-align:center;
+  }
+  .logo-text strong{display:block;font-size:13px;font-weight:600;color:var(--white);}
+  .logo-text span{font-size:10px;color:var(--text2);}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .status-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);font-family:var(--font-mono);}
+  .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+  /* ── Nav tabs ── */
+  .nav-tabs{
+    display:flex;align-items:center;gap:2px;
+    background:var(--nav-bg);border-bottom:1px solid var(--border);
+    padding:0 24px;position:sticky;top:60px;z-index:190;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  }
+  .nav-tab{
+    padding:12px 20px;font-size:12px;font-weight:500;
+    font-family:var(--font-mono);color:var(--text2);
+    cursor:pointer;border-bottom:2px solid transparent;
+    transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;
+  }
+  .nav-tab:hover{color:var(--white);}
+  .nav-tab.active{color:var(--teal2);border-bottom-color:var(--teal2);}
+  .nav-tab .tab-dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    margin-right:6px;vertical-align:middle;
+  }
+
+  /* ── Pages ── */
+  .page{display:none;padding:24px;max-width:1400px;margin:0 auto;}
+  .page.active{display:block;}
+
+  /* ── Period bar / week buttons ── */
+  .period-bar{
+    display:grid;grid-template-columns:1fr auto 1fr;
+    align-items:center;gap:16px;margin-bottom:20px;
+  }
+  .period-label{font-family:var(--font-mono);font-size:10px;color:var(--teal2);letter-spacing:1.5px;text-transform:uppercase;}
+  .period-value{font-size:20px;font-weight:300;color:var(--white);}
+  .period-right{display:flex;justify-content:flex-end;}
+  .target-pill{
+    background:rgba(27,140,125,0.15);border:1px solid rgba(27,140,125,0.3);
+    border-radius:20px;padding:5px 14px;
+    font-family:var(--font-mono);font-size:11px;color:var(--teal2);
+  }
+  .week-btn-group{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+  .week-btn{
+    background:var(--card2);border:1px solid var(--border);border-radius:6px;
+    padding:5px 12px;color:var(--text2);font-family:var(--font-sans);
+    font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;
+    text-align:center;line-height:1.4;
+  }
+  .week-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+  .week-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+  .week-btn.all-btn{background:rgba(21,96,189,0.15);border-color:rgba(21,96,189,0.3);color:var(--blue2);}
+  .week-btn.all-btn.active{background:var(--blue);border-color:var(--blue);color:white;}
+
+  /* ── WEEK DROPDOWN (Replaces buttons) ── */
+  .week-dropdown {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 36px 10px 16px; /* Extra right padding for the arrow */
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    min-width: 260px;
+    appearance: none; /* Hides default browser arrow */
+    /* Custom SVG Arrow */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px top 50%;
+    background-size: 10px auto;
+  }
+  .week-dropdown:hover, .week-dropdown:focus {
+    border-color: var(--teal2);
+    background-color: var(--card);
+  }
+  .week-dropdown option {
+    background: var(--navy);
+    color: var(--text);
+    padding: 10px;
+  }
+  [data-theme="light"] .week-dropdown option {
+    background: #F8FAFC;
+    color: #1E293B;
+  }
+
+  /* ── KPI row ── */
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+  .kpi-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:16px 18px;position:relative;overflow:hidden;transition:border-color .2s;
+  }
+  .kpi-card:hover{border-color:rgba(255,255,255,0.15);}
+  .kpi-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;}
+  .kpi-card.teal::before{background:linear-gradient(90deg,var(--teal),var(--teal2));}
+  .kpi-card.blue::before{background:linear-gradient(90deg,var(--blue),var(--blue2));}
+  .kpi-card.amber::before{background:linear-gradient(90deg,var(--amber),var(--amber2));}
+  .kpi-card.green::before{background:linear-gradient(90deg,var(--green),#34D399);}
+  .kpi-card.slate::before{background:linear-gradient(90deg,var(--slate),var(--slate2));}
+  .kpi-label{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;font-family:var(--font-mono);}
+  .kpi-value{font-size:26px;font-weight:300;color:var(--white);letter-spacing:-1px;line-height:1;font-family:var(--font-mono);}
+  .kpi-value .unit{font-size:11px;color:var(--text2);font-weight:400;margin-left:3px;}
+  .kpi-sub{font-size:10px;color:var(--text2);margin-top:6px;}
+  .kpi-sub.ok{color:var(--green);}.kpi-sub.warn{color:var(--amber);}.kpi-sub.bad{color:var(--red);}
+
+  /* ── Charts ── */
+  .chart-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;}
+  .chart-title{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:14px;font-family:var(--font-mono);display:flex;align-items:center;gap:8px;}
+  .chart-title::before{content:"";width:3px;height:11px;background:var(--teal2);border-radius:2px;}
+
+  /* ── Tables — desktop ── */
+  .table-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+  .table-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .table-title{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);font-family:var(--font-mono);display:flex;align-items:center;gap:8px;}
+  .table-title::before{content:"";width:3px;height:11px;border-radius:2px;}
+  .table-title.blue-accent::before{background:var(--blue2);}
+  .table-title.amber-accent::before{background:var(--amber2);}
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:600px;}
+  thead th{padding:9px 14px;text-align:left;font-size:9px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);background:var(--tbl-head);border-bottom:1px solid var(--border);font-family:var(--font-mono);}
+  thead th.right{text-align:right;}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:background .15s;}
+  tbody tr:hover{background:var(--tbl-hover);}
+  tbody tr:last-child{border-bottom:none;}
+  tbody td{padding:9px 14px;font-size:12px;}
+  tbody td.right{text-align:right;font-family:var(--font-mono);}
+  tbody td.mono{font-family:var(--font-mono);font-size:11px;}
+  .cat-pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-family:var(--font-mono);font-weight:500;}
+  .cat-sw{background:rgba(27,140,125,0.2);color:var(--teal2);}
+  .cat-gw{background:rgba(21,96,189,0.2);color:var(--blue2);}
+  .cat-aug{background:rgba(124,58,237,0.2);color:#A78BFA;}
+  .bar-cell{display:flex;align-items:center;gap:6px;}
+  .mini-bar-bg{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;}
+  .mini-bar{height:4px;border-radius:2px;}
+  .diff-pos{color:#34D399;font-weight:500;}
+  .diff-neg{color:#FCA5A5;font-weight:500;}
+  .pct-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-family:var(--font-mono);font-weight:600;}
+  .pct-over{background:rgba(5,150,105,0.18);color:#34D399;}
+  .pct-near{background:rgba(217,119,6,0.18);color:var(--amber2);}
+  .pct-under{background:rgba(220,38,38,0.18);color:#FCA5A5;}
+  .cap-note{font-size:9px;color:var(--text2);font-family:var(--font-mono);padding:9px 18px;border-top:1px solid var(--border);background:var(--card);}
+
+  /* ── Mobile card view (replaces table rows on small screens) ── */
+  .mobile-cards{display:none;}
+  .mob-card{
+    background:var(--card2);border:1px solid var(--border);border-radius:8px;
+    padding:14px;margin-bottom:8px;
+  }
+  .mob-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .mob-card-name{font-size:13px;font-weight:500;color:var(--white);}
+  .mob-card-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .mob-card-row:last-child{border-bottom:none;}
+  .mob-card-label{font-size:10px;color:var(--text2);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.6px;}
+  .mob-card-val{font-size:12px;font-family:var(--font-mono);color:var(--text);}
+  .mob-section-title{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text2);font-family:var(--font-mono);padding:12px 0 6px;display:flex;align-items:center;gap:6px;}
+  .mob-section-title::before{content:"";width:3px;height:10px;border-radius:2px;background:var(--teal2);}
+
+  /* ── PRESSURE TAB ── */
+  .pressure-layout{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:16px;}
+
+  /* Station grid */
+  .station-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px;}
+  .station-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+  }
+  .station-card:hover{border-color:rgba(255,255,255,0.18);background:var(--card2);}
+  .station-card.selected{border-color:var(--teal2);background:rgba(36,181,163,0.08);}
+  .station-card.alert{border-color:rgba(220,38,38,0.5);}
+  .station-card.alert::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--red);
+  }
+  .station-card.ok::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--green);
+  }
+  .station-name{font-size:11px;font-weight:500;color:var(--white);margin-bottom:8px;line-height:1.3;}
+  .station-psi{font-size:28px;font-weight:300;font-family:var(--font-mono);line-height:1;}
+  .station-psi .psi-unit{font-size:12px;color:var(--text2);margin-left:2px;}
+  .station-psi.alert-val{color:#FCA5A5;}
+  .station-psi.ok-val{color:#34D399;}
+  .station-psi.no-val{color:var(--text2);font-size:18px;}
+  .station-time{font-size:9px;color:var(--text2);font-family:var(--font-mono);margin-top:6px;}
+  .station-glow{
+    position:absolute;inset:0;border-radius:10px;pointer-events:none;
+    animation:glow-red 1.5s ease-in-out infinite;opacity:0;
+  }
+  .station-card.alert .station-glow{opacity:1;}
+  @keyframes glow-red{0%,100%{box-shadow:inset 0 0 0 1px rgba(220,38,38,0);}50%{box-shadow:inset 0 0 8px 1px rgba(220,38,38,0.25);}}
+
+  /* Map */
+  .map-container{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    overflow:hidden;height:380px;position:relative;
+  }
+  .map-container iframe{width:100%;height:100%;border:none;}
+  .map-title{
+    position:absolute;top:10px;left:10px;z-index:10;
+    background:rgba(13,27,42,0.9);backdrop-filter:blur(8px);
+    border:1px solid var(--border);border-radius:6px;
+    padding:5px 10px;font-size:10px;font-family:var(--font-mono);color:var(--teal2);
+  }
+
+  /* Pressure chart card */
+  .pressure-chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px;}
+  .pressure-controls{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .pressure-station-label{font-size:12px;font-weight:500;color:var(--white);flex:1;}
+  .time-range-btn{
+    background:var(--card2);border:1px solid var(--border);border-radius:5px;
+    padding:4px 10px;font-size:10px;font-family:var(--font-mono);
+    color:var(--text2);cursor:pointer;transition:all .15s;
+  }
+  .time-range-btn:hover{color:var(--white);}
+  .time-range-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+  .alert-line-note{
+    display:flex;align-items:center;gap:6px;font-size:10px;
+    font-family:var(--font-mono);color:#FCA5A5;
+  }
+  .alert-line-note::before{content:"";width:20px;height:2px;background:var(--red);border-radius:1px;}
+
+  /* ── RIVER FLOW TAB ── */
+  .river-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+  .river-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;
+  }
+  .river-card:hover{border-color:rgba(217,119,6,0.4);background:var(--card2);}
+  .river-card.selected{border-color:var(--amber2);background:rgba(217,119,6,0.08);}
+  .river-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber2);opacity:0.8;}
+  .river-name{font-size:11px;font-weight:500;color:var(--white);margin-bottom:8px;line-height:1.3;}
+  .river-val{font-size:24px;font-weight:300;font-family:var(--font-mono);color:var(--amber2);line-height:1;}
+  .river-val.no-val{color:var(--text2);font-size:16px;}
+  .river-unit{font-size:10px;color:var(--text2);margin-left:2px;}
+  .river-time{font-size:9px;color:var(--text2);font-family:var(--font-mono);margin-top:6px;}
+
+  .river-layout-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+  @media(max-width:900px){.river-layout-grid{grid-template-columns:1fr;}}
+
+  /* ── Error & loading ── */
+  .error-banner{background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:14px 18px;color:#FCA5A5;font-size:13px;margin-bottom:16px;display:none;}
+  .loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .5s;}
+  .loading-screen.hidden{opacity:0;pointer-events:none;}
+  .loading-spinner{width:34px;height:34px;border:2px solid var(--border);border-top-color:var(--teal2);border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{font-family:var(--font-mono);font-size:11px;color:var(--text2);}
+
+  footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;color:var(--text2);font-size:10px;font-family:var(--font-mono);}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .chart-grid{grid-template-columns:1fr;}
+    .period-bar{grid-template-columns:1fr;gap:10px;}
+    .period-right{justify-content:flex-start;}
+    .pressure-layout{grid-template-columns:1fr;}
+    .pressure-sidebar{order:-1;}
+    .map-container{height:280px;}
+    .table-wrap{display:none;}
+    .mobile-cards{display:block;}
+    .station-grid{grid-template-columns:repeat(2,1fr);}
+    .page{padding:14px;}
+  }
+  @media(max-width:480px){
+    .kpi-row{grid-template-columns:1fr 1fr;}
+    .station-grid{grid-template-columns:1fr 1fr;}
+    header{padding:0 14px;}
+    .nav-tabs{padding:0 14px;}
+  }
+
+  /* ── RIVER FLOW REDESIGN ── */
+  .river-master-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; }
+  @media(max-width: 900px) { .river-master-layout { grid-template-columns: 1fr; } }
+  
+  .river-sidebar { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; height: 550px; }
+  .river-sidebar-header { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--amber2); font-family: var(--font-mono); background: rgba(217, 119, 6, 0.05); }
+  .river-list-container { overflow-y: auto; flex: 1; padding: 10px; }
+  .river-list-container::-webkit-scrollbar { display: none; }
+  .river-list-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    cursor: grab; /* Show the grab hand cursor */
+    
+    /* ── ADDED THESE 4 LINES TO PREVENT TEXT HIGHLIGHTING ── */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+    /* ────────────────────────────────────────────────────── */
+  }
+  .river-list-container:active {
+    cursor: grabbing; /* Closes the hand when clicked */
+  }
+  .river-group-label { font-size: 9px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; padding: 10px 10px 4px; font-family: var(--font-mono); }
+  
+  .river-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-radius: 6px; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; margin-bottom: 4px; }
+  .river-list-item:hover { background: var(--tbl-hover); border-color: rgba(255,255,255,0.05); }
+  .river-list-item.selected { background: rgba(217, 119, 6, 0.1); border-color: rgba(217, 119, 6, 0.3); }
+  
+  .river-list-name { font-size: 11px; font-weight: 500; color: var(--white); }
+  .river-list-val { font-size: 12px; font-family: var(--font-mono); color: var(--amber2); text-align: right;}
+  .river-list-date { font-size: 8px; color: var(--text2); font-family: var(--font-mono); display: block; margin-top: 2px;}
+
+  /* ══════════════════════════════════════════
+    PRESSURE MAP — NEW INTERACTIVE LAYOUT
+  ══════════════════════════════════════════ */
+  .press-topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:10px;margin-bottom:14px;
+    padding:10px 14px;background:var(--card);
+    border:1px solid var(--border);border-radius:8px;
+  }
+  .press-legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .ok-dot   {background:#059669;box-shadow:0 0 5px #059669;}
+  .alert-dot{background:#DC2626;box-shadow:0 0 5px #DC2626;}
+  .nodata-dot{background:#64748B;}
+  .press-legend-label{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);margin-right:8px;}
+  .compare-hint{font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--text2);}
+  .compare-clear-btn{
+    background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);
+    border-radius:5px;padding:4px 10px;color:#FCA5A5;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;cursor:pointer;
+    transition:all .15s;
+  }
+  .compare-clear-btn:hover{background:rgba(220,38,38,0.25);}
+
+  .press-map-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    overflow:hidden; height:540px; display:flex;flex-direction:column; position:relative;
+  }
+
+  .press-section-label{margin-bottom:10px;
+    font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--text2);font-family:var(--font-mono);margin-bottom:10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .press-section-label::before{content:"";width:3px;height:12px;background:var(--teal2);border-radius:2px;}
+
+  .priority-cards-row{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:4px;
+  }
+  .priority-station-card{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+  }
+  .priority-station-card:hover{border-color:rgba(255,255,255,0.2);background:var(--card2);}
+  .priority-station-card.selected{border-color:var(--teal2);background:rgba(36,181,163,0.08);}
+  .priority-station-card.alert-card{border-color:rgba(220,38,38,0.5);}
+  .priority-station-card.ok-card{border-color:rgba(5,150,105,0.4);}
+  .priority-station-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
+  .priority-station-card.ok-card::before{background:linear-gradient(90deg,var(--green),#34D399);}
+  .priority-station-card.alert-card::before{background:linear-gradient(90deg,var(--red),#FCA5A5);}
+  .priority-station-card.nodata-card::before{background:var(--slate);}
+  .priority-card-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);font-family:var(--font-mono);margin-bottom:6px;}
+  .priority-card-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:12px;line-height:1.3;}
+  .priority-card-psi{font-size:44px;font-weight:300;font-family:var(--font-mono);line-height:1;letter-spacing:-1px;}
+  .priority-card-psi.ok-psi{color:#34D399;}
+  .priority-card-psi.alert-psi{color:#FCA5A5;animation:psi-pulse 1.4s ease-in-out infinite;}
+  .priority-card-psi.no-psi{color:var(--text2);font-size:22px;}
+  @keyframes psi-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .priority-card-unit{font-size:13px;color:var(--text2);margin-left:4px;font-weight:400;}
+  .priority-card-time{font-size:9px;color:var(--text2);font-family:var(--font-mono);margin-top:8px;}
+  .priority-card-status{font-size:10px;margin-top:4px;font-family:var(--font-mono);}
+  .priority-card-status.ok{color:#34D399;}
+  .priority-card-status.alert{color:#FCA5A5;}
+  .priority-card-status.nodata{color:var(--text2);}
+  .priority-card-actions{display:flex;gap:6px;margin-top:12px;}
+  .pcard-btn{flex:1;padding:6px 0;border-radius:6px;font-size:10px;font-family:var(--font-mono);cursor:pointer;border:none;font-weight:500;transition:all .15s;}
+  .pcard-btn.hist{background:var(--teal);color:white;}
+  .pcard-btn.hist:hover{background:var(--teal2);}
+  .pcard-btn.cmp{background:rgba(21,96,189,0.2);border:1px solid rgba(21,96,189,0.4);color:var(--blue2);}
+  .pcard-btn.cmp:hover{background:rgba(21,96,189,0.35);}
+  .pcard-btn.cmp.in-compare{background:rgba(220,38,38,0.2);border-color:rgba(220,38,38,0.4);color:#FCA5A5;}
+
+  .station-cards-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:4px;
+  }
+  .reg-station-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;
+  }
+  .reg-station-card:hover{border-color:rgba(255,255,255,0.18);background:var(--card2);}
+  .reg-station-card.selected{border-color:var(--teal2);background:rgba(36,181,163,0.08);}
+  .reg-station-card.alert-card{border-color:rgba(220,38,38,0.4);}
+  .reg-station-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0;}
+  .reg-station-card.ok-card::before{background:var(--green);}
+  .reg-station-card.alert-card::before{background:var(--red);}
+  .reg-card-name{font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.3;}
+  .reg-card-psi{font-size:22px;font-weight:300;font-family:var(--font-mono);line-height:1;}
+  .reg-card-psi.ok-v{color:#34D399;}
+  .reg-card-psi.al-v{color:#FCA5A5;}
+  .reg-card-psi.no-v{color:var(--text2);font-size:14px;}
+  .reg-card-unit{font-size:9px;color:var(--text2);margin-left:2px;}
+  .reg-card-time{font-size:8px;color:var(--text2);font-family:var(--font-mono);margin-top:4px;}
+  .press-map-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    overflow:hidden;display:flex;flex-direction:column;position:relative;
+  }
+  .press-map-title{
+    padding:10px 14px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);
+    background:rgba(13,27,42,0.6);flex-shrink:0;
+  }
+  .press-map-count{
+    background:rgba(36,181,163,0.15);border:1px solid rgba(36,181,163,0.3);
+    border-radius:12px;padding:2px 8px;font-size:9px;color:var(--teal2);
+  }
+  .press-map-wrap{flex:1;position:relative;overflow:hidden;}
+
+  #leaflet-map{ position:absolute;top:0;left:0;width:100%;height:100%; }
+
+  .leaflet-popup-content-wrapper{
+    background:rgba(13,27,42,0.97)!important;
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.08)!important;
+    border-radius:10px!important;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5)!important;
+    color:var(--text)!important;
+    padding:0!important;
+  }
+  .leaflet-popup-content{margin:0!important;width:220px!important;}
+  .leaflet-popup-tip-container{display:none!important;}
+  .leaflet-popup-close-button{
+    color:var(--text2)!important;font-size:16px!important;
+    top:10px!important;right:10px!important;
+  }
+  .leaflet-popup-close-button:hover{color:var(--white)!important;}
+  .leaflet-container{background:var(--bg)!important;}
+  .leaflet-tile{filter:brightness(0.85) saturate(0.9);}
+
+  .pressure-dot{
+    border-radius:50%;border:2px solid rgba(13,27,42,0.8);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"IBM Plex Mono",monospace;font-weight:600;
+    cursor:pointer;transition:transform .15s,box-shadow .15s;
+  }
+  .pressure-dot:hover{transform:scale(1.2);z-index:1000!important;}
+  .pressure-dot.dot-ok{background:#059669;border-color:#065f46;box-shadow:0 0 8px rgba(5,150,105,0.6);}
+  .pressure-dot.dot-alert{background:#DC2626;border-color:#7f1d1d;box-shadow:0 0 10px rgba(220,38,38,0.7);animation:dot-pulse 1.4s ease-in-out infinite;}
+  .pressure-dot.dot-nodata{background:#334155;border-color:#1e293b;}
+  .pressure-dot.dot-selected{transform:scale(1.4);outline:2px solid #24B5A3;outline-offset:2px;z-index:999!important;}
+  @keyframes dot-pulse{0%,100%{box-shadow:0 0 8px rgba(220,38,38,0.5);}50%{box-shadow:0 0 18px rgba(220,38,38,0.9);}}
+
+  .pressure-dot.dot-compare-1{outline:2px solid #4A90D9;outline-offset:2px;}
+  .pressure-dot.dot-compare-2{outline:2px solid #24B5A3;outline-offset:2px;}
+
+  .station-popup{
+    position:absolute;z-index:20;
+    background:rgba(13,27,42,0.97);backdrop-filter:blur(12px);
+    border:1px solid var(--border);border-radius:10px;
+    padding:14px;min-width:200px;max-width:240px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  }
+  .popup-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .popup-name{font-size:12px;font-weight:500;color:var(--white);line-height:1.3;}
+  .popup-time{font-size:9px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:3px;}
+  .popup-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;padding:0;line-height:1;}
+  .popup-psi{font-size:32px;font-weight:300;font-family:"IBM Plex Mono",monospace;line-height:1;margin-bottom:4px;}
+  .popup-psi.ok-psi{color:#34D399;}.popup-psi.alert-psi{color:#FCA5A5;}.popup-psi.no-psi{color:var(--text2);font-size:20px;}
+  .popup-status{font-size:10px;font-family:"IBM Plex Mono",monospace;margin-bottom:12px;}
+  .popup-actions{display:flex;gap:6px;}
+  .popup-btn{flex:1;padding:6px 0;border-radius:6px;font-size:10px;font-family:"IBM Plex Mono",monospace;cursor:pointer;border:none;transition:all .15s;font-weight:500;}
+  .popup-btn.primary{background:var(--teal);color:white;}
+  .popup-btn.primary:hover{background:var(--teal2);}
+  .popup-btn.compare{background:rgba(21,96,189,0.2);border:1px solid rgba(21,96,189,0.4);color:var(--blue2);}
+  .popup-btn.compare:hover{background:rgba(21,96,189,0.35);}
+  .popup-btn.compare.active-compare{background:rgba(220,38,38,0.2);border-color:rgba(220,38,38,0.4);color:#FCA5A5;}
+
+  .press-chart-panel{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:16px;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .chart-placeholder{
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:12px;
+  }
+  .chart-placeholder-icon{font-size:32px;opacity:.3;}
+  .chart-placeholder-text{font-size:12px;color:var(--text2);text-align:center;line-height:1.6;font-family:"IBM Plex Mono",monospace;}
+  .panel-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+  .panel-station-name{font-size:13px;font-weight:500;color:var(--white);}
+  .panel-station-sub{font-size:10px;color:var(--text2);font-family:"IBM Plex Mono",monospace;margin-top:2px;}
+
+  .compare-banner{margin-top:10px;}
+  .compare-banner-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(21,96,189,0.12);border:1px solid rgba(21,96,189,0.25);
+    border-radius:6px;padding:6px 10px;
+    font-size:10px;font-family:"IBM Plex Mono",monospace;color:var(--blue2);
+  }
+
+  .latest-strip{ display:flex;gap:6px;flex-wrap:wrap;margin-top:10px; }
+  .latest-chip{
+    background:var(--card2);border:1px solid var(--border);border-radius:6px;
+    padding:4px 8px;font-size:10px;font-family:"IBM Plex Mono",monospace;
+    display:flex;align-items:center;gap:5px;
+  }
+  .latest-chip .chip-dot{width:7px;height:7px;border-radius:50%;}
+  .latest-chip .chip-val{font-weight:600;}
+
+  .time-range-btn.active{background:var(--teal);border-color:var(--teal);color:white;font-weight:600;}
+
+  @media(max-width:900px){
+    .priority-cards-row{grid-template-columns:1fr 1fr 1fr;gap:8px;}
+    .station-cards-grid{grid-template-columns:repeat(2,1fr);}
+    .compare-hint{display:none;}
+  }
+  @media(max-width:480px){
+    .station-cards-grid{grid-template-columns:1fr 1fr;}
+    .priority-cards-row{grid-template-columns:1fr;}
+  }
+
+  .date-filter-group{display:flex;flex-direction:column;gap:3px;}
+  .date-filter-label{font-size:9px;font-family:"IBM Plex Mono",monospace;color:var(--text2);letter-spacing:.6px;text-transform:uppercase;}
+  .date-filter-input{
+    background:var(--card2);border:1px solid var(--border);border-radius:5px;
+    padding:4px 8px;color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:11px;
+    outline:none;cursor:pointer;
+  }
+  .date-filter-input::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer;}
+  .date-filter-input:focus{border-color:var(--teal2);}
+  .date-filter-clear{
+    background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:5px;
+    padding:4px 8px;color:#FCA5A5;font-family:"IBM Plex Mono",monospace;font-size:11px;cursor:pointer;
+  }
+  .date-filter-info{font-size:9px;font-family:"IBM Plex Mono",monospace;color:var(--teal2);min-height:12px;}
+
+  /* ── CRISIS MONITOR TAB STYLES ── */
+  .crisis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .crisis-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; position: relative; overflow: hidden; transition: all 0.2s;}
+  .crisis-card:hover { background: var(--card2); border-color: rgba(255,255,255,0.15); }
+  .crisis-card::before { content:""; position:absolute; top:0; left:0; bottom:0; width:4px; }
+
+  /* Level 1: Normal (>=75%) */
+  .crisis-card.lvl-1 { border-color: rgba(5, 150, 105, 0.3); background: rgba(5, 150, 105, 0.05); }
+  .crisis-card.lvl-1::before { background: var(--green); }
+  .lvl-1 .crisis-badge { background: rgba(5, 150, 105, 0.2); color: #34D399; border: 1px solid rgba(5, 150, 105, 0.4); }
+  .lvl-1 .crisis-pct { color: #34D399; }
+
+  /* Level 2: Warning (50-74%) */
+  .crisis-card.lvl-2 { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05); }
+  .crisis-card.lvl-2::before { background: var(--amber2); }
+  .lvl-2 .crisis-badge { background: rgba(245, 158, 11, 0.2); color: var(--amber2); border: 1px solid rgba(245, 158, 11, 0.4); }
+  .lvl-2 .crisis-pct { color: var(--amber2); }
+
+  /* Level 3: Critical (<50%) */
+  .crisis-card.lvl-3 { border-color: rgba(220, 38, 38, 0.5); background: rgba(220, 38, 38, 0.08); }
+  .crisis-card.lvl-3::before { background: var(--red); }
+  .lvl-3 .crisis-badge { background: rgba(220, 38, 38, 0.2); color: #FCA5A5; border: 1px solid rgba(220, 38, 38, 0.4); animation: pulse-bg 2s infinite; }
+  .lvl-3 .crisis-pct { color: #FCA5A5; }
+  @keyframes pulse-bg { 0%,100%{background: rgba(220,38,38,0.2);} 50%{background: rgba(220,38,38,0.35);} }
+
+  .crisis-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .crisis-title { font-size: 14px; font-weight: 600; color: var(--white); line-height: 1.3; }
+  .crisis-badge { font-family: var(--font-mono); font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px; }
+  .crisis-pct { font-size: 38px; font-weight: 300; font-family: var(--font-mono); line-height: 1; margin-bottom: 12px; letter-spacing: -1px; }
+  .crisis-details { font-size: 11px; color: var(--text2); font-family: var(--font-mono); display: flex; flex-direction: column; gap: 6px; }
+  .crisis-details-row { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 4px; }
+  .crisis-details-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .montible-alert { color: var(--amber2); font-weight: 600; font-size: 10px; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
+  .montible-alert::before { content: "⚠️"; font-size: 12px; }
+  
+/* ── STICKY TABLE FIX ── */
+.press-table-wrap {
+  max-height: 600px;
+  overflow: auto;
+  position: relative;
+}
+/*Freeze the top headers */
+.press-table-wrap thead th {
+  position: sticky;
+  top: 0;
+  background: var(--header-bg);
+  z-index: 10;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+/* Freeze the first column (Date & Time) to the left */
+.press-table-wrap th:first-child,
+.press-table-wrap td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--bg);
+  z-index: 11;
+  border-right: 1px solid var(--border);
+}
+/* The top-left corner needs the highest z-index so it stays above everything */
+.press-table-wrap thead th:first-child {
+  z-index: 12;
+  background: var(--header-bg);
+}
+
+/* ── Time Stepper & Go Live Button ── */
+  .time-stepper {
+    display: flex; align-items: center; 
+    background: var(--card2); border: 1px solid var(--border); 
+    border-radius: 5px; overflow: hidden;
+  }
+  .time-step-btn {
+    background: transparent; border: none; color: var(--teal2); 
+    padding: 4px 8px; cursor: pointer; font-size: 10px; 
+    transition: background .15s; height: 100%;
+  }
+  .time-step-btn:hover { background: rgba(36,181,163,0.15); color: var(--white); }
+  .time-input-center {
+    border: none; border-left: 1px solid var(--border); border-right: 1px solid var(--border); 
+    border-radius: 0; background: transparent;
+  }
+  .live-reset-btn {
+    background: rgba(5,150,105,0.15); border: 1px solid rgba(5,150,105,0.3); 
+    border-radius: 5px; padding: 4px 10px; color: #34D399; 
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 6px; 
+    transition: all 0.15s;
+  }
+  .live-reset-btn:hover { background: rgba(5,150,105,0.25); }
+  .live-dot {
+    width: 6px; height: 6px; background: #34D399; 
+    border-radius: 50%; animation: pulse-green 1.5s infinite;
+  }
+  @keyframes pulse-green {
+    0%,100% {box-shadow: 0 0 0 rgba(5,150,105,0);}
+    50% {box-shadow: 0 0 6px rgba(5,150,105,0.8);}
+  }
+
+  </style>
+  </head>
+  <body>
+
+  <div class="loading-screen" id="loader">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading PPCWD monitoring data...</div>
+  </div>
+
+  <header>
+    <div class="logo-block">
+      <div class="logo-mark">PPCWD</div>
+      <div class="logo-text">
+        <strong>Puerto Princesa City Water District</strong>
+        <span>Integrated Monitoring Dashboard</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span id="last-updated">Connecting...</span>
+      </div>
+      <div class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+        <span class="toggle-icon" id="theme-icon">🌙</span>
+        <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        <span id="theme-label">Dark</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('production')">
+      <span class="tab-dot" style="background:#24B5A3"></span>Production
+    </button>
+    <button class="nav-tab" onclick="switchTab('crisis')">
+      <span class="tab-dot" style="background:#EF4444"></span>Crisis Monitor
+    </button>
+    <button class="nav-tab" onclick="switchTab('pressure')">
+      <span class="tab-dot" style="background:#4A90D9"></span>Pressure Monitoring
+    </button>
+    <button class="nav-tab" onclick="switchTab('riverflow')">
+      <span class="tab-dot" style="background:#D97706"></span>River Flow
+    </button>
+    <button class="nav-tab" onclick="switchTab('complaints')">
+      <span class="tab-dot" style="background:#8B5CF6"></span>Customer Reports
+    </button>
+  </nav>
+
+  <div id="global-period-bar" style="padding:24px 24px 0; max-width:1400px; margin:0 auto; display:block;">
+    <div class="period-bar" style="margin-bottom:0;">
+      <div>
+        <div class="period-label">Reporting Period</div>
+        <div class="period-value" id="period-display">—</div>
+      </div>
+      <div style="display:flex; justify-content:center;">
+        <select id="week-select" class="week-dropdown" onchange="renderWeek(this.value)"></select>
+      </div>
+      <div class="period-right">
+        <div class="target-pill">Target: 55.33 MLD</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page active" id="page-production">
+    <div class="error-banner" id="prod-error"></div>
+
+    <div class="kpi-row">
+      <div class="kpi-card teal"><div class="kpi-label">Grand Total</div><div class="kpi-value" id="kpi-total">—<span class="unit">m³</span></div><div class="kpi-sub" id="kpi-total-sub"></div></div>
+      <div class="kpi-card blue"><div class="kpi-label">Present MLD</div><div class="kpi-value" id="kpi-mld">—<span class="unit">MLD</span></div><div class="kpi-sub" id="kpi-mld-sub"></div></div>
+      <div class="kpi-card green"><div class="kpi-label">Surface Water</div><div class="kpi-value" id="kpi-sw">—<span class="unit">m³</span></div><div class="kpi-sub" id="kpi-sw-pct"></div></div>
+      <div class="kpi-card amber"><div class="kpi-label">Ground Water</div><div class="kpi-value" id="kpi-gw">—<span class="unit">m³</span></div><div class="kpi-sub" id="kpi-gw-pct"></div></div>
+      <div class="kpi-card slate"><div class="kpi-label">MLD vs Target</div><div class="kpi-value" id="kpi-target-pct">—<span class="unit">%</span></div><div class="kpi-sub" id="kpi-target-sub"></div></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card"><div class="chart-title">Weekly Production (m³)</div><div style="height:210px"><canvas id="chart-bar"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">SW vs GW Split</div><div style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Source Breakdown</div><div style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:14px">
+      <div class="chart-title">MLD Trend vs 55.33 Target</div>
+      <div style="height:350px"><canvas id="chart-mld"></canvas></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><div class="table-title blue-accent">Production by Source Group</div></div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Source</th><th>Category</th>
+          <th class="right">Production (m³)</th><th class="right">MLD</th>
+          <th class="right">% of Total</th><th style="width:140px">Share</th>
+        </tr></thead><tbody id="source-table"></tbody></table>
+      </div>
+      <div class="mobile-cards" id="source-cards"></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><div class="table-title amber-accent">Rated Capacity vs Actual — Weekly Comparison</div></div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Station</th><th>Category</th>
+          <th class="right">Rated (m³/hr)</th><th class="right">Weekly Rated (m³)</th>
+          <th class="right">Actual (m³)</th><th class="right">Difference</th>
+          <th class="right">Utilization</th><th class="right">Status</th>
+        </tr></thead><tbody id="capacity-table"></tbody></table>
+      </div>
+      <div class="mobile-cards" id="capacity-cards"></div>
+      <div class="cap-note">Weekly rated = Rated (m³/hr) × 168 hrs &nbsp;|&nbsp; Utilization = Actual ÷ Weekly Rated × 100 &nbsp;|&nbsp; Update RATED values in HTML source as confirmed.</div>
+    </div>
+  </div>
+
+  <div class="page" id="page-crisis">
+    <div class="cap-note" style="border-top:none; border-bottom:1px solid var(--border); padding: 0 0 16px 0; margin-bottom: 24px; font-size: 11px;">
+      <strong>Alert Criteria:</strong> 🟢 Level 1 (Normal): 75% to 100% capacity | 🟡 Level 2 (Warning): 50% to 74.9% | 🔴 Level 3 (Critical): Below 50%.<br>
+      <em>Note: The City Proper Surface Water has an independent indicator. If Campo Uno & Lapu-Lapu fall below 75%, Montible Teruvian is automatically accounted as a substitute.</em>
+    </div>
+
+    <div class="press-section-label">City Proper Systems</div>
+    <div class="crisis-grid" id="crisis-city-grid"></div>
+
+    <div class="press-section-label" style="margin-top:24px;">Satellite Water Systems</div>
+    <div class="crisis-grid" id="crisis-sat-grid"></div>
+  </div>
+
+  <div class="page" id="page-pressure">
+    <div class="error-banner" id="press-error"></div>
+
+    <div class="press-topbar">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="press-legend-dot ok-dot"></div><span class="press-legend-label">Normal (&gt; 6.5 PSI)</span>
+        <div class="press-legend-dot alert-dot"></div><span class="press-legend-label">Alert (≤ 6.5 PSI)</span>
+        <div class="press-legend-dot nodata-dot"></div><span class="press-legend-label">No data</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="date-filter-group">
+          <label class="date-filter-label">Time Machine (History)</label>
+          <div style="display:flex;gap:5px;align-items:center">
+            <input type="date" id="date-filter-input" class="date-filter-input" onchange="applyDateFilter()" title="Select date">
+            
+            <div class="time-stepper">
+              <button class="time-step-btn" onclick="stepTime(-1)" title="Previous Hour">◀</button>
+              <input type="time" id="time-filter-input" class="date-filter-input time-input-center" onchange="applyDateFilter()">
+              <button class="time-step-btn" onclick="stepTime(1)" title="Next Hour">▶</button>
+            </div>
+            
+            <button class="live-reset-btn" onclick="clearDateFilter()" id="date-filter-clear" style="display:none">
+              <span class="live-dot"></span> Go Live
+            </button>
+          </div>
+          <div class="date-filter-info" id="date-filter-info"></div>
+        </div>
+        <span class="compare-hint" id="compare-hint">Click dot → View History or + Compare. Shift+click to compare.</span>
+        <button class="compare-clear-btn" id="compare-clear" onclick="clearCompare()" style="display:none">✕ Clear compare</button>
+      </div>
+    </div>
+
+    <div class="press-map-card" id="press-map-card" style="margin-bottom:16px">
+      <div class="press-map-title">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span>Puerto Princesa — Pressure Monitoring Network</span>
+          <span class="press-map-count" id="press-map-count">21 stations</span>
+        </div>
+        <button id="btn-toggle-complaints" onclick="toggleComplaints()" style="background:rgba(220,38,38,0.15); border:1px solid rgba(220,38,38,0.4); color:#FCA5A5; border-radius:5px; padding:4px 10px; font-family:var(--font-mono); font-size:9px; cursor:pointer; transition:0.2s;">
+          🗺️ Overlay Complaints Heatmap
+        </button>
+      </div>
+      <div class="press-map-wrap" style="height:500px;position:relative;flex:1;">
+        <div id="leaflet-map" style="width:100%;height:100%;z-index:1;"></div>
+      </div>
+    </div>
+
+    <div class="press-section-label">Main Pressure Points</div>
+    <div class="priority-cards-row" id="priority-cards-row"></div>
+
+    <div class="press-section-label" style="margin-top:16px">Distribution Network</div>
+    <div class="station-cards-grid" id="station-cards-grid"></div>
+
+    <div class="press-chart-full" id="press-chart-full" style="margin-top:16px">
+      <div class="chart-placeholder" id="chart-placeholder"
+          style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:40px;text-align:center;">
+        <div class="chart-placeholder-icon">📍</div>
+        <div class="chart-placeholder-text">Click a station card or map dot to view pressure history</div>
+      </div>
+
+      <div id="chart-active-panel" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
+        <div class="panel-header">
+          <div>
+            <div class="panel-station-name" id="panel-station-name">—</div>
+            <div class="panel-station-sub" id="panel-station-sub">Pressure history</div>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+            <button class="time-range-btn active" onclick="setRange(this,'24h')">24h</button>
+            <button class="time-range-btn" onclick="setRange(this,'7d')">7 days</button>
+            <button class="compare-clear-btn" id="compare-clear-chart" onclick="clearCompare()" style="display:none">✕ Clear compare</button>
+            <button class="live-reset-btn" onclick="openReportModal()" style="background:rgba(36,181,163,0.15);border:1px solid rgba(36,181,163,0.4);color:#5EEAD4;">
+  📄 Generate Report
+</button>
+          </div>
+        </div>
+        <div class="alert-line-note" style="margin-bottom:10px">Critical threshold: 6.5 PSI</div>
+        <div style="height:280px"><canvas id="chart-pressure"></canvas></div>
+        <div class="compare-banner" id="compare-banner" style="display:none;margin-top:10px">
+          <div class="compare-banner-inner">
+            <span id="compare-banner-text">Comparing 2 stations</span>
+            <button class="compare-clear-btn" onclick="clearCompare()">✕ Clear</button>
+          </div>
+        </div>
+        <div class="latest-strip" id="latest-strip"></div>
+        <div id="complaints-ticker" style="margin-top: 18px; border-top: 1px dashed var(--border); padding-top: 14px; display:none;">
+           <div class="press-section-label" style="margin-bottom:8px; color:#FCA5A5;">🚨 Consumer Reports (During this timeframe)</div>
+           <div id="complaints-list" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:8px;">
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card" style="margin-top:16px">
+      <div class="table-header">
+        <div class="table-title blue-accent">Recent Readings — All Stations</div>
+      </div>
+        <div class="table-wrap press-table-wrap ">
+        <table>
+          <thead><tr id="press-thead"><th>Date</th><th>Time</th></tr></thead>
+          <tbody id="press-tbody"></tbody>
+        </table>
+      </div>
+      <div class="mobile-cards" id="press-cards"></div>
+      <div class="cap-note">Alert threshold: ≤ 6.5 PSI (red) &nbsp;|&nbsp; Critical level: 6 PSI — consumers may experience low flow or no water. &nbsp;|&nbsp; Readings at 7:00 AM, 12:00 NN, 6:00 PM daily.</div>
+    </div>
+  </div>
+
+  <div class="page" id="page-riverflow">
+    <div class="error-banner" id="river-error"></div>
+
+    <div class="press-section-label">System-Wide Discharge Leaderboard</div>
+    <div class="chart-card" style="margin-bottom: 20px;">
+      <div style="height:240px"><canvas id="chart-river-leaderboard"></canvas></div>
+    </div>
+
+    <div class="river-master-layout">
+      <div class="river-sidebar">
+        <div class="river-sidebar-header">River Stations</div>
+        <div class="river-list-container" id="river-list-container">
+          </div>
+      </div>
+
+      <div class="river-details">
+        <div class="chart-card" id="river-chart-container" style="display:none; margin-bottom:14px;">
+          <div class="chart-title">
+            <span id="river-chart-title">River Discharge Trend</span>
+            <span style="font-family:'IBM Plex Mono',monospace;color:var(--amber2);margin-left:auto;text-transform:none;font-size:10px;">m³/day</span>
+          </div>
+          <div style="height:320px"><canvas id="chart-river"></canvas></div>
+        </div>
+
+        <div class="table-card" id="river-table-container" style="display:none;margin-bottom:0;">
+          <div class="table-header"><div class="table-title amber-accent" id="river-table-title">Recent Readings</div></div>
+          
+          <div class="table-wrap">
+            <table style="min-width: auto;">
+              <thead>
+                <tr>
+                  <th>Date Recorded</th>
+                  <th class="right">Discharge (m³/day)</th>
+                </tr>
+              </thead>
+              <tbody id="river-tbody"></tbody>
+            </table>
+          </div>
+          <div class="mobile-cards" id="river-mobile-cards"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-complaints">
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:65vh; text-align:center; background:var(--card); border:1px dashed var(--border); border-radius:12px; padding:40px; position:relative; overflow:hidden;">
+      
+      <!-- Subtle background glow -->
+      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:300px; height:300px; background:rgba(217,119,6,0.05); filter:blur(60px); border-radius:50%; pointer-events:none;"></div>
+
+      <div style="font-size:48px; margin-bottom:20px; opacity:0.9;">🛠️</div>
+      <h2 style="margin:0; font-size:24px; color:var(--white); letter-spacing:-0.5px; margin-bottom:12px; font-family:var(--font-sans); font-weight:600;">Module Under Development</h2>
+      <div style="color:var(--text2); font-size:13px; font-family:var(--font-mono); max-width:480px; line-height:1.6; margin-bottom:30px; position:relative; z-index:10;">
+        The Customer Reports & Job Order tracking interface is currently offline for scheduled maintenance and system upgrades. 
+      </div>
+      
+      <div style="display:inline-flex; align-items:center; gap:10px; background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.3); padding:8px 18px; border-radius:20px; font-family:var(--font-mono); font-size:11px; color:var(--amber2); position:relative; z-index:10;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--amber2); box-shadow:0 0 8px var(--amber2); animation:pulse 2s infinite;"></span>
+        Backend Integration in Progress
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <span>PPCWD &mdash; PPCWD Monitoring Dashboard</span>
+    <span id="footer-updated">Data generated from ESD</span>
+  </footer>
+
+  <script>
+  // ════════════════════════════════════════════════════════════
+  // CONFIG
+  // ════════════════════════════════════════════════════════════
+  const TARGET_MLD = 55.33;
+  const ALERT_PSI  = 6.5;
+
+
+  // ── Pressure station definitions ──────────────────────────────────────────────
+  // col index in sheet (0-based after Date/Time cols A=0,B=1)
+  const PRESSURE_STATIONS = [
+    {name:"Manalo Booster Station",   col:2, lat:9.7367449,  lng:118.7403653},
+    {name:"Beside Lito Escalante",    col:3, lat:9.83416722, lng:118.7304},
+    {name:"Beside Marianne Hotel",    col:4, lat:9.726422,   lng:118.7636752},
+    {name:"Burgos cor Abad Santos",   col:5, lat:9.73642521, lng:118.733794},
+    {name:"Fernandez cor Manalo",     col:6, lat:9.73550822, lng:118.743405},
+    {name:"Front of Camella Homes",   col:7, lat:9.72811667, lng:118.7643383},
+    {name:"Lapu Lapu Campo Uno Chamber Box",  col:8, lat:9.80148166666666, lng:118.693816666667, customAlertPsi: 90},
+    {name:"Liberty Poloy Health Ctr", col:9, lat:9.73099058, lng:118.7443523},
+    {name:"Gemma Res, Bgy. Sta. Monica", col:10, lat:9.7902772222, lng:118.7339041667},
+    {name:"Near Lacharica Inn",       col:11, lat:9.73503512, lng:118.7405949},
+    {name:"Near PPCI Manalo St",      col:12, lat:9.73561271, lng:118.7516594},
+    {name:"Near Tanduay Warehouse",   col:13,lat:9.73263945, lng:118.7388065},
+    {name:"PPCWD Rizal Office",       col:14,lat:9.74023368, lng:118.7404575},
+    {name:"Princesa Garden",          col:15,lat:9.73151975, lng:118.7707484},
+    {name:"Rizal Ave near Ms. Lagan", col:16,lat:9.7397,     lng:118.751522},
+    {name:"Roxas cor Manalo St",      col:17,lat:9.73817791, lng:118.7332659},
+    {name:"Saturn Mktng Abad Santos", col:18,lat:9.73358429, lng:118.7522724},
+    {name:"UV Facility",              col:19,lat:9.74843,    lng:118.666355, customAlertPsi: 110},  
+    {name:"Valencia cor Manalo St",   col:20,lat:9.73743677, lng:118.7360058},
+    {name:"Villarosa Rd cor Manalo",  col:21,lat:9.7358717,  lng:118.7563164},
+  ];
+
+  // ── River Flow station definitions ────────────────────────────────────────────
+  // col index in sheet: Col A (0) is Label/Index, Col B (1) is Date Recorded.
+const RIVER_STATIONS = [
+    // Primary Sources
+    {name: "Montible Teruvian", col: 2, group: "City / Primary Sources"},
+    {name: "Montible Bridge 1", col: 3, group: "City / Primary Sources"},
+    {name: "Upper Montible", col: 4, group: "City / Primary Sources"},
+    {name: "Lapu Lapu Upstream", col: 5, group: "City / Primary Sources"},
+    {name: "Lapu Lapu Downstream", col: 6, group: "City / Primary Sources"},
+    {name: "Campo Uno", col: 9, group: "City / Primary Sources"},
+    
+    // Satellite North
+    {name: "Langogan Downstream", col: 15, group: "Satellite North"},
+    {name: "San Rafael Downstream", col: 16, group: "Satellite North"},
+    {name: "San Rafael", col: 12, group: "Satellite North"},
+    {name: "Maoyon", col: 17, group: "Satellite North"},
+    {name: "Tanabag Downstream", col: 18, group: "Satellite North"},
+    {name: "Olangoan Downstream", col: 19, group: "Satellite North"},
+    {name: "Binduyan", col: 13, group: "Satellite North"},
+    {name: "Bacungan", col: 14, group: "Satellite North"},
+    
+    // Satellite South
+    {name: "Sta. Lucia", col: 7, group: "Satellite South"},
+    {name: "Santiago", col: 8, group: "Satellite South"},
+    {name: "Binuan", col: 10, group: "Satellite South"},
+    {name: "Napsan", col: 11, group: "Satellite South"},
+    {name: "Maranat II", col: 20, group: "Satellite South"}
+  ];
+
+  // ── Rated capacity (m³/hr) ────────────────────────────────────────────────────
+  const RATED = {
+    "Irawan WTP-1":               750.00,
+    "Irawan WTP-2":                 0.00,
+    "Irawan Infiltration Wells":   83.48,
+    "Lapu-Lapu Source":          1178.57,
+    "Montible (Teruvian)":       1339.29,
+    "Sta. Lucia PS":               38.76,
+    "Sabang SW":                   25.71,
+    "San Rafael SW":               19.23,
+    "Bahile SW":                   56.13,
+    "Napsan":                       8.99,
+    "Binduyan":                     9.46,
+    "Bacungan SW":                 54.91,
+    "Maoyon Infiltration Wells":   12.94,
+    "Macasaet-I":                  98.12,
+    "Pump Center #5":              47.03,
+    "Pump Center #6":              76.46,
+    "DA":                          96.43,
+    "Sicsican":                     0.00,
+    "Villa Ello":                  51.07,
+    "NHA":                         94.71,
+    "Princeville":                 84.83,
+    "Villa Princesa":              86.96,
+    "San Jose":                    70.71,
+    "BOS":                         47.37,
+    "Esteban":                     97.20,
+    "Kaakbayan":                   60.89,
+    "New Market":                  62.61,
+    "Pablico":                     42.13,
+    "Baldosano PS":                88.39,
+    "Sta. Monica PS":              37.51,
+    "Abueg":                        0.00,
+    "Visapa PS":                    0.00,
+    "Acacia":                       0.00,
+    "Citywoods":                    0.00,
+    "Virginia":                     0.00,
+    "Lucbuan":                      0.00,
+    "Sabang GW":                   20.65,
+    "Inagawan":                      4.61,
+    "Macarascas":                      0,
+  };
+
+  // ════════════════════════════════════════════════════════════
+  // STATE
+  // ════════════════════════════════════════════════════════════
+  let allProdData=[], pressureRaw=[], pressureChart=null;
+  let riverRaw=[], riverChart=null, selectedRiverCol=null, riverLeaderboardChart=null;
+  let selectedStation=null, currentRange="24h";
+  let barChart,pieSwGw,pieSources,mldChart;
+  let complaintsRaw = [];
+  let showComplaints = false;
+  let complaintLayer = L.layerGroup();
+  let complaintTypeChart = null;
+  let complaintBrgyChart = null;
+  let complaintTimeChart = null;
+
+  const COL={
+    week: 0, date: 1, period: 2,
+    wtp1: 3, wtp2: 4, infilCity: 5, lapulapu: 6, montible: 7, swCitySub: 8, 
+    stalucia: 9, sabangSW: 10, sanrafael: 11, bahile: 12, napsan: 13, binduyan: 14, bacungan: 15, maoyon: 16, swSatSub: 17,
+    macasaet: 18, pc5: 19, pc6: 20, da1: 21, sicsican: 22, villaello: 23, nha: 24, princeville: 25, villaprin: 26, 
+    sanjose: 27, bos: 28, esteban: 29, kaakbayan: 30, newmarket: 31, pablico: 32, baldosano: 33, stamonica: 34, gwCitySub: 35,
+    abueg: 36, visapa: 37, acacia: 38, citywoods: 39, virginia: 40, augSub: 41,
+    lucbuan: 42, sabangGW: 43, inagawan: 44, macarascas: 45, gwSatSub: 46,
+    totalSW: 47, totalGW: 48, grandTotal: 49, mld: 50, swPct: 51, gwPct: 52
+  };
+
+  // ── CRISIS MONITORING CONFIGURATION ───────────────────────────
+  // ratedHr = Rated Capacity in m³/hr. (Will be multiplied by 168 hours/week automatically)
+  const CRISIS_SYSTEMS = [
+    // CITY PROPER
+    {
+      id: "city_sw",
+      name: "City Proper - Surface Water",
+      group: "city",
+      keys: ["wtp1", "wtp2", "infilCity", "lapulapu"],
+      ratedHr: 2012.05, // (Campo Uno + Lapu Lapu base capacity)
+      isBaseSW: true 
+    },
+    {
+      id: "city_total",
+      name: "City Proper - Total Water Supply",
+      group: "city",
+      keys: ["wtp1", "wtp2", "infilCity", "lapulapu", "montible", "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", "acacia", "citywoods", "virginia"],
+      isCityTotal: true // Combined SW + Montible + GW
+    },
+    // SATELLITES
+    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 38.76 },
+    { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 4.61 },
+    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 8.99 },
+    { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 54.91 },
+    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 56.13 },
+    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 46.36 },
+    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 12.94 },
+    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 19.23 },
+    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 9.46 }
+  ];
+
+
+   // ════════════════════════════════════════════════════════════
+  // Barangay Coordinates (for mapping purposes)
+  // ════════════════════════════════════════════════════════════
+  const BARANGAY_COORDS = {
+    "SAN MIGUEL": [9.7460, 118.7460],
+    "STA MONICA": [9.7620, 118.7300],
+    "BANCAO-BANCAO": [9.7280, 118.7460],
+    "SAN MANUEL": [9.7560, 118.7510],
+    "SAN PEDRO": [9.7420, 118.7550],
+    "SICSICAN": [9.7820, 118.7120],
+    "TAGBUROS": [9.7880, 118.7300],
+    "SAN JOSE": [9.7750, 118.7450],
+    "MANGGAHAN": [9.7400, 118.7400],
+    "MANDARAGAT": [9.7410, 118.7330],
+    "MILAGROSA": [9.7350, 118.7450],
+    "IRAWAN": [9.8000, 118.6800],
+    "MASIPAG": [9.7360, 118.7420],
+    "MARUYOGON": [9.9333, 118.8833],
+    "BACUNGAN": [9.8833, 118.7167],
+    "TANGLAW": [9.7430, 118.7400],
+    "BAGONG SILANG": [9.7850, 118.7350]
+  };
+  
+
+  // ════════════════════════════════════════════════════════════
+  // UTILITIES
+  // ════════════════════════════════════════════════════════════
+  function num(v){if(v===null||v===undefined||v==="")return 0;const n=parseFloat(String(v).replace(/,/g,""));return isNaN(n)?0:n;}
+  function fmt(n,d=0){return n.toLocaleString("en-PH",{minimumFractionDigits:d,maximumFractionDigits:d});}
+  function fmtDiff(n){return(n>=0?"+":"")+fmt(n,0);}
+
+
+  // ════════════════════════════════════════════════════════════
+  // NAV
+  // ════════════════════════════════════════════════════════════
+  function switchTab(tab){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
+    document.getElementById("page-"+tab).classList.add("active");
+    event.currentTarget.classList.add("active");
+    
+    // Toggle global period bar visibility
+    const periodBar = document.getElementById("global-period-bar");
+    if(tab === 'production' || tab === 'crisis') {
+      periodBar.style.display = 'block';
+    } else {
+      periodBar.style.display = 'none';
+    }
+
+    if(tab==="pressure"){
+      if(pressureRaw.length===0){
+        loadPressure();
+      } else if(leafletMap){
+        setTimeout(()=>leafletMap.invalidateSize(), 50);
+      }
+    } else if (tab === "riverflow") {
+      if(riverRaw.length===0){
+        loadRiverFlow();
+      }
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // PRODUCTION TAB
+  // ════════════════════════════════════════════════════════════
+  function aggregateWeeks(rows){
+    const agg={};for(const k of Object.keys(COL))agg[k]=0;let periods=[];
+    for(const row of rows){
+      if(!row[COL.week])continue;
+      if(row[COL.period])periods.push(row[COL.period]);
+      for(const[k,i]of Object.entries(COL)){if(i>=3)agg[k]+=num(row[i]);}
+    }
+    agg.mld=agg.grandTotal>0?agg.grandTotal/7/rows.length/1000:0;
+    agg.swPct=agg.grandTotal>0?agg.totalSW/agg.grandTotal:0;
+    agg.gwPct=agg.grandTotal>0?agg.totalGW/agg.grandTotal:0;
+    agg._period=periods.length>1?`${periods[0]} — ${periods[periods.length-1]}`:(periods[0]||"All weeks");
+    return agg;
+  }
+  function rowToObj(row){
+    const obj={};for(const[k,i]of Object.entries(COL))obj[k]=row[i];
+    obj._period=row[COL.period]||row[COL.date]||"—";return obj;
+  }
+  function renderKPIs(d){
+    const mld=num(d.mld),total=num(d.grandTotal),sw=num(d.totalSW),gw=num(d.totalGW);
+    const swPct=num(d.swPct),gwPct=num(d.gwPct),tPct=mld/TARGET_MLD*100;
+    document.getElementById("period-display").textContent=d._period||"—";
+    document.getElementById("kpi-total").innerHTML=`${fmt(total)}<span class="unit">m³</span>`;
+    document.getElementById("kpi-mld").innerHTML=`${fmt(mld,2)}<span class="unit">MLD</span>`;
+    document.getElementById("kpi-sw").innerHTML=`${fmt(sw)}<span class="unit">m³</span>`;
+    document.getElementById("kpi-gw").innerHTML=`${fmt(gw)}<span class="unit">m³</span>`;
+    document.getElementById("kpi-target-pct").innerHTML=`${fmt(tPct,1)}<span class="unit">%</span>`;
+    const st=mld>=TARGET_MLD?"ok":mld>=TARGET_MLD*.9?"warn":"bad";
+    document.getElementById("kpi-mld-sub").className=`kpi-sub ${st}`;
+    document.getElementById("kpi-mld-sub").textContent=mld>=TARGET_MLD?`▲ ${fmt(mld-TARGET_MLD,2)} MLD above target`:`▼ ${fmt(TARGET_MLD-mld,2)} MLD below target`;
+    document.getElementById("kpi-sw-pct").textContent=`${fmt(swPct*100,1)}% of total`;
+    document.getElementById("kpi-gw-pct").textContent=`${fmt(gwPct*100,1)}% of total`;
+    document.getElementById("kpi-target-sub").className=`kpi-sub ${st}`;
+    document.getElementById("kpi-target-sub").textContent=`Target: ${TARGET_MLD} MLD`;
+    document.getElementById("kpi-total-sub").textContent=`${allProdData.length} week(s) of data`;
+  }
+  function dc(c){if(c)c.destroy();}
+  function renderBarChart(rows){
+    dc(barChart);
+    barChart=new Chart(document.getElementById("chart-bar"),{type:"bar",
+      data:{labels:rows.map(r=>r[COL.week]||""),datasets:[
+        {label:"Surface Water",data:rows.map(r=>num(r[COL.totalSW])),backgroundColor:"rgba(27,140,125,0.75)",borderRadius:4,borderSkipped:false},
+        {label:"Ground Water", data:rows.map(r=>num(r[COL.totalGW])),backgroundColor:"rgba(21,96,189,0.75)", borderRadius:4,borderSkipped:false}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:10}}}},
+        scales:{
+          x:{stacked:true,grid:{color:cGrid()},ticks:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:10}}},
+          y:{stacked:true,grid:{color:cGrid()},ticks:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:10},callback:v=>v>=1000?(v/1000)+"K":v}}
+        }}});
+  }
+  function renderPieSwGw(d){
+    dc(pieSwGw);
+    const sw=num(d.totalSW),gw=num(d.totalGW);
+    pieSwGw=new Chart(document.getElementById("chart-pie-swgw"),{type:"doughnut",
+      data:{labels:["Surface Water","Ground Water"],datasets:[{data:[sw,gw],backgroundColor:["rgba(27,140,125,0.85)","rgba(21,96,189,0.85)"],borderWidth:0,hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:"65%",
+        plugins:{legend:{position:"bottom",labels:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:9},padding:10}},
+          tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} m³ (${fmt(ctx.raw/(sw+gw)*100,1)}%)`}}}}});
+  }
+  function renderPieSources(d){
+    dc(pieSources);
+    const sources=[
+      {label:"SW City",  val:num(d.swCitySub),color:"rgba(27,140,125,0.9)"},
+      {label:"SW Sat.",  val:num(d.swSatSub), color:"rgba(36,181,163,0.8)"},
+      {label:"GW City",  val:num(d.gwCitySub),color:"rgba(21,96,189,0.9)"},
+      {label:"Augmented",val:num(d.augSub),   color:"rgba(124,58,237,0.8)"},
+      {label:"GW Sat.",  val:num(d.gwSatSub), color:"rgba(74,144,217,0.8)"},
+    ].filter(s=>s.val>0);
+    pieSources=new Chart(document.getElementById("chart-pie-sources"),{type:"doughnut",
+      data:{labels:sources.map(s=>s.label),datasets:[{data:sources.map(s=>s.val),backgroundColor:sources.map(s=>s.color),borderWidth:0,hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:"60%",
+        plugins:{legend:{position:"bottom",labels:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:9},padding:6}},
+          tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} m³`}}}}});
+  }
+  function renderMldChart(rows){
+    dc(mldChart);
+    const labels=rows.map(r=>r[COL.week]||"");
+    mldChart=new Chart(document.getElementById("chart-mld"),{type:"line",
+      data:{labels,datasets:[
+        {label:"MLD",data:rows.map(r=>num(r[COL.mld])),borderColor:"rgba(27,140,125,1)",backgroundColor:"rgba(27,140,125,0.1)",borderWidth:2,pointBackgroundColor:"rgba(27,140,125,1)",pointRadius:4,tension:.4,fill:true},
+        {label:"Target (55.33)",data:labels.map(()=>TARGET_MLD),borderColor:"rgba(217,119,6,0.6)",borderWidth:1.5,borderDash:[6,4],pointRadius:0}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:10}}}},
+        scales:{
+          x:{grid:{color:cGrid()},ticks:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:10}}},
+          y:{grid:{color:cGrid()},ticks:{color:cTick(),font:{family:getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim()||"monospace",size:10}},suggestedMin:40,suggestedMax:70}
+        }}});
+  }
+
+  function getStationRows(){
+    return [
+      {name:"Irawan WTP-1",             cat:"sw", val:0,key:"wtp1"},
+      {name:"Irawan WTP-2",             cat:"sw", val:0,key:"wtp2"},
+      {name:"Irawan Infiltration Wells",cat:"sw", val:0,key:"infilCity"},
+      {name:"Lapu-Lapu Source",         cat:"sw", val:0,key:"lapulapu"},
+      {name:"Montible (Teruvian)",      cat:"sw", val:0,key:"montible"},
+      {name:"SW City Sub-total",        cat:"sw", val:0,key:"swCitySub",bold:true},
+      {name:"Sta. Lucia PS",            cat:"sw", val:0,key:"stalucia"},
+      {name:"Sabang SW",                cat:"sw", val:0,key:"sabangSW"},
+      {name:"San Rafael SW",            cat:"sw", val:0,key:"sanrafael"},
+      {name:"Bahile SW",                cat:"sw", val:0,key:"bahile"},
+      {name:"Napsan",                   cat:"sw", val:0,key:"napsan"},
+      {name:"Binduyan",                 cat:"sw", val:0,key:"binduyan"},
+      {name:"Bacungan SW",              cat:"sw", val:0,key:"bacuncan"},
+      {name:"Maoyon Infiltration Wells",cat:"sw", val:0,key:"maoyon"},
+      {name:"SW Satellite Sub-total",   cat:"sw", val:0,key:"swSatSub",bold:true},
+      {name:"Macasaet-I",               cat:"gw", val:0,key:"macasaet"},
+      {name:"Pump Center #5",           cat:"gw", val:0,key:"pc5"},
+      {name:"Pump Center #6",           cat:"gw", val:0,key:"pc6"},
+      {name:"DA",                       cat:"gw", val:0,key:"da1"},
+      {name:"Sicsican",                 cat:"gw", val:0,key:"sicsican"},
+      {name:"Villa Ello",               cat:"gw", val:0,key:"villaello"},
+      {name:"NHA",                      cat:"gw", val:0,key:"nha"},
+      {name:"Princeville",              cat:"gw", val:0,key:"princeville"},
+      {name:"Villa Princesa",           cat:"gw", val:0,key:"villaprin"},
+      {name:"San Jose",                 cat:"gw", val:0,key:"sanjose"},
+      {name:"BOS",                      cat:"gw", val:0,key:"bos"},
+      {name:"Esteban",                  cat:"gw", val:0,key:"esteban"},
+      {name:"Kaakbayan",                cat:"gw", val:0,key:"kaakbayan"},
+      {name:"New Market",               cat:"gw", val:0,key:"newmarket"},
+      {name:"Pablico",                  cat:"gw", val:0,key:"pablico"},
+      {name:"Baldosano PS",             cat:"gw", val:0,key:"baldosano"},
+      {name:"Sta. Monica PS",           cat:"gw", val:0,key:"stamonica"},
+      {name:"GW City Sub-total",        cat:"gw", val:0,key:"gwCitySub",bold:true},
+      {name:"Abueg",                    cat:"aug",val:0,key:"abueg"},
+      {name:"Visapa PS",                cat:"aug",val:0,key:"visapa"},
+      {name:"Acacia",                   cat:"aug",val:0,key:"acacia"},
+      {name:"Citywoods",                cat:"aug",val:0,key:"citywoods"},
+      {name:"Virginia",                 cat:"aug",val:0,key:"virginia"},
+      {name:"Augmented Stations",       cat:"aug",val:0,key:"augSub",bold:true},
+      {name:"Lucbuan",                  cat:"gw", val:0,key:"lucbuan"},
+      {name:"Sabang GW",                cat:"gw", val:0,key:"sabangGW"},
+      {name:"Inagawan",                 cat:"gw", val:0,key:"inagawan"},
+      {name:"GW Satellite Sub-total",   cat:"gw", val:0,key:"gwSatSub",bold:true},
+    ];
+  }
+
+  function renderSourceTable(d){
+    const total=num(d.grandTotal);
+    const rows=getStationRows().map(r=>({...r,val:num(d[r.key])}));
+    const cl={sw:"Surface Water",gw:"Ground Water",aug:"Augmented"};
+
+    // Desktop table
+    document.getElementById("source-table").innerHTML=rows.map(r=>{
+      if(r.val===0&&!r.bold)return"";
+      const pct=total>0?r.val/total*100:0,mld=r.val/7/1000;
+      const bc=r.cat==="sw"?"var(--teal)":r.cat==="aug"?"#7C3AED":"var(--blue)";
+      return`<tr style="${r.bold?`background:var(--tbl-row)`:``}">
+        <td style="${r.bold?"font-weight:500;color:var(--white)":""}">${r.name}</td>
+        <td><span class="cat-pill cat-${r.cat}">${cl[r.cat]}</span></td>
+        <td class="right mono">${fmt(r.val)}</td><td class="right mono">${fmt(mld,2)}</td>
+        <td class="right mono">${fmt(pct,1)}%</td>
+        <td><div class="bar-cell"><div class="mini-bar-bg"><div class="mini-bar" style="width:${Math.min(pct*3,100)}%;background:${bc}"></div></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text2)">${fmt(pct,1)}%</span></div></td>
+      </tr>`;
+    }).join("");
+
+    // Mobile cards
+    document.getElementById("source-cards").innerHTML=
+      `<div style="padding:10px 14px">`+
+      rows.filter(r=>r.val>0||r.bold).map(r=>{
+        const pct=total>0?r.val/total*100:0,mld=r.val/7/1000;
+        if(r.bold)return`<div class="mob-section-title">${r.name}: ${fmt(r.val)} m³</div>`;
+        return`<div class="mob-card">
+          <div class="mob-card-header"><span class="mob-card-name">${r.name}</span><span class="cat-pill cat-${r.cat}">${cl[r.cat]}</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">Production</span><span class="mob-card-val">${fmt(r.val)} m³</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">MLD</span><span class="mob-card-val">${fmt(mld,2)}</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">% of Total</span><span class="mob-card-val">${fmt(pct,1)}%</span></div>
+        </div>`;
+      }).join("")+`</div>`;
+  }
+
+  function renderCapacityTable(d){
+    const stations=getStationRows().filter(r=>!r.bold).map(r=>({...r,val:num(d[r.key])}));
+    const cl={sw:"Surface Water",gw:"Ground Water",aug:"Augmented"};
+
+    document.getElementById("capacity-table").innerHTML=stations.map(s=>{
+      const rHr=RATED[s.name]||0,rWk=rHr*168,actual=s.val;
+      if(rHr===0&&actual===0)return"";
+      const diff=actual-rWk,util=rWk>0?(actual/rWk*100):null;
+      let pCls,pLbl;
+      if(util===null){pCls="";pLbl="—";}
+      else if(util>=95){pCls="pct-over";pLbl=`${fmt(util,1)}%`;}
+      else if(util>=70){pCls="pct-near";pLbl=`${fmt(util,1)}%`;}
+      else{pCls="pct-under";pLbl=`${fmt(util,1)}%`;}
+      let stTxt,stCol;
+      if(util===null){stTxt="No rated data";stCol="var(--text2)";}
+      else if(util>=95){stTxt="✓ At capacity";stCol="var(--green)";}
+      else if(util>=70){stTxt="~ Near capacity";stCol="var(--amber)";}
+      else if(actual>0){stTxt="▼ Under capacity";stCol="var(--red)";}
+      else{stTxt="— Standby/Off";stCol="var(--text2)";}
+      return`<tr>
+        <td>${s.name}</td><td><span class="cat-pill cat-${s.cat}">${cl[s.cat]}</span></td>
+        <td class="right mono">${rHr>0?fmt(rHr,2):"—"}</td>
+        <td class="right mono">${rWk>0?fmt(rWk,0):"—"}</td>
+        <td class="right mono">${actual>0?fmt(actual,0):"—"}</td>
+        <td class="right mono ${diff>=0?"diff-pos":"diff-neg"}">${rWk>0&&actual>0?fmtDiff(diff):"—"}</td>
+        <td class="right"><span class="pct-badge ${pCls}">${pLbl}</span></td>
+        <td style="font-size:10px;color:${stCol};font-family:'JetBrains Mono',monospace;white-space:nowrap">${stTxt}</td>
+      </tr>`;
+    }).join("");
+
+    // Mobile capacity cards
+    document.getElementById("capacity-cards").innerHTML=
+      `<div style="padding:10px 14px">`+
+      stations.filter(s=>(RATED[s.name]||0)>0||s.val>0).map(s=>{
+        const rHr=RATED[s.name]||0,rWk=rHr*168,actual=s.val,diff=actual-rWk;
+        const util=rWk>0?(actual/rWk*100):null;
+        return`<div class="mob-card">
+          <div class="mob-card-header"><span class="mob-card-name">${s.name}</span><span class="cat-pill cat-${s.cat}">${cl[s.cat]}</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">Rated (m³/hr)</span><span class="mob-card-val">${rHr>0?fmt(rHr,2):"—"}</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">Weekly Rated</span><span class="mob-card-val">${rWk>0?fmt(rWk,0):"—"} m³</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">Actual</span><span class="mob-card-val">${actual>0?fmt(actual,0):"—"} m³</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">Difference</span><span class="mob-card-val ${diff>=0?"diff-pos":"diff-neg"}">${rWk>0&&actual>0?fmtDiff(diff):"—"}</span></div>
+          <div class="mob-card-row"><span class="mob-card-label">Utilization</span><span class="mob-card-val">${util!==null?fmt(util,1)+"%":"—"}</span></div>
+        </div>`;
+      }).join("")+`</div>`;
+  }
+
+  function setActive(weekVal){
+    // Update the dropdown menu selection
+    const selectEl = document.getElementById("week-select");
+    if(selectEl) selectEl.value = weekVal;
+  }
+
+  function getAlertInfo(pct) {
+    if (pct >= 75) return { lvl: 1, name: "Alert Level 1", cls: "lvl-1" };
+    if (pct >= 50) return { lvl: 2, name: "Alert Level 2", cls: "lvl-2" };
+    return { lvl: 3, name: "Alert Level 3", cls: "lvl-3" };
+  }
+
+  function renderCrisisMonitoring(d, numWeeks) {
+    const cityGrid = document.getElementById("crisis-city-grid");
+    const satGrid = document.getElementById("crisis-sat-grid");
+    cityGrid.innerHTML = ""; satGrid.innerHTML = "";
+
+    const hrsInPeriod = 168 * numWeeks;
+
+    CRISIS_SYSTEMS.forEach(sys => {
+        let actual = sys.keys.reduce((sum, key) => sum + num(d[key]), 0);
+        let ratedWeekly = 0;
+
+// NEW LOGIC: Dynamic Rated Capacity for City Total
+    if (sys.isCityTotal) {
+      const ratedSwWeekly = 2012.05 * hrsInPeriod; // Base SW Rated (338,024.4 m³ per week)
+      
+      // Explicitly define Groundwater and Augmented keys only (excluding Montible from denominator)
+      const gwAndAugKeys = [
+        "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", 
+        "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", 
+        "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", 
+        "acacia", "citywoods", "virginia"
+      ];
+      
+      // Dynamically sum Actual GW + Actual Augmented production for this specific week
+      const actualRest = gwAndAugKeys.reduce((sum, key) => sum + num(d[key]), 0);
+      
+      // Denominator formula: (Base SW Rated + Dynamic Actual GW + Dynamic Actual Augmented)
+      ratedWeekly = ratedSwWeekly + actualRest; 
+    } else {
+      ratedWeekly = sys.ratedHr * hrsInPeriod;
+    }
+
+      let pct = ratedWeekly > 0 ? (actual / ratedWeekly) * 100 : 0;
+      
+      let isMontibleActive = false;
+      let montibleVol = 0;
+
+      // The Montible Fallback Logic
+      if (sys.isBaseSW && pct < 75) {
+        montibleVol = num(d["montible"]);
+        actual += montibleVol; 
+        pct = ratedWeekly > 0 ? (actual / ratedWeekly) * 100 : 0;
+        isMontibleActive = true;
+      }
+
+      const alert = getAlertInfo(pct);
+
+      const cardHtml = `
+        <div class="crisis-card ${alert.cls}">
+          <div class="crisis-header">
+            <div class="crisis-title">${sys.name}</div>
+            <div class="crisis-badge">${alert.name}</div>
+          </div>
+          <div class="crisis-pct">${fmt(pct, 1)}%</div>
+          <div class="crisis-details">
+            <div class="crisis-details-row">
+              <span>Actual Production</span>
+              <span style="color:var(--text)">${fmt(actual)} m³</span>
+            </div>
+            <div class="crisis-details-row">
+              <span>Rated Capacity</span>
+              <span style="color:var(--text)">${fmt(ratedWeekly)} m³</span>
+            </div>
+            ${isMontibleActive ? `
+              <div class="montible-alert">
+                Montible Substitute Active (+${fmt(montibleVol)} m³)
+              </div>
+            ` : ""}
+          </div>
+        </div>
+      `;
+
+      if (sys.group === "city") {
+        cityGrid.innerHTML += cardHtml;
+      } else {
+        satGrid.innerHTML += cardHtml;
+      }
+    });
+  }
+
+  function renderWeek(weekVal){
+  setActive(weekVal);
+  
+  const rows = allProdData.filter(r => r[COL.week] === weekVal);
+  let d = rows.length ? rowToObj(rows[0]) : rowToObj(allProdData[allProdData.length - 1]);
+  let numWeeks = 1;
+
+  renderKPIs(d);
+  renderBarChart(allProdData);
+  renderPieSwGw(d);
+  renderPieSources(d);
+  renderMldChart(allProdData);
+  renderSourceTable(d);
+  renderCapacityTable(d);
+  renderCrisisMonitoring(d, numWeeks);
+}
+
+  function buildWeekBtns(weeks){
+    const selectEl = document.getElementById("week-select");
+    if(!selectEl) return;
+    
+    selectEl.innerHTML = "";
+
+    // Clone and reverse the weeks array so the NEWEST week is at the top of the list!
+    [...weeks].reverse().forEach(wk => {
+      const row = allProdData.find(r => r[COL.week] === wk);
+      const period = row ? row[COL.period] || row[COL.date] || wk : wk;
+      let label = String(period).replace(/,\s*\d{4}/, "").trim();
+      if(label === String(period)) label = wk;
+
+      const opt = document.createElement("option");
+      opt.value = wk;
+      // Format it cleanly, e.g., "Week 18  •  July 24 - 31"
+      opt.textContent = `${wk}  •  ${label}`;
+      selectEl.appendChild(opt);
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // RIVER FLOW TAB 
+  // ════════════════════════════════════════════════════════════
+  async function loadRiverFlow(isAutoRefresh = false) {
+    try {
+      // 1. Fetch from our private Vercel API instead of Google Sheets
+      const res = await fetch('/api/getRiverFlow');
+      if (!res.ok) throw new Error("Failed to fetch River data from server.");
+      
+      const dbData = await res.json();
+      
+      // 2. Transform the database rows into the format the UI expects
+      const processedData = dbData.map(row => {
+        const rawArray = row.readings;
+        while(rawArray.length <= 20) {rawArray.push(null);}
+        const dt = new Date(rawArray[1]);
+        return { dt: dt, vals: rawArray, raw: rawArray }; 
+      });
+
+      // 3. Sort chronologically and filter out incomplete rows
+      riverRaw = processedData.sort((a, b) => a.dt - b.dt).filter(r => {
+        if (!r.raw || r.raw.length <= 20) return false; // Safety check
+        return true;
+      });
+
+      // 4. Update the UI
+      buildRiverLeaderboard();
+      buildRiverSidebar();
+      
+      if (!isAutoRefresh || selectedRiverCol === null) {
+        showRiverDetails(RIVER_STATIONS[0].col); 
+      } else {
+        showRiverDetails(selectedRiverCol);
+      }
+      
+      document.getElementById("river-chart-container").style.display = "block";
+      document.getElementById("river-table-container").style.display = "block";
+      document.getElementById("river-error").style.display = "none";
+
+    } catch(err) {
+      document.getElementById("river-error").style.display = "block";
+      document.getElementById("river-error").textContent = "Could not load River Flow data: " + err.message;
+      console.error(err);
+    }
+  }
+
+function buildRiverLeaderboard() {
+    // Find the absolute latest reading for every river
+    let latestData = RIVER_STATIONS.map(s => {
+      const validRecs = riverRaw.filter(r => r.vals[s.col] !== null);
+      const recent = validRecs.length > 0 ? validRecs[validRecs.length - 1] : null;
+      return {
+        name: s.name,
+        col: s.col,
+        val: recent ? recent.vals[s.col] : 0
+      };
+    });
+
+    // Sort from highest yield to lowest
+    latestData.sort((a, b) => b.val - a.val);
+
+    dc(riverLeaderboardChart);
+    riverLeaderboardChart = new Chart(document.getElementById("chart-river-leaderboard"), {
+      type: 'bar', // A horizontal bar chart
+      data: {
+        labels: latestData.map(d => d.name),
+        datasets: [{
+          label: 'Latest Discharge (m³/day)',
+          data: latestData.map(d => d.val),
+          backgroundColor: 'rgba(217, 119, 6, 0.7)',
+          hoverBackgroundColor: 'rgba(217, 119, 6, 1)',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y', // Flips it horizontal
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw, 2)} m³/day` } }
+        },
+        scales: {
+          x: { grid: { color: cGrid() }, ticks: { color: cTick(), font: { family: "IBM Plex Mono", size: 10 } } },
+          y: { grid: { display: false }, ticks: { color: cTick(), font: { family: "IBM Plex Mono", size: 9 } } }
+        },
+        onClick: (e, elements) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            showRiverDetails(latestData[index].col);
+          }
+        }
+      }
+    });
+  }
+
+  function buildRiverSidebar() {
+    const container = document.getElementById("river-list-container");
+    
+    // Group the rivers
+    const groups = ["City / Primary Sources", "Satellite North", "Satellite South"];
+    
+    container.innerHTML = groups.map(groupName => {
+      const groupStations = RIVER_STATIONS.filter(s => s.group === groupName);
+      
+      const itemsHtml = groupStations.map(s => {
+        const validRecs = riverRaw.filter(r => r.vals[s.col] !== null);
+        const recent = validRecs.length > 0 ? validRecs[validRecs.length - 1] : null;
+        const val = recent ? recent.vals[s.col] : null;
+        const timeStr = recent ? recent.dt.toLocaleDateString("en-PH") : "—";
+        
+        return `
+          <div class="river-list-item" id="river-list-${s.col}" onclick="showRiverDetails(${s.col})">
+            <div>
+              <div class="river-list-name">${s.name}</div>
+              <div class="river-list-date">${timeStr}</div>
+            </div>
+            <div class="river-list-val">
+              ${val !== null ? fmt(val, 0) : "—"}
+            </div>
+          </div>`;
+      }).join("");
+
+      return `<div class="river-group-label">${groupName}</div>${itemsHtml}`;
+    }).join("");
+  }
+
+ function showRiverDetails(col){
+    selectedRiverCol = col;
+    const station = RIVER_STATIONS.find(s => s.col === col);
+    
+    // Highlight sidebar item
+    RIVER_STATIONS.forEach(s => {
+      const el = document.getElementById(`river-list-${s.col}`);
+      if(el) el.classList.toggle("selected", s.col === col);
+    });
+
+    if(!station) return;
+    document.getElementById("river-chart-title").textContent = station.name;
+
+    // Filter valid data points
+    const dataPoints = riverRaw.filter(r => r.vals[col] !== null);
+    
+    // Build Chart
+    dc(riverChart);
+    const labels = dataPoints.map(r => r.dt.toLocaleDateString("en-PH"));
+    const vals = dataPoints.map(r => r.vals[col]);
+
+    riverChart = new Chart(document.getElementById("chart-river"), {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Discharge (m³/day)",
+          data: vals,
+          borderColor: "rgba(217,119,6,0.9)", // Amber
+          backgroundColor: "rgba(217,119,6,0.1)",
+          borderWidth: 2,
+          pointBackgroundColor: "rgba(217,119,6,1)",
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ` ${fmt(ctx.raw, 2)} m³/day` }
+          }
+        },
+        scales: {
+          x: { grid: { color: cGrid() }, ticks: { color: cTick(), font: { family: "IBM Plex Mono", size: 10 } } },
+          y: { 
+            grid: { color: cGrid() }, 
+            ticks: { color: cTick(), font: { family: "IBM Plex Mono", size: 10 } },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Build Desktop Table (Reverse order to show recent first)
+    const tbody = document.getElementById("river-tbody");
+    tbody.innerHTML = [...dataPoints].reverse().map(r => {
+      return `<tr>
+        <td class="mono" style="color:var(--text)">${r.dt.toLocaleDateString("en-PH")}</td>
+        <td class="right mono" style="color:var(--amber2)">${fmt(r.vals[col], 2)}</td>
+      </tr>`;
+    }).join("");
+
+    // Build Mobile Cards
+    const mobCards = document.getElementById("river-mobile-cards");
+    if (mobCards) {
+      mobCards.innerHTML = `<div style="padding:10px 14px">` + [...dataPoints].reverse().map(r => {
+        return `<div class="mob-card">
+          <div class="mob-card-header">
+            <span class="mob-card-name">${r.dt.toLocaleDateString("en-PH")}</span>
+          </div>
+          <div class="mob-card-row">
+            <span class="mob-card-label">Discharge</span>
+            <span class="mob-card-val" style="color:var(--amber2); font-weight:600;">${fmt(r.vals[col], 2)} m³/day</span>
+          </div>
+        </div>`;
+      }).join("") + `</div>`;
+    }
+
+    // Handle Empty Data States
+    if(dataPoints.length === 0){
+      tbody.innerHTML = `<tr><td colspan="2" style="text-align:center;color:var(--text2);padding:20px;font-family:var(--font-mono);font-size:11px;">No discharge data available for ${station.name}</td></tr>`;
+      if (mobCards) {
+        mobCards.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text2); font-family:var(--font-mono); font-size:11px;">No discharge data available for ${station.name}</div>`;
+      }
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // PRESSURE MAP & DATA LOGIC (RETAINED)
+  // ════════════════════════════════════════════════════════════
+  let leafletMap = null;
+  let leafletMarkers = {};       
+  let compareStations = [];      
+  let popupStation = null;
+
+  function parseDateTime(dateStr, timeStr){
+    try{
+      let d;
+      if(typeof dateStr==="string"){
+        const s=dateStr.trim();
+        const p=s.split("/");
+        if(p.length===3){
+          const day=p[0].padStart(2,"0");
+          const mon=p[1].padStart(2,"0");
+          const yr=p[2];
+          d=new Date(`${yr}-${mon}-${day}T00:00:00`);
+        } else {
+          d=new Date(s);
+        }
+      } else if(dateStr instanceof Date){
+        d=new Date(dateStr);
+      } else {
+        d=new Date(dateStr);
+      }
+      if(!d||isNaN(d.getTime())) return null;
+
+      if(timeStr){
+        const tStr=String(timeStr).trim();
+        const m=tStr.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?/i);
+        if(m){
+          let h=parseInt(m[1],10), mn=parseInt(m[2],10);
+          const ap=m[4]?m[4].toUpperCase():"";
+          if(ap==="PM"&&h!==12) h+=12;
+          if(ap==="AM"&&h===12) h=0;
+          d.setHours(h,mn,0,0);
+        }
+      }
+      return d;
+    }catch(e){ return null; }
+  }
+
+  let activeDateFilter = null;  
+  let activeTimeFilter = null;
+
+function getSnapshot(pool) {
+    if (!pool || pool.length === 0) return null;
+    if (!activeTimeFilter) return pool[pool.length - 1]; // Default to the absolute latest reading
+
+    // FIX: Use the selected date OR the absolute newest date in the pool
+    const baseDate = activeDateFilter ? new Date(activeDateFilter) : new Date(pool[pool.length - 1].dt); 
+    
+    const [h, m] = activeTimeFilter.split(":");
+    baseDate.setHours(h, m, 0, 0);
+    const targetTime = baseDate.getTime();
+
+    // Find the reading closest to our target
+    return pool.reduce((prev, curr) => {
+      const prevDiff = Math.abs(prev.dt.getTime() - targetTime);
+      const currDiff = Math.abs(curr.dt.getTime() - targetTime);
+      return currDiff < prevDiff ? curr : prev;
+    });
+  }
+
+  function filterByRange(data, range){
+    let pool = activeDateFilter ? data.filter(r=>{
+      if(!r.dt) return false;
+      const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+      const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+      return rd.getTime()===fd.getTime();
+    }) : data;
+
+    if(range==="all" || !pool.length) return pool;
+    const latest=pool.reduce((max,r)=>r.dt&&r.dt>max?r.dt:max, new Date(0));
+    const hours={"24h":24,"7d":168}[range]||24;
+    const cutoff=new Date(latest.getTime()-hours*3600*1000);
+    const byTime=pool.filter(r=>r.dt&&r.dt>=cutoff);
+    return byTime.length>0 ? byTime : pool;
+  }
+
+function stepTime(hoursToAdd) {
+    const timeInput = document.getElementById("time-filter-input");
+    
+    // If empty, grab current hour. 
+    let [h, m] = timeInput.value ? timeInput.value.split(":") : [new Date().getHours(), 0];
+    
+    let d = new Date();
+    // Add the hour, but explicitly lock minutes and seconds to 0
+    d.setHours(parseInt(h, 10) + hoursToAdd, 0, 0, 0); 
+    
+    const newH = String(d.getHours()).padStart(2, '0');
+    timeInput.value = `${newH}:00`; // Force the UI to show :00
+    
+    applyDateFilter();
+  }
+
+  function applyDateFilter(){
+    console.log("Total pressure points available to filter:", pressureRaw.length);
+    const dateVal = document.getElementById("date-filter-input").value;
+    const timeVal = document.getElementById("time-filter-input").value;
+
+    if(!dateVal && !timeVal){ clearDateFilter(); return; }
+
+    const activeDateStr = dateVal || new Date().toISOString().split('T')[0];
+    activeDateFilter = new Date(activeDateStr + "T00:00:00");
+    activeTimeFilter = timeVal || null; 
+    document.getElementById("date-filter-clear").style.display="flex";
+
+    const rows = pressureRaw.filter(r=>{
+      if(!r.dt) return false;
+      const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+      const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+      return rd.getTime()===fd.getTime();
+    });
+
+    const count = rows.length;
+    let rangeStr = "";
+    if(count > 0){
+      const times = rows.map(r=>r.dt).sort((a,b)=>a-b);
+      const fmtH = d => d.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
+      rangeStr = count===1 ? fmtH(times[0]) : `${fmtH(times[0])} – ${fmtH(times[times.length-1])}`;
+    }
+    const info = document.getElementById("date-filter-info");
+    info.textContent = count>0 ? `${count} hour${count!==1?"s":""} of data  (${rangeStr})` : "No readings on this date";
+    info.style.color = count>0 ? "var(--teal2)" : "#FCA5A5";
+
+    buildLeafletMarkers();
+    renderComplaintsHeatmap();
+    buildStationCards();
+    if(compareStations.length>0) buildCompareChart();
+
+    buildPressureRawTable();
+  }
+
+function clearDateFilter(){
+    // 1. Wipe the memory clean
+    activeDateFilter = null;
+    activeTimeFilter = null; 
+    
+    // 2. Clear the UI inputs
+    document.getElementById("date-filter-input").value = "";
+    document.getElementById("time-filter-input").value = "";
+    document.getElementById("date-filter-clear").style.display = "none";
+    document.getElementById("date-filter-info").textContent = "";
+    
+    // 3. Rebuild the dashboard with Live data
+    buildLeafletMarkers();
+    buildStationCards();
+    if(compareStations.length > 0) buildCompareChart();
+    
+    buildPressureRawTable(); 
+  }
+
+  function initLeafletMap(){
+    if(leafletMap) return;
+    leafletMap = L.map("leaflet-map",{ center:[9.7340, 118.7450], zoom:15, zoomControl:true, attributionControl:false });
+    setTimeout(()=>leafletMap.invalidateSize(), 100);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(leafletMap);
+  }
+
+  function buildLeafletMarkers(){
+    Object.values(leafletMarkers).forEach(m=>leafletMap.removeLayer(m));
+    leafletMarkers={};
+
+    PRESSURE_STATIONS.forEach(s=>{
+      const pool = activeDateFilter ? pressureRaw.filter(r=>{
+        if(!r.dt||r.vals[s.col]===null) return false;
+        const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+        const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+        return rd.getTime()===fd.getTime();
+      }) : pressureRaw.filter(r=>r.vals[s.col]!==null);
+      
+      const recent = getSnapshot(pool);
+      const val=recent?recent.vals[s.col]:null;
+      
+      const alertThreshold = s.customAlertPsi || ALERT_PSI;
+      const isAlert = val !== null && val <= alertThreshold;
+      const hasData = val !== null;
+
+      let dotClass="pressure-dot dot-nodata";
+      if(hasData) dotClass=isAlert?"pressure-dot dot-alert":"pressure-dot dot-ok";
+      
+      const cIdx=compareStations.findIndex(cs=>cs.col===s.col);
+      if(cIdx===0) dotClass+=" dot-compare-1";
+      if(cIdx===1) dotClass+=" dot-compare-2";
+
+      const label=val!==null?fmt(val,2):"?";
+      const icon=L.divIcon({
+        className:"",
+        html:`<div class="${dotClass}" style="width:46px;height:46px;display:flex;align-items:center;justify-content:center;text-align:center;color:white;font-size:9px;line-height:1.1;flex-direction:column;">
+          <span style="font-size:11px;font-weight:600;letter-spacing:-0.3px;">${label}</span>
+          ${val!==null?'<span style="font-size:7px;opacity:0.8;">PSI</span>':''}
+        </div>`,
+        iconSize:[46,46], iconAnchor:[23,23], popupAnchor:[0,-24]
+      });
+
+      const timeStr=recent&&recent.dt? recent.dt.toLocaleDateString("en-PH")+" "+ recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}) :"No recent data";
+      
+      const psiColor = val===null?"#94A3B8":isAlert?"#FCA5A5":"#34D399";
+      const statusColor = val===null?"#94A3B8":isAlert?"#FCA5A5":"#34D399";
+      
+      let statusTxt = "No reading available";
+      if (hasData) {
+        if (isAlert) {
+           statusTxt = (s.maxPsi && val >= s.maxPsi) ? `⚠️ Above high threshold (${s.maxPsi} PSI)` : "⚠️ Below alert threshold (6.5 PSI)";
+        } else {
+           statusTxt = "✓ Normal pressure";
+        }
+      }
+
+      const inCompare=compareStations.some(cs=>cs.col===s.col);
+
+      const popupHtml=`<div style="padding:14px;font-family:'IBM Plex Sans',sans-serif;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
+          <div><div style="font-size:12px;font-weight:500;color:#F8FAFC;line-height:1.3;">${s.name}</div><div style="font-size:9px;color:#94A3B8;font-family:'IBM Plex Mono',monospace;margin-top:2px;">${timeStr}</div></div>
+        </div>
+        <div style="font-size:30px;font-weight:300;font-family:'IBM Plex Mono',monospace;color:${psiColor};line-height:1;margin-bottom:4px;">${val!==null?fmt(val,2)+" PSI":"No data"}</div>
+        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:${statusColor};margin-bottom:12px;">${statusTxt}</div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="viewHistoryFromPopup(${s.col})" style="flex:1;padding:7px 0;border-radius:6px;background:#1B8C7D;color:white;border:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;cursor:pointer;">View History</button>
+          <button id="cmp-btn-${s.col}" onclick="toggleCompareFromPopup(${s.col})" style="flex:1;padding:7px 0;border-radius:6px;background:${inCompare?"rgba(220,38,38,0.2)":"rgba(21,96,189,0.2)"};border:1px solid ${inCompare?"rgba(220,38,38,0.4)":"rgba(21,96,189,0.4)"};color:${inCompare?"#FCA5A5":"#4A90D9"};font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;cursor:pointer;">${inCompare?"✕ Remove":"+ Compare"}</button>
+        </div>
+      </div>`;
+
+      const marker=L.marker([s.lat, s.lng],{icon}).addTo(leafletMap);
+      marker.bindPopup(popupHtml,{maxWidth:240,minWidth:220,closeButton:true,className:"dark-popup"});
+      marker.on("popupopen",()=>{ popupStation=s; });
+      marker.on("popupclose",()=>{ popupStation=null; });
+      leafletMarkers[s.col]=marker;
+    });
+  }
+
+  function viewHistoryFromPopup(col){
+    const station=PRESSURE_STATIONS.find(s=>s.col===col);
+    if(!station)return;
+    leafletMap.closePopup();
+    showChartPanel(station);
+  }
+  function toggleCompareFromPopup(col){
+    const station=PRESSURE_STATIONS.find(s=>s.col===col);
+    if(!station)return;
+    leafletMap.closePopup();
+    addStationToCompare(station);
+  }
+
+  const COMPARE_COLORS=[
+    {border:"rgba(74,144,217,0.9)",bg:"rgba(74,144,217,0.08)"},
+    {border:"rgba(36,181,163,0.9)",bg:"rgba(36,181,163,0.08)"}
+  ];
+
+  function addStationToCompare(station){
+    const idx=compareStations.findIndex(s=>s.col===station.col);
+    if(idx>=0){ compareStations.splice(idx,1); }
+    else{
+      if(compareStations.length>=2) compareStations.shift();
+      compareStations.push(station);
+    }
+    updateStationCards();
+    buildLeafletMarkers();
+    document.getElementById("compare-clear").style.display=compareStations.length>0?"block":"none";
+    const cc2=document.getElementById("compare-clear-chart");
+    if(cc2) cc2.style.display=compareStations.length>0?"block":"none";
+    if(compareStations.length===0){
+      document.getElementById("chart-placeholder").style.display="flex";
+      document.getElementById("chart-active-panel").style.display="none";
+      if(pressureChart){pressureChart.destroy();pressureChart=null;}
+    } else { buildCompareChart(); }
+  }
+
+  function clearCompare(){
+    compareStations=[];
+    if(pressureChart){pressureChart.destroy();pressureChart=null;}
+    document.getElementById("chart-placeholder").style.display="flex";
+    document.getElementById("chart-active-panel").style.display="none";
+    document.getElementById("compare-clear").style.display="none";
+    document.getElementById("compare-banner").style.display="none";
+    updateStationCards();
+    buildLeafletMarkers();
+  }
+
+  function buildCompareChart(){
+    if(pressureChart){pressureChart.destroy();pressureChart=null;}
+    
+    let pool = activeDateFilter ? pressureRaw.filter(r=>{
+      if(!r.dt) return false;
+      const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+      const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+      return rd.getTime()===fd.getTime();
+    }) : pressureRaw;
+
+    if (pool.length === 0) pool = pressureRaw;
+
+    const labels = pool.map(r=>{
+      if(!r.dt)return"";
+      const d=r.dt;
+      return`${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}`;
+    });
+
+    const datasets = compareStations.map((s,i)=>{
+      const c=COMPARE_COLORS[i];
+      const vals=pool.map(r=>r.vals[s.col]!==null?r.vals[s.col]:null);
+      return {
+        label:s.name,
+        data:vals,
+        borderColor:c.border,
+        backgroundColor:c.bg,
+        borderWidth:2,
+        pointRadius:2.5,
+        // UPGRADED: Paint dot red if it hits lower OR upper bounds
+        pointBackgroundColor:vals.map(v=>v!==null&&(v<=ALERT_PSI || (s.maxPsi && v>=s.maxPsi))?"#DC2626":c.border),
+        pointBorderColor:"transparent",
+        tension:.3,
+        fill:compareStations.length===1,
+        spanGaps:true
+      };
+    });
+    
+    // Add Low Alert Line
+    datasets.push({
+      label:"Alert 6.5 PSI",
+      data:labels.map(()=>ALERT_PSI),
+      borderColor:"rgba(220,38,38,0.6)",
+      borderWidth:1.5,
+      borderDash:[6,3],
+      pointRadius:0,
+      fill:false
+    });
+
+    // NEW: Add Custom High Alert Lines if applicable
+    compareStations.forEach(s => {
+      if (s.maxPsi) {
+        datasets.push({
+          label: `High Alert (${s.name})`,
+          data: labels.map(()=>s.maxPsi),
+          borderColor: "rgba(220,38,38,0.4)",
+          borderWidth: 1.5,
+          borderDash: [6,3],
+          pointRadius: 0,
+          fill: false
+        });
+      }
+    });
+
+    document.getElementById("chart-placeholder").style.display="none";
+    document.getElementById("chart-active-panel").style.display="block";
+
+    if(compareStations.length===1){
+      document.getElementById("panel-station-name").textContent=compareStations[0].name;
+      document.getElementById("panel-station-sub").textContent="Pressure history";
+      document.getElementById("compare-banner").style.display="none";
+    } else {
+      document.getElementById("panel-station-name").textContent="Compare";
+      document.getElementById("panel-station-sub").textContent= compareStations.map(s=>s.name.split(" ").slice(0,2).join(" ")).join(" vs ");
+      document.getElementById("compare-banner").style.display="block";
+      document.getElementById("compare-banner-text").textContent= compareStations.map(s=>s.name.split(" ").slice(0,2).join(" ")).join(" vs ");
+    }
+
+    const totalItems = pool.length;
+    let minIndex = 0;
+    if(currentRange === '24h') {
+      minIndex = Math.max(0, totalItems - 24);
+    } else if(currentRange === '7d') {
+      minIndex = Math.max(0, totalItems - (24 * 7));
+    }
+
+    pressureChart = new Chart(document.getElementById("chart-pressure"),{
+      type:"line",
+      data:{labels,datasets},
+      plugins: [alwaysShowLabelsPlugin, crosshairPlugin], 
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction: {
+          mode: 'index',      
+          intersect: false    
+        },
+        plugins:{
+          legend:{labels:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}}},
+          tooltip:{
+            backgroundColor: 'rgba(13, 27, 42, 0.95)',
+            titleColor: '#94A3B8',
+            bodyColor: '#F8FAFC',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderWidth: 1,
+            padding: 10,
+            callbacks:{
+              label:ctx=>{
+                // UPGRADED: Hide both Low and High Alert reference lines from tooltip
+                if(ctx.dataset.label.includes("Alert")) return null; 
+                const v=ctx.raw; if(v===null) return ` ${ctx.dataset.label}: No data`;
+                
+                // Determine if this specific station is out of bounds
+                const st = compareStations.find(cs => cs.name === ctx.dataset.label);
+                const isA = v <= ALERT_PSI || (st && st.maxPsi && v >= st.maxPsi);
+                
+                return ` ${ctx.dataset.label}: ${fmt(v,2)} PSI${isA?" ⚠️":""}`;
+              }
+            }
+          },
+          zoom: {             
+            pan: {
+              enabled: true,
+              mode: 'x',
+              modifierKey: null
+            },
+            zoom: {
+              wheel: { enabled: true },
+              pinch: { enabled: true },
+              mode: 'x'
+            }
+          }
+        },
+        scales:{
+          x:{
+            min: minIndex,                 
+            max: totalItems - 1,           
+            grid:{color:"rgba(255,255,255,0.04)"},
+            ticks:{
+              color:"#94A3B8",
+              font:{family:"IBM Plex Mono",size:9},
+              maxTicksLimit:12,
+              maxRotation:45,
+              callback:function(val,i){
+                 return this.getLabelForValue(val);
+              }
+            }
+          },
+          y:{
+            grid:{color:"rgba(255,255,255,0.04)"},
+            ticks:{color:"#94A3B8",font:{family:"IBM Plex Mono",size:10}},
+            suggestedMin:0,suggestedMax:20,
+            title:{display:true,text:"PSI",color:"#64748B",font:{family:"IBM Plex Mono",size:10}}
+          }
+        }
+      }
+    });
+
+    const strip=document.getElementById("latest-strip");
+    strip.innerHTML=compareStations.map((s,i)=>{
+      const spool2 = activeDateFilter ? pressureRaw.filter(r=>{
+        if(!r.dt||r.vals[s.col]===null) return false;
+        const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+        const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+        return rd.getTime()===fd.getTime();
+      }) : pressureRaw.filter(r=>r.vals[s.col]!==null);
+      const recent=spool2.slice(-1)[0];
+      const val=recent?recent.vals[s.col]:null;
+      const c=COMPARE_COLORS[i];
+      // UPGRADED: High Pressure Check
+      const isAlert=val!==null && (val<=ALERT_PSI || (s.maxPsi && val>=s.maxPsi));
+      return`<div class="latest-chip">
+        <div class="chip-dot" style="background:${c.border.replace("0.9","1")}"></div>
+        <span style="color:var(--text2);font-size:9px">${s.name.split(" ").slice(0,2).join(" ")}</span>
+        <span class="chip-val" style="color:${isAlert?"#FCA5A5":"#34D399"}">${val!==null?fmt(val,2)+" PSI":"—"}</span>
+      </div>`;
+    }).join("");
+
+    if (pool && pool.length > 0) {
+      renderComplaintsTicker(pool[minIndex].dt, pool[totalItems - 1].dt);
+    }
+  }
+
+  // --- CUSTOM PLUGINS ---
+  const alwaysShowLabelsPlugin = {
+    id: 'alwaysShowLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return; 
+      
+      ctx.save();
+      ctx.textAlign = 'center';
+
+      chart.data.datasets.forEach((dataset, i) => {
+        // Skip drawing text for ANY alert line
+        if (dataset.label.includes("Alert")) return;
+        
+        const meta = chart.getDatasetMeta(i);
+        if (!meta.hidden) {
+          
+          const visibleCount = chart.scales.x.max - chart.scales.x.min;
+          const maxLabels = Math.max(1, Math.floor(chartArea.width / 60)); 
+          let step = Math.ceil(visibleCount / maxLabels);
+          if (step < 1) step = 1;
+
+          meta.data.forEach((element, index) => {
+            if (index < chart.scales.x.min || index > chart.scales.x.max) return;
+            
+            const val = dataset.data[index];
+            if (val !== null && index % step === 0) {
+              const timeStr = chart.data.labels[index].split(" ")[1] || "";
+              ctx.fillStyle = dataset.borderColor; 
+              
+              // SMART PLACEMENT LOGIC: Always draw the higher value UP and the lower value DOWN
+              let isTopLine = true;
+              for (let j = 0; j < chart.data.datasets.length; j++) {
+                if (j === i || chart.data.datasets[j].label.includes("Alert")) continue;
+                const otherMeta = chart.getDatasetMeta(j);
+                if (!otherMeta.hidden && chart.data.datasets[j].data[index] > val) {
+                  isTopLine = false; // We found another line with a higher PSI at this exact time
+                  break;
+                }
+              }
+
+              if (isTopLine) {
+                // Higher Line: Text points UP away from the data point
+                ctx.textBaseline = 'bottom';
+                ctx.font = '600 10px "IBM Plex Mono", monospace';
+                ctx.fillText(val.toFixed(2), element.x, element.y - 12);
+                ctx.font = '8px "IBM Plex Mono", monospace';
+                ctx.fillText(timeStr, element.x, element.y - 3);
+              } else {
+                // Lower Line: Text points DOWN away from the data point
+                ctx.textBaseline = 'top';
+                ctx.font = '600 10px "IBM Plex Mono", monospace';
+                ctx.fillText(val.toFixed(2), element.x, element.y + 6);
+                ctx.font = '8px "IBM Plex Mono", monospace';
+                ctx.fillText(timeStr, element.x, element.y + 16);
+              }
+            }
+          });
+        }
+      });
+      ctx.restore();
+    }
+  };
+
+  const crosshairPlugin = {
+    id: 'crosshair',
+    afterDraw: (chart) => {
+      const activeEls = chart.tooltip?.getActiveElements();
+      if (activeEls && activeEls.length > 0) {
+        const ctx = chart.ctx;
+        const x = activeEls[0].element.x;
+        const topY = chart.scales.y.top;
+        const bottomY = chart.scales.y.bottom;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x, topY);
+        ctx.lineTo(x, bottomY);
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; 
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  };
+  // --- END CUSTOM PLUGINS ---
+
+  function showChartPanel(station){
+    compareStations=[station];
+    buildCompareChart();
+    buildLeafletMarkers();
+    updateStationCards();
+    document.getElementById("compare-clear").style.display="block";
+  }
+
+  function setRange(btn, range){
+    currentRange=range;
+    document.querySelectorAll(".time-range-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    if(compareStations.length>0) buildCompareChart();
+  }
+
+  const PRIORITY_NAMES = ["Manalo Booster Station","Lapu Lapu Campo Uno Chamber Box","UV Facility"];
+
+  function buildStationCards(){
+    const priorityEl = document.getElementById("priority-cards-row");
+    const regularEl  = document.getElementById("station-cards-grid");
+    if(!priorityEl || !regularEl) return;
+
+    const priorityStations = PRESSURE_STATIONS.filter(s=>PRIORITY_NAMES.includes(s.name));
+    const regularStations  = PRESSURE_STATIONS.filter(s=>!PRIORITY_NAMES.includes(s.name));
+
+    function getLatest(s){
+      const pool = activeDateFilter ? pressureRaw.filter(r=>{
+        if(!r.dt||r.vals[s.col]===null) return false;
+        const rd=new Date(r.dt); rd.setHours(0,0,0,0);
+        const fd=new Date(activeDateFilter); fd.setHours(0,0,0,0);
+        return rd.getTime()===fd.getTime();
+      }) : pressureRaw.filter(r=>r.vals[s.col]!==null);
+      return getSnapshot(pool);
+    }
+
+    priorityEl.innerHTML = priorityStations.map(s=>{
+      const recent  = getLatest(s);
+      const val     = recent ? recent.vals[s.col] : null;
+      
+      const alertThreshold = s.customAlertPsi || ALERT_PSI;
+      const isAlert = val!==null && val<=alertThreshold;
+      const hasData = val!==null;
+      
+      const cardCls = hasData ? (isAlert?"alert-card":"ok-card") : "nodata-card";
+      const psiCls  = hasData ? (isAlert?"alert-psi":"ok-psi") : "no-psi";
+      
+      let statusTxt = "No data available";
+      if (hasData) {
+         statusTxt = isAlert ? `⚠ Below threshold (≤${alertThreshold} PSI)` : "✓ Normal pressure";
+      }
+
+      const statusCls = hasData ? (isAlert?"alert":"ok") : "nodata";
+      const timeStr = recent&&recent.dt ?
+        recent.dt.toLocaleDateString("en-PH")+" "+ recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}) : "—";
+      const inCmp = compareStations.some(cs=>cs.col===s.col);
+      return`<div class="priority-station-card ${cardCls}" id="pc-${s.col}" onclick="handleCardClick(event,${s.col})">
+        <div class="priority-card-label">${s.name==="Manalo Booster Station"?"Booster Station":s.name==="Lapu Lapu Campo Uno Chamber Box"?"Gravity Source":"UV Treatment"}</div>
+        <div class="priority-card-name">${s.name}</div>
+        <div class="priority-card-psi ${psiCls}">
+          ${val!==null?fmt(val,2):"—"}<span class="priority-card-unit">${val!==null?"PSI":""}</span>
+        </div>
+        <div class="priority-card-status ${statusCls}">${statusTxt}</div>
+        <div class="priority-card-time">${timeStr}</div>
+        <div class="priority-card-actions">
+          <button class="pcard-btn hist" onclick="event.stopPropagation();cardViewHistory(${s.col})">View History</button>
+          <button class="pcard-btn cmp ${inCmp?"in-compare":""}" onclick="event.stopPropagation();cardCompare(${s.col})">${inCmp?"✕ Remove":"+ Compare"}</button>
+        </div>
+      </div>`;
+    }).join("");
+
+    regularEl.innerHTML = regularStations.map(s=>{
+      const recent  = getLatest(s);
+      const val     = recent ? recent.vals[s.col] : null;
+      
+      const alertThreshold = s.customAlertPsi || ALERT_PSI;
+      const isAlert = val!==null && val<=alertThreshold;
+      const hasData = val!==null;
+      
+      const cardCls = hasData ? (isAlert?"alert-card":"ok-card") : "";
+      const psiCls  = hasData ? (isAlert?"al-v":"ok-v") : "no-v";
+      const timeStr = recent&&recent.dt ? recent.dt.toLocaleDateString("en-PH") + " " + recent.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}) : "—";
+      return`<div class="reg-station-card ${cardCls}" id="rc-${s.col}" onclick="handleCardClick(event,${s.col})">
+        <div class="reg-card-name">${s.name}</div>
+        <div class="reg-card-psi ${psiCls}">
+          ${val!==null?fmt(val,2):"—"}<span class="reg-card-unit">${val!==null?"PSI":""}</span>
+        </div>
+        <div class="reg-card-time">${timeStr}</div>
+      </div>`;
+    }).join("");
+  }
+  function updateStationCards(){
+    PRESSURE_STATIONS.forEach(s=>{
+      const pEl = document.getElementById(`pc-${s.col}`);
+      const rEl = document.getElementById(`rc-${s.col}`);
+      const sel = compareStations.some(cs=>cs.col===s.col);
+      
+      if(pEl) {
+        pEl.classList.toggle("selected", sel);
+        // FIX 1: Explicitly update the button text and color inside the Priority Card
+        const btn = pEl.querySelector(".pcard-btn.cmp");
+        if(btn) {
+          btn.classList.toggle("in-compare", sel);
+          btn.textContent = sel ? "✕ Remove" : "+ Compare";
+        }
+      }
+      if(rEl) rEl.classList.toggle("selected", sel);
+    });
+  }
+
+  function handleCardClick(e, col){
+    const station = PRESSURE_STATIONS.find(s=>s.col===col);
+    if(!station) return;
+    if(e.shiftKey){ addStationToCompare(station); }
+    else {
+      showChartPanel(station);
+      if(leafletMap) leafletMap.flyTo([station.lat, station.lng], 16, {duration:0.8});
+    }
+  }
+  function cardViewHistory(col){
+    const station = PRESSURE_STATIONS.find(s=>s.col===col);
+    if(station) showChartPanel(station);
+  }
+  function cardCompare(col){
+    const station = PRESSURE_STATIONS.find(s=>s.col===col);
+    if(station) addStationToCompare(station);
+  }
+
+  function buildPressureRawTable(){
+    const thead=document.getElementById("press-thead");
+    
+    thead.innerHTML=`<th style="min-width:130px">Date & Time</th>`+
+      PRESSURE_STATIONS.map(s=>`<th class="right" style="font-size:9px">${s.name.split(" ").slice(0,2).join(" ")}</th>`).join("");
+    
+    const slice = pressureRaw.slice(-100).reverse(); 
+    
+    document.getElementById("press-tbody").innerHTML = slice.map(r=>{
+      const ds = r.dt ? r.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) : "—";
+      const ts = r.dt ? r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}) : "—";
+      
+      return`<tr>
+        <td class="mono" style="white-space:nowrap; font-weight:500;">
+          ${ds} <span style="color:var(--text2);font-weight:400;margin-left:4px">${ts}</span>
+        </td>`+
+        PRESSURE_STATIONS.map(s=>{
+          const v = r.vals[s.col]; 
+          // UPGRADED LOGIC
+          const ia = v !== null && (v <= ALERT_PSI || (s.maxPsi && v >= s.maxPsi));
+          return`<td class="right mono" style="${ia?"color:#FCA5A5;font-weight:600":""}">${v!==null?fmt(v,2):"—"}</td>`;
+        }).join("")+`</tr>`;
+    }).join("");
+
+    document.getElementById("press-cards").innerHTML =
+      `<div style="padding:10px 14px">`+
+      slice.map(r=>{
+        const ds=r.dt?r.dt.toLocaleDateString("en-PH"):"—";
+        const ts=r.dt?r.dt.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"}):"—";
+        return`<div class="mob-card">
+          <div class="mob-card-header"><span class="mob-card-name">${ds}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">${ts}</span></div>
+          ${PRESSURE_STATIONS.map(s=>{
+            const v=r.vals[s.col];
+            if(v===null)return"";
+            const a = v<=ALERT_PSI || (s.maxPsi && v>=s.maxPsi); // UPGRADED
+            return`<div class="mob-card-row"><span class="mob-card-label">${s.name.split(" ").slice(0,2).join(" ")}</span><span class="mob-card-val" style="${a?"color:#FCA5A5;font-weight:600":""}">${fmt(v,2)} PSI${a?" ⚠️":""}</span></div>`;
+          }).join("")}
+        </div>`;
+      }).join("")+`</div>`;
+  }
+
+async function loadPressure(isAutoRefresh = false){
+    try {
+      const res = await fetch('/api/getPressure');
+      if (!res.ok) throw new Error("Failed to fetch from Vercel API");
+      
+      const dbData = await res.json();
+
+      if(dbData.length === 0){
+        document.getElementById("press-error").style.display="block";
+        document.getElementById("press-error").textContent="No data found in Supabase Database.";
+        return;
+      }
+      document.getElementById("press-error").style.display="none"; 
+
+      const grouped = {};
+      
+      dbData.forEach(row => {
+        const dt = new Date(row.reading_time);
+        
+        // ── FIX 2: Snap to the nearest minute to force perfect grouping! ──
+        dt.setSeconds(0, 0); 
+        const timeKey = dt.getTime();
+        
+        if (!grouped[timeKey]) {
+          grouped[timeKey] = { dt: dt, vals: {} };
+          PRESSURE_STATIONS.forEach(s => grouped[timeKey].vals[s.col] = null);
+        }
+        
+        // ── FIX 1: Robust Fuzzy Match including "roxas" ──
+        const station = PRESSURE_STATIONS.find(s => {
+          const dbName = String(row.station_name || "").toLowerCase().trim();
+          const frontName = String(s.name || "").toLowerCase().trim();
+          
+          if (dbName === frontName) return true;
+          if (dbName.includes("marcelo") && frontName.includes("gemma")) return true;
+          if (dbName.includes("uv") && frontName.includes("uv")) return true;
+          if (dbName.includes("ppci") && frontName.includes("ppci")) return true;
+          if (dbName.includes("lapu") && frontName.includes("lapu")) return true;
+          if (dbName.includes("roxas") && frontName.includes("roxas")) return true;
+          if (dbName.includes("valencia") && frontName.includes("valencia")) return true;
+          return false;
+        });
+
+        if (station) {
+          grouped[timeKey].vals[station.col] = row.psi;
+        }
+      });
+
+      pressureRaw = Object.values(grouped).sort((a,b) => a.dt - b.dt);
+
+      initLeafletMap();
+      buildLeafletMarkers();
+      buildStationCards();
+      buildPressureRawTable();
+      
+      if (!isAutoRefresh || compareStations.length === 0) {
+        showChartPanel(PRESSURE_STATIONS[0]);
+      } else {
+        buildCompareChart(); 
+      }
+      
+      document.getElementById("press-map-count").textContent=PRESSURE_STATIONS.length+" stations";
+      const now = new Date();
+      document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
+
+    } catch(err) {
+      document.getElementById("press-error").style.display="block";
+      document.getElementById("press-error").textContent="Could not load Pressure Points: "+err.message;
+      console.error(err);
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // INIT & AUTO-REFRESH
+  // ════════════════════════════════════════════════════════════
+  function toggleTheme(){
+    const isDark = document.documentElement.getAttribute("data-theme") !== "light";
+    const newTheme = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("ppcwd-theme", newTheme);
+    document.getElementById("theme-icon").textContent = newTheme === "light" ? "☀️" : "🌙";
+    document.getElementById("theme-label").textContent = newTheme === "light" ? "Light" : "Dark";
+    if(allProdData.length) renderWeek(document.querySelector(".week-btn.active")?.dataset.week || "all");
+    if(compareStations.length) buildCompareChart();
+    if(selectedRiverCol !== null) showRiverDetails(selectedRiverCol); 
+  }
+
+  function applyStoredTheme(){
+    const stored = localStorage.getItem("ppcwd-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", stored);
+    if(document.getElementById("theme-icon")) document.getElementById("theme-icon").textContent = stored === "light" ? "☀️" : "🌙";
+    if(document.getElementById("theme-label")) document.getElementById("theme-label").textContent = stored === "light" ? "Light" : "Dark";
+  }
+
+  function cTick(){ return getComputedStyle(document.documentElement).getPropertyValue("--chart-tick").trim() || cTick(); }
+  function cGrid(){ return getComputedStyle(document.documentElement).getPropertyValue("--chart-grid").trim() || "rgba(255,255,255,0.04)"; }
+
+  // Separated function to allow auto-refreshing the Production & Crisis tabs
+  async function loadProductionData(isAutoRefresh = false) {
+    try {
+      // 1. Fetch from the new secure Vercel API instead of Google Sheets!
+      const res = await fetch('/api/getProduction');
+      if (!res.ok) throw new Error("Failed to fetch production data from Vercel.");
+      
+      const dbData = await res.json();
+      if(dbData.length === 0) throw new Error("No production data found in database.");
+
+      // 2. Extract the clean arrays and sort them by Week Number
+      const rawArrays = dbData.map(row => row.row_data);
+      
+      // Sort the arrays properly (e.g., "Week 2" comes before "Week 10")
+      rawArrays.sort((a, b) => {
+        const numA = parseInt(String(a[0]).replace(/[^0-9]/g, '')) || 0;
+        const numB = parseInt(String(b[0]).replace(/[^0-9]/g, '')) || 0;
+        return numA - numB;
+      });
+
+      // 3. Feed the sorted data straight into your existing logic
+      allProdData = rawArrays;
+      
+      buildWeekBtns(allProdData.map(r => r[COL.week]));
+
+      if (!isAutoRefresh) {
+        renderWeek(allProdData[allProdData.length - 1][COL.week]); 
+      } else {
+        const activeBtn = document.querySelector(".week-btn.active");
+        const currentWeek = activeBtn ? activeBtn.dataset.week : allProdData[allProdData.length - 1][COL.week];
+        renderWeek(currentWeek);
+      }
+    } catch(err) {
+      document.getElementById("prod-error").style.display = "block";
+      document.getElementById("prod-error").textContent = "Production data error: " + err.message;
+      console.error(err);
+    }
+  }
+
+  async function init(){
+    applyStoredTheme();
+    try {
+      // Load Production & Crisis data immediately on startup
+      await loadProductionData();
+      await loadComplaints();
+      
+      const now = new Date();
+      document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
+      document.getElementById("footer-updated").textContent = "PPCWD_Weekly_Monitoring_v2 · Google Sheets · " + now.toLocaleDateString("en-PH");
+    } catch(err) {
+      console.error(err);
+    } finally {
+      document.getElementById("loader").classList.add("hidden");
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // DRAG-TO-SCROLL UTILITY (For River Sidebar)
+  // ════════════════════════════════════════════════════════════
+  function enableDragToScroll(containerId) {
+    const slider = document.getElementById(containerId);
+    if(!slider) return;
+
+    let isDown = false;
+    let startY;
+    let scrollTop;
+
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startY = e.pageY - slider.offsetTop;
+      scrollTop = slider.scrollTop;
+    });
+
+    slider.addEventListener('mouseleave', () => {
+      isDown = false;
+      // Re-enable clicks just in case the mouse leaves the area
+      const items = slider.querySelectorAll('.river-list-item');
+      items.forEach(item => item.style.pointerEvents = 'auto');
+    });
+
+    slider.addEventListener('mouseup', () => {
+      isDown = false;
+      // Once dragging stops, re-enable clicking on the rivers
+      const items = slider.querySelectorAll('.river-list-item');
+      items.forEach(item => item.style.pointerEvents = 'auto');
+    });
+
+    slider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      
+      const y = e.pageY - slider.offsetTop;
+      const walk = (y - startY) * 1.5; // Multiply by 1.5 to scroll slightly faster than the mouse moves
+      
+      // If the mouse moves more than 3 pixels, we assume it's a drag, not a click.
+      // We disable pointer-events so you don't accidentally click a river while scrolling.
+      if (Math.abs(walk) > 3) {
+        const items = slider.querySelectorAll('.river-list-item');
+        items.forEach(item => item.style.pointerEvents = 'none');
+      }
+      
+      slider.scrollTop = scrollTop - walk;
+    });
+  }
+
+  // Activate the drag scroll for the river sidebar
+  enableDragToScroll('river-list-container');
+
+// ════════════════════════════════════════════════════════════
+  // COMPLAINTS LOGIC
+  // ════════════════════════════════════════════════════════════
+async function loadComplaints() {
+    try {
+      const res = await fetch('/api/getComplaints');
+      if (res.ok) {
+        complaintsRaw = await res.json();
+        renderComplaintsDashboard(); // Pre-render the dashboard immediately
+      }
+    } catch(err) { console.error("Complaints failed to load", err); }
+  }
+
+  function renderComplaintsDashboard() {
+    if (complaintsRaw.length === 0) return;
+
+    const dateFilter = document.getElementById('complaint-date-filter').value;
+    
+    // 1. Filter Data
+    let filtered = complaintsRaw;
+    if (dateFilter) {
+      filtered = complaintsRaw.filter(c => c.date === dateFilter);
+    }
+
+    // 2. Calculate Aggregates
+    const brgyCounts = {};
+    const typeCounts = {};
+    const timeCounts = {
+      "4 AM - 8 AM": 0,
+      "8 AM - 12 NN": 0,
+      "12 NN - 4 PM": 0,
+      "4 PM - 8 PM": 0,
+      "8 PM - 4 AM": 0
+    };
+    
+    filtered.forEach(c => {
+      const b = (c.barangay || "Unknown").toUpperCase().trim();
+      const t = (c.type || "Unclassified").trim();
+      
+      brgyCounts[b] = (brgyCounts[b] || 0) + 1;
+      typeCounts[t] = (typeCounts[t] || 0) + 1;
+
+      // New 4-Hour Bracketing Logic
+      if (c.time) {
+        let hour = parseInt(c.time.split(':')[0], 10);
+        if (!isNaN(hour)) {
+          if (hour >= 4 && hour < 8) timeCounts["4 AM - 8 AM"]++;             // 4:00 AM - 7:59 AM
+          else if (hour >= 8 && hour < 12) timeCounts["8 AM - 12 NN"]++;      // 8:00 AM - 11:59 AM
+          else if (hour >= 12 && hour < 16) timeCounts["12 NN - 4 PM"]++;     // 12:00 PM - 3:59 PM
+          else if (hour >= 16 && hour < 20) timeCounts["4 PM - 8 PM"]++;      // 4:00 PM - 7:59 PM
+          else timeCounts["8 PM - 4 AM"]++;                                   // 8:00 PM - 3:59 AM (Off-peak)
+        }
+      }
+    });
+
+    // Sort for KPIs and Charts
+    const sortedBrgys = Object.entries(brgyCounts).sort((a,b) => b[1] - a[1]);
+    const sortedTypes = Object.entries(typeCounts).sort((a,b) => b[1] - a[1]);
+    const sortedTimes = Object.entries(timeCounts).sort((a,b) => b[1] - a[1]);
+
+    // 3. Update KPI Cards
+    document.getElementById('comp-kpi-total').innerText = filtered.length;
+    document.getElementById('comp-kpi-brgy').innerText = sortedBrgys.length > 0 ? sortedBrgys[0][0] : "-";
+    document.getElementById('comp-kpi-issue').innerText = sortedTypes.length > 0 ? sortedTypes[0][0] : "-";
+    document.getElementById('comp-kpi-time').innerText = sortedTimes.length > 0 && sortedTimes[0][1] > 0 ? sortedTimes[0][0] : "-";
+
+    // 4. Render Feed
+    const feed = document.getElementById('complaints-feed');
+    if (filtered.length === 0) {
+      feed.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text2); font-family:var(--font-mono);">No reports found for this date.</div>`;
+    } else {
+      filtered.sort((a,b) => new Date(b.date+"T"+(b.time||"00:00:00")) - new Date(a.date+"T"+(a.time||"00:00:00")));
+      
+      feed.innerHTML = filtered.map(c => {
+        const isNoWater = String(c.type).toLowerCase().includes("no water");
+        return `
+          <div style="background:var(--card); border:1px solid var(--border); border-left: 3px solid ${isNoWater ? '#FCA5A5' : '#FCD34D'}; border-radius:6px; padding:12px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--text2);">${c.jo_number} | ${c.date} ${c.time || ''}</span>
+              <span style="background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:10px; font-size:10px; color:${isNoWater ? '#FCA5A5' : '#FCD34D'};">${c.type}</span>
+            </div>
+            <div style="font-size:13px; font-weight:600; color:var(--text);">${c.barangay}</div>
+            <div style="font-size:12px; color:var(--text2);"><b>Consumer:</b> ${c.consumer_name || 'N/A'} ${c.address ? `(${c.address})` : ''}</div>
+            <div style="font-size:12px; color:var(--text); font-style:italic; border-top:1px dashed var(--border); padding-top:6px; margin-top:4px;">"${c.consumer_remarks || 'No remarks recorded'}"</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // 5. Render Charts
+    const typeCtx = document.getElementById('chart-complaints-type');
+    const brgyCtx = document.getElementById('chart-complaints-brgy');
+    const timeCtx = document.getElementById('chart-complaints-time');
+    if(!typeCtx || !brgyCtx || !timeCtx) return;
+
+    Chart.defaults.color = '#94A3B8';
+    Chart.defaults.font.family = 'JetBrains Mono, monospace';
+
+    // Destroy old instances
+    if (complaintTypeChart) complaintTypeChart.destroy();
+    if (complaintBrgyChart) complaintBrgyChart.destroy();
+    if (complaintTimeChart) complaintTimeChart.destroy();
+
+    // Doughnut Chart (Types)
+    complaintTypeChart = new Chart(typeCtx, {
+      type: 'doughnut',
+      data: {
+        labels: sortedTypes.map(t => t[0]),
+        datasets: [{
+          data: sortedTypes.map(t => t[1]),
+          backgroundColor: ['#FCA5A5', '#FCD34D', '#93C5FD', '#D8B4FE', '#6EE7B7'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } },
+        cutout: '70%'
+      }
+    });
+
+    // Bar Chart (Barangays) - Limit to top 10
+    const topBrgys = sortedBrgys.slice(0, 10);
+    complaintBrgyChart = new Chart(brgyCtx, {
+      type: 'bar',
+      data: {
+        labels: topBrgys.map(b => b[0]),
+        datasets: [{
+          label: 'Reports',
+          data: topBrgys.map(b => b[1]),
+          backgroundColor: '#4A90D9',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { stepSize: 1, font: {size: 10} } },
+          y: { grid: { display: false }, ticks: { font: {size: 10} } }
+        }
+      }
+    });
+
+    // Chronological Bar Chart (4-Hour Brackets)
+    complaintTimeChart = new Chart(timeCtx, {
+      type: 'bar',
+      data: {
+        labels: [
+          ['Early Morning', '(4AM - 8AM)'], 
+          ['Morning', '(8AM - 12NN)'], 
+          ['Afternoon', '(12NN - 4PM)'], 
+          ['Evening', '(4PM - 8PM)'], 
+          ['Night / Off-Peak', '(8PM - 4AM)']
+        ],
+        datasets: [{
+          label: 'Reports',
+          data: [
+            timeCounts["4 AM - 8 AM"], 
+            timeCounts["8 AM - 12 NN"], 
+            timeCounts["12 NN - 4 PM"], 
+            timeCounts["4 PM - 8 PM"], 
+            timeCounts["8 PM - 4 AM"]
+          ],
+          backgroundColor: [
+            'rgba(56, 189, 248, 0.8)',  // Light Blue (Early Morning)
+            'rgba(250, 204, 21, 0.8)',  // Yellow (Morning)
+            'rgba(249, 115, 22, 0.8)',  // Orange (Afternoon)
+            'rgba(239, 68, 68, 0.8)',   // Red (Evening Peak)
+            'rgba(51, 65, 85, 0.5)'     // Slate (Nighttime)
+          ],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: {size: 9} } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { stepSize: 1, font: {size: 10} } }
+        }
+      }
+    });
+  }
+
+  function toggleComplaints() {
+    showComplaints = !showComplaints;
+    const btn = document.getElementById('btn-toggle-complaints');
+    btn.style.background = showComplaints ? "rgba(220,38,38,0.8)" : "rgba(220,38,38,0.15)";
+    btn.style.color = showComplaints ? "white" : "#FCA5A5";
+    renderComplaintsHeatmap();
+  }
+
+  function renderComplaintsHeatmap() {
+    complaintLayer.clearLayers();
+    if (!showComplaints) return;
+
+    // Filter complaints to match the Time Machine date (or show all if live)
+    const pool = activeDateFilter ? complaintsRaw.filter(c => {
+      if(!c.date) return false;
+      const cd = new Date(c.date); cd.setHours(0,0,0,0);
+      const fd = new Date(activeDateFilter); fd.setHours(0,0,0,0);
+      return cd.getTime() === fd.getTime();
+    }) : complaintsRaw;
+
+    // Group by Barangay
+    const grouped = {};
+    pool.forEach(c => {
+      if (!c.barangay) return;
+      const b = c.barangay.toUpperCase().trim();
+      if (!grouped[b]) grouped[b] = { count: 0 };
+      grouped[b].count++;
+    });
+
+    // Draw Heatmap Circles
+    for (const [b, data] of Object.entries(grouped)) {
+      if (BARANGAY_COORDS[b]) {
+        // Radius scales with complaint volume
+        const radius = 300 + (data.count * 100); 
+        const circle = L.circle(BARANGAY_COORDS[b], {
+            color: '#DC2626', fillColor: '#DC2626', fillOpacity: 0.4, weight: 2
+        });
+        circle.bindPopup(`<div style="text-align:center; font-family:var(--font-mono);"><b style="font-size:12px;">${b}</b><br><span style="color:#FCA5A5; font-size:14px;">${data.count} Complaint(s)</span></div>`);
+        circle.addTo(complaintLayer);
+      }
+    }
+    complaintLayer.addTo(leafletMap);
+  }
+
+  function renderComplaintsTicker(startDt, endDt) {
+    const container = document.getElementById("complaints-list");
+    const wrapper = document.getElementById("complaints-ticker");
+    if(!container || !wrapper) return;
+
+    // Find complaints that fall within the exact time boundaries of the Chart
+    const windowComplaints = complaintsRaw.filter(c => {
+      if(!c.date || !c.time) return false;
+      const cDt = new Date(c.date + "T" + c.time);
+      return cDt >= startDt && cDt <= endDt;
+    });
+
+    if(windowComplaints.length === 0) {
+      wrapper.style.display = "none";
+      return;
+    }
+
+    wrapper.style.display = "block";
+    windowComplaints.sort((a,b) => new Date(a.date+"T"+a.time) - new Date(b.date+"T"+b.time));
+
+    // Build the horizontal scroll cards
+    container.innerHTML = windowComplaints.map(c => {
+      const t = new Date(c.date+"T"+c.time).toLocaleTimeString("en-PH", {hour:"2-digit", minute:"2-digit"});
+      const isNoWater = String(c.type).toLowerCase().includes("no water");
+      
+      return `<div style="background:var(--card2); border:1px solid ${isNoWater ? 'rgba(220,38,38,0.4)' : 'rgba(245,158,11,0.4)'}; border-radius:6px; padding:10px 14px; min-width:240px; flex-shrink:0;">
+        <div style="font-size:10px; font-family:var(--font-mono); color:var(--text2); margin-bottom:6px; display:flex; justify-content:space-between;">
+          <span>${t}</span> <span>${c.barangay}</span>
+        </div>
+        <div style="font-size:12px; font-weight:600; color:${isNoWater ? '#FCA5A5' : '#FCD34D'}; margin-bottom:4px;">${c.type}</div>
+        <div style="font-size:11px; line-height:1.4; color:var(--text); white-space:normal;">"${c.consumer_remarks || "No remarks provided"}"</div>
+      </div>`;
+    }).join("");
+  }
+
+  init();
+
+  // ── PRESSURE REPORT (date/station filter → PDF or PNG export) ──
+let reportSelectedStations = [];
+let reportChartInstance = null;
+
+function openReportModal(){
+  reportSelectedStations = [];
+  document.getElementById('report-station-grid').innerHTML = PRESSURE_STATIONS.map(s => `
+    <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px;">
+      <input type="checkbox" value="${s.col}" onchange="toggleReportStation(${s.col}, this)"> ${s.name}
+    </label>
+  `).join('');
+
+  const now = new Date();
+  const from = new Date(now.getTime() - 24*60*60*1000);
+  document.getElementById('report-date-from').value = from.toISOString().slice(0,10);
+  document.getElementById('report-time-from').value = from.toTimeString().slice(0,5);
+  document.getElementById('report-date-to').value = now.toISOString().slice(0,10);
+  document.getElementById('report-time-to').value = now.toTimeString().slice(0,5);
+
+  document.getElementById('report-status').textContent = '';
+  document.getElementById('report-selected-count').textContent = '0 / 4 selected';
+  document.getElementById('report-modal').style.display = 'flex';
+}
+
+function closeReportModal(){
+  document.getElementById('report-modal').style.display = 'none';
+}
+
+function toggleReportStation(col, checkboxEl){
+  const idx = reportSelectedStations.indexOf(col);
+  if(checkboxEl.checked){
+    if(reportSelectedStations.length >= 4){
+      checkboxEl.checked = false;
+      document.getElementById('report-status').textContent = 'Maximum 4 stations. Uncheck one first.';
+      return;
+    }
+    if(idx === -1) reportSelectedStations.push(col);
+  } else if(idx !== -1) {
+    reportSelectedStations.splice(idx,1);
+  }
+  document.getElementById('report-selected-count').textContent = reportSelectedStations.length + ' / 4 selected';
+  document.getElementById('report-status').textContent = '';
+}
+
+async function generatePressureReport(){
+  const statusEl = document.getElementById('report-status');
+
+  if(reportSelectedStations.length === 0){
+    statusEl.textContent = 'Select at least 1 station.';
+    return;
+  }
+
+  const dFrom = document.getElementById('report-date-from').value;
+  const tFrom = document.getElementById('report-time-from').value || '00:00';
+  const dTo = document.getElementById('report-date-to').value;
+  const tTo = document.getElementById('report-time-to').value || '23:59';
+
+  if(!dFrom || !dTo){
+    statusEl.textContent = 'Select both From and To dates.';
+    return;
+  }
+
+  const startDt = new Date(`${dFrom}T${tFrom}:00`);
+  const endDt = new Date(`${dTo}T${tTo}:00`);
+
+  if(startDt >= endDt){
+    statusEl.textContent = 'The "From" date/time must be before "To".';
+    return;
+  }
+
+  const filtered = pressureRaw.filter(r => r.dt >= startDt && r.dt <= endDt);
+
+  if(filtered.length === 0){
+    statusEl.textContent = 'No pressure readings found in that range.';
+    return;
+  }
+
+  statusEl.textContent = 'Generating report...';
+
+  const stations = PRESSURE_STATIONS.filter(s => reportSelectedStations.includes(s.col));
+  const colors = ['#4A90D9','#24B5A3','#F59E0B','#DC2626'];
+
+  const labels = filtered.map(r => r.dt.toLocaleString('en-PH', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}));
+  const datasets = stations.map((s,i) => ({
+    label: s.name,
+    data: filtered.map(r => r.vals[s.col]),
+    borderColor: colors[i],
+    backgroundColor: colors[i],
+    borderWidth: 2,
+    pointRadius: 3,
+    spanGaps: true,
+    tension: 0.25,
+    datalabels: {
+      display: function(context) {
+        const total = context.dataset.data.length;
+        let step = 1;
+        if (total > 36) step = 4;   // Over 36 hours? Show every 4th reading
+        if (total > 96) step = 12;  // Over 4 days? Show every 12th reading
+        return context.dataIndex % step === 0;
+      },
+      anchor: 'end',
+      align: 'top',
+      offset: 6,
+      color: colors[i],
+      font: { size: 9, weight: 'bold' },
+      backgroundColor: 'rgba(255,255,255,0.85)',
+      borderRadius: 3,
+      padding: { top: 1, bottom: 1, left: 3, right: 3 },
+      formatter: v => (v === null || v === undefined) ? '' : v.toFixed(1)
+    }
+  }));
+
+  document.getElementById('report-title-range').textContent =
+    `${startDt.toLocaleString('en-PH',{dateStyle:'medium', timeStyle:'short'})} — ${endDt.toLocaleString('en-PH',{dateStyle:'medium', timeStyle:'short'})}`;
+  document.getElementById('report-title-stations').textContent = stations.map(s => s.name).join(', ');
+  document.getElementById('report-title-generated').textContent = 'Generated ' + new Date().toLocaleString('en-PH',{dateStyle:'medium', timeStyle:'short'});
+
+  if(reportChartInstance) reportChartInstance.destroy();
+  const ctx = document.getElementById('report-chart-canvas').getContext('2d');
+  reportChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    plugins: typeof ChartDataLabels !== 'undefined' ? [ChartDataLabels] : [],
+    options: {
+      responsive: false,
+      animation: false,
+      devicePixelRatio: 3,
+      layout: { padding: { top: 30, right:20 } },
+      plugins: {
+        legend: { position: 'top', labels: { color: '#1E293B', font: { size: 12 } } },
+        datalabels: { display: true }
+      },
+      scales: {
+        x: { ticks: { color: '#1E293B', maxRotation: 45, minRotation: 45, font:{size:9} }, grid:{color:'#E2E8F0'} },
+        y: { title: { display:true, text:'PSI', color:'#1E293B' }, ticks: { color: '#1E293B' }, grid:{color:'#E2E8F0'} }
+      }
+    }
+  });
+
+  await new Promise(r => setTimeout(r, 300));
+
+  const format = document.querySelector('input[name="report-format"]:checked').value;
+
+  try {
+    const scale = 3;
+    const headerHeight = 105;
+    const pad = 30;
+
+    // Get the logical CSS dimensions of the chart
+    const chartCanvas = document.getElementById('report-chart-canvas');
+    const cssWidth = chartCanvas.clientWidth || 1340;
+    const cssHeight = chartCanvas.clientHeight || 650;
+    const outCanvas = document.createElement('canvas');
+    // Multiply actual canvas pixels by 3
+    outCanvas.width = (cssWidth + pad * 2) * scale;
+    outCanvas.height = (cssHeight + headerHeight + pad * 2) * scale;
+    const octx = outCanvas.getContext('2d');
+
+    // Scale the drawing context so our text sizes still work perfectly
+    octx.scale(scale, scale);
+
+    octx.fillStyle = '#FFFFFF';
+    octx.fillRect(0, 0, cssWidth + pad * 2, cssHeight + headerHeight + pad * 2);
+
+    octx.fillStyle = '#1560BD';
+    octx.font = 'bold 24px Arial, sans-serif';
+    octx.fillText('PPCWD — Pressure Monitoring Report', pad, 40);
+
+    octx.fillStyle = '#64748B';
+    octx.font = '14px Arial, sans-serif';
+    octx.fillText(`${startDt.toLocaleString('en-PH',{dateStyle:'medium', timeStyle:'short'})}  —  ${endDt.toLocaleString('en-PH',{dateStyle:'medium', timeStyle:'short'})}`, pad, 62);
+
+    octx.fillStyle = '#1E293B';
+    octx.font = 'bold 14px Arial, sans-serif';
+    octx.fillText(stations.map(s => s.name).join('   •   '), pad, 82);
+
+    octx.fillStyle = '#94A3B8';
+    octx.font = '11px Arial, sans-serif';
+    octx.textAlign = 'right';
+    octx.fillText('Generated ' + new Date().toLocaleString('en-PH',{dateStyle:'medium', timeStyle:'short'}), cssWidth + pad, 24);
+    octx.textAlign = 'left';
+
+    octx.strokeStyle = '#1560BD';
+    octx.lineWidth = 2;
+    octx.beginPath();
+    octx.moveTo(pad, 95);
+    octx.lineTo(cssWidth + pad, 95);
+    octx.stroke();
+
+    // Draw the High-Res Chart into the High-Res Canvas
+    octx.drawImage(chartCanvas, pad, headerHeight, cssWidth, cssHeight);
+
+
+    // ── DYNAMIC FILE NAMING LOGIC ──
+    const nowObj = new Date();
+    const mm = String(nowObj.getMonth() + 1).padStart(2, '0');
+    const yy = String(nowObj.getFullYear()).slice(-2);
+    const hh = String(nowObj.getHours()).padStart(2, '0');
+    const mins = String(nowObj.getMinutes()).padStart(2, '0');
+
+    // Format: mmddyy hhmm (colons removed for OS filename compatibility)
+    const dateStr = `${mm}${yy}${hh}${mins}`; 
+    
+    // Join multiple station names with an ampersand to keep the filename clean
+    const stationNames = stations.map(s => s.name).join(' & '); 
+    
+    const fileName = `Pressure Charts - ${stationNames} - ${dateStr}`;
+    // ───────────────────────────────
+
+    if(format === 'png'){
+      outCanvas.toBlob(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.png`; // Uses the new file name
+        link.click();
+      });
+    } else {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const imgData = outCanvas.toDataURL('image/png');
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgRatio = outCanvas.height / outCanvas.width;
+      let imgW = pageW - 20;
+      let imgH = imgW * imgRatio;
+      if(imgH > pageH - 20){ imgH = pageH - 20; imgW = imgH / imgRatio; }
+      const x = (pageW - imgW) / 2;
+      const y = (pageH - imgH) / 2;
+      pdf.addImage(imgData, 'PNG', x, y, imgW, imgH);
+      pdf.save(`${fileName}.pdf`); // Uses the new file name
+    }
+    
+    statusEl.textContent = 'Report downloaded.';
+  } 
+  catch(e){
+    console.error('Report generation failed', e);
+    statusEl.textContent = 'Failed to generate report: ' + e.message;
+  }
+}
+
+// ── PRESSURE AUTO-REFRESH (Every 5 Minutes) ──
+// Pulls fresh pressure readings directly on a timer. No pre-check fetch —
+// just reload pressure data every cycle.
+
+setInterval(() => {
+  console.log("Auto-refresh: reloading pressure data...");
+  loadPressure(true);
+
+  const now = new Date();
+  document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
+}, 5 * 60 * 1000);
+
+  </script>
+
+  <div id="report-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:24px;width:520px;max-width:90vw;max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text);">📄 Generate Pressure Report</div>
+      <button onclick="closeReportModal()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;">✕</button>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">FROM</label>
+      <div style="display:flex;gap:6px;">
+        <input type="date" id="report-date-from" class="date-filter-input" style="flex:1;">
+        <input type="time" id="report-time-from" class="date-filter-input" style="width:100px;">
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">TO</label>
+      <div style="display:flex;gap:6px;">
+        <input type="date" id="report-date-to" class="date-filter-input" style="flex:1;">
+        <input type="time" id="report-time-to" class="date-filter-input" style="width:100px;">
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">
+        STATIONS (<span id="report-selected-count">0 / 4 selected</span>)
+      </label>
+      <div id="report-station-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:220px;overflow-y:auto;padding-right:4px;"></div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">FORMAT</label>
+      <div style="display:flex;gap:14px;font-size:12px;color:var(--text);">
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="report-format" value="pdf" checked> PDF</label>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="report-format" value="png"> PNG</label>
+      </div>
+    </div>
+
+    <div id="report-status" style="font-size:11px;color:var(--amber2);min-height:16px;margin-bottom:10px;"></div>
+
+    <button onclick="generatePressureReport()" style="width:100%;padding:10px;background:var(--teal2);border:none;border-radius:6px;color:#052e2b;font-weight:700;font-family:var(--font-mono);font-size:12px;cursor:pointer;">
+      Generate &amp; Download
+    </button>
+  </div>
+</div>
+
+<div id="report-render-area" style="position:fixed;left:-9999px;top:0;width:1400px;background:#FFFFFF;padding:30px;font-family:'Montserrat',sans-serif;color:#1E293B;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1560BD;padding-bottom:12px;margin-bottom:16px;">
+    <div>
+      <div style="font-size:20px;font-weight:700;color:#1560BD;">PPCWD — Pressure Monitoring Report</div>
+      <div id="report-title-range" style="font-size:12px;color:#64748B;margin-top:4px;"></div>
+      <div id="report-title-stations" style="font-size:12px;color:#1E293B;margin-top:2px;font-weight:600;"></div>
+    </div>
+    <div id="report-title-generated" style="font-size:10px;color:#94A3B8;"></div>
+  </div>
+  <canvas id="report-chart-canvas" width="1340" height="650"></canvas>
+</div>
+
+  </body>
+  </html>
