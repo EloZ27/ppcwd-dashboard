@@ -1364,9 +1364,10 @@ const RIVER_STATIONS = [
       {name:"Sabang SW",                cat:"sw", val:0,key:"sabangSW"},
       {name:"San Rafael SW",            cat:"sw", val:0,key:"sanrafael"},
       {name:"Bahile SW",                cat:"sw", val:0,key:"bahile"},
+      {name:"Macarascas",               cat:"sw", val:0,key:"macarascas"},
       {name:"Napsan",                   cat:"sw", val:0,key:"napsan"},
       {name:"Binduyan",                 cat:"sw", val:0,key:"binduyan"},
-      {name:"Bacungan SW",              cat:"sw", val:0,key:"bacuncan"},
+      {name:"Bacungan SW",              cat:"sw", val:0,key:"bacungan"},
       {name:"Maoyon Infiltration Wells",cat:"sw", val:0,key:"maoyon"},
       {name:"SW Satellite Sub-total",   cat:"sw", val:0,key:"swSatSub",bold:true},
       {name:"Macasaet-I",               cat:"gw", val:0,key:"macasaet"},
@@ -3262,6 +3263,23 @@ setInterval(() => {
     document.getElementById('crisis-report-modal').style.display = 'flex';
   }
 
+  // Quick-select helper: 'week' picks just the latest week, 'month' picks the
+  // latest 4 weeks (used as the weekly-equivalent stand-in for a calendar month,
+  // since the 1,700,000 m³/month rating is not evenly divisible by 168-hour weeks).
+  function quickSelectCrisisRange(mode) {
+    if (!allProdData.length) return;
+    const startSel = document.getElementById("crisis-start-week");
+    const endSel = document.getElementById("crisis-end-week");
+    const lastIdx = allProdData.length - 1;
+    endSel.value = allProdData[lastIdx][COL.week];
+    if (mode === 'week') {
+      startSel.value = allProdData[lastIdx][COL.week];
+    } else {
+      startSel.value = allProdData[Math.max(0, lastIdx - 3)][COL.week];
+    }
+    document.getElementById('crisis-report-status').textContent = '';
+  }
+
   async function generateCrisisReport() {
     const startWk = document.getElementById("crisis-start-week").value;
     const endWk = document.getElementById("crisis-end-week").value;
@@ -3341,7 +3359,78 @@ setInterval(() => {
     document.getElementById("cr-pdf-main-alert").textContent = mainAlert.name;
     document.getElementById("cr-pdf-main-alert").style.color = mainAlert.lvl === 1 ? "#059669" : (mainAlert.lvl === 2 ? "#D97706" : "#DC2626");
     document.getElementById("cr-pdf-tbody").innerHTML = tableHtml;
-    
+
+    // 2.5 Per-Station Production Breakdown (optional, checkbox-controlled)
+    const includeStations = document.getElementById("crisis-include-stations").checked;
+    const stationRows = getStationRows().filter(r => !r.bold);
+    let stationSectionHtml = "";
+
+    if (includeStations) {
+      const catLabel = { sw: "Surface Water", gw: "Ground Water", aug: "Augmented" };
+      const catColor = { sw: "#1B8C7D", gw: "#1560BD", aug: "#7C3AED" };
+      const catTotals = { sw: { actual: 0, target: 0 }, gw: { actual: 0, target: 0 }, aug: { actual: 0, target: 0 } };
+      let rowsHtml = "", lastCat = null;
+
+      stationRows.forEach(r => {
+        const actual = pool.reduce((s, row) => s + num(row[COL[r.key]]), 0);
+        const rHr = RATED[r.name] || 0;
+        const target = rHr * hrsInPeriod;
+        const pct = target > 0 ? (actual / target * 100) : null;
+        const alert = target > 0 ? getAlertInfo(pct) : null;
+        const color = alert ? (alert.lvl === 1 ? "#059669" : alert.lvl === 2 ? "#D97706" : "#DC2626") : "#94A3B8";
+        catTotals[r.cat].actual += actual;
+        catTotals[r.cat].target += target;
+
+        if (lastCat !== r.cat) {
+          rowsHtml += `<tr><td colspan="6" style="padding:7px 8px 3px;font-size:9px;font-weight:700;color:${catColor[r.cat]};text-transform:uppercase;letter-spacing:0.5px;">${catLabel[r.cat]}</td></tr>`;
+          lastCat = r.cat;
+        }
+        rowsHtml += `
+          <tr style="border-bottom:1px solid #F1F5F9;">
+            <td style="padding:4px 8px;">${r.name}</td>
+            <td style="padding:4px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${rHr > 0 ? fmt(rHr, 2) : "—"}</td>
+            <td style="padding:4px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${target > 0 ? fmt(target, 0) : "—"}</td>
+            <td style="padding:4px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${actual > 0 ? fmt(actual, 0) : "—"}</td>
+            <td style="padding:4px 8px; text-align:right; color:${color}; font-family:'JetBrains Mono',monospace;">${pct !== null ? fmt(pct, 1) + "%" : "—"}</td>
+            <td style="padding:4px 8px; padding-left:12px; color:${color}; font-size:9px;">${alert ? alert.name : "No rated data"}</td>
+          </tr>`;
+      });
+
+      const grandActual = catTotals.sw.actual + catTotals.gw.actual + catTotals.aug.actual;
+      const grandTarget = catTotals.sw.target + catTotals.gw.target + catTotals.aug.target;
+
+      stationSectionHtml = `
+        <h3 style="font-size:12px; color:#1E293B; margin:25px 0 10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #059669; padding-left:8px;">Per-Station Production Breakdown</h3>
+        <div style="border:1px solid #E2E8F0; border-radius:8px; padding:10px; margin-bottom:15px; height:760px;">
+          <canvas id="cr-pdf-chart-stations"></canvas>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:15px;">
+          <thead>
+            <tr style="background:#F1F5F9; border-bottom:2px solid #CBD5E1;">
+              <th style="padding:6px 8px; text-align:left; color:#475569;">Station</th>
+              <th style="padding:6px 8px; text-align:right; color:#475569;">Rated (m³/hr)</th>
+              <th style="padding:6px 8px; text-align:right; color:#475569;">Target (m³)</th>
+              <th style="padding:6px 8px; text-align:right; color:#475569;">Actual (m³)</th>
+              <th style="padding:6px 8px; text-align:right; color:#475569;">% Achieved</th>
+              <th style="padding:6px 8px; text-align:left; color:#475569; padding-left:12px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+          <tfoot>
+            <tr style="border-top:2px solid #CBD5E1; background:#F8FAFC; font-weight:700;">
+              <td style="padding:7px 8px;">All Stations — Combined Total</td>
+              <td></td>
+              <td style="padding:7px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(grandTarget, 0)}</td>
+              <td style="padding:7px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(grandActual, 0)}</td>
+              <td style="padding:7px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${grandTarget > 0 ? fmt(grandActual / grandTarget * 100, 1) + "%" : "—"}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      `;
+    }
+    document.getElementById("cr-pdf-station-section").innerHTML = stationSectionHtml;
+
     // 3. Render High-Res Charts
     if(window.crChartMainInstance) window.crChartMainInstance.destroy();
     if(window.crChartSatInstance) window.crChartSatInstance.destroy();
@@ -3373,23 +3462,66 @@ setInterval(() => {
         ]
       }, options: chartOpts
     });
-    
+
+    // 3.5 Render the per-station % Achieved chart (canvas only exists if the
+    // checkbox was ticked and the section HTML was injected above)
+    if (window.crChartStationsInstance) window.crChartStationsInstance.destroy();
+    const stationsCanvas = document.getElementById("cr-pdf-chart-stations");
+    if (includeStations && stationsCanvas) {
+      const stationLabels = stationRows.map(r => r.name);
+      const stationPct = [], stationColors = [];
+      stationRows.forEach(r => {
+        const rHr = RATED[r.name] || 0;
+        const target = rHr * hrsInPeriod;
+        const actual = pool.reduce((s, row) => s + num(row[COL[r.key]]), 0);
+        const pct = target > 0 ? (actual / target * 100) : 0;
+        stationPct.push(pct);
+        stationColors.push(rHr === 0 ? "#CBD5E1" : (getAlertInfo(pct).lvl === 1 ? "#059669" : getAlertInfo(pct).lvl === 2 ? "#D97706" : "#DC2626"));
+      });
+      window.crChartStationsInstance = new Chart(stationsCanvas.getContext("2d"), {
+        type: 'bar',
+        data: { labels: stationLabels, datasets: [{ label: '% Achieved', data: stationPct, backgroundColor: stationColors, borderRadius: 3 }] },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false, animation: false, devicePixelRatio: 3,
+          plugins: { legend: { display: false }, datalabels: { display: false } },
+          scales: {
+            x: { title: { display: true, text: '% Achieved', font: { size: 9, family: 'Montserrat' } }, ticks: { font: { size: 8, family: 'Montserrat' } } },
+            y: { ticks: { font: { size: 8, family: 'Montserrat' } } }
+          }
+        }
+      });
+    }
+
     // 4. Give charts a fraction of a second to render
     await new Promise(r => setTimeout(r, 500));
     
-    // 5. Generate and Download PDF
+    // 5. Generate and Download PDF (paginated across multiple A4 pages if the
+    // rendered report — e.g. with the per-station breakdown — is taller than one page)
     try {
       const el = document.getElementById("hidden-crisis-report");
-      const canvas = await html2canvas(el, { scale: 3, useCORS: true, backgroundColor: '#FFFFFF' });
-      const imgData = canvas.toDataURL('image/png');
-      
+      const canvas = await html2canvas(el, { scale: 2.5, useCORS: true, backgroundColor: '#FFFFFF' });
+
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      
+
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      
+      const pdfPageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgData = canvas.toDataURL('image/png');
+
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+      heightLeft -= pdfPageHeight;
+
+      while (heightLeft > 0.5) {
+        position -= pdfPageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+        heightLeft -= pdfPageHeight;
+      }
+
       const fileSafeStart = startWk.replace(/[^a-zA-Z0-9]/g, '');
       const fileSafeEnd = endWk.replace(/[^a-zA-Z0-9]/g, '');
       
@@ -3473,16 +3605,27 @@ setInterval(() => {
       </div>
       
       <div style="font-size:11px; color:var(--text2); margin-bottom:16px; line-height:1.4;">
-        Select a single week, or span multiple weeks to generate a combined monthly report. Targets are automatically prorated to the selected timeframe.
+        Select a single week, or span multiple weeks to generate a combined monthly report. Targets are automatically prorated to the selected timeframe (391,233 m³/week for the Main System).
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <button type="button" onclick="quickSelectCrisisRange('week')" style="flex:1;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-mono);font-size:10px;cursor:pointer;">📅 By Week</button>
+        <button type="button" onclick="quickSelectCrisisRange('month')" style="flex:1;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-mono);font-size:10px;cursor:pointer;">🗓️ By Month (4 wks)</button>
       </div>
 
       <div style="margin-bottom:14px;">
         <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">STARTING WEEK</label>
-        <select id="crisis-start-week" class="week-dropdown" style="width:100%; min-width:auto;"></select>
+        <select id="crisis-start-week" class="week-dropdown" style="width:100%; min-width:auto;" onchange="document.getElementById('crisis-report-status').textContent=''"></select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">ENDING WEEK</label>
+        <select id="crisis-end-week" class="week-dropdown" style="width:100%; min-width:auto;" onchange="document.getElementById('crisis-report-status').textContent=''"></select>
       </div>
       <div style="margin-bottom:20px;">
-        <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">ENDING WEEK</label>
-        <select id="crisis-end-week" class="week-dropdown" style="width:100%; min-width:auto;"></select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);cursor:pointer;">
+          <input type="checkbox" id="crisis-include-stations" checked style="cursor:pointer;">
+          Include per-station production breakdown
+        </label>
       </div>
       <div id="crisis-report-status" style="font-size:11px;color:var(--amber2);min-height:16px;margin-bottom:10px;"></div>
       <button onclick="generateCrisisReport()" style="width:100%;padding:10px;background:var(--teal2);border:none;border-radius:6px;color:#052e2b;font-weight:700;font-family:var(--font-mono);font-size:12px;cursor:pointer;">
@@ -3550,10 +3693,14 @@ setInterval(() => {
       </thead>
       <tbody id="cr-pdf-tbody"></tbody>
     </table>
-    
-    <div style="margin-top:20px; font-size:9px; color:#94A3B8; text-align:justify; line-height:1.4;">
+
+    <!-- Per-Station Breakdown (populated only when the checkbox is checked) -->
+    <div id="cr-pdf-station-section"></div>
+
+    <div style="margin-top:20px; font-size:9px; color:#94A3B8; text-align:justify; line-height:1.4; border-top:1px solid #E2E8F0; padding-top:10px;">
       <strong>* LWUA Advisory Alert Criteria:</strong> Level 1 (Watch): Drop &lt; 10% (≥90% capacity) | Level 2 (Alert): Drop 10% to 25% (75% to 89.9%) | Level 3 (Critical): Drop &gt; 25% (&lt; 75%).<br>
-      <strong>* Target Calculation:</strong> Based on 1,700,000 m³/month for the Main System (equating to 391,233 m³/week) and specific monthly targets for Satellite Systems, accurately prorated to match the duration of the selected reporting period.
+      <strong>* Target Calculation:</strong> Based on 1,700,000 m³/month for the Main System — derived as 1,700,000 ÷ 730 hrs/month × 168 hrs/week = 391,233 m³/week — plus specific rated targets for Satellite Systems and individual stations, all prorated to match the duration of the selected reporting period (weekly or multi-week/monthly).<br>
+      <strong>Prepared by:</strong> Corporate Planning Analyst, IEC Committee — PPCWD &nbsp;|&nbsp; <strong>Report generated via PPCWD Monitoring Dashboard.</strong>
     </div>
   </div>
 
