@@ -1019,22 +1019,57 @@
   </div>
 
   <div class="page" id="page-complaints">
-    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:65vh; text-align:center; background:var(--card); border:1px dashed var(--border); border-radius:12px; padding:40px; position:relative; overflow:hidden;">
-      
-      <!-- Subtle background glow -->
-      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:300px; height:300px; background:rgba(217,119,6,0.05); filter:blur(60px); border-radius:50%; pointer-events:none;"></div>
+    <div class="error-banner" id="complaints-error"></div>
 
-      <div style="font-size:48px; margin-bottom:20px; opacity:0.9;">🛠️</div>
-      <h2 style="margin:0; font-size:24px; color:var(--white); letter-spacing:-0.5px; margin-bottom:12px; font-family:var(--font-sans); font-weight:600;">Module Under Development</h2>
-      <div style="color:var(--text2); font-size:13px; font-family:var(--font-mono); max-width:480px; line-height:1.6; margin-bottom:30px; position:relative; z-index:10;">
-        The Customer Reports & Job Order tracking interface is currently offline for scheduled maintenance and system upgrades. 
+    <!-- Cycle filter -->
+    <div class="table-card" style="margin-bottom:14px;">
+      <div class="table-header">
+        <div class="table-title blue-accent">Reporting Cycle</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <select id="complaint-date-filter" class="date-filter-input" style="min-width:200px;" onchange="renderComplaintsDashboard()">
+            <option value="">All Cycles (Live)</option>
+          </select>
+        </div>
       </div>
-      
-      <div style="display:inline-flex; align-items:center; gap:10px; background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.3); padding:8px 18px; border-radius:20px; font-family:var(--font-mono); font-size:11px; color:var(--amber2); position:relative; z-index:10;">
-        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--amber2); box-shadow:0 0 8px var(--amber2); animation:pulse 2s infinite;"></span>
-        Backend Integration in Progress
-      </div>
+    </div>
 
+    <!-- KPI row -->
+    <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);">
+      <div class="kpi-card teal">
+        <div class="kpi-label">Total Reports</div>
+        <div class="kpi-value" id="comp-kpi-total">—</div>
+        <div class="kpi-sub">This cycle</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Top Barangay</div>
+        <div class="kpi-value" id="comp-kpi-brgy" style="font-size:16px;">—</div>
+        <div class="kpi-sub">Most reports</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Top Issue Type</div>
+        <div class="kpi-value" id="comp-kpi-issue" style="font-size:16px;">—</div>
+        <div class="kpi-sub">Most common</div>
+      </div>
+      <div class="kpi-card slate">
+        <div class="kpi-label">Peak Window</div>
+        <div class="kpi-value" id="comp-kpi-time" style="font-size:16px;">—</div>
+        <div class="kpi-sub">Busiest 4-hr bracket</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
+      <div class="chart-card"><div class="chart-title">By Type</div><div style="height:220px"><canvas id="chart-complaints-type"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">By Barangay (Top 10)</div><div style="height:220px"><canvas id="chart-complaints-brgy"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">By Time of Day</div><div style="height:220px"><canvas id="chart-complaints-time"></canvas></div></div>
+    </div>
+
+    <!-- Feed -->
+    <div class="table-card" style="margin-bottom:0;">
+      <div class="table-header">
+        <div class="table-title amber-accent">Consumer Reports Feed</div>
+      </div>
+      <div id="complaints-feed" style="display:flex; flex-direction:column; gap:10px; padding:14px; max-height:600px; overflow-y:auto;"></div>
     </div>
   </div>
 
@@ -1148,6 +1183,17 @@ const RIVER_STATIONS = [
     "Macarascas":                   2.88,
   };
 
+  const REPORT_CYCLES = [
+  { label: "May 25–31, 2026",  start: "2026-05-25", end: "2026-05-31" },
+  { label: "Jun 1–7, 2026",    start: "2026-06-01", end: "2026-06-07" },
+  { label: "Jun 8–14, 2026",   start: "2026-06-08", end: "2026-06-14" },
+  { label: "Jun 15–21, 2026",  start: "2026-06-15", end: "2026-06-21" },
+  { label: "Jun 29–Jul 5, 2026", start: "2026-06-29", end: "2026-07-05" },
+  { label: "Jul 6–12, 2026",   start: "2026-07-06", end: "2026-07-12" },
+  { label: "Jul 13–19, 2026",  start: "2026-07-13", end: "2026-07-19" },
+  { label: "Jul 27–Aug 2, 2026", start: "2026-07-27", end: "2026-08-02" },
+  ];
+
   // ════════════════════════════════════════════════════════════
   // STATE
   // ════════════════════════════════════════════════════════════
@@ -1255,6 +1301,15 @@ const RIVER_STATIONS = [
     } else if (tab === "riverflow") {
       if(riverRaw.length===0){
         loadRiverFlow();
+      }
+    } else if (tab === "complaints") {
+      if(complaintsRaw.length===0){
+        loadComplaints();
+      } else {
+        // Canvases were hidden during init(); re-render now that they're visible
+        // so Chart.js can measure them correctly.
+        populateCycleFilter();
+        renderComplaintsDashboard();
       }
     }
   }
@@ -2727,20 +2782,49 @@ async function loadComplaints() {
       const res = await fetch('/api/getComplaints');
       if (res.ok) {
         complaintsRaw = await res.json();
+        populateCycleFilter();
         renderComplaintsDashboard(); // Pre-render the dashboard immediately
       }
-    } catch(err) { console.error("Complaints failed to load", err); }
+    } catch(err) {
+      console.error("Complaints failed to load", err);
+      const el = document.getElementById("complaints-error");
+      if (el) { el.style.display = "block"; el.textContent = "Complaints data error: " + err.message; }
+    }
+  }
+
+  // Fills the cycle dropdown from REPORT_CYCLES (most recent first),
+  // only listing cycles that actually have data so the list doesn't fill up with empties.
+  function populateCycleFilter() {
+    const sel = document.getElementById('complaint-date-filter');
+    if (!sel) return;
+    const currentVal = sel.value;
+
+    const cyclesWithData = REPORT_CYCLES.filter(cyc =>
+      complaintsRaw.some(c => c.date >= cyc.start && c.date <= cyc.end)
+    );
+
+    sel.innerHTML = `<option value="">All Cycles (Live)</option>` +
+      cyclesWithData.slice().reverse().map(cyc =>
+        `<option value="${cyc.start}|${cyc.end}">${cyc.label}</option>`
+      ).join("");
+
+    // Preserve selection across re-renders (e.g. switching tabs back and forth)
+    if (currentVal && [...sel.options].some(o => o.value === currentVal)) {
+      sel.value = currentVal;
+    }
   }
 
   function renderComplaintsDashboard() {
     if (complaintsRaw.length === 0) return;
 
-    const dateFilter = document.getElementById('complaint-date-filter').value;
-    
-    // 1. Filter Data
+    const cycleVal = document.getElementById('complaint-date-filter').value;
+
+    // 1. Filter Data — by selected reporting cycle's date range (not exact-date match,
+    // since cycles span multiple days and have gaps between them).
     let filtered = complaintsRaw;
-    if (dateFilter) {
-      filtered = complaintsRaw.filter(c => c.date === dateFilter);
+    if (cycleVal) {
+      const [start, end] = cycleVal.split('|');
+      filtered = complaintsRaw.filter(c => c.date >= start && c.date <= end);
     }
 
     // 2. Calculate Aggregates
@@ -2754,22 +2838,27 @@ async function loadComplaints() {
       "8 PM - 4 AM": 0
     };
     
+    let totalComplaints = 0;
+
     filtered.forEach(c => {
       const b = (c.barangay || "Unknown").toUpperCase().trim();
       const t = (c.type || "Unclassified").trim();
-      
-      brgyCounts[b] = (brgyCounts[b] || 0) + 1;
-      typeCounts[t] = (typeCounts[t] || 0) + 1;
+      // Aggregated stub-out reports may represent more than one complaint per row.
+      const n = parseInt(c.complaint_count, 10) || 1;
+
+      totalComplaints += n;
+      brgyCounts[b] = (brgyCounts[b] || 0) + n;
+      typeCounts[t] = (typeCounts[t] || 0) + n;
 
       // New 4-Hour Bracketing Logic
       if (c.time) {
         let hour = parseInt(c.time.split(':')[0], 10);
         if (!isNaN(hour)) {
-          if (hour >= 4 && hour < 8) timeCounts["4 AM - 8 AM"]++;             // 4:00 AM - 7:59 AM
-          else if (hour >= 8 && hour < 12) timeCounts["8 AM - 12 NN"]++;      // 8:00 AM - 11:59 AM
-          else if (hour >= 12 && hour < 16) timeCounts["12 NN - 4 PM"]++;     // 12:00 PM - 3:59 PM
-          else if (hour >= 16 && hour < 20) timeCounts["4 PM - 8 PM"]++;      // 4:00 PM - 7:59 PM
-          else timeCounts["8 PM - 4 AM"]++;                                   // 8:00 PM - 3:59 AM (Off-peak)
+          if (hour >= 4 && hour < 8) timeCounts["4 AM - 8 AM"] += n;             // 4:00 AM - 7:59 AM
+          else if (hour >= 8 && hour < 12) timeCounts["8 AM - 12 NN"] += n;      // 8:00 AM - 11:59 AM
+          else if (hour >= 12 && hour < 16) timeCounts["12 NN - 4 PM"] += n;     // 12:00 PM - 3:59 PM
+          else if (hour >= 16 && hour < 20) timeCounts["4 PM - 8 PM"] += n;      // 4:00 PM - 7:59 PM
+          else timeCounts["8 PM - 4 AM"] += n;                                   // 8:00 PM - 3:59 AM (Off-peak)
         }
       }
     });
@@ -2780,7 +2869,7 @@ async function loadComplaints() {
     const sortedTimes = Object.entries(timeCounts).sort((a,b) => b[1] - a[1]);
 
     // 3. Update KPI Cards
-    document.getElementById('comp-kpi-total').innerText = filtered.length;
+    document.getElementById('comp-kpi-total').innerText = totalComplaints;
     document.getElementById('comp-kpi-brgy').innerText = sortedBrgys.length > 0 ? sortedBrgys[0][0] : "-";
     document.getElementById('comp-kpi-issue').innerText = sortedTypes.length > 0 ? sortedTypes[0][0] : "-";
     document.getElementById('comp-kpi-time').innerText = sortedTimes.length > 0 && sortedTimes[0][1] > 0 ? sortedTimes[0][0] : "-";
@@ -2794,13 +2883,14 @@ async function loadComplaints() {
       
       feed.innerHTML = filtered.map(c => {
         const isNoWater = String(c.type).toLowerCase().includes("no water");
+        const n = parseInt(c.complaint_count, 10) || 1;
         return `
           <div style="background:var(--card); border:1px solid var(--border); border-left: 3px solid ${isNoWater ? '#FCA5A5' : '#FCD34D'}; border-radius:6px; padding:12px; display:flex; flex-direction:column; gap:6px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span style="font-family:var(--font-mono); font-size:10px; color:var(--text2);">${c.jo_number} | ${c.date} ${c.time || ''}</span>
               <span style="background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:10px; font-size:10px; color:${isNoWater ? '#FCA5A5' : '#FCD34D'};">${c.type}</span>
             </div>
-            <div style="font-size:13px; font-weight:600; color:var(--text);">${c.barangay}</div>
+            <div style="font-size:13px; font-weight:600; color:var(--text);">${c.barangay}${c.stub_out_no ? ` <span style="font-weight:400; color:var(--text2); font-size:11px;">· Stub Out #${c.stub_out_no}</span>` : ''}${n > 1 ? ` <span style="background:rgba(217,119,6,0.15); color:var(--amber2); font-size:10px; padding:1px 6px; border-radius:8px; margin-left:4px;">${n} complaints</span>` : ''}</div>
             <div style="font-size:12px; color:var(--text2);"><b>Consumer:</b> ${c.consumer_name || 'N/A'} ${c.address ? `(${c.address})` : ''}</div>
             <div style="font-size:12px; color:var(--text); font-style:italic; border-top:1px dashed var(--border); padding-top:6px; margin-top:4px;">"${c.consumer_remarks || 'No remarks recorded'}"</div>
           </div>
