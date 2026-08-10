@@ -850,6 +850,11 @@
   </div>
 
   <div class="page" id="page-crisis">
+    <div style="display:flex; justify-content:flex-end; margin-bottom: 16px;">
+      <button class="live-reset-btn" onclick="openCrisisReportModal()" style="background:rgba(36,181,163,0.15);border:1px solid rgba(36,181,163,0.4);color:#5EEAD4; padding:8px 16px; font-size:12px;">
+        📄 Generate Crisis Report
+      </button>
+    </div>
     <div class="cap-note" style="border-top:none; border-bottom:1px solid var(--border); padding: 0 0 16px 0; margin-bottom: 24px; font-size: 11px;">
       <strong>LWUA Advisory Alert Criteria:</strong> 🟢 Level 1 (Watch): &lt; 10% drop (≥90% capacity) | 🟡 Level 2 (Alert): 10% to 25% drop (75% to 89.9%) | 🔴 Level 3 (Critical Emergency): &gt; 25% drop (&lt; 75%).<br>
       <em>Note: Capacities are evaluated system-wide per LWUA directives. The City Proper production target is evaluated as an aggregate of 1,700,000 m³ per month, encompassing demand, consumption, and NRW.</em>
@@ -3232,6 +3237,173 @@ setInterval(() => {
   document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
 }, 5 * 60 * 1000);
 
+// ════════════════════════════════════════════════════════════
+  // CRISIS REPORT GENERATOR LOGIC
+  // ════════════════════════════════════════════════════════════
+  function openCrisisReportModal() {
+    const startSel = document.getElementById("crisis-start-week");
+    const endSel = document.getElementById("crisis-end-week");
+    startSel.innerHTML = ""; endSel.innerHTML = "";
+    
+    allProdData.forEach(r => {
+      const wk = r[COL.week];
+      const opt = `<option value="${wk}">${wk}</option>`;
+      startSel.innerHTML += opt;
+      endSel.innerHTML += opt;
+    });
+    
+    // Automatically select the last 4 weeks as a default (1 month equivalent)
+    if(allProdData.length > 0) {
+      endSel.value = allProdData[allProdData.length-1][COL.week];
+      startSel.value = allProdData[Math.max(0, allProdData.length-4)][COL.week];
+    }
+    
+    document.getElementById('crisis-report-status').textContent = '';
+    document.getElementById('crisis-report-modal').style.display = 'flex';
+  }
+
+  async function generateCrisisReport() {
+    const startWk = document.getElementById("crisis-start-week").value;
+    const endWk = document.getElementById("crisis-end-week").value;
+    
+    const startIndex = allProdData.findIndex(r => r[COL.week] === startWk);
+    const endIndex = allProdData.findIndex(r => r[COL.week] === endWk);
+    
+    if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
+      document.getElementById("crisis-report-status").textContent = "Invalid week range selected.";
+      return;
+    }
+    
+    document.getElementById("crisis-report-status").textContent = "Generating PDF...";
+    
+    // 1. Gather Data Pool
+    const pool = allProdData.slice(startIndex, endIndex + 1);
+    const numWeeks = pool.length;
+    const hrsInPeriod = 168 * numWeeks; // Math automatically scales Targets
+    
+    let tableHtml = "";
+    let chartLabels = [];
+    let chartTarget = [];
+    let chartActual = [];
+    let chartColors = [];
+    
+    let mainActual = 0, mainTarget = 0, mainPct = 0, mainAlert = {};
+    
+    CRISIS_SYSTEMS.forEach(sys => {
+      // Sum production across all selected weeks
+      let actual = sys.keys.reduce((sum, key) => {
+         return sum + pool.reduce((wSum, row) => wSum + num(row[COL[key]]), 0);
+      }, 0);
+      
+      let ratedVol = sys.ratedHr * hrsInPeriod;
+      let pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
+      const alert = getAlertInfo(pct);
+      
+      let statusColor = alert.lvl === 1 ? "#059669" : (alert.lvl === 2 ? "#D97706" : "#DC2626");
+      
+      if(sys.group === "city") {
+        mainActual = actual; mainTarget = ratedVol; mainPct = pct; mainAlert = alert;
+        tableHtml += `
+          <tr style="border-bottom:1px solid #E2E8F0; background:#F8FAFC; font-weight:700;">
+            <td style="padding:10px 8px;">${sys.name}</td>
+            <td style="padding:10px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(ratedVol, 0)}</td>
+            <td style="padding:10px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(actual, 0)}</td>
+            <td style="padding:10px 8px; text-align:right; color:${statusColor}; font-family:'JetBrains Mono',monospace;">${fmt(pct, 1)}%</td>
+            <td style="padding:10px 8px; padding-left:15px; color:${statusColor};">${alert.name}</td>
+          </tr>
+        `;
+      } else {
+        tableHtml += `
+          <tr style="border-bottom:1px solid #E2E8F0;">
+            <td style="padding:8px;">${sys.name}</td>
+            <td style="padding:8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(ratedVol, 0)}</td>
+            <td style="padding:8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(actual, 0)}</td>
+            <td style="padding:8px; text-align:right; color:${statusColor}; font-family:'JetBrains Mono',monospace;">${fmt(pct, 1)}%</td>
+            <td style="padding:8px; padding-left:15px; color:${statusColor};">${alert.name}</td>
+          </tr>
+        `;
+      }
+      
+      let shortName = sys.name.replace(" Water System", "").replace(" System", "").replace("City Proper - Unified Main", "City Proper");
+      chartLabels.push(shortName);
+      chartTarget.push(ratedVol);
+      chartActual.push(actual);
+      chartColors.push(statusColor);
+    });
+    
+    // 2. Populate HTML
+    document.getElementById("cr-pdf-period").textContent = `${startWk} — ${endWk} (${numWeeks} week${numWeeks>1?'s':''})`;
+    document.getElementById("cr-pdf-date").textContent = `Generated on ${new Date().toLocaleDateString('en-PH')} ${new Date().toLocaleTimeString('en-PH')}`;
+    
+    document.getElementById("cr-pdf-main-target").textContent = fmt(mainTarget, 0);
+    document.getElementById("cr-pdf-main-actual").textContent = fmt(mainActual, 0);
+    document.getElementById("cr-pdf-main-pct").textContent = fmt(mainPct, 1) + "%";
+    document.getElementById("cr-pdf-main-alert").textContent = mainAlert.name;
+    document.getElementById("cr-pdf-main-alert").style.color = mainAlert.lvl === 1 ? "#059669" : (mainAlert.lvl === 2 ? "#D97706" : "#DC2626");
+    document.getElementById("cr-pdf-tbody").innerHTML = tableHtml;
+    
+    // 3. Render High-Res Charts
+    if(window.crChartMainInstance) window.crChartMainInstance.destroy();
+    if(window.crChartSatInstance) window.crChartSatInstance.destroy();
+    
+    const chartOpts = {
+      responsive: true, maintainAspectRatio: false, animation: false, devicePixelRatio: 3,
+      plugins: { legend: { position: 'top', labels: {font: {family:'Montserrat', size:10}} }, datalabels: { display: false } },
+      scales: { x: { ticks: { font: {size: 9, family:'Montserrat'}, maxRotation:45, minRotation:45 } } }
+    };
+
+    window.crChartMainInstance = new Chart(document.getElementById("cr-pdf-chart-main").getContext("2d"), {
+      type: 'bar',
+      data: {
+        labels: [chartLabels[0]],
+        datasets: [
+          { label: 'Target', data: [chartTarget[0]], backgroundColor: '#CBD5E1', borderRadius: 4 },
+          { label: 'Actual', data: [chartActual[0]], backgroundColor: [chartColors[0]], borderRadius: 4 }
+        ]
+      }, options: chartOpts
+    });
+
+    window.crChartSatInstance = new Chart(document.getElementById("cr-pdf-chart-sat").getContext("2d"), {
+      type: 'bar',
+      data: {
+        labels: chartLabels.slice(1),
+        datasets: [
+          { label: 'Target', data: chartTarget.slice(1), backgroundColor: '#CBD5E1', borderRadius: 4 },
+          { label: 'Actual', data: chartActual.slice(1), backgroundColor: chartColors.slice(1), borderRadius: 4 }
+        ]
+      }, options: chartOpts
+    });
+    
+    // 4. Give charts a fraction of a second to render
+    await new Promise(r => setTimeout(r, 500));
+    
+    // 5. Generate and Download PDF
+    try {
+      const el = document.getElementById("hidden-crisis-report");
+      const canvas = await html2canvas(el, { scale: 3, useCORS: true, backgroundColor: '#FFFFFF' });
+      const imgData = canvas.toDataURL('image/png');
+      
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      
+      const fileSafeStart = startWk.replace(/[^a-zA-Z0-9]/g, '');
+      const fileSafeEnd = endWk.replace(/[^a-zA-Z0-9]/g, '');
+      
+      pdf.save(`PPCWD_Crisis_Report_${fileSafeStart}_to_${fileSafeEnd}.pdf`);
+      
+      document.getElementById("crisis-report-status").textContent = "Report Downloaded successfully.";
+      setTimeout(() => { document.getElementById("crisis-report-modal").style.display = 'none'; }, 1500);
+      
+    } catch(e) {
+      console.error(e);
+      document.getElementById("crisis-report-status").textContent = "Error generating PDF.";
+    }
+  }
+
   </script>
 
   <div id="report-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;">
@@ -3291,6 +3463,99 @@ setInterval(() => {
   </div>
   <canvas id="report-chart-canvas" width="1340" height="650"></canvas>
 </div>
+
+<!-- ── CRISIS REPORT MODAL ── -->
+  <div id="crisis-report-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:24px;width:400px;max-width:90vw;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text);">📄 Crisis Monitoring Report</div>
+        <button onclick="document.getElementById('crisis-report-modal').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;">✕</button>
+      </div>
+      
+      <div style="font-size:11px; color:var(--text2); margin-bottom:16px; line-height:1.4;">
+        Select a single week, or span multiple weeks to generate a combined monthly report. Targets are automatically prorated to the selected timeframe.
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">STARTING WEEK</label>
+        <select id="crisis-start-week" class="week-dropdown" style="width:100%; min-width:auto;"></select>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">ENDING WEEK</label>
+        <select id="crisis-end-week" class="week-dropdown" style="width:100%; min-width:auto;"></select>
+      </div>
+      <div id="crisis-report-status" style="font-size:11px;color:var(--amber2);min-height:16px;margin-bottom:10px;"></div>
+      <button onclick="generateCrisisReport()" style="width:100%;padding:10px;background:var(--teal2);border:none;border-radius:6px;color:#052e2b;font-weight:700;font-family:var(--font-mono);font-size:12px;cursor:pointer;">
+        Download PDF Report
+      </button>
+    </div>
+  </div>
+
+  <!-- ── HIDDEN A4 CRISIS REPORT TEMPLATE ── -->
+  <div id="hidden-crisis-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Montserrat',sans-serif; padding:40px; box-sizing:border-box;">
+    
+    <!-- Header -->
+    <div style="border-bottom: 2px solid #1560BD; padding-bottom: 10px; margin-bottom: 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <h1 style="margin:0; font-size:24px; color:#1560BD; font-weight:700;">LWUA CRISIS MONITORING REPORT</h1>
+          <div style="font-size:12px; color:#64748B; font-weight:500; margin-top:4px;">Puerto Princesa City Water District</div>
+        </div>
+        <div style="text-align:right;">
+          <div id="cr-pdf-period" style="font-size:14px; font-weight:600; color:#1E293B;"></div>
+          <div id="cr-pdf-date" style="font-size:10px; color:#94A3B8; margin-top:4px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary KPI -->
+    <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #1B8C7D; padding-left:8px;">Main System Overview (City Proper)</h3>
+    <div style="display:flex; gap:15px; margin-bottom:25px;">
+      <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
+        <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">Target Production</div>
+        <div id="cr-pdf-main-target" style="font-size:20px; font-weight:700; color:#1E293B; margin-top:5px; font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+      <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
+        <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">Actual Production</div>
+        <div id="cr-pdf-main-actual" style="font-size:20px; font-weight:700; color:#1E293B; margin-top:5px; font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+      <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
+        <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">% Achieved</div>
+        <div id="cr-pdf-main-pct" style="font-size:20px; font-weight:700; color:#1B8C7D; margin-top:5px; font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+      <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
+        <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">LWUA Alert Level</div>
+        <div id="cr-pdf-main-alert" style="font-size:16px; font-weight:700; color:#DC2626; margin-top:5px;"></div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #4A90D9; padding-left:8px;">System-Wide Graphical Performance</h3>
+    <div style="display:flex; gap:20px; height:220px; margin-bottom:25px; width:100%;">
+      <div style="flex:1; border:1px solid #E2E8F0; border-radius:8px; padding:10px;"><canvas id="cr-pdf-chart-main"></canvas></div>
+      <div style="flex:2.5; border:1px solid #E2E8F0; border-radius:8px; padding:10px;"><canvas id="cr-pdf-chart-sat"></canvas></div>
+    </div>
+
+    <!-- Detailed Table -->
+    <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #F59E0B; padding-left:8px;">Detailed Production Breakdown</h3>
+    <table style="width:100%; border-collapse:collapse; font-size:11px;">
+      <thead>
+        <tr style="background:#F1F5F9; border-bottom:2px solid #CBD5E1;">
+          <th style="padding:8px; text-align:left; color:#475569;">System Name</th>
+          <th style="padding:8px; text-align:right; color:#475569;">Target (m³)</th>
+          <th style="padding:8px; text-align:right; color:#475569;">Actual (m³)</th>
+          <th style="padding:8px; text-align:right; color:#475569;">% Achieved</th>
+          <th style="padding:8px; text-align:left; color:#475569; padding-left:15px;">LWUA Status Indicator</th>
+        </tr>
+      </thead>
+      <tbody id="cr-pdf-tbody"></tbody>
+    </table>
+    
+    <div style="margin-top:20px; font-size:9px; color:#94A3B8; text-align:justify; line-height:1.4;">
+      <strong>* LWUA Advisory Alert Criteria:</strong> Level 1 (Watch): Drop &lt; 10% (≥90% capacity) | Level 2 (Alert): Drop 10% to 25% (75% to 89.9%) | Level 3 (Critical): Drop &gt; 25% (&lt; 75%).<br>
+      <strong>* Target Calculation:</strong> Based on 1,700,000 m³/month for the Main System (equating to 391,233 m³/week) and specific monthly targets for Satellite Systems, accurately prorated to match the duration of the selected reporting period.
+    </div>
+  </div>
 
   </body>
   </html>
