@@ -3360,138 +3360,6 @@ setInterval(() => {
     document.getElementById("cr-pdf-main-alert").style.color = mainAlert.lvl === 1 ? "#059669" : (mainAlert.lvl === 2 ? "#D97706" : "#DC2626");
     document.getElementById("cr-pdf-tbody").innerHTML = tableHtml;
 
-    // 2.5 Per-Station Production Breakdown (optional, checkbox-controlled)
-    const includeStations = document.getElementById("crisis-include-stations").checked;
-    const stationRows = getStationRows().filter(r => !r.bold);
-    let stationSectionHtml = "";
-
-    if (includeStations) {
-      const catLabel = { sw: "Surface Water", gw: "Ground Water", aug: "Augmented" };
-      const catColor = { sw: "#1B8C7D", gw: "#1560BD", aug: "#7C3AED" };
-      const catTotals = { sw: { actual: 0, target: 0 }, gw: { actual: 0, target: 0 }, aug: { actual: 0, target: 0 } };
-      let rowsHtml = "", lastCat = null;
-
-      stationRows.forEach(r => {
-        const actual = pool.reduce((s, row) => s + num(row[COL[r.key]]), 0);
-        const rHr = RATED[r.name] || 0;
-        const target = rHr * hrsInPeriod;
-        const pct = target > 0 ? (actual / target * 100) : null;
-        const alert = target > 0 ? getAlertInfo(pct) : null;
-        const color = alert ? (alert.lvl === 1 ? "#059669" : alert.lvl === 2 ? "#D97706" : "#DC2626") : "#94A3B8";
-        catTotals[r.cat].actual += actual;
-        catTotals[r.cat].target += target;
-
-        if (lastCat !== r.cat) {
-          rowsHtml += `<tr><td colspan="6" style="padding:7px 8px 3px;font-size:9px;font-weight:700;color:${catColor[r.cat]};text-transform:uppercase;letter-spacing:0.5px;">${catLabel[r.cat]}</td></tr>`;
-          lastCat = r.cat;
-        }
-        rowsHtml += `
-          <tr style="border-bottom:1px solid #F1F5F9;">
-            <td style="padding:4px 8px;">${r.name}</td>
-            <td style="padding:4px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${rHr > 0 ? fmt(rHr, 2) : "—"}</td>
-            <td style="padding:4px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${target > 0 ? fmt(target, 0) : "—"}</td>
-            <td style="padding:4px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${actual > 0 ? fmt(actual, 0) : "—"}</td>
-            <td style="padding:4px 8px; text-align:right; color:${color}; font-family:'JetBrains Mono',monospace;">${pct !== null ? fmt(pct, 1) + "%" : "—"}</td>
-            <td style="padding:4px 8px; padding-left:12px; color:${color}; font-size:9px;">${alert ? alert.name : "No rated data"}</td>
-          </tr>`;
-      });
-
-      const grandActual = catTotals.sw.actual + catTotals.gw.actual + catTotals.aug.actual;
-      const grandTarget = catTotals.sw.target + catTotals.gw.target + catTotals.aug.target;
-
-      stationSectionHtml = `
-        <h3 style="font-size:12px; color:#1E293B; margin:25px 0 10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #059669; padding-left:8px;">Per-Station Production Breakdown</h3>
-        <div style="border:1px solid #E2E8F0; border-radius:8px; padding:10px; margin-bottom:15px; height:760px;">
-          <canvas id="cr-pdf-chart-stations"></canvas>
-        </div>
-        <table style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:15px;">
-          <thead>
-            <tr style="background:#F1F5F9; border-bottom:2px solid #CBD5E1;">
-              <th style="padding:6px 8px; text-align:left; color:#475569;">Station</th>
-              <th style="padding:6px 8px; text-align:right; color:#475569;">Rated (m³/hr)</th>
-              <th style="padding:6px 8px; text-align:right; color:#475569;">Target (m³)</th>
-              <th style="padding:6px 8px; text-align:right; color:#475569;">Actual (m³)</th>
-              <th style="padding:6px 8px; text-align:right; color:#475569;">% Achieved</th>
-              <th style="padding:6px 8px; text-align:left; color:#475569; padding-left:12px;">Status</th>
-            </tr>
-          </thead>
-          <tbody>${rowsHtml}</tbody>
-          <tfoot>
-            <tr style="border-top:2px solid #CBD5E1; background:#F8FAFC; font-weight:700;">
-              <td style="padding:7px 8px;">All Stations — Combined Total</td>
-              <td></td>
-              <td style="padding:7px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(grandTarget, 0)}</td>
-              <td style="padding:7px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(grandActual, 0)}</td>
-              <td style="padding:7px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${grandTarget > 0 ? fmt(grandActual / grandTarget * 100, 1) + "%" : "—"}</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      `;
-    }
-    document.getElementById("cr-pdf-station-section").innerHTML = stationSectionHtml;
-
-    // 3. Render High-Res Charts
-    if(window.crChartMainInstance) window.crChartMainInstance.destroy();
-    if(window.crChartSatInstance) window.crChartSatInstance.destroy();
-    
-    const chartOpts = {
-      responsive: true, maintainAspectRatio: false, animation: false, devicePixelRatio: 3,
-      plugins: { legend: { position: 'top', labels: {font: {family:'Montserrat', size:10}} }, datalabels: { display: false } },
-      scales: { x: { ticks: { font: {size: 9, family:'Montserrat'}, maxRotation:45, minRotation:45 } } }
-    };
-
-    window.crChartMainInstance = new Chart(document.getElementById("cr-pdf-chart-main").getContext("2d"), {
-      type: 'bar',
-      data: {
-        labels: [chartLabels[0]],
-        datasets: [
-          { label: 'Target', data: [chartTarget[0]], backgroundColor: '#CBD5E1', borderRadius: 4 },
-          { label: 'Actual', data: [chartActual[0]], backgroundColor: [chartColors[0]], borderRadius: 4 }
-        ]
-      }, options: chartOpts
-    });
-
-    window.crChartSatInstance = new Chart(document.getElementById("cr-pdf-chart-sat").getContext("2d"), {
-      type: 'bar',
-      data: {
-        labels: chartLabels.slice(1),
-        datasets: [
-          { label: 'Target', data: chartTarget.slice(1), backgroundColor: '#CBD5E1', borderRadius: 4 },
-          { label: 'Actual', data: chartActual.slice(1), backgroundColor: chartColors.slice(1), borderRadius: 4 }
-        ]
-      }, options: chartOpts
-    });
-
-    // 3.5 Render the per-station % Achieved chart (canvas only exists if the
-    // checkbox was ticked and the section HTML was injected above)
-    if (window.crChartStationsInstance) window.crChartStationsInstance.destroy();
-    const stationsCanvas = document.getElementById("cr-pdf-chart-stations");
-    if (includeStations && stationsCanvas) {
-      const stationLabels = stationRows.map(r => r.name);
-      const stationPct = [], stationColors = [];
-      stationRows.forEach(r => {
-        const rHr = RATED[r.name] || 0;
-        const target = rHr * hrsInPeriod;
-        const actual = pool.reduce((s, row) => s + num(row[COL[r.key]]), 0);
-        const pct = target > 0 ? (actual / target * 100) : 0;
-        stationPct.push(pct);
-        stationColors.push(rHr === 0 ? "#CBD5E1" : (getAlertInfo(pct).lvl === 1 ? "#059669" : getAlertInfo(pct).lvl === 2 ? "#D97706" : "#DC2626"));
-      });
-      window.crChartStationsInstance = new Chart(stationsCanvas.getContext("2d"), {
-        type: 'bar',
-        data: { labels: stationLabels, datasets: [{ label: '% Achieved', data: stationPct, backgroundColor: stationColors, borderRadius: 3 }] },
-        options: {
-          indexAxis: 'y', responsive: true, maintainAspectRatio: false, animation: false, devicePixelRatio: 3,
-          plugins: { legend: { display: false }, datalabels: { display: false } },
-          scales: {
-            x: { title: { display: true, text: '% Achieved', font: { size: 9, family: 'Montserrat' } }, ticks: { font: { size: 8, family: 'Montserrat' } } },
-            y: { ticks: { font: { size: 8, family: 'Montserrat' } } }
-          }
-        }
-      });
-    }
-
     // 4. Give charts a fraction of a second to render
     await new Promise(r => setTimeout(r, 500));
     
@@ -3621,12 +3489,6 @@ setInterval(() => {
         <label style="font-family:var(--font-mono);font-size:10px;color:var(--text2);display:block;margin-bottom:6px;">ENDING WEEK</label>
         <select id="crisis-end-week" class="week-dropdown" style="width:100%; min-width:auto;" onchange="document.getElementById('crisis-report-status').textContent=''"></select>
       </div>
-      <div style="margin-bottom:20px;">
-        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);cursor:pointer;">
-          <input type="checkbox" id="crisis-include-stations" checked style="cursor:pointer;">
-          Include per-station production breakdown
-        </label>
-      </div>
       <div id="crisis-report-status" style="font-size:11px;color:var(--amber2);min-height:16px;margin-bottom:10px;"></div>
       <button onclick="generateCrisisReport()" style="width:100%;padding:10px;background:var(--teal2);border:none;border-radius:6px;color:#052e2b;font-weight:700;font-family:var(--font-mono);font-size:12px;cursor:pointer;">
         Download PDF Report
@@ -3672,13 +3534,6 @@ setInterval(() => {
       </div>
     </div>
 
-    <!-- Charts -->
-    <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #4A90D9; padding-left:8px;">System-Wide Graphical Performance</h3>
-    <div style="display:flex; gap:20px; height:220px; margin-bottom:25px; width:100%;">
-      <div style="flex:1; border:1px solid #E2E8F0; border-radius:8px; padding:10px;"><canvas id="cr-pdf-chart-main"></canvas></div>
-      <div style="flex:2.5; border:1px solid #E2E8F0; border-radius:8px; padding:10px;"><canvas id="cr-pdf-chart-sat"></canvas></div>
-    </div>
-
     <!-- Detailed Table -->
     <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #F59E0B; padding-left:8px;">Detailed Production Breakdown</h3>
     <table style="width:100%; border-collapse:collapse; font-size:11px;">
@@ -3693,9 +3548,6 @@ setInterval(() => {
       </thead>
       <tbody id="cr-pdf-tbody"></tbody>
     </table>
-
-    <!-- Per-Station Breakdown (populated only when the checkbox is checked) -->
-    <div id="cr-pdf-station-section"></div>
 
     <div style="margin-top:20px; font-size:9px; color:#94A3B8; text-align:justify; line-height:1.4; border-top:1px solid #E2E8F0; padding-top:10px;">
       <strong>* LWUA Advisory Alert Criteria:</strong> Level 1 (Watch): Drop &lt; 10% (≥90% capacity) | Level 2 (Alert): Drop 10% to 25% (75% to 89.9%) | Level 3 (Critical): Drop &gt; 25% (&lt; 75%).<br>
