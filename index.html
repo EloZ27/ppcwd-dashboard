@@ -1173,30 +1173,22 @@ const RIVER_STATIONS = [
   const CRISIS_SYSTEMS = [
     // CITY PROPER
     {
-      id: "city_sw",
-      name: "City Proper - Surface Water",
-      group: "city",
-      keys: ["wtp1", "wtp2", "infilCity", "lapulapu"],
-      ratedHr: 2139.73, // (Campo Uno + Lapu Lapu base capacity)
-      isBaseSW: true 
-    },
-    {
       id: "city_total",
-      name: "City Proper - Total Water Supply",
+      name: "City Proper - Main System",
       group: "city",
       keys: ["wtp1", "wtp2", "infilCity", "lapulapu", "montible", "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", "acacia", "citywoods", "virginia"],
-      isCityTotal: true 
+      ratedHr: 2328.77 // 1,700,000 m³/day ÷ 730 hours
     },
     // SATELLITES
     { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 20.47 },
     { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 6.90 },
     { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 2.12 },
     { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 23.67 },
-    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 19.15 },
-    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 23.99 },
-    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 32.65 },
+    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 16.27 },
+    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 18.15 },
+    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 31.56 },
     { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 6.51 },
-    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 7.73 }
+    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 3.70 }
   ];
 
 
@@ -1505,43 +1497,13 @@ const RIVER_STATIONS = [
     const hrsInPeriod = 168 * numWeeks;
 
     CRISIS_SYSTEMS.forEach(sys => {
-        let actual = sys.keys.reduce((sum, key) => sum + num(d[key]), 0);
-        let ratedWeekly = 0;
-
-// NEW LOGIC: Dynamic Rated Capacity for City Total
-    if (sys.isCityTotal) {
-      const ratedSwWeekly = 2139.73 * hrsInPeriod; // Base SW Rated (338,024.4 m³ per week)
+      // Sum all stations belonging to this unified system (Montible is now inherently included in the keys)
+      let actual = sys.keys.reduce((sum, key) => sum + num(d[key]), 0);
       
-      // Explicitly define Groundwater and Augmented keys only (excluding Montible from denominator)
-      const gwAndAugKeys = [
-        "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", 
-        "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", 
-        "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", 
-        "acacia", "citywoods", "virginia"
-      ];
-      
-      // Dynamically sum Actual GW + Actual Augmented production for this specific week
-      const actualRest = gwAndAugKeys.reduce((sum, key) => sum + num(d[key]), 0);
-      
-      // Denominator formula: (Base SW Rated + Dynamic Actual GW + Dynamic Actual Augmented)
-      ratedWeekly = ratedSwWeekly + actualRest; 
-    } else {
-      ratedWeekly = sys.ratedHr * hrsInPeriod;
-    }
+      // Calculate the fixed target for the current viewing period
+      let ratedWeekly = sys.ratedHr * hrsInPeriod;
 
       let pct = ratedWeekly > 0 ? (actual / ratedWeekly) * 100 : 0;
-      
-      let isMontibleActive = false;
-      let montibleVol = 0;
-
-      // The Montible Fallback Logic
-      if (sys.isBaseSW && pct < 75) {
-        montibleVol = num(d["montible"]);
-        actual += montibleVol; 
-        pct = ratedWeekly > 0 ? (actual / ratedWeekly) * 100 : 0;
-        isMontibleActive = true;
-      }
-
       const alert = getAlertInfo(pct);
 
       const cardHtml = `
@@ -1557,14 +1519,9 @@ const RIVER_STATIONS = [
               <span style="color:var(--text)">${fmt(actual)} m³</span>
             </div>
             <div class="crisis-details-row">
-              <span>Rated Capacity</span>
+              <span>Target Production</span>
               <span style="color:var(--text)">${fmt(ratedWeekly)} m³</span>
             </div>
-            ${isMontibleActive ? `
-              <div class="montible-alert">
-                Montible Substitute Active (+${fmt(montibleVol)} m³)
-              </div>
-            ` : ""}
           </div>
         </div>
       `;
