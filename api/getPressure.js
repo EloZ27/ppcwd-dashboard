@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
   // INCREASED LIMIT TO 5,000 (roughly 10 days of data for 20 stations)
-  const url = `${SUPABASE_URL}/rest/v1/pressure_readings?select=&order=reading_time.desc&limit=8000`;
+  const url = `${SUPABASE_URL}/rest/v1/pressure_readings?select=&order=reading_time.desc&limit=4000`;
 
   try {
     const response = await fetch(url, {
