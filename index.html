@@ -768,7 +768,10 @@
   </header>
 
   <nav class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('production')">
+    <button class="nav-tab active" onclick="switchTab('overview')">
+      <span class="tab-dot" style="background:#38BDF8"></span>Overview
+    </button>
+    <button class="nav-tab" onclick="switchTab('production')">
       <span class="tab-dot" style="background:#24B5A3"></span>Production
     </button>
     <button class="nav-tab" onclick="switchTab('crisis')">
@@ -798,6 +801,125 @@
         <div class="target-pill">Target: 55.33 MLD</div>
       </div>
     </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- DEFAULT LANDING PAGE: EXECUTIVE OPERATIONS OVERVIEW          -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <div class="page active" id="page-overview">
+    
+    <!-- Pulse KPI Strip -->
+    <div class="kpi-row" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 20px;">
+      <div class="kpi-card teal">
+        <div class="kpi-label">Main System Status</div>
+        <div class="kpi-value" id="ov-crisis-badge" style="font-size: 18px; font-weight: 600; color: #34D399;">—</div>
+        <div class="kpi-sub" id="ov-crisis-sub">Target: 391,233 m³/wk</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Weekly Production</div>
+        <div class="kpi-value" id="ov-prod-total">—<span class="unit">m³</span></div>
+        <div class="kpi-sub" id="ov-mld-sub">0.00 MLD</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Surface Water</div>
+        <div class="kpi-value" id="ov-sw-total">—<span class="unit">m³</span></div>
+        <div class="kpi-sub" id="ov-sw-pct">0% of total</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Groundwater</div>
+        <div class="kpi-value" id="ov-gw-total">—<span class="unit">m³</span></div>
+        <div class="kpi-sub" id="ov-gw-pct">0% of total</div>
+      </div>
+      <div class="kpi-card slate">
+        <div class="kpi-label">Consumer Reports</div>
+        <div class="kpi-value" id="ov-complaints-count" style="color: #FCA5A5;">—</div>
+        <div class="kpi-sub" id="ov-complaints-sub">Latest cycle</div>
+      </div>
+    </div>
+
+    <!-- Main Grid: Telemetry & Production Highlights -->
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-bottom: 20px;">
+      
+      <!-- Left: Crisis Progress & Production Breakdown -->
+      <div class="chart-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="chart-title">LWUA Drought & Production Target Tracking</div>
+        <div style="margin: 10px 0 20px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: var(--font-mono); margin-bottom: 6px;">
+            <span>City Proper Unified Progress</span>
+            <span id="ov-progress-label" style="font-weight: 600;">0% (Target: 391,233 m³)</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.08); height: 10px; border-radius: 5px; overflow: hidden;">
+            <div id="ov-progress-bar" style="height: 100%; width: 0%; background: var(--teal2); transition: width 0.4s ease;"></div>
+          </div>
+        </div>
+        <div style="height: 190px;">
+          <canvas id="ov-chart-source-split"></canvas>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+          <button onclick="switchTab('production')" class="time-range-btn" style="color: var(--teal2); border-color: var(--teal);">Detailed Production Tab →</button>
+        </div>
+      </div>
+
+      <!-- Right: Primary Strategic Pressure Points -->
+      <div class="chart-card" style="display: flex; flex-direction: column;">
+        <div class="chart-title">Strategic Pressure Transmission Nodes</div>
+        <div style="font-size: 10px; color: var(--text2); font-family: var(--font-mono); margin-bottom: 12px;">Live / snapshot readings from critical SCADA monitoring points</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: space-around;">
+          
+          <!-- Manalo Booster -->
+          <div style="background: var(--card2); border: 1px solid var(--border); border-left: 4px solid var(--blue2); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--white);">Manalo Booster Station</div>
+              <div id="ov-press-time-manalo" style="font-size: 9px; color: var(--text2); font-family: var(--font-mono); margin-top: 2px;">Checking...</div>
+            </div>
+            <div style="text-align: right;">
+              <div id="ov-press-val-manalo" style="font-size: 22px; font-weight: 300; font-family: var(--font-mono); color: #34D399;">—<span style="font-size: 10px; margin-left: 2px;">PSI</span></div>
+              <div id="ov-press-st-manalo" style="font-size: 9px; font-family: var(--font-mono); color: #34D399;">Normal</div>
+            </div>
+          </div>
+
+          <!-- Lapu Lapu Campo Uno Box -->
+          <div style="background: var(--card2); border: 1px solid var(--border); border-left: 4px solid var(--teal2); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--white);">Lapu Lapu Campo Uno Chamber Box</div>
+              <div id="ov-press-time-campo" style="font-size: 9px; color: var(--text2); font-family: var(--font-mono); margin-top: 2px;">Checking...</div>
+            </div>
+            <div style="text-align: right;">
+              <div id="ov-press-val-campo" style="font-size: 22px; font-weight: 300; font-family: var(--font-mono); color: #34D399;">—<span style="font-size: 10px; margin-left: 2px;">PSI</span></div>
+              <div id="ov-press-st-campo" style="font-size: 9px; font-family: var(--font-mono); color: #34D399;">Normal (≤90 Alert)</div>
+            </div>
+          </div>
+
+          <!-- UV Facility -->
+          <div style="background: var(--card2); border: 1px solid var(--border); border-left: 4px solid var(--amber2); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--white);">UV Facility</div>
+              <div id="ov-press-time-uv" style="font-size: 9px; color: var(--text2); font-family: var(--font-mono); margin-top: 2px;">Checking...</div>
+            </div>
+            <div style="text-align: right;">
+              <div id="ov-press-val-uv" style="font-size: 22px; font-weight: 300; font-family: var(--font-mono); color: #34D399;">—<span style="font-size: 10px; margin-left: 2px;">PSI</span></div>
+              <div id="ov-press-st-uv" style="font-size: 9px; font-family: var(--font-mono); color: #34D399;">Normal (≤110 Alert)</div>
+            </div>
+          </div>
+
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+          <button onclick="switchTab('pressure')" class="time-range-btn" style="color: var(--blue2); border-color: var(--blue);">View Full 21-Station Map →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row: River Hydrology Summary -->
+    <div class="chart-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div class="chart-title" style="margin-bottom:0;">Key Watershed Sources — Latest River Discharge Rates</div>
+        <button onclick="switchTab('riverflow')" class="time-range-btn" style="color: var(--amber2); border-color: var(--amber);">All 19 Rivers Leaderboard →</button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;" id="ov-rivers-grid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
   </div>
 
   <div class="page active" id="page-production">
@@ -1153,38 +1275,38 @@ const RIVER_STATIONS = [
     "Irawan Infiltration Wells":  172.60,
     "Lapu-Lapu Source":          1232.88,
     "Montible (Teruvian)":        976.04,
-    "Sta. Lucia PS":               20.47,
+    "Sta. Lucia PS":               42.47,
     "Sabang SW":                   15.78,
-    "San Rafael SW":                6.51,
-    "Bahile SW":                   16.27,
-    "Napsan":                       2.12,
-    "Binduyan":                     7.73,
+    "San Rafael SW":                9.59,
+    "Bahile SW":                   17.81,
+    "Napsan":                       5.07,
+    "Binduyan":                     8.22,
     "Bacungan SW":                 23.67,
-    "Maoyon Infiltration Wells":   31.56,
-    "Macasaet-I":                  44.38,
-    "Pump Center #5":              19.73,
-    "Pump Center #6":              19.73,
-    "DA":                          34.52,
+    "Maoyon Infiltration Wells":    7.53,
+    "Macasaet-I":                    3.7,
+    "Pump Center #5":               1.64,
+    "Pump Center #6":               1.64,
+    "DA":                           2.88,
     "Sicsican":                    19.92,
-    "Villa Ello":                  47.84,
-    "NHA":                         59.18,
-    "Princeville":                 29.59,
-    "Villa Princesa":              17.01,
-    "San Jose":                    51.02,
-    "BOS":                         11.84,
-    "Esteban":                     29.59,
-    "Kaakbayan":                   11.84,
-    "New Market":                  39.45,
-    "Pablico":                     19.73,
-    "Baldosano PS":                59.18,
-    "Sta. Monica PS":              19.13,
+    "Villa Ello":                   3.70,
+    "NHA":                          7.40,
+    "Princeville":                  3.70,
+    "Villa Princesa":               1.32,
+    "San Jose":                     3.95,
+    "BOS":                         10.85,
+    "Esteban":                      3.70,
+    "Kaakbayan":                    0.99,
+    "New Market":                   3.29,
+    "Pablico":                      1.64,
+    "Baldosano PS":                 8.88,
+    "Sta. Monica PS":               1.48,
     "Abueg":                        0.00,
     "Visapa PS":                    8.28,
     "Acacia":                       9.07,
     "Citywoods":                    9.86,
     "Virginia":                    12.03,
     "Lucbuan":                      1.09,
-    "Sabang GW":                    8.21,
+    "Sabang GW":                   17.81,
     "Inagawan":                     6.90,
     "Macarascas":                   2.88,
   };
@@ -1243,18 +1365,18 @@ const RIVER_STATIONS = [
       name: "City Proper - Main System",
       group: "city",
       keys: ["wtp1", "wtp2", "infilCity", "lapulapu", "montible", "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", "acacia", "citywoods", "virginia"],
-      ratedHr: 2328.77 // 1,700,000 m³/day ÷ 730 hours
+      ratedHr: 2212.30 // 1,700,000 m³/day ÷ 730 hours
     },
     // SATELLITES
-    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 20.47 },
+    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 42.47 },
     { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 6.90 },
-    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 2.12 },
+    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 5.07 },
     { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 23.67 },
-    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 16.27 },
-    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 18.15 },
-    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 31.56 },
-    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 6.51 },
-    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 3.70 }
+    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 17.81 },
+    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 15.78 },
+    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 7.53 },
+    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 9.59 },
+    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 8.22 }
   ];
 
 
@@ -1297,35 +1419,171 @@ const RIVER_STATIONS = [
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
     document.getElementById("page-"+tab).classList.add("active");
-    event.currentTarget.classList.add("active");
+    if(event && event.currentTarget) event.currentTarget.classList.add("active");
     
-    // Toggle global period bar visibility
+    // Show period dropdown for Overview, Production, and Crisis tabs
     const periodBar = document.getElementById("global-period-bar");
-    if(tab === 'production' || tab === 'crisis') {
+    if(tab === 'overview' || tab === 'production' || tab === 'crisis') {
       periodBar.style.display = 'block';
     } else {
       periodBar.style.display = 'none';
     }
 
-    if(tab==="pressure"){
-      if(pressureRaw.length===0){
+    if(tab === "overview") {
+      renderOverview();
+    } else if(tab === "pressure"){
+      if(pressureRaw.length === 0){
         loadPressure();
       } else if(leafletMap){
         setTimeout(()=>leafletMap.invalidateSize(), 50);
       }
     } else if (tab === "riverflow") {
-      if(riverRaw.length===0){
+      if(riverRaw.length === 0){
         loadRiverFlow();
       }
     } else if (tab === "complaints") {
-      if(complaintsRaw.length===0){
+      if(complaintsRaw.length === 0){
         loadComplaints();
       } else {
-        // Canvases were hidden during init(); re-render now that they're visible
-        // so Chart.js can measure them correctly.
         populateCycleFilter();
         renderComplaintsDashboard();
       }
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // OVERVIEW (COMMAND CENTER) ENGINE
+  // ════════════════════════════════════════════════════════════
+  let ovSplitChart = null;
+
+  function renderOverview() {
+    if (!allProdData || allProdData.length === 0) return;
+
+    // 1. Get Currently Selected Week Data
+    const weekSelect = document.getElementById("week-select");
+    const activeWk = weekSelect && weekSelect.value ? weekSelect.value : allProdData[allProdData.length - 1][COL.week];
+    const row = allProdData.find(r => r[COL.week] === activeWk) || allProdData[allProdData.length - 1];
+    const d = rowToObj(row);
+
+    // 2. Production & MLD
+    const total = num(d.grandTotal);
+    const mld = num(d.mld);
+    const sw = num(d.totalSW);
+    const gw = num(d.totalGW);
+    const swPct = total > 0 ? (sw / total * 100) : 0;
+    const gwPct = total > 0 ? (gw / total * 100) : 0;
+
+    document.getElementById("ov-prod-total").innerHTML = `${fmt(total)}<span class="unit">m³</span>`;
+    document.getElementById("ov-mld-sub").textContent = `${fmt(mld, 2)} MLD (Target: 55.33 MLD)`;
+    document.getElementById("ov-sw-total").innerHTML = `${fmt(sw)}<span class="unit">m³</span>`;
+    document.getElementById("ov-sw-pct").textContent = `${fmt(swPct, 1)}% of total`;
+    document.getElementById("ov-gw-total").innerHTML = `${fmt(gw)}<span class="unit">m³</span>`;
+    document.getElementById("ov-gw-pct").textContent = `${fmt(gwPct, 1)}% of total`;
+
+    // 3. Crisis Monitor & Target Achievement
+    const citySys = CRISIS_SYSTEMS.find(s => s.id === "city_total");
+    if (citySys) {
+      const cityActual = citySys.keys.reduce((sum, k) => sum + num(d[k]), 0);
+      const targetWeekly = 391233; // 1,700,000 / 730 * 168
+      const pct = (cityActual / targetWeekly) * 100;
+      const alert = getAlertInfo(pct);
+
+      const badge = document.getElementById("ov-crisis-badge");
+      badge.textContent = alert.name;
+      badge.style.color = alert.lvl === 1 ? "#34D399" : (alert.lvl === 2 ? "var(--amber2)" : "#FCA5A5");
+
+      document.getElementById("ov-progress-label").textContent = `${fmt(pct, 1)}% achieved (${fmt(cityActual, 0)} / ${fmt(targetWeekly, 0)} m³)`;
+      const pBar = document.getElementById("ov-progress-bar");
+      pBar.style.width = Math.min(pct, 100) + "%";
+      pBar.style.background = alert.lvl === 1 ? "var(--teal)" : (alert.lvl === 2 ? "var(--amber2)" : "var(--red)");
+    }
+
+    // 4. Source Split Donut Chart
+    const ctx = document.getElementById("ov-chart-source-split");
+    if (ctx) {
+      if (ovSplitChart) ovSplitChart.destroy();
+      ovSplitChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Surface Water', 'Groundwater', 'Augmented'],
+          datasets: [{
+            data: [sw, gw, num(d.augSub)],
+            backgroundColor: ['rgba(27,140,125,0.85)', 'rgba(21,96,189,0.85)', 'rgba(124,58,237,0.85)'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '70%',
+          plugins: {
+            legend: { position: 'right', labels: { color: cTick(), font: { size: 10, family: 'JetBrains Mono' } } },
+            tooltip: { callbacks: { label: c => ` ${c.label}: ${fmt(c.raw)} m³` } }
+          }
+        }
+      });
+    }
+
+    // 5. Populate Key Strategic Pressure Nodes (Col 2, 8, 19)
+    function updatePressureCard(col, valId, timeId, stId, maxPsi) {
+      const vEl = document.getElementById(valId);
+      const tEl = document.getElementById(timeId);
+      const sEl = document.getElementById(stId);
+      if (!vEl) return;
+
+      const pool = pressureRaw.filter(r => r.vals && r.vals[col] !== null);
+      if (pool.length > 0) {
+        const last = pool[pool.length - 1];
+        const v = last.vals[col];
+        const isAlert = maxPsi ? (v <= ALERT_PSI || v >= maxPsi) : (v <= ALERT_PSI);
+
+        vEl.innerHTML = `${fmt(v, 2)}<span style="font-size:10px; margin-left:2px;">PSI</span>`;
+        vEl.style.color = isAlert ? "#FCA5A5" : "#34D399";
+        tEl.textContent = last.dt ? last.dt.toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : "—";
+        sEl.textContent = isAlert ? "⚠️ Alert Threshold Exceeded" : "✓ Normal Operations";
+        sEl.style.color = isAlert ? "#FCA5A5" : "#34D399";
+      } else {
+        vEl.innerHTML = `—<span style="font-size:10px; margin-left:2px;">PSI</span>`;
+        vEl.style.color = "var(--text2)";
+        tEl.textContent = "Awaiting sync...";
+        sEl.textContent = "No data received";
+        sEl.style.color = "var(--text2)";
+      }
+    }
+
+    updatePressureCard(2, "ov-press-val-manalo", "ov-press-time-manalo", "ov-press-st-manalo", null);
+    updatePressureCard(8, "ov-press-val-campo", "ov-press-time-campo", "ov-press-st-campo", 90);
+    updatePressureCard(19, "ov-press-val-uv", "ov-press-time-uv", "ov-press-st-uv", 110);
+
+    // 6. Populate Key Watershed Intakes (Montible, Campo Uno, Lapu Lapu Upstream, Sta. Lucia)
+    const riverGrid = document.getElementById("ov-rivers-grid");
+    if (riverGrid) {
+      const keyRivers = [
+        { name: "Montible Teruvian", col: 2 },
+        { name: "Campo Uno", col: 9 },
+        { name: "Lapu Lapu Upstream", col: 5 },
+        { name: "Sta. Lucia Intake", col: 7 }
+      ];
+
+      riverGrid.innerHTML = keyRivers.map(r => {
+        const valid = riverRaw.filter(row => row.vals && row.vals[r.col] !== null);
+        const last = valid.length > 0 ? valid[valid.length - 1] : null;
+        const val = last ? fmt(last.vals[r.col], 0) : "—";
+        const dateStr = last && last.dt ? last.dt.toLocaleDateString("en-PH", { month: 'short', day: 'numeric' }) : "No data";
+
+        return `
+          <div style="background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:12px;">
+            <div style="font-size:11px; font-weight:600; color:var(--white); margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.name}</div>
+            <div style="font-size:20px; font-weight:300; font-family:var(--font-mono); color:var(--amber2);">${val} <span style="font-size:9px; color:var(--text2);">m³/d</span></div>
+            <div style="font-size:8px; color:var(--text2); font-family:var(--font-mono); margin-top:4px;">Logged: ${dateStr}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // 7. Complaints summary
+    const compCountEl = document.getElementById("ov-complaints-count");
+    if (compCountEl) {
+      compCountEl.textContent = complaintsRaw.length > 0 ? complaintsRaw.length : "0";
+      document.getElementById("ov-complaints-sub").textContent = complaintsRaw.length > 0 ? "Total recorded" : "No active reports";
     }
   }
 
@@ -1569,6 +1827,7 @@ const RIVER_STATIONS = [
     const cityGrid = document.getElementById("crisis-city-grid");
     const satGrid = document.getElementById("crisis-sat-grid");
     cityGrid.innerHTML = ""; satGrid.innerHTML = "";
+    renderOverview();
 
     const hrsInPeriod = 168 * numWeeks;
 
