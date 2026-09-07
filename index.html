@@ -3874,11 +3874,18 @@ setInterval(() => {
     });
     
     // 2. Populate PDF HTML Elements
-    document.getElementById("cr-pdf-period").textContent = `${startWk} — ${endWk} (${numWeeks} week${numWeeks > 1 ? 's' : ''})`;
+    document.getElementById("cr-pdf-period").textContent = `${startWk} — ${endWk} (${numWeeks} week${numWeeks > 1 ? 's' : ''} / ${hrsInPeriod} hrs)`;
     document.getElementById("cr-pdf-date").textContent = `Generated on ${new Date().toLocaleDateString('en-PH')} ${new Date().toLocaleTimeString('en-PH')}`;
     
-    // Summary KPI boxes display the Consolidated Overall District results
+    // Target display with baseline callout
     document.getElementById("cr-pdf-main-target").textContent = fmt(overallTarget, 2);
+    const targetSubEl = document.getElementById("cr-pdf-target-sub");
+    if (targetSubEl) {
+      targetSubEl.textContent = numWeeks === 4 
+        ? "Prorated 28 Days (Baseline: 1,728,020 m³/mo)" 
+        : `Prorated for ${numWeeks * 7} Days (${hrsInPeriod} hrs)`;
+    }
+
     document.getElementById("cr-pdf-main-actual").textContent = fmt(overallActual, 0);
     document.getElementById("cr-pdf-main-pct").textContent = fmt(overallPct, 1) + "%";
     document.getElementById("cr-pdf-main-alert").textContent = overallAlert.name || "—";
@@ -3918,7 +3925,7 @@ setInterval(() => {
       const fileSafeStart = startWk.replace(/[^a-zA-Z0-9]/g, '');
       const fileSafeEnd = endWk.replace(/[^a-zA-Z0-9]/g, '');
       
-      pdf.save(`PPCWD_Crisis_Report_${fileSafeStart}_to_${fileSafeEnd}.pdf`);
+      pdf.save(`PPCWD_Internal_Crisis_Report_${fileSafeStart}_to_${fileSafeEnd}.pdf`);
       
       document.getElementById("crisis-report-status").textContent = "Report Downloaded successfully.";
       setTimeout(() => { document.getElementById("crisis-report-modal").style.display = 'none'; }, 1500);
@@ -3993,12 +4000,12 @@ setInterval(() => {
   <div id="crisis-report-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;">
     <div style="background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:24px;width:400px;max-width:90vw;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text);">📄 Crisis Monitoring Report</div>
+        <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text);">📄 Internal Crisis Monitoring Report</div>
         <button onclick="document.getElementById('crisis-report-modal').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;">✕</button>
       </div>
       
       <div style="font-size:11px; color:var(--text2); margin-bottom:16px; line-height:1.4;">
-        Select a single week, or span multiple weeks to generate a combined monthly report. Targets are automatically prorated to the selected timeframe (391,233 m³/week for the Main System).
+        Select a single week or span multiple weeks. Targets prorate to 397,681.32 m³/week (1,590,725.28 m³ for 4 weeks / 28 days vs 1,728,020.00 m³ monthly baseline).
       </div>
 
       <div style="display:flex; gap:8px; margin-bottom:16px;">
@@ -4028,7 +4035,7 @@ setInterval(() => {
     <div style="border-bottom: 2px solid #1560BD; padding-bottom: 10px; margin-bottom: 20px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-end;">
         <div>
-          <h1 style="margin:0; font-size:24px; color:#1560BD; font-weight:700;">LWUA CRISIS MONITORING REPORT</h1>
+          <h1 style="margin:0; font-size:24px; color:#1560BD; font-weight:700;">INTERNAL CRISIS MONITORING REPORT</h1>
           <div style="font-size:12px; color:#64748B; font-weight:500; margin-top:4px;">Puerto Princesa City Water District</div>
         </div>
         <div style="text-align:right;">
@@ -4044,6 +4051,7 @@ setInterval(() => {
       <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
         <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">Target Production</div>
         <div id="cr-pdf-main-target" style="font-size:20px; font-weight:700; color:#1E293B; margin-top:5px; font-family:'JetBrains Mono',monospace;"></div>
+        <div id="cr-pdf-target-sub" style="font-size:9px; color:#64748B; margin-top:4px; font-family:'JetBrains Mono',monospace;"></div>
       </div>
       <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
         <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">Actual Production</div>
@@ -4054,7 +4062,7 @@ setInterval(() => {
         <div id="cr-pdf-main-pct" style="font-size:20px; font-weight:700; color:#1B8C7D; margin-top:5px; font-family:'JetBrains Mono',monospace;"></div>
       </div>
       <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
-        <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">LWUA Alert Level</div>
+        <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">Alert Level Status</div>
         <div id="cr-pdf-main-alert" style="font-size:16px; font-weight:700; color:#DC2626; margin-top:5px;"></div>
       </div>
     </div>
@@ -4075,9 +4083,9 @@ setInterval(() => {
     </table>
 
     <div style="margin-top:20px; font-size:9px; color:#94A3B8; text-align:justify; line-height:1.4; border-top:1px solid #E2E8F0; padding-top:10px;">
-      <strong>* LWUA Advisory Alert Criteria:</strong> Level 1 (Watch): Drop &lt; 10% (≥90% capacity) | Level 2 (Alert): Drop 10% to 25% (75% to 89.9%) | Level 3 (Critical): Drop &gt; 25% (&lt; 75%).<br>
-      <strong>* Target Calculation:</strong> Based on 1,700,000 m³/month for the Main System — derived as 1,700,000 ÷ 730 hrs/month × 168 hrs/week = 391,233 m³/week — plus specific rated targets for Satellite Systems and individual stations, all prorated to match the duration of the selected reporting period (weekly or multi-week/monthly).<br>
-      <strong>Prepared by:</strong> Corporate Planning Analyst, IEC Committee — PPCWD &nbsp;|&nbsp; <strong>Report generated via PPCWD Monitoring Dashboard.</strong>
+      <strong>* Alert Level Standards:</strong> Evaluated using LWUA crisis criteria — Level 1 (Watch): Drop &lt; 10% (≥90% capacity) | Level 2 (Alert): Drop 10% to 25% (75% to 89.9%) | Level 3 (Critical): Drop &gt; 25% (&lt; 75%).<br>
+      <strong>* Target Calculation &amp; Proration:</strong> Production Division sets an overall consolidated benchmark of 1,728,020.00 m³/month (2,367.15 m³/hr across a standardized 730-hour month), equating to 397,681.32 m³/week. Because operational telemetry is logged in 7-day cycles, a 4-week period reflects exactly 28 days (672 operating hours), prorating to 1,590,725.28 m³. Prorating to elapsed hours maintains mathematical accuracy against actual recorded production.<br>
+      <strong>Prepared by:</strong> Task Force El Niño Committee — PPCWD &nbsp;|&nbsp; <strong>Report generated via PPCWD Monitoring Dashboard.</strong>
     </div>
   </div>
 
