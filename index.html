@@ -1318,16 +1318,73 @@ const RIVER_STATIONS = [
   // ── Complaints reporting cycles (Customer Care report periods) ───────────────
   // Add new cycles here as reports come in. Gaps between cycles are expected —
   // do NOT try to compute these mathematically from a start date.
-  const REPORT_CYCLES = [
-    { label: "May 25–31, 2026",    start: "2026-05-25", end: "2026-05-31" },
-    { label: "Jun 1–7, 2026",      start: "2026-06-01", end: "2026-06-07" },
-    { label: "Jun 8–14, 2026",     start: "2026-06-08", end: "2026-06-14" },
-    { label: "Jun 15–21, 2026",    start: "2026-06-15", end: "2026-06-21" },
-    { label: "Jun 29–Jul 5, 2026", start: "2026-06-29", end: "2026-07-05" },
-    { label: "Jul 6–12, 2026",     start: "2026-07-06", end: "2026-07-12" },
-    { label: "Jul 13–19, 2026",    start: "2026-07-13", end: "2026-07-19" },
-    { label: "Jul 27–Aug 2, 2026", start: "2026-07-27", end: "2026-08-02" },
-  ];
+  // ── Complaints reporting cycles (Dynamically generated from database records) ──
+  let REPORT_CYCLES = [];
+
+  function generateReportCycles(complaints) {
+    if (!complaints || complaints.length === 0) return [];
+
+    const cycleMap = new Map();
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    complaints.forEach(c => {
+      if (!c.date) return;
+      const parts = String(c.date).split('T')[0].split('-');
+      if (parts.length !== 3) return;
+
+      // Local date parsing to prevent UTC day-shift errors
+      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      if (isNaN(d.getTime())) return;
+
+      // Find Monday (Cycle Start) and Sunday (Cycle End)
+      const day = d.getDay(); // 0 is Sun, 1 is Mon, etc.
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+
+      const monday = new Date(d);
+      monday.setDate(d.getDate() + diffToMonday);
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      const toIso = dt => {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const dayNum = String(dt.getDate()).padStart(2, '0');
+        return `${y}-${m}-${dayNum}`;
+      };
+
+      const start = toIso(monday);
+      const end = toIso(sunday);
+
+      if (!cycleMap.has(start)) {
+        let label = "";
+        const mYear = monday.getFullYear();
+        const sYear = sunday.getFullYear();
+        const mMonth = months[monday.getMonth()];
+        const sMonth = months[sunday.getMonth()];
+
+        if (mYear === sYear) {
+          if (monday.getMonth() === sunday.getMonth()) {
+            label = `${mMonth} ${monday.getDate()}–${sunday.getDate()}, ${mYear}`;
+          } else {
+            label = `${mMonth} ${monday.getDate()}–${sMonth} ${sunday.getDate()}, ${mYear}`;
+          }
+        } else {
+          label = `${mMonth} ${monday.getDate()}, ${mYear}–${sMonth} ${sunday.getDate()}, ${sYear}`;
+        }
+
+        cycleMap.set(start, { label, start, end });
+      }
+    });
+
+    // Sort chronologically (Oldest to Newest)
+    return Array.from(cycleMap.values()).sort((a, b) => a.start.localeCompare(b.start));
+  }
+
+  function getCycleForDate(dateStr) {
+    if (!dateStr) return null;
+    return REPORT_CYCLES.find(c => dateStr >= c.start && dateStr <= c.end) || null;
+  }
 
   function getCycleForDate(dateStr) {
     if (!dateStr) return null;
@@ -3143,20 +3200,21 @@ async function loadPressure(isAutoRefresh = false){
 // ════════════════════════════════════════════════════════════
   // COMPLAINTS LOGIC
   // ════════════════════════════════════════════════════════════
-async function loadComplaints() {
-    try {
-      const res = await fetch('/api/getComplaints');
-      if (res.ok) {
-        complaintsRaw = await res.json();
-        populateCycleFilter();
-        renderComplaintsDashboard(); // Pre-render the dashboard immediately
+  async function loadComplaints() {
+      try {
+        const res = await fetch('/api/getComplaints');
+        if (res.ok) {
+          complaintsRaw = await res.json();
+          REPORT_CYCLES = generateReportCycles(complaintsRaw); // <-- Automatically build cycles
+          populateCycleFilter();
+          renderComplaintsDashboard(); // Pre-render the dashboard immediately
+        }
+      } catch(err) {
+        console.error("Complaints failed to load", err);
+        const el = document.getElementById("complaints-error");
+        if (el) { el.style.display = "block"; el.textContent = "Complaints data error: " + err.message; }
       }
-    } catch(err) {
-      console.error("Complaints failed to load", err);
-      const el = document.getElementById("complaints-error");
-      if (el) { el.style.display = "block"; el.textContent = "Complaints data error: " + err.message; }
     }
-  }
 
   // Fills the cycle dropdown from REPORT_CYCLES (most recent first),
   // only listing cycles that actually have data so the list doesn't fill up with empties.
@@ -3165,16 +3223,13 @@ async function loadComplaints() {
     if (!sel) return;
     const currentVal = sel.value;
 
-    const cyclesWithData = REPORT_CYCLES.filter(cyc =>
-      complaintsRaw.some(c => c.date >= cyc.start && c.date <= cyc.end)
-    );
-
+    // Show newest cycle first in dropdown
     sel.innerHTML = `<option value="">All Cycles (Live)</option>` +
-      cyclesWithData.slice().reverse().map(cyc =>
+      REPORT_CYCLES.slice().reverse().map(cyc =>
         `<option value="${cyc.start}|${cyc.end}">${cyc.label}</option>`
       ).join("");
 
-    // Preserve selection across re-renders (e.g. switching tabs back and forth)
+    // Preserve selection across tab switches
     if (currentVal && [...sel.options].some(o => o.value === currentVal)) {
       sel.value = currentVal;
     }
@@ -3388,10 +3443,7 @@ async function loadComplaints() {
     // not the filtered/selected cycle, so it shows the whole timeline regardless
     // of which cycle is currently selected in the dropdown.
     if (trendCtx) {
-      const cyclesWithData = REPORT_CYCLES.filter(cyc =>
-        complaintsRaw.some(c => c.date >= cyc.start && c.date <= cyc.end)
-      );
-      const trendTotals = cyclesWithData.map(cyc =>
+      const trendTotals = REPORT_CYCLES.map(cyc =>
         complaintsRaw
           .filter(c => c.date >= cyc.start && c.date <= cyc.end)
           .reduce((sum, c) => sum + (parseInt(c.complaint_count, 10) || 1), 0)
@@ -3400,7 +3452,7 @@ async function loadComplaints() {
       complaintTrendChart = new Chart(trendCtx, {
         type: 'line',
         data: {
-          labels: cyclesWithData.map(cyc => cyc.label),
+          labels: REPORT_CYCLES.map(cyc => cyc.label),
           datasets: [{
             label: 'Complaints',
             data: trendTotals,
