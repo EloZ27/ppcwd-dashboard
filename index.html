@@ -1418,10 +1418,12 @@ const RIVER_STATIONS = [
   function switchTab(tab){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
-    document.getElementById("page-"+tab).classList.add("active");
-    if(event && event.currentTarget) event.currentTarget.classList.add("active");
     
-    // Show period dropdown for Overview, Production, and Crisis tabs
+    const targetPage = document.getElementById("page-" + tab);
+    if (targetPage) targetPage.classList.add("active");
+    if (event && event.currentTarget) event.currentTarget.classList.add("active");
+    
+    // Maintain period selector on production-related views
     const periodBar = document.getElementById("global-period-bar");
     if(tab === 'overview' || tab === 'production' || tab === 'crisis') {
       periodBar.style.display = 'block';
@@ -1434,12 +1436,27 @@ const RIVER_STATIONS = [
     } else if(tab === "pressure"){
       if(pressureRaw.length === 0){
         loadPressure();
-      } else if(leafletMap){
-        setTimeout(()=>leafletMap.invalidateSize(), 50);
+      } else {
+        initLeafletMap();
+        buildLeafletMarkers();
+        buildStationCards();
+        buildPressureRawTable();
+        if(compareStations.length === 0 && PRESSURE_STATIONS.length > 0) {
+          showChartPanel(PRESSURE_STATIONS[0]);
+        } else {
+          buildCompareChart();
+        }
+        setTimeout(() => { if(leafletMap) leafletMap.invalidateSize(); }, 100);
       }
     } else if (tab === "riverflow") {
       if(riverRaw.length === 0){
         loadRiverFlow();
+      } else {
+        buildRiverLeaderboard();
+        buildRiverSidebar();
+        showRiverDetails(selectedRiverCol || RIVER_STATIONS[0].col);
+        document.getElementById("river-chart-container").style.display = "block";
+        document.getElementById("river-table-container").style.display = "block";
       }
     } else if (tab === "complaints") {
       if(complaintsRaw.length === 0){
@@ -1928,23 +1945,29 @@ const RIVER_STATIONS = [
 
       // 3. Sort chronologically and filter out incomplete rows
       riverRaw = processedData.sort((a, b) => a.dt - b.dt).filter(r => {
-        if (!r.raw || r.raw.length <= 20) return false; // Safety check
+        if (!r.raw || r.raw.length <= 20) return false;
         return true;
       });
 
-      // 4. Update the UI
-      buildRiverLeaderboard();
-      buildRiverSidebar();
-      
-      if (!isAutoRefresh || selectedRiverCol === null) {
-        showRiverDetails(RIVER_STATIONS[0].col); 
-      } else {
-        showRiverDetails(selectedRiverCol);
+      // Refresh overview telemetry card values if overview is active
+      if (typeof renderOverview === 'function') renderOverview();
+
+      // Only render river tab charts if River Flow tab is currently visible
+      const riverPage = document.getElementById("page-riverflow");
+      if (riverPage && riverPage.classList.contains("active")) {
+        buildRiverLeaderboard();
+        buildRiverSidebar();
+        
+        if (!isAutoRefresh || selectedRiverCol === null) {
+          showRiverDetails(RIVER_STATIONS[0].col); 
+        } else {
+          showRiverDetails(selectedRiverCol);
+        }
+        
+        document.getElementById("river-chart-container").style.display = "block";
+        document.getElementById("river-table-container").style.display = "block";
+        document.getElementById("river-error").style.display = "none";
       }
-      
-      document.getElementById("river-chart-container").style.display = "block";
-      document.getElementById("river-table-container").style.display = "block";
-      document.getElementById("river-error").style.display = "none";
 
     } catch(err) {
       document.getElementById("river-error").style.display = "block";
@@ -2893,18 +2916,25 @@ async function loadPressure(isAutoRefresh = false){
 
       pressureRaw = Object.values(grouped).sort((a,b) => a.dt - b.dt);
 
-      initLeafletMap();
-      buildLeafletMarkers();
-      buildStationCards();
-      buildPressureRawTable();
-      
-      if (!isAutoRefresh || compareStations.length === 0) {
-        showChartPanel(PRESSURE_STATIONS[0]);
-      } else {
-        buildCompareChart(); 
+      // Refresh overview telemetry card values if overview is active
+      if (typeof renderOverview === 'function') renderOverview();
+
+      // Only mount Leaflet and tab-level UI if the Pressure tab is currently visible
+      const pressPage = document.getElementById("page-pressure");
+      if (pressPage && pressPage.classList.contains("active")) {
+        initLeafletMap();
+        buildLeafletMarkers();
+        buildStationCards();
+        buildPressureRawTable();
+        
+        if (!isAutoRefresh || compareStations.length === 0) {
+          showChartPanel(PRESSURE_STATIONS[0]);
+        } else {
+          buildCompareChart(); 
+        }
       }
       
-      document.getElementById("press-map-count").textContent=PRESSURE_STATIONS.length+" stations";
+      document.getElementById("press-map-count").textContent = PRESSURE_STATIONS.length + " stations";
       const now = new Date();
       document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
 
@@ -2982,15 +3012,24 @@ async function loadPressure(isAutoRefresh = false){
   async function init(){
     applyStoredTheme();
     try {
-      // Load Production & Crisis data immediately on startup
-      await loadProductionData();
-      await loadComplaints();
+      // Fetch all core telemetry concurrently on startup
+      await Promise.allSettled([
+        loadProductionData(),
+        loadPressure(),
+        loadRiverFlow(),
+        loadComplaints()
+      ]);
       
+      // Render command center once data arrays are populated
+      if (typeof renderOverview === 'function') {
+        renderOverview();
+      }
+
       const now = new Date();
       document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
       document.getElementById("footer-updated").textContent = "PPCWD_Weekly_Monitoring_v2 · Google Sheets · " + now.toLocaleDateString("en-PH");
     } catch(err) {
-      console.error(err);
+      console.error("Dashboard initialization error:", err);
     } finally {
       document.getElementById("loader").classList.add("hidden");
     }
