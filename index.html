@@ -979,8 +979,12 @@
     </div>
     <div class="cap-note" style="border-top:none; border-bottom:1px solid var(--border); padding: 0 0 16px 0; margin-bottom: 24px; font-size: 11px;">
       <strong>LWUA Advisory Alert Criteria:</strong> 🟢 Level 1 (Watch): &lt; 10% drop (≥90% capacity) | 🟡 Level 2 (Alert): 10% to 25% drop (75% to 89.9%) | 🔴 Level 3 (Critical Emergency): &gt; 25% drop (&lt; 75%).<br>
-      <em>Note: Capacities are evaluated system-wide per LWUA directives. The City Proper production target is evaluated as an aggregate of 1,700,000 m³ per month, encompassing demand, consumption, and NRW.</em>
+      <em>Note: Consolidated District Target is 397,681.32 m³/week (2,367.15 m³/hr). City Proper Main System Target is 391,233.36 m³/week (1,700,000 m³/month).</em>
     </div>
+
+    
+    <div class="press-section-label">Consolidated District Level (City Proper + Rural Systems)</div>
+    <div class="crisis-grid" id="crisis-overall-grid" style="grid-template-columns: 1fr; margin-bottom: 24px;"></div>
 
     <div class="press-section-label">City Proper Systems</div>
     <div class="crisis-grid" id="crisis-city-grid"></div>
@@ -1361,6 +1365,22 @@ const RIVER_STATIONS = [
   const CRISIS_SYSTEMS = [
     // CITY PROPER
     {
+      id: "overall_system",
+      name: "PPCWD Overall System-Wide (City & Rural)",
+      group: "overall",
+      keys: [
+        "wtp1", "wtp2", "infilCity", "lapulapu", "montible",
+        "stalucia", "sabangSW", "sanrafael", "bahile", "napsan", "binduyan", "bacungan", "maoyon",
+        "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", "princeville", "villaprin",
+        "sanjose", "bos", "esteban", "kaakbayan", "newmarket", "pablico", "baldosano", "stamonica",
+        "abueg", "visapa", "acacia", "citywoods", "virginia",
+        "lucbuan", "sabangGW", "inagawan", "macarascas"
+      ],
+      ratedHr: 2367.1507,
+      weeklyTarget: 397681.32
+    },
+    
+    {
       id: "city_total",
       name: "City Proper - Main System",
       group: "city",
@@ -1508,21 +1528,31 @@ const RIVER_STATIONS = [
     document.getElementById("ov-gw-pct").textContent = `${fmt(gwPct, 1)}% of total`;
 
     // 3. Crisis Monitor & Target Achievement
-    const citySys = CRISIS_SYSTEMS.find(s => s.id === "city_total");
-    if (citySys) {
-      const cityActual = citySys.keys.reduce((sum, k) => sum + num(d[k]), 0);
-      const targetWeekly = 391233; // 1,700,000 / 730 * 168
-      const pct = (cityActual / targetWeekly) * 100;
+    // 3. Crisis Monitor & Consolidated Target Achievement
+    const overallSys = CRISIS_SYSTEMS.find(s => s.id === "overall_system");
+    if (overallSys) {
+      const actualAll = num(d.grandTotal) || overallSys.keys.reduce((sum, k) => sum + num(d[k]), 0);
+      const targetWeekly = 397681.32; // 2,367.1507 m³/hr * 168 hrs
+      const pct = (actualAll / targetWeekly) * 100;
       const alert = getAlertInfo(pct);
 
       const badge = document.getElementById("ov-crisis-badge");
-      badge.textContent = alert.name;
-      badge.style.color = alert.lvl === 1 ? "#34D399" : (alert.lvl === 2 ? "var(--amber2)" : "#FCA5A5");
+      if (badge) {
+        badge.textContent = alert.name;
+        badge.style.color = alert.lvl === 1 ? "#34D399" : (alert.lvl === 2 ? "var(--amber2)" : "#FCA5A5");
+      }
 
-      document.getElementById("ov-progress-label").textContent = `${fmt(pct, 1)}% achieved (${fmt(cityActual, 0)} / ${fmt(targetWeekly, 0)} m³)`;
+      const sub = document.getElementById("ov-crisis-sub");
+      if (sub) sub.textContent = `Target: 397,681.32 m³/wk`;
+
+      const pLabel = document.getElementById("ov-progress-label");
+      if (pLabel) pLabel.textContent = `${fmt(pct, 1)}% achieved (${fmt(actualAll, 0)} / ${fmt(targetWeekly, 0)} m³)`;
+
       const pBar = document.getElementById("ov-progress-bar");
-      pBar.style.width = Math.min(pct, 100) + "%";
-      pBar.style.background = alert.lvl === 1 ? "var(--teal)" : (alert.lvl === 2 ? "var(--amber2)" : "var(--red)");
+      if (pBar) {
+        pBar.style.width = Math.min(pct, 100) + "%";
+        pBar.style.background = alert.lvl === 1 ? "var(--teal)" : (alert.lvl === 2 ? "var(--amber2)" : "var(--red)");
+      }
     }
 
     // 4. Source Split Donut Chart
@@ -1851,47 +1881,59 @@ const RIVER_STATIONS = [
   }
 
   function renderCrisisMonitoring(d, numWeeks) {
+    const overallGrid = document.getElementById("crisis-overall-grid");
     const cityGrid = document.getElementById("crisis-city-grid");
     const satGrid = document.getElementById("crisis-sat-grid");
-    cityGrid.innerHTML = ""; satGrid.innerHTML = "";
-    renderOverview();
+    
+    if (overallGrid) overallGrid.innerHTML = "";
+    if (cityGrid) cityGrid.innerHTML = "";
+    if (satGrid) satGrid.innerHTML = "";
 
     const hrsInPeriod = 168 * numWeeks;
 
     CRISIS_SYSTEMS.forEach(sys => {
-      // Sum all stations belonging to this unified system (Montible is now inherently included in the keys)
+      // Sum all stations belonging to this system
       let actual = sys.keys.reduce((sum, key) => sum + num(d[key]), 0);
       
-      // Calculate the fixed target for the current viewing period
-      let ratedWeekly = sys.ratedHr * hrsInPeriod;
-
-      let pct = ratedWeekly > 0 ? (actual / ratedWeekly) * 100 : 0;
+      // Calculate target volume for the active period
+      let ratedVol = sys.weeklyTarget ? (sys.weeklyTarget * numWeeks) : (sys.ratedHr * hrsInPeriod);
+      let pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
       const alert = getAlertInfo(pct);
 
+      const isOverall = sys.group === "overall";
       const cardHtml = `
-        <div class="crisis-card ${alert.cls}">
+        <div class="crisis-card ${alert.cls}" style="${isOverall ? 'border-width: 2px; padding: 22px;' : ''}">
           <div class="crisis-header">
-            <div class="crisis-title">${sys.name}</div>
+            <div>
+              <div class="crisis-title" style="${isOverall ? 'font-size: 16px;' : ''}">${sys.name}</div>
+              ${isOverall ? '<div style="font-size: 10px; color: var(--text2); font-family: var(--font-mono); margin-top: 4px;">Prorated target: 2,367.15 m³/hr</div>' : ''}
+            </div>
             <div class="crisis-badge">${alert.name}</div>
           </div>
-          <div class="crisis-pct">${fmt(pct, 1)}%</div>
+          <div class="crisis-pct" style="${isOverall ? 'font-size: 46px;' : ''}">${fmt(pct, 1)}%</div>
           <div class="crisis-details">
             <div class="crisis-details-row">
               <span>Actual Production</span>
-              <span style="color:var(--text)">${fmt(actual)} m³</span>
+              <span style="color:var(--text); font-weight:600;">${fmt(actual)} m³</span>
             </div>
             <div class="crisis-details-row">
               <span>Target Production</span>
-              <span style="color:var(--text)">${fmt(ratedWeekly)} m³</span>
+              <span style="color:var(--text)">${fmt(ratedVol, 2)} m³</span>
+            </div>
+            <div class="crisis-details-row">
+              <span>Hourly Equivalent</span>
+              <span style="color:var(--text)">${fmt(actual / hrsInPeriod, 2)} / ${fmt(sys.ratedHr, 2)} m³/hr</span>
             </div>
           </div>
         </div>
       `;
 
-      if (sys.group === "city") {
-        cityGrid.innerHTML += cardHtml;
+      if (sys.group === "overall") {
+        if (overallGrid) overallGrid.innerHTML += cardHtml;
+      } else if (sys.group === "city") {
+        if (cityGrid) cityGrid.innerHTML += cardHtml;
       } else {
-        satGrid.innerHTML += cardHtml;
+        if (satGrid) satGrid.innerHTML += cardHtml;
       }
     });
   }
@@ -3760,7 +3802,6 @@ setInterval(() => {
   async function generateCrisisReport() {
     const startWk = document.getElementById("crisis-start-week").value;
     const endWk = document.getElementById("crisis-end-week").value;
-    
     const startIndex = allProdData.findIndex(r => r[COL.week] === startWk);
     const endIndex = allProdData.findIndex(r => r[COL.week] === endWk);
     
@@ -3774,74 +3815,81 @@ setInterval(() => {
     // 1. Gather Data Pool
     const pool = allProdData.slice(startIndex, endIndex + 1);
     const numWeeks = pool.length;
-    const hrsInPeriod = 168 * numWeeks; // Math automatically scales Targets
+    const hrsInPeriod = 168 * numWeeks; // Automatically scales with the selected weeks
     
     let tableHtml = "";
-    let chartLabels = [];
-    let chartTarget = [];
-    let chartActual = [];
-    let chartColors = [];
-    
-    let mainActual = 0, mainTarget = 0, mainPct = 0, mainAlert = {};
+    let overallActual = 0, overallTarget = 0, overallPct = 0, overallAlert = {};
     
     CRISIS_SYSTEMS.forEach(sys => {
-      // Sum production across all selected weeks
+      // Sum production across all selected weeks for this system
       let actual = sys.keys.reduce((sum, key) => {
          return sum + pool.reduce((wSum, row) => wSum + num(row[COL[key]]), 0);
       }, 0);
       
-      let ratedVol = sys.ratedHr * hrsInPeriod;
+      // Calculate target volume: overall system uses 397,681.32 m³/wk; others use hourly rate
+      let ratedVol = sys.weeklyTarget ? (sys.weeklyTarget * numWeeks) : (sys.ratedHr * hrsInPeriod);
       let pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
       const alert = getAlertInfo(pct);
       
       let statusColor = alert.lvl === 1 ? "#059669" : (alert.lvl === 2 ? "#D97706" : "#DC2626");
       
-      if(sys.group === "city") {
-        mainActual = actual; mainTarget = ratedVol; mainPct = pct; mainAlert = alert;
+      if (sys.group === "overall") {
+        // Capture for top KPI summary cards
+        overallActual = actual;
+        overallTarget = ratedVol;
+        overallPct = pct;
+        overallAlert = alert;
+        
+        // Distinct styled row at the very top of the PDF table
         tableHtml += `
-          <tr style="border-bottom:1px solid #E2E8F0; background:#F8FAFC; font-weight:700;">
-            <td style="padding:10px 8px;">${sys.name}</td>
-            <td style="padding:10px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(ratedVol, 0)}</td>
-            <td style="padding:10px 8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(actual, 0)}</td>
-            <td style="padding:10px 8px; text-align:right; color:${statusColor}; font-family:'JetBrains Mono',monospace;">${fmt(pct, 1)}%</td>
-            <td style="padding:10px 8px; padding-left:15px; color:${statusColor};">${alert.name}</td>
+          <tr style="border-bottom: 2px solid #0D1B2A; background: #E0F2FE; font-weight: 800;">
+            <td style="padding: 10px 8px; color: #0369A1;">${sys.name}</td>
+            <td style="padding: 10px 8px; text-align: right; font-family: 'JetBrains Mono', monospace; color: #0369A1;">${fmt(ratedVol, 2)}</td>
+            <td style="padding: 10px 8px; text-align: right; font-family: 'JetBrains Mono', monospace; color: #0369A1;">${fmt(actual, 0)}</td>
+            <td style="padding: 10px 8px; text-align: right; color: ${statusColor}; font-family: 'JetBrains Mono', monospace;">${fmt(pct, 1)}%</td>
+            <td style="padding: 10px 8px; padding-left: 15px; color: ${statusColor}; font-weight: 700;">${alert.name}</td>
+          </tr>
+        `;
+      } else if (sys.group === "city") {
+        tableHtml += `
+          <tr style="border-bottom: 1px solid #CBD5E1; background: #F8FAFC; font-weight: 700;">
+            <td style="padding: 9px 8px;">${sys.name}</td>
+            <td style="padding: 9px 8px; text-align: right; font-family: 'JetBrains Mono', monospace;">${fmt(ratedVol, 2)}</td>
+            <td style="padding: 9px 8px; text-align: right; font-family: 'JetBrains Mono', monospace;">${fmt(actual, 0)}</td>
+            <td style="padding: 9px 8px; text-align: right; color: ${statusColor}; font-family: 'JetBrains Mono', monospace;">${fmt(pct, 1)}%</td>
+            <td style="padding: 9px 8px; padding-left: 15px; color: ${statusColor};">${alert.name}</td>
           </tr>
         `;
       } else {
         tableHtml += `
-          <tr style="border-bottom:1px solid #E2E8F0;">
-            <td style="padding:8px;">${sys.name}</td>
-            <td style="padding:8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(ratedVol, 0)}</td>
-            <td style="padding:8px; text-align:right; font-family:'JetBrains Mono',monospace;">${fmt(actual, 0)}</td>
-            <td style="padding:8px; text-align:right; color:${statusColor}; font-family:'JetBrains Mono',monospace;">${fmt(pct, 1)}%</td>
-            <td style="padding:8px; padding-left:15px; color:${statusColor};">${alert.name}</td>
+          <tr style="border-bottom: 1px solid #E2E8F0;">
+            <td style="padding: 8px;">${sys.name}</td>
+            <td style="padding: 8px; text-align: right; font-family: 'JetBrains Mono', monospace;">${fmt(ratedVol, 2)}</td>
+            <td style="padding: 8px; text-align: right; font-family: 'JetBrains Mono', monospace;">${fmt(actual, 0)}</td>
+            <td style="padding: 8px; text-align: right; color: ${statusColor}; font-family: 'JetBrains Mono', monospace;">${fmt(pct, 1)}%</td>
+            <td style="padding: 8px; padding-left: 15px; color: ${statusColor};">${alert.name}</td>
           </tr>
         `;
       }
-      
-      let shortName = sys.name.replace(" Water System", "").replace(" System", "").replace("City Proper - Unified Main", "City Proper");
-      chartLabels.push(shortName);
-      chartTarget.push(ratedVol);
-      chartActual.push(actual);
-      chartColors.push(statusColor);
     });
     
-    // 2. Populate HTML
-    document.getElementById("cr-pdf-period").textContent = `${startWk} — ${endWk} (${numWeeks} week${numWeeks>1?'s':''})`;
+    // 2. Populate PDF HTML Elements
+    document.getElementById("cr-pdf-period").textContent = `${startWk} — ${endWk} (${numWeeks} week${numWeeks > 1 ? 's' : ''})`;
     document.getElementById("cr-pdf-date").textContent = `Generated on ${new Date().toLocaleDateString('en-PH')} ${new Date().toLocaleTimeString('en-PH')}`;
     
-    document.getElementById("cr-pdf-main-target").textContent = fmt(mainTarget, 0);
-    document.getElementById("cr-pdf-main-actual").textContent = fmt(mainActual, 0);
-    document.getElementById("cr-pdf-main-pct").textContent = fmt(mainPct, 1) + "%";
-    document.getElementById("cr-pdf-main-alert").textContent = mainAlert.name;
-    document.getElementById("cr-pdf-main-alert").style.color = mainAlert.lvl === 1 ? "#059669" : (mainAlert.lvl === 2 ? "#D97706" : "#DC2626");
+    // Summary KPI boxes display the Consolidated Overall District results
+    document.getElementById("cr-pdf-main-target").textContent = fmt(overallTarget, 2);
+    document.getElementById("cr-pdf-main-actual").textContent = fmt(overallActual, 0);
+    document.getElementById("cr-pdf-main-pct").textContent = fmt(overallPct, 1) + "%";
+    document.getElementById("cr-pdf-main-alert").textContent = overallAlert.name || "—";
+    document.getElementById("cr-pdf-main-alert").style.color = overallAlert.lvl === 1 ? "#059669" : (overallAlert.lvl === 2 ? "#D97706" : "#DC2626");
+    
     document.getElementById("cr-pdf-tbody").innerHTML = tableHtml;
 
-    // 4. Give charts a fraction of a second to render
+    // 3. Render delay for layout stability
     await new Promise(r => setTimeout(r, 500));
     
-    // 5. Generate and Download PDF (paginated across multiple A4 pages if the
-    // rendered report — e.g. with the per-station breakdown — is taller than one page)
+    // 4. Generate and Download PDF
     try {
       const el = document.getElementById("hidden-crisis-report");
       const canvas = await html2canvas(el, { scale: 2.5, useCORS: true, backgroundColor: '#FFFFFF' });
@@ -3991,7 +4039,7 @@ setInterval(() => {
     </div>
 
     <!-- Summary KPI -->
-    <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #1B8C7D; padding-left:8px;">Main System Overview (City Proper)</h3>
+    <h3 style="font-size:12px; color:#1E293B; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; border-left:3px solid #1B8C7D; padding-left:8px;">Consolidated District Overview (City &amp; Rural Systems)</h3>
     <div style="display:flex; gap:15px; margin-bottom:25px;">
       <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
         <div style="font-size:10px; color:#64748B; text-transform:uppercase; font-weight:600;">Target Production</div>
