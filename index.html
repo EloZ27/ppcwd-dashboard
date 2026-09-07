@@ -922,7 +922,7 @@
 
   </div>
 
-  <div class="page active" id="page-production">
+  <div class="page" id="page-production">
     <div class="error-banner" id="prod-error"></div>
 
     <div class="kpi-row">
@@ -1416,40 +1416,50 @@ const RIVER_STATIONS = [
   // NAV
   // ════════════════════════════════════════════════════════════
   function switchTab(tab){
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
+    // 1. Force-remove active from all page containers and buttons
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
     
+    // 2. Activate only the selected page
     const targetPage = document.getElementById("page-" + tab);
     if (targetPage) targetPage.classList.add("active");
-    if (event && event.currentTarget) event.currentTarget.classList.add("active");
     
-    // Maintain period selector on production-related views
+    // 3. Highlight the active button reliably
+    const targetTabBtn = document.querySelector(`.nav-tab[onclick*="'${tab}'"]`);
+    if (targetTabBtn) targetTabBtn.classList.add("active");
+    
+    // 4. Toggle the global reporting period bar
     const periodBar = document.getElementById("global-period-bar");
-    if(tab === 'overview' || tab === 'production' || tab === 'crisis') {
+    if (tab === 'overview' || tab === 'production' || tab === 'crisis') {
       periodBar.style.display = 'block';
     } else {
       periodBar.style.display = 'none';
     }
 
-    if(tab === "overview") {
+    // 5. Mount view-specific logic
+    if (tab === "overview") {
       renderOverview();
-    } else if(tab === "pressure"){
-      if(pressureRaw.length === 0){
+    } else if (tab === "production") {
+      // Re-render production charts so they calculate dimensions accurately upon becoming visible
+      const activeWk = document.getElementById("week-select")?.value || (allProdData.length ? allProdData[allProdData.length - 1][COL.week] : null);
+      if (activeWk) renderWeek(activeWk);
+    } else if (tab === "pressure") {
+      if (pressureRaw.length === 0) {
         loadPressure();
       } else {
         initLeafletMap();
         buildLeafletMarkers();
         buildStationCards();
         buildPressureRawTable();
-        if(compareStations.length === 0 && PRESSURE_STATIONS.length > 0) {
+        if (compareStations.length === 0 && PRESSURE_STATIONS.length > 0) {
           showChartPanel(PRESSURE_STATIONS[0]);
         } else {
           buildCompareChart();
         }
-        setTimeout(() => { if(leafletMap) leafletMap.invalidateSize(); }, 100);
+        setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 100);
       }
     } else if (tab === "riverflow") {
-      if(riverRaw.length === 0){
+      if (riverRaw.length === 0) {
         loadRiverFlow();
       } else {
         buildRiverLeaderboard();
@@ -1459,7 +1469,7 @@ const RIVER_STATIONS = [
         document.getElementById("river-table-container").style.display = "block";
       }
     } else if (tab === "complaints") {
-      if(complaintsRaw.length === 0){
+      if (complaintsRaw.length === 0) {
         loadComplaints();
       } else {
         populateCycleFilter();
@@ -3012,7 +3022,10 @@ async function loadPressure(isAutoRefresh = false){
   async function init(){
     applyStoredTheme();
     try {
-      // Fetch all core telemetry concurrently on startup
+      // Enforce the overview page as the single active view immediately
+      switchTab('overview');
+
+      // Fetch all telemetry datasets concurrently
       await Promise.allSettled([
         loadProductionData(),
         loadPressure(),
@@ -3020,10 +3033,8 @@ async function loadPressure(isAutoRefresh = false){
         loadComplaints()
       ]);
       
-      // Render command center once data arrays are populated
-      if (typeof renderOverview === 'function') {
-        renderOverview();
-      }
+      // Populate command center cards once arrays are filled
+      renderOverview();
 
       const now = new Date();
       document.getElementById("last-updated").textContent = "Updated " + now.toLocaleTimeString("en-PH",{hour:"2-digit",minute:"2-digit"});
