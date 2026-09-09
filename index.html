@@ -1276,9 +1276,9 @@ const RIVER_STATIONS = [
   const RATED = {
     "Irawan WTP-1":               699.18,
     "Irawan WTP-2":                35.07,
-    "Irawan Infiltration Wells":  172.60,
+    "Irawan Infiltration Wells":  142.03,
     "Lapu-Lapu Source":          1232.88,
-    "Montible (Teruvian)":        976.04,
+    "Montible (Teruvian)":        907.82,
     "Sta. Lucia PS":               42.47,
     "Sabang SW":                   15.78,
     "San Rafael SW":                9.59,
@@ -1386,10 +1386,6 @@ const RIVER_STATIONS = [
     return REPORT_CYCLES.find(c => dateStr >= c.start && dateStr <= c.end) || null;
   }
 
-  function getCycleForDate(dateStr) {
-    if (!dateStr) return null;
-    return REPORT_CYCLES.find(c => dateStr >= c.start && dateStr <= c.end) || null;
-  }
 
   // ════════════════════════════════════════════════════════════
   // STATE
@@ -1420,7 +1416,7 @@ const RIVER_STATIONS = [
   // ── CRISIS MONITORING CONFIGURATION ───────────────────────────
   // ratedHr = Rated Capacity in m³/hr. (Will be multiplied by 168 hours/week automatically)
   const CRISIS_SYSTEMS = [
-    // CITY PROPER
+    // 1. CONSOLIDATED DISTRICT (City Proper + Rural Systems)
     {
       id: "overall_system",
       name: "PPCWD Overall System-Wide (City & Rural)",
@@ -1433,27 +1429,30 @@ const RIVER_STATIONS = [
         "abueg", "visapa", "acacia", "citywoods", "virginia",
         "lucbuan", "sabangGW", "inagawan", "macarascas"
       ],
-      ratedHr: 2367.1507,
-      weeklyTarget: 397681.32
+      ratedHr: 2336.58,
+      weeklyTarget: 392544.66,
+      monthlyBaseline: 1705700.00
     },
-    
+    // 2. CITY PROPER MAIN SYSTEM
     {
       id: "city_total",
       name: "City Proper - Main System",
       group: "city",
       keys: ["wtp1", "wtp2", "infilCity", "lapulapu", "montible", "macasaet", "pc5", "pc6", "da1", "sicsican", "villaello", "nha", "princeville", "villaprin", "sanjose", "bos", "esteban", "kaakbayan", "newmarket", "pablico", "baldosano", "stamonica", "abueg", "visapa", "acacia", "citywoods", "virginia"],
-      ratedHr: 2212.30 // 1,700,000 m³/day ÷ 730 hours
+      ratedHr: 2181.73,
+      weeklyTarget: 366529.97,
+      monthlyBaseline: 1592660.00
     },
-    // SATELLITES
-    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 42.47 },
-    { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 6.90 },
-    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 5.07 },
-    { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 23.67 },
-    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 17.81 },
-    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 15.78 },
-    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 7.53 },
-    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 9.59 },
-    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 8.22 }
+    // 3. RURAL SATELLITE SYSTEMS
+    { id: "stalucia", name: "Sta. Lucia Water System (Sta. Lucia, Luzviminda, Mangingisda)", group: "sat", keys: ["stalucia"], ratedHr: 42.47, weeklyTarget: 7134.96 },
+    { id: "inagawan", name: "Inagawan PS", group: "sat", keys: ["inagawan"], ratedHr: 6.90, weeklyTarget: 1159.20 },
+    { id: "napsan",   name: "Napsan Water System", group: "sat", keys: ["napsan"], ratedHr: 5.07, weeklyTarget: 851.76 },
+    { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 23.67, weeklyTarget: 3976.56 },
+    { id: "bahile",   name: "Bahile-Macarascas-Salvacion System", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 17.81, weeklyTarget: 2992.08 },
+    { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 15.78, weeklyTarget: 2651.04 },
+    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 7.53, weeklyTarget: 1265.04 },
+    { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 9.59, weeklyTarget: 1611.12 },
+    { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 8.22, weeklyTarget: 1380.96 }
   ];
 
 
@@ -1996,21 +1995,22 @@ const RIVER_STATIONS = [
   }
 
   function renderWeek(weekVal){
-  setActive(weekVal);
-  
-  const rows = allProdData.filter(r => r[COL.week] === weekVal);
-  let d = rows.length ? rowToObj(rows[0]) : rowToObj(allProdData[allProdData.length - 1]);
-  let numWeeks = 1;
+    setActive(weekVal);
+    
+    const rows = allProdData.filter(r => r[COL.week] === weekVal);
+    let d = rows.length ? rowToObj(rows[0]) : rowToObj(allProdData[allProdData.length - 1]);
+    let numWeeks = 1;
 
-  renderKPIs(d);
-  renderBarChart(allProdData);
-  renderPieSwGw(d);
-  renderPieSources(d);
-  renderMldChart(allProdData);
-  renderSourceTable(d);
-  renderCapacityTable(d);
-  renderCrisisMonitoring(d, numWeeks);
-}
+    renderKPIs(d);
+    renderBarChart(allProdData);
+    renderPieSwGw(d);
+    renderPieSources(d);
+    renderMldChart(allProdData);
+    renderSourceTable(d);
+    renderCapacityTable(d);
+    renderCrisisMonitoring(d, numWeeks);
+    renderOverview(); // Keeps Executive Overview synchronized
+  }
 
   function buildWeekBtns(weeks){
     const selectEl = document.getElementById("week-select");
@@ -3864,35 +3864,29 @@ setInterval(() => {
     
     document.getElementById("crisis-report-status").textContent = "Generating PDF...";
     
-    // 1. Gather Data Pool
     const pool = allProdData.slice(startIndex, endIndex + 1);
     const numWeeks = pool.length;
-    const hrsInPeriod = 168 * numWeeks; // Automatically scales with the selected weeks
+    const hrsInPeriod = 168 * numWeeks;
     
     let tableHtml = "";
     let overallActual = 0, overallTarget = 0, overallPct = 0, overallAlert = {};
     
     CRISIS_SYSTEMS.forEach(sys => {
-      // Sum production across all selected weeks for this system
       let actual = sys.keys.reduce((sum, key) => {
-         return sum + pool.reduce((wSum, row) => wSum + num(row[COL[key]]), 0);
+        return sum + pool.reduce((wSum, row) => wSum + num(row[COL[key]]), 0);
       }, 0);
       
-      // Calculate target volume: overall system uses 397,681.32 m³/wk; others use hourly rate
       let ratedVol = sys.weeklyTarget ? (sys.weeklyTarget * numWeeks) : (sys.ratedHr * hrsInPeriod);
       let pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
       const alert = getAlertInfo(pct);
-      
       let statusColor = alert.lvl === 1 ? "#059669" : (alert.lvl === 2 ? "#D97706" : "#DC2626");
       
       if (sys.group === "overall") {
-        // Capture for top KPI summary cards
         overallActual = actual;
         overallTarget = ratedVol;
         overallPct = pct;
         overallAlert = alert;
         
-        // Distinct styled row at the very top of the PDF table
         tableHtml += `
           <tr style="border-bottom: 2px solid #0D1B2A; background: #E0F2FE; font-weight: 800;">
             <td style="padding: 10px 8px; color: #0369A1;">${sys.name}</td>
@@ -3925,16 +3919,14 @@ setInterval(() => {
       }
     });
     
-    // 2. Populate PDF HTML Elements
     document.getElementById("cr-pdf-period").textContent = `${startWk} — ${endWk} (${numWeeks} week${numWeeks > 1 ? 's' : ''} / ${hrsInPeriod} hrs)`;
     document.getElementById("cr-pdf-date").textContent = `Generated on ${new Date().toLocaleDateString('en-PH')} ${new Date().toLocaleTimeString('en-PH')}`;
     
-    // Target display with baseline callout
     document.getElementById("cr-pdf-main-target").textContent = fmt(overallTarget, 2);
     const targetSubEl = document.getElementById("cr-pdf-target-sub");
     if (targetSubEl) {
       targetSubEl.textContent = numWeeks === 4 
-        ? "Prorated 28 Days (Baseline: 1,728,020 m³/mo)" 
+        ? "Prorated 28 Days (Monthly Baseline: 1,728,020 m³)" 
         : `Prorated for ${numWeeks * 7} Days (${hrsInPeriod} hrs)`;
     }
 
@@ -3945,10 +3937,8 @@ setInterval(() => {
     
     document.getElementById("cr-pdf-tbody").innerHTML = tableHtml;
 
-    // 3. Render delay for layout stability
     await new Promise(r => setTimeout(r, 500));
     
-    // 4. Generate and Download PDF
     try {
       const el = document.getElementById("hidden-crisis-report");
       const canvas = await html2canvas(el, { scale: 2.5, useCORS: true, backgroundColor: '#FFFFFF' });
@@ -3976,12 +3966,10 @@ setInterval(() => {
 
       const fileSafeStart = startWk.replace(/[^a-zA-Z0-9]/g, '');
       const fileSafeEnd = endWk.replace(/[^a-zA-Z0-9]/g, '');
-      
       pdf.save(`PPCWD_Internal_Crisis_Report_${fileSafeStart}_to_${fileSafeEnd}.pdf`);
       
       document.getElementById("crisis-report-status").textContent = "Report Downloaded successfully.";
       setTimeout(() => { document.getElementById("crisis-report-modal").style.display = 'none'; }, 1500);
-      
     } catch(e) {
       console.error(e);
       document.getElementById("crisis-report-status").textContent = "Error generating PDF.";
