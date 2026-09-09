@@ -33,43 +33,35 @@ export default async function handler(req, res) {
   } = req.body;
 
   try {
-    // 1. Register new genset unit
+    // 1. REGISTER NEW GENSET
     if (action === 'create_genset') {
       if (!genset_no || !new_station) {
         return res.status(400).json({ error: 'Genset No and Station are required.' });
       }
 
-      const newUnitPayload = {
-        genset_no: String(genset_no).trim().toUpperCase(),
-        brand_model: brand_model || null,
-        capacity_kva: capacity_kva ? parseFloat(capacity_kva) : null,
-        fuel_capacity_liters: fuel_capacity_liters ? parseFloat(fuel_capacity_liters) : null,
-        current_station: new_station,
-        status: new_status || 'Operational',
-        last_serviced_date: serviced_date || new Date().toISOString().split('T')[0]
-      };
-
       const createRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets`, {
         method: 'POST',
         headers,
-        body: JSON.stringify(newUnitPayload)
+        body: JSON.stringify({
+          genset_no: String(genset_no).trim().toUpperCase(),
+          brand_model: brand_model || null,
+          capacity_kva: capacity_kva ? parseFloat(capacity_kva) : null,
+          fuel_capacity_liters: fuel_capacity_liters ? parseFloat(fuel_capacity_liters) : null,
+          current_station: new_station,
+          status: new_status || 'Operational',
+          last_serviced_date: serviced_date || new Date().toISOString().split('T')[0]
+        })
       });
 
-      if (!createRes.ok) {
-        const errText = await createRes.text();
-        throw new Error(`Failed to create genset: ${errText}`);
-      }
-
+      if (!createRes.ok) throw new Error(await createRes.text());
       const createdRows = await createRes.json();
-      const createdUnit = createdRows[0];
 
-      // Add commissioning log
-      if (createdUnit && createdUnit.id) {
+      if (createdRows[0]?.id) {
         await fetch(`${SUPABASE_URL}/rest/v1/genset_logs`, {
           method: 'POST',
           headers,
           body: JSON.stringify({
-            genset_id: createdUnit.id,
+            genset_id: createdRows[0].id,
             event_type: 'Commissioned / Deployed',
             origin_station: 'Central Storage',
             destination_station: new_station,
@@ -79,29 +71,57 @@ export default async function handler(req, res) {
         });
       }
 
-      return res.status(200).json({ success: true, message: `Genset ${genset_no} successfully registered!` });
+      return res.status(200).json({ success: true, message: `Genset ${genset_no} registered successfully!` });
     }
 
-    // 2. Update existing genset & log repair / transfer
+    // 2. DIRECT SPECIFICATION EDIT (Model, Capacity, ID, Station, Status)
+    if (action === 'edit_details') {
+      if (!genset_id) return res.status(400).json({ error: 'genset_id is required.' });
+
+      const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({
+          genset_no: String(genset_no).trim().toUpperCase(),
+          brand_model: brand_model || null,
+          capacity_kva: capacity_kva ? parseFloat(capacity_kva) : null,
+          fuel_capacity_liters: fuel_capacity_liters ? parseFloat(fuel_capacity_liters) : null,
+          current_station: new_station,
+          status: new_status || 'Operational'
+        })
+      });
+
+      if (!patchRes.ok) throw new Error(await patchRes.text());
+      return res.status(200).json({ success: true, message: `Genset ${genset_no} specifications updated!` });
+    }
+
+    // 3. DELETE GENSET
+    if (action === 'delete_genset') {
+      if (!genset_id) return res.status(400).json({ error: 'genset_id is required.' });
+
+      const delRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}`, {
+        method: 'DELETE',
+        headers
+      });
+
+      if (!delRes.ok) throw new Error(await delRes.text());
+      return res.status(200).json({ success: true, message: 'Genset removed from fleet.' });
+    }
+
+    // 4. LOG ACTION / RELOCATION / PMS
     if (!genset_id || !event_type) {
       return res.status(400).json({ error: 'genset_id and event_type are required.' });
     }
 
-    // Read current unit to identify origin station
     const getRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}&select=*`, { headers });
     const rows = await getRes.json();
     const current = rows[0];
+    if (!current) throw new Error('Genset not found.');
 
-    if (!current) throw new Error('Genset record not found.');
-
-    const originStation = current.current_station;
     const destStation = new_station || current.current_station;
     const statusToSet = new_status || current.status;
 
-    const patchPayload = {
-      current_station: destStation,
-      status: statusToSet
-    };
+    const patchPayload = { current_station: destStation, status: statusToSet };
     if (serviced_date) patchPayload.last_serviced_date = serviced_date;
 
     const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}`, {
@@ -110,26 +130,22 @@ export default async function handler(req, res) {
       body: JSON.stringify(patchPayload)
     });
 
-    if (!patchRes.ok) {
-      const errText = await patchRes.text();
-      throw new Error(`Update failed: ${errText}`);
-    }
+    if (!patchRes.ok) throw new Error(await patchRes.text());
 
-    // Record movement/repair entry in audit trail
     await fetch(`${SUPABASE_URL}/rest/v1/genset_logs`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        genset_id: genset_id,
-        event_type: event_type,
-        origin_station: originStation,
+        genset_id,
+        event_type,
+        origin_station: current.current_station,
         destination_station: destStation,
         remarks: remarks || '',
         technician: technician || 'EMD Staff'
       })
     });
 
-    return res.status(200).json({ success: true, message: 'Genset updated and action logged.' });
+    return res.status(200).json({ success: true, message: 'Maintenance action logged and status updated.' });
   } catch (err) {
     console.error('updateGenset error:', err);
     return res.status(500).json({ error: err.message });
