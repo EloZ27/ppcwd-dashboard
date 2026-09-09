@@ -1,336 +1,571 @@
-<!-- ════════════════════════════════════════════════════════════ -->
-<!-- GENSET MANAGEMENT PORTAL                                    -->
-<!-- ════════════════════════════════════════════════════════════ -->
-<div class="uploader-card" style="margin-top: 24px;">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:20px;">
-    <div>
-      <h2 style="font-size:16px; font-weight:600; color:var(--white); font-family:var(--font-mono);">⚡ Standby Generator Management</h2>
-      <div style="font-size:11px; color:var(--text2); margin-top:2px;">Track generator movements, station assignments, PMS logs, and repairs</div>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPCWD — Operations Management &amp; Asset Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0D1B2A;
+      --navy2: #152336;
+      --navy3: #1E3554;
+      --white: #F8FAFC;
+      --text: #E2E8F0;
+      --text2: #94A3B8;
+      --border: rgba(255, 255, 255, 0.08);
+      --card: rgba(255, 255, 255, 0.04);
+      --card2: rgba(255, 255, 255, 0.07);
+      --teal: #1B8C7D;
+      --teal2: #24B5A3;
+      --blue: #1560BD;
+      --blue2: #4A90D9;
+      --amber: #D97706;
+      --amber2: #F59E0B;
+      --green: #059669;
+      --green2: #34D399;
+      --red: #DC2626;
+      --red2: #FCA5A5;
+      --font-sans: "Montserrat", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(27,140,125,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 90% 90%, rgba(21,96,189,0.10) 0%, transparent 50%);
+    }
+
+    /* Header */
+    header {
+      height: 60px;
+      background: rgba(13, 27, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-block { display: flex; align-items: center; gap: 12px; }
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-weight: 700; font-size: 11px; color: white;
+    }
+    .logo-text strong { display: block; font-size: 13px; font-weight: 600; color: var(--white); }
+    .logo-text span { font-size: 10px; color: var(--text2); }
+
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 14px;
+      color: var(--teal2); font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(36,181,163,0.15); border-color: var(--teal2); }
+
+    /* Layout Wrapper */
+    .container {
+      max-width: 1150px;
+      margin: 30px auto;
+      padding: 0 20px 60px;
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+    /* Action Toggle Switchers */
+    .tab-pills { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
+    .tab-pill {
+      background: transparent; border: none; border-radius: 6px;
+      padding: 6px 14px; font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      color: var(--text2); cursor: pointer; transition: all 0.15s;
+    }
+    .tab-pill.active { background: var(--teal); color: white; }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-lbl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text2);
+    }
+    .form-input {
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 12px;
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-input:focus { border-color: var(--teal2); background: rgba(13,27,42,0.9); }
+    select.form-input { font-family: var(--font-mono); cursor: pointer; }
+
+    /* Buttons */
+    .submit-btn {
+      background: var(--teal);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 10px 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover { background: var(--teal2); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Status Strip */
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* Table */
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--card);
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    thead th {
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text2);
+    }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.15s; }
+    tbody tr:hover { background: var(--card2); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 10px 14px; font-size: 12px; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+    }
+    .badge-op { background: rgba(5,150,105,0.15); color: #34D399; border: 1px solid rgba(5,150,105,0.3); }
+    .badge-warn { background: rgba(217,119,6,0.15); color: var(--amber2); border: 1px solid rgba(217,119,6,0.3); }
+    .badge-err { background: rgba(220,38,38,0.15); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.3); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-block">
+      <div class="logo-mark">PPCWD</div>
+      <div class="logo-text">
+        <strong>Puerto Princesa City Water District</strong>
+        <span>Operations &amp; Telemetry Management Portal</span>
+      </div>
     </div>
-    <div style="display:flex; gap:8px;">
-      <button type="button" class="action-btn" onclick="toggleGensetForm('log')" id="btn-show-log" style="background:var(--teal); color:white;">Log Action / Repair</button>
-      <button type="button" class="action-btn" onclick="toggleGensetForm('create')" id="btn-show-create" style="background:var(--card2); color:var(--teal2); border:1px solid var(--border);">+ New Genset</button>
+    <a href="index.html" class="back-btn">← Back to Monitoring Dashboard</a>
+  </header>
+
+  <div class="container">
+    
+    <div class="panel">
+      
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">⚡ Standby Generator Asset Management</div>
+          <div class="panel-sub">Assign stations, log preventive maintenance (PMS), record repairs, and track movements</div>
+        </div>
+        <div class="tab-pills">
+          <button type="button" class="tab-pill active" id="tab-btn-log" onclick="switchGensetView('log')">Log Action / Repair</button>
+          <button type="button" class="tab-pill" id="tab-btn-create" onclick="switchGensetView('create')">+ Register Unit</button>
+        </div>
+      </div>
+
+      <div id="gs-alert-box" class="alert-box"></div>
+
+      <!-- FORM 1: LOG ACTION / TRANSFER -->
+      <form id="form-genset-log" onsubmit="submitGensetAction(event)">
+        <input type="hidden" name="action" value="update_log">
+
+        <div class="form-grid">
+          <div class="field-group">
+            <label class="form-lbl">Select Generator Unit *</label>
+            <select id="gs-select-unit" name="genset_id" required class="form-input" onchange="onGensetUnitSelected(this.value)">
+              <option value="">Loading fleet units...</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Action / Event Type *</label>
+            <select name="event_type" required class="form-input">
+              <option value="Preventive Maintenance (PMS)">Preventive Maintenance (PMS)</option>
+              <option value="Transfer / Relocation">Transfer / Relocation</option>
+              <option value="Emergency Repair">Emergency Repair</option>
+              <option value="Battery Replacement">Battery Replacement</option>
+              <option value="Fuel Refill & Testing">Fuel Refill &amp; Testing</option>
+              <option value="Status Adjustment">Status Adjustment</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Station Deployed *</label>
+            <select id="gs-select-station" name="new_station" required class="form-input"></select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field-group">
+            <label class="form-lbl">Operating Status *</label>
+            <select id="gs-select-status" name="new_status" class="form-input">
+              <option value="Operational">Operational 🟢</option>
+              <option value="Under Maintenance">Under Maintenance 🟡</option>
+              <option value="Standby">Standby 🟠</option>
+              <option value="Offline">Offline / Defective 🔴</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Service / Transfer Date</label>
+            <input type="date" name="serviced_date" id="gs-serviced-date" class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Personnel / In-Charge</label>
+            <input type="text" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 18px;">
+          <label class="form-lbl">Work Done / Action Remarks</label>
+          <textarea name="remarks" rows="3" placeholder="Specify parts replaced, reason for relocation, or generator run tests..." class="form-input"></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end;">
+          <button type="submit" class="submit-btn" id="btn-submit-log">Save &amp; Log Generator Action</button>
+        </div>
+      </form>
+
+      <!-- FORM 2: REGISTER NEW GENSET -->
+      <form id="form-genset-create" onsubmit="submitNewGenset(event)" style="display:none;">
+        <input type="hidden" name="action" value="create_genset">
+
+        <div class="form-grid">
+          <div class="field-group">
+            <label class="form-lbl">Genset Identification Number *</label>
+            <input type="text" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Brand &amp; Engine Model</label>
+            <input type="text" name="brand_model" placeholder="e.g. Cummins 6BT5.9 / Perkins" class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Capacity Rating (kVA)</label>
+            <input type="number" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field-group">
+            <label class="form-lbl">Initial Station Assignment *</label>
+            <select id="gs-create-station" name="new_station" required class="form-input"></select>
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
+            <input type="number" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Commissioning Status</label>
+            <select name="new_status" class="form-input">
+              <option value="Operational">Operational 🟢</option>
+              <option value="Standby">Standby 🟠</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 18px;">
+          <label class="form-lbl">Initial Notes / Asset Tagging</label>
+          <textarea name="remarks" rows="2" placeholder="Acquisition details or initial deployment condition..." class="form-input"></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end;">
+          <button type="submit" class="submit-btn" id="btn-submit-create" style="background:var(--blue);">+ Register Unit into Fleet</button>
+        </div>
+      </form>
+
     </div>
+
+    <!-- Active Fleet Table -->
+    <div class="panel">
+      <div class="panel-header" style="border-bottom:none; margin-bottom:12px; padding-bottom:0;">
+        <div>
+          <div class="panel-title">📋 Active Fleet Deployment &amp; Readiness</div>
+          <div class="panel-sub">Station assignments and latest maintenance audit logs</div>
+        </div>
+        <button onclick="fetchGensetFleet()" class="tab-pill" style="border:1px solid var(--border); color:var(--teal2);">↻ Refresh</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Genset ID</th>
+              <th>Deployed Station</th>
+              <th>Rating</th>
+              <th>Status</th>
+              <th>Latest Maintenance / Movement</th>
+              <th style="text-align:right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="gs-inventory-tbody">
+            <tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text2); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
-  <div id="gs-alert-msg" style="display:none; padding:10px 14px; border-radius:6px; font-size:11px; font-family:var(--font-mono); margin-bottom:16px;"></div>
+  <script>
+    const PPCWD_STATIONS = [
+      "Baldosano PS", "Sta. Monica PS", "Pump Center #5", "Pump Center #6",
+      "DA", "Sicsican", "Villa Ello", "NHA", "Princeville", "Villa Princesa",
+      "San Jose", "BOS", "Esteban", "Kaakbayan", "New Market", "Pablico",
+      "Visapa PS", "Acacia", "Citywoods", "Virginia", "Lucbuan", "Sabang GW",
+      "Inagawan", "Macarascas", "Irawan WTP-1", "Irawan WTP-2", "Lapu-Lapu Source",
+      "Montible (Teruvian)", "Manalo Booster Station", "UV Facility", "Central Warehouse / Storage"
+    ];
 
-  <!-- Form 1: Maintenance & Relocation Form -->
-  <form id="form-genset-log" onsubmit="submitGensetAction(event)" style="background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:18px; margin-bottom:24px;">
-    <input type="hidden" name="action" value="update_log">
-    <div style="font-size:11px; font-weight:600; color:var(--teal2); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:14px;">Log Maintenance, Repair, or Relocation</div>
+    let fleet = [];
 
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:12px;">
-      <div>
-        <label class="form-lbl">Select Generator Unit *</label>
-        <select id="gs-select-unit" name="genset_id" required class="form-input" onchange="onGensetSelected(this.value)">
-          <option value="">Loading units...</option>
-        </select>
-      </div>
-      <div>
-        <label class="form-lbl">Event Type *</label>
-        <select name="event_type" required class="form-input">
-          <option value="Preventive Maintenance (PMS)">Preventive Maintenance (PMS)</option>
-          <option value="Transfer / Relocation">Transfer / Relocation</option>
-          <option value="Emergency Repair">Emergency Repair</option>
-          <option value="Battery Replacement">Battery Replacement</option>
-          <option value="Fuel Refill & Testing">Fuel Refill &amp; Testing</option>
-          <option value="Status Adjustment">Status Adjustment</option>
-        </select>
-      </div>
-      <div>
-        <label class="form-lbl">Current / Target Pumping Station *</label>
-        <select id="gs-select-station" name="new_station" required class="form-input"></select>
-      </div>
-    </div>
+    function populateStations() {
+      const opts = PPCWD_STATIONS.map(st => `<option value="${st}">${st}</option>`).join("");
+      document.getElementById("gs-select-station").innerHTML = opts;
+      document.getElementById("gs-create-station").innerHTML = opts;
+    }
 
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:12px;">
-      <div>
-        <label class="form-lbl">Operating Status</label>
-        <select id="gs-select-status" name="new_status" class="form-input">
-          <option value="Operational">Operational 🟢</option>
-          <option value="Under Maintenance">Under Maintenance 🟡</option>
-          <option value="Standby">Standby 🟠</option>
-          <option value="Offline">Offline / Defective 🔴</option>
-        </select>
-      </div>
-      <div>
-        <label class="form-lbl">Date of Service</label>
-        <input type="date" name="serviced_date" id="gs-serviced-date" class="form-input">
-      </div>
-      <div>
-        <label class="form-lbl">Technician / In-Charge</label>
-        <input type="text" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
-      </div>
-    </div>
+    async function fetchGensetFleet() {
+      const tbody = document.getElementById("gs-inventory-tbody");
+      try {
+        const res = await fetch('/api/getGensets');
+        const data = await res.json();
 
-    <div style="margin-bottom:16px;">
-      <label class="form-lbl">Work Done / Action Remarks</label>
-      <textarea name="remarks" rows="2" placeholder="Describe repair, replaced parts, or reason for transfer..." class="form-input" style="width:100%;"></textarea>
-    </div>
+        if (!res.ok) throw new Error(data.error || "Failed to load gensets.");
+        fleet = data;
 
-    <div style="display:flex; justify-content:flex-end;">
-      <button type="submit" class="submit-btn" id="gs-btn-submit-log">Save &amp; Update Generator</button>
-    </div>
-  </form>
+        // Populate unit selector
+        const unitSel = document.getElementById("gs-select-unit");
+        if (fleet.length === 0) {
+          unitSel.innerHTML = '<option value="">No units registered yet</option>';
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text2); font-family:var(--font-mono);">No generator units in database. Click <b>+ Register Unit</b> above.</td></tr>`;
+          return;
+        }
 
-  <!-- Form 2: Register New Genset (Hidden by default) -->
-  <form id="form-genset-create" onsubmit="submitNewGenset(event)" style="display:none; background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:18px; margin-bottom:24px;">
-    <input type="hidden" name="action" value="create_genset">
-    <div style="font-size:11px; font-weight:600; color:var(--blue2); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:14px;">Register New Generator Set to Fleet</div>
-
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:12px;">
-      <div>
-        <label class="form-lbl">Genset Number / ID *</label>
-        <input type="text" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
-      </div>
-      <div>
-        <label class="form-lbl">Brand &amp; Model</label>
-        <input type="text" name="brand_model" placeholder="e.g. Cummins 6BT5.9" class="form-input">
-      </div>
-      <div>
-        <label class="form-lbl">Capacity (kVA)</label>
-        <input type="number" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
-      </div>
-    </div>
-
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:12px;">
-      <div>
-        <label class="form-lbl">Station Deployed *</label>
-        <select id="gs-create-station" name="new_station" required class="form-input"></select>
-      </div>
-      <div>
-        <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
-        <input type="number" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
-      </div>
-      <div>
-        <label class="form-lbl">Initial Status</label>
-        <select name="new_status" class="form-input">
-          <option value="Operational">Operational</option>
-          <option value="Standby">Standby</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="display:flex; justify-content:flex-end;">
-      <button type="submit" class="submit-btn" id="gs-btn-submit-create" style="background:var(--blue);">Register Generator</button>
-    </div>
-  </form>
-
-  <!-- Live Fleet Inventory Table -->
-  <div style="font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:8px;">Current Active Fleet Deployment</div>
-  <div style="overflow-x:auto; border:1px solid var(--border); border-radius:8px;">
-    <table style="width:100%; border-collapse:collapse; font-size:12px;">
-      <thead>
-        <tr style="background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:10px; color:var(--text2); text-transform:uppercase;">
-          <th style="padding:10px 14px; text-align:left;">Genset ID</th>
-          <th style="padding:10px 14px; text-align:left;">Station Assignment</th>
-          <th style="padding:10px 14px; text-align:left;">Rating</th>
-          <th style="padding:10px 14px; text-align:left;">Status</th>
-          <th style="padding:10px 14px; text-align:left;">Last Logged Action</th>
-          <th style="padding:10px 14px; text-align:right;">Quick Select</th>
-        </tr>
-      </thead>
-      <tbody id="gs-inventory-tbody">
-        <tr><td colspan="6" style="padding:20px; text-align:center; color:var(--text2);">Loading generator fleet...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<script>
-  
-// ── PPCWD PUMPING STATIONS LIST ──────────────────────────────
-  const PPCWD_STATIONS = [
-    "Baldosano PS", "Sta. Monica PS", "Pump Center #5", "Pump Center #6",
-    "DA", "Sicsican", "Villa Ello", "NHA", "Princeville", "Villa Princesa",
-    "San Jose", "BOS", "Esteban", "Kaakbayan", "New Market", "Pablico",
-    "Visapa PS", "Acacia", "Citywoods", "Virginia", "Lucbuan", "Sabang GW",
-    "Inagawan", "Macarascas", "Irawan WTP-1", "Irawan WTP-2", "Lapu-Lapu Source",
-    "Montible (Teruvian)", "Manalo Booster Station", "UV Facility", "Central Warehouse"
-  ];
-
-  let localGensets = [];
-
-  function populateStationDropdowns() {
-    const opts = PPCWD_STATIONS.map(st => `<option value="${st}">${st}</option>`).join("");
-    const selLog = document.getElementById("gs-select-station");
-    const selCreate = document.getElementById("gs-create-station");
-    if (selLog) selLog.innerHTML = opts;
-    if (selCreate) selCreate.innerHTML = opts;
-  }
-
-  async function fetchGensetFleet() {
-    try {
-      const res = await fetch('/api/getGensets');
-      if (!res.ok) throw new Error("Failed to load gensets.");
-      localGensets = await res.json();
-
-      // Populate Unit Selector
-      const unitSel = document.getElementById("gs-select-unit");
-      if (unitSel) {
         unitSel.innerHTML = '<option value="">-- Choose Generator --</option>' + 
-          localGensets.map(g => `<option value="${g.id}">${g.genset_no} (${g.current_station})</option>`).join("");
+          fleet.map(g => `<option value="${g.id}">${g.genset_no} — ${g.current_station}</option>`).join("");
+
+        // Render table
+        tbody.innerHTML = fleet.map(g => {
+          const isOp = g.status === 'Operational';
+          const isMaint = g.status === 'Under Maintenance' || g.status === 'Standby';
+          const badgeCls = isOp ? 'badge-op' : (isMaint ? 'badge-warn' : 'badge-err');
+          const latestLog = g.genset_logs && g.genset_logs[0] ? g.genset_logs[0] : null;
+
+          return `
+            <tr>
+              <td style="font-weight:700; font-family:var(--font-mono); color:var(--white);">${g.genset_no}</td>
+              <td style="color:var(--text); font-weight:500;">${g.current_station}</td>
+              <td style="font-family:var(--font-mono); color:var(--text2); font-size:11px;">${g.capacity_kva ? g.capacity_kva + ' kVA' : '—'}</td>
+              <td><span class="status-badge ${badgeCls}">● ${g.status}</span></td>
+              <td style="font-size:11px; color:var(--text2);">
+                ${latestLog ? `${latestLog.event_type} <span style="font-family:var(--font-mono); font-size:9px; color:var(--text2);">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : '<span style="color:var(--text2);">Initial state</span>'}
+              </td>
+              <td style="text-align:right;">
+                <button type="button" onclick="selectGensetForEdit('${g.id}')" style="background:rgba(36,181,163,0.15); border:1px solid rgba(36,181,163,0.3); color:var(--teal2); padding:4px 10px; border-radius:4px; font-family:var(--font-mono); font-size:10px; cursor:pointer;">Update</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red2); font-family:var(--font-mono);">⚠️ Database Query Error: ${err.message}</td></tr>`;
       }
-
-      // Populate Table
-      const tbody = document.getElementById("gs-inventory-tbody");
-      if (!tbody) return;
-
-      if (localGensets.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; text-align:center; color:var(--text2);">No generator units registered in database yet.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = localGensets.map(g => {
-        const isOp = g.status === 'Operational';
-        const isMaint = g.status === 'Under Maintenance' || g.status === 'Standby';
-        const statusColor = isOp ? '#34D399' : (isMaint ? 'var(--amber2)' : '#FCA5A5');
-        const latestLog = g.genset_logs && g.genset_logs[0] ? g.genset_logs[0] : null;
-
-        return `
-          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-            <td style="padding:10px 14px; font-weight:600; font-family:var(--font-mono); color:var(--white);">${g.genset_no}</td>
-            <td style="padding:10px 14px; color:var(--text);">${g.current_station}</td>
-            <td style="padding:10px 14px; font-family:var(--font-mono); font-size:11px; color:var(--text2);">${g.capacity_kva ? g.capacity_kva + ' kVA' : '—'}</td>
-            <td style="padding:10px 14px;">
-              <span style="display:inline-block; font-family:var(--font-mono); font-size:10px; font-weight:600; color:${statusColor};">
-                ● ${g.status}
-              </span>
-            </td>
-            <td style="padding:10px 14px; font-size:11px; color:var(--text2);">
-              ${latestLog ? `${latestLog.event_type} <span style="font-size:9px; font-family:var(--font-mono);">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'No logs yet'}
-            </td>
-            <td style="padding:10px 14px; text-align:right;">
-              <button type="button" onclick="selectGensetRow('${g.id}')" style="background:rgba(36,181,163,0.15); border:1px solid rgba(36,181,163,0.3); color:var(--teal2); padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Update</button>
-            </td>
-          </tr>
-        `;
-      }).join("");
-    } catch (err) {
-      console.error(err);
-      const tbody = document.getElementById("gs-inventory-tbody");
-      if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; text-align:center; color:#FCA5A5;">Error loading fleet: ${err.message}</td></tr>`;
     }
-  }
 
-  function selectGensetRow(id) {
-    toggleGensetForm('log');
-    const unitSel = document.getElementById("gs-select-unit");
-    if (unitSel) {
+    function selectGensetForEdit(id) {
+      switchGensetView('log');
+      const unitSel = document.getElementById("gs-select-unit");
       unitSel.value = id;
-      onGensetSelected(id);
+      onGensetUnitSelected(id);
+      document.getElementById("form-genset-log").scrollIntoView({ behavior: 'smooth' });
     }
-    document.getElementById("form-genset-log").scrollIntoView({ behavior: 'smooth' });
-  }
 
-  function onGensetSelected(id) {
-    const matched = localGensets.find(g => g.id === id);
-    if (!matched) return;
-    document.getElementById("gs-select-station").value = matched.current_station;
-    document.getElementById("gs-select-status").value = matched.status;
-  }
-
-  function toggleGensetForm(view) {
-    const fLog = document.getElementById("form-genset-log");
-    const fCreate = document.getElementById("form-genset-create");
-    const bLog = document.getElementById("btn-show-log");
-    const bCreate = document.getElementById("btn-show-create");
-
-    if (view === 'log') {
-      fLog.style.display = 'block';
-      fCreate.style.display = 'none';
-      bLog.style.background = 'var(--teal)';
-      bLog.style.color = 'white';
-      bCreate.style.background = 'var(--card2)';
-      bCreate.style.color = 'var(--teal2)';
-    } else {
-      fLog.style.display = 'none';
-      fCreate.style.display = 'block';
-      bCreate.style.background = 'var(--blue)';
-      bCreate.style.color = 'white';
-      bLog.style.background = 'var(--card2)';
-      bLog.style.color = 'var(--teal2)';
+    function onGensetUnitSelected(id) {
+      const g = fleet.find(item => item.id === id);
+      if (!g) return;
+      document.getElementById("gs-select-station").value = g.current_station;
+      document.getElementById("gs-select-status").value = g.status;
     }
-  }
 
-  function showGensetMsg(text, isError = false) {
-    const box = document.getElementById("gs-alert-msg");
-    box.style.display = "block";
-    box.style.background = isError ? "rgba(220,38,38,0.15)" : "rgba(5,150,105,0.15)";
-    box.style.border = isError ? "1px solid rgba(220,38,38,0.4)" : "1px solid rgba(5,150,105,0.4)";
-    box.style.color = isError ? "#FCA5A5" : "#34D399";
-    box.textContent = text;
-    setTimeout(() => { box.style.display = "none"; }, 4000);
-  }
+    function switchGensetView(view) {
+      const formLog = document.getElementById("form-genset-log");
+      const formCreate = document.getElementById("form-genset-create");
+      const btnLog = document.getElementById("tab-btn-log");
+      const btnCreate = document.getElementById("tab-btn-create");
 
-  async function submitGensetAction(e) {
-    e.preventDefault();
-    const btn = document.getElementById("gs-btn-submit-log");
-    btn.disabled = true;
-    btn.textContent = "Saving Action...";
-
-    const formData = new FormData(e.target);
-    const payload = Object.fromEntries(formData.entries());
-
-    try {
-      const res = await fetch('/api/updateGenset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to update.");
-
-      showGensetMsg(data.message || "Action successfully recorded!");
-      e.target.reset();
-      document.getElementById("gs-serviced-date").value = new Date().toISOString().split('T')[0];
-      await fetchGensetFleet();
-    } catch (err) {
-      showGensetMsg(err.message, true);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Save & Update Generator";
+      if (view === 'log') {
+        formLog.style.display = "block";
+        formCreate.style.display = "none";
+        btnLog.classList.add("active");
+        btnCreate.classList.remove("active");
+      } else {
+        formLog.style.display = "none";
+        formCreate.style.display = "block";
+        btnCreate.classList.add("active");
+        btnLog.classList.remove("active");
+      }
     }
-  }
 
-  async function submitNewGenset(e) {
-    e.preventDefault();
-    const btn = document.getElementById("gs-btn-submit-create");
-    btn.disabled = true;
-    btn.textContent = "Registering...";
-
-    const formData = new FormData(e.target);
-    const payload = Object.fromEntries(formData.entries());
-
-    try {
-      const res = await fetch('/api/updateGenset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to create.");
-
-      showGensetMsg(data.message || "Generator registered!");
-      e.target.reset();
-      toggleGensetForm('log');
-      await fetchGensetFleet();
-    } catch (err) {
-      showGensetMsg(err.message, true);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Register Generator";
+    function notify(text, isError = false) {
+      const box = document.getElementById("gs-alert-box");
+      box.style.display = "block";
+      box.style.background = isError ? "rgba(220,38,38,0.15)" : "rgba(5,150,105,0.15)";
+      box.style.border = isError ? "1px solid rgba(220,38,38,0.4)" : "1px solid rgba(5,150,105,0.4)";
+      box.style.color = isError ? "#FCA5A5" : "#34D399";
+      box.textContent = text;
+      setTimeout(() => { box.style.display = "none"; }, 4500);
     }
-  }
 
-  // Initialize Genset Management on page boot
-  window.addEventListener('DOMContentLoaded', () => {
-    populateStationDropdowns();
-    fetchGensetFleet();
-    const dateInput = document.getElementById("gs-serviced-date");
-    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
-  });
+    async function submitGensetAction(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-submit-log");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
 
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Update failed.");
+
+        notify(data.message || "Genset action saved!");
+        e.target.reset();
+        document.getElementById("gs-serviced-date").value = new Date().toISOString().split('T')[0];
+        await fetchGensetFleet();
+      } catch (err) {
+        notify(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save & Log Generator Action";
+      }
+    }
+
+    async function submitNewGenset(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-submit-create");
+      btn.disabled = true;
+      btn.textContent = "Registering...";
+
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Registration failed.");
+
+        notify(data.message || "Generator unit added!");
+        e.target.reset();
+        switchGensetView('log');
+        await fetchGensetFleet();
+      } catch (err) {
+        notify(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "+ Register Unit into Fleet";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      populateStations();
+      fetchGensetFleet();
+      const dateInput = document.getElementById("gs-serviced-date");
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    });
   </script>
-
+</body>
+</html>
