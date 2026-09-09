@@ -413,23 +413,28 @@
       const tbody = document.getElementById("gs-inventory-tbody");
       try {
         const res = await fetch('/api/getGensets');
-        const data = await res.json();
+        const text = await res.text();
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          throw new Error(`Server returned status ${res.status}: ${text.slice(0, 100)}`);
+        }
 
         if (!res.ok) throw new Error(data.error || "Failed to load gensets.");
         fleet = data;
 
-        // Populate unit selector
         const unitSel = document.getElementById("gs-select-unit");
         if (fleet.length === 0) {
           unitSel.innerHTML = '<option value="">No units registered yet</option>';
-          tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text2); font-family:var(--font-mono);">No generator units in database. Click <b>+ Register Unit</b> above.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text2); font-family:var(--font-mono);">No generator units in database. Fill out the form above to register GS-63.</td></tr>`;
           return;
         }
 
         unitSel.innerHTML = '<option value="">-- Choose Generator --</option>' + 
           fleet.map(g => `<option value="${g.id}">${g.genset_no} — ${g.current_station}</option>`).join("");
 
-        // Render table
         tbody.innerHTML = fleet.map(g => {
           const isOp = g.status === 'Operational';
           const isMaint = g.status === 'Under Maintenance' || g.status === 'Standby';
@@ -454,7 +459,7 @@
 
       } catch (err) {
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red2); font-family:var(--font-mono);">⚠️ Database Query Error: ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red2); font-family:var(--font-mono);">⚠️ ${err.message}</td></tr>`;
       }
     }
 
@@ -545,7 +550,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        const data = await res.json();
+        const text = await res.text();
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (errParse) {
+          throw new Error(`Server returned status ${res.status}: ${text.slice(0, 100)}`);
+        }
+
         if (!res.ok) throw new Error(data.error || "Registration failed.");
 
         notify(data.message || "Generator unit added!");

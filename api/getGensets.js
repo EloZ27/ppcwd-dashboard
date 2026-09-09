@@ -1,112 +1,46 @@
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
-);
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+module.exports = async function handler(req, res) {
+  if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const {
-    action, // 'update_log' or 'create_genset'
-    genset_id,
-    genset_no,
-    brand_model,
-    capacity_kva,
-    fuel_capacity_liters,
-    new_station,
-    new_status,
-    event_type, // 'Transfer', 'PMS', 'Emergency Repair', 'Battery Replacement', etc.
-    remarks,
-    technician,
-    serviced_date
-  } = req.body;
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(500).json({
+      error: 'Missing Supabase credentials in Vercel. Please configure SUPABASE_URL and SUPABASE_ANON_KEY.'
+    });
+  }
 
   try {
-    // 1. Register a Brand New Genset
-    if (action === 'create_genset') {
-      if (!genset_no || !new_station) {
-        return res.status(400).json({ error: 'Genset No and Station are required.' });
-      }
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-      const { data: newGenset, error: insertErr } = await supabase
-        .from('gensets')
-        .insert([{
-          genset_no: genset_no.trim().toUpperCase(),
-          brand_model: brand_model || null,
-          capacity_kva: capacity_kva ? parseFloat(capacity_kva) : null,
-          fuel_capacity_liters: fuel_capacity_liters ? parseFloat(fuel_capacity_liters) : null,
-          current_station: new_station,
-          status: new_status || 'Operational',
-          last_serviced_date: serviced_date || new Date().toISOString().split('T')[0]
-        }])
-        .select()
-        .single();
-
-      if (insertErr) throw insertErr;
-
-      // Log initial commissioning
-      await supabase.from('genset_logs').insert([{
-        genset_id: newGenset.id,
-        event_type: 'Commissioned / Deployed',
-        origin_station: 'Warehouse / Central Storage',
-        destination_station: new_station,
-        remarks: remarks || 'Initial unit registration into fleet.',
-        technician: technician || 'Electro-Mechanical Division'
-      }]);
-
-      return res.status(200).json({ success: true, message: `Genset ${genset_no} created successfully.` });
-    }
-
-    // 2. Update Existing Genset & Log Movement / Maintenance
-    if (!genset_id || !event_type) {
-      return res.status(400).json({ error: 'genset_id and event_type are required.' });
-    }
-
-    const { data: current, error: fetchErr } = await supabase
+    // 1. Fetch Gensets
+    const { data: gensets, error: gErr } = await supabase
       .from('gensets')
       .select('*')
-      .eq('id', genset_id)
-      .single();
+      .order('genset_no', { ascending: true });
 
-    if (fetchErr || !current) throw new Error('Genset record not found.');
+    if (gErr) throw gErr;
 
-    const originStation = current.current_station;
-    const destStation = new_station || current.current_station;
-    const statusToSet = new_status || current.status;
-
-    const updatePayload = {
-      current_station: destStation,
-      status: statusToSet
-    };
-    if (serviced_date) updatePayload.last_serviced_date = serviced_date;
-
-    const { error: updateErr } = await supabase
-      .from('gensets')
-      .update(updatePayload)
-      .eq('id', genset_id);
-
-    if (updateErr) throw updateErr;
-
-    const { error: logErr } = await supabase
+    // 2. Fetch Logs safely
+    const { data: logs, error: lErr } = await supabase
       .from('genset_logs')
-      .insert([{
-        genset_id: genset_id,
-        event_type: event_type,
-        origin_station: originStation,
-        destination_station: destStation,
-        remarks: remarks || '',
-        technician: technician || 'Electro-Mechanical Division'
-      }]);
+      .select('*')
+      .order('log_date', { ascending: false });
 
-    if (logErr) throw logErr;
+    if (lErr) console.warn('Could not load logs:', lErr.message);
 
-    return res.status(200).json({ success: true, message: 'Genset updated and audit trail logged.' });
+    const merged = (gensets || []).map(g => ({
+      ...g,
+      genset_logs: (logs || []).filter(l => l.genset_id === g.id)
+    }));
+
+    return res.status(200).json(merged);
   } catch (err) {
-    console.error('Update genset error:', err);
-    return res.status(500).json({ error: err.message });
+    console.error('getGensets error:', err);
+    return res.status(500).json({ error: err.message || 'Database query error' });
   }
-}
+};
