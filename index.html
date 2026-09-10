@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PPCWD Integrated Telemetry Dashboard</title>
+  <link rel="icon" type="image/png" href="logo.png">
   
   <!-- Charts, Leaflet, Hammer, and PDF Utilities -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -112,6 +113,14 @@
       color: white;
       font-weight: 800;
       font-size: 16px;
+    }
+    .brand-logo-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+      flex-shrink: 0;
     }
     .brand-title {
       font-size: 10px;
@@ -493,9 +502,7 @@
     <!-- ── SIDEBAR ── -->
     <aside class="app-sidebar" id="app-sidebar">
       <div class="sidebar-brand">
-        <div class="brand-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M20 12v8H4v-8"/><path d="m4 4 16 8"/></svg>
-        </div>
+        <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img">
         <div>
           <span class="brand-title">PUERTO PRINCESA</span>
           <span class="brand-sub">City Water District</span>
@@ -530,13 +537,11 @@
       <header class="app-header">
         <div style="display: flex; align-items: center; gap: 14px;">
           <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+          <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 32px; height: 32px;">
           <div class="header-titles">
             <h1 id="top-bar-title">Monitoring Dashboard</h1>
             <p><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Live telemetry &bull; Updated continuously from Supabase</p>
           </div>
-        </div>
-        <div class="header-actions">
-          <button class="header-btn" onclick="openGensetModal()" style="color: var(--blue);">⚡ Standby Generators</button>
         </div>
       </header>
 
