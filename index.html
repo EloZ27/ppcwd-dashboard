@@ -726,12 +726,13 @@
               <div id="panel-station-name" style="font-size:15px; font-weight:700; color:var(--text-main);">Pressure History</div>
               <div id="panel-station-sub" style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Telemetry History</div>
             </div>
-            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
               <button class="header-btn active" id="btn-range-24h" onclick="setRange(this,'24h')">24h</button>
               <button class="header-btn" id="btn-range-7d" onclick="setRange(this,'7d')">7 Days</button>
               <button class="header-btn" onclick="resetChartZoom()" style="color:var(--text-muted);">🔍 Reset Zoom</button>
+              <button class="header-btn" id="btn-clear-compare-graph" onclick="clearCompare()" style="color:var(--red);">✕ Clear All</button>
               <button class="header-btn" onclick="openReportModal()" style="color:var(--blue);">📄 Export Report</button>
-            </div>
+          </div>
           </div>
           <div style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
           <div id="latest-strip" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;"></div>
@@ -1681,10 +1682,98 @@
     const s = PRESSURE_STATIONS.find(item => item.col === col);
     if(s) showChartPanel(s);
   }
+  
   function toggleCompareFromPopup(col){
     const s = PRESSURE_STATIONS.find(item => item.col === col);
     if(s) addStationToCompare(s);
   }
+
+  const smartPressureLabelsPlugin = {
+    id: 'smartPressureLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+
+      const xMin = Math.max(0, Math.floor(chart.scales.x.min || 0));
+      const xMax = Math.min(chart.data.labels.length - 1, Math.ceil(chart.scales.x.max || chart.data.labels.length - 1));
+      const visibleCount = Math.max(1, xMax - xMin);
+
+      // Dynamically calculate frequency step so numbers never cramp when zoomed out
+      const chartWidth = chartArea.width;
+      const maxLabelsPossible = Math.max(2, Math.floor(chartWidth / 65));
+      let step = Math.ceil(visibleCount / maxLabelsPossible);
+      if (step < 1) step = 1;
+
+      // Filter active non-alert datasets
+      const activeDatasets = [];
+      chart.data.datasets.forEach((ds, i) => {
+        if (!ds.label.includes("Alert")) {
+          const meta = chart.getDatasetMeta(i);
+          if (!meta.hidden) activeDatasets.push({ ds, meta, index: i });
+        }
+      });
+
+      if (activeDatasets.length === 0) return;
+
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.font = '600 10px "JetBrains Mono", monospace';
+
+      for (let idx = xMin; idx <= xMax; idx += step) {
+        // Collect points at this x-step
+        const pointsAtIdx = [];
+        activeDatasets.forEach(item => {
+          const pt = item.meta.data[idx];
+          const val = item.ds.data[idx];
+          if (pt && val !== null && val !== undefined && !isNaN(val)) {
+            pointsAtIdx.push({ pt, val, color: item.ds.borderColor });
+          }
+        });
+
+        // Sort descending by PSI value to place higher values UP and lower values DOWN
+        pointsAtIdx.sort((a, b) => b.val - a.val);
+
+        pointsAtIdx.forEach((p, rank) => {
+          let textY = p.pt.y - 12;
+          let baseLine = 'bottom';
+
+          // Prevent overlap when comparing multiple stations
+          if (pointsAtIdx.length > 1) {
+            if (rank === 0) {
+              textY = p.pt.y - 10;
+              baseLine = 'bottom';
+            } else if (rank === 1) {
+              textY = p.pt.y + 12;
+              baseLine = 'top';
+            } else if (rank === 2) {
+              textY = p.pt.y - 22;
+              baseLine = 'bottom';
+            } else {
+              textY = p.pt.y + 24;
+              baseLine = 'top';
+            }
+          }
+
+          const txt = Number(p.val).toFixed(1);
+          const txtWidth = ctx.measureText(txt).width;
+
+          // Draw pill background for contrast
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = 1;
+          const bgY = baseLine === 'bottom' ? textY - 11 : textY - 1;
+          ctx.fillRect(p.pt.x - (txtWidth / 2) - 4, bgY, txtWidth + 8, 13);
+          ctx.strokeRect(p.pt.x - (txtWidth / 2) - 4, bgY, txtWidth + 8, 13);
+
+          // Draw PSI number
+          ctx.fillStyle = p.color;
+          ctx.textBaseline = baseLine;
+          ctx.fillText(txt, p.pt.x, textY);
+        });
+      }
+      ctx.restore();
+    }
+  };
 
   function showChartPanel(station){
     compareStations = [station];
@@ -1702,7 +1791,7 @@
       compareStations.splice(idx, 1);
     } else {
       if (compareStations.length >= 4) {
-        compareStations.shift(); // Cycle off oldest to keep maximum 4
+        compareStations.shift();
       }
       compareStations.push(station);
     }
@@ -1737,22 +1826,11 @@
       pressureChart = null; 
     }
 
-    let pool = pressureRaw;
+    // Load entire history into memory so user can drag/pan freely across dates
+    const pool = pressureRaw;
+    if (!pool || pool.length === 0) return;
 
-    if (activeDateFilter) {
-      pool = pressureRaw.filter(r => {
-        if (!r.dt) return false;
-        const rd = new Date(r.dt); rd.setHours(0, 0, 0, 0);
-        const fd = new Date(activeDateFilter); fd.setHours(0, 0, 0, 0);
-        return rd.getTime() === fd.getTime();
-      });
-    } else if (pool.length > 0) {
-      const latestTime = pool[pool.length - 1].dt ? pool[pool.length - 1].dt.getTime() : Date.now();
-      const hoursWindow = currentRange === "7d" ? (7 * 24) : 24;
-      const cutoff = latestTime - (hoursWindow * 60 * 60 * 1000);
-      const filtered = pool.filter(r => r.dt && r.dt.getTime() >= cutoff);
-      pool = filtered.length > 0 ? filtered : pool.slice(-24);
-    }
+    const totalPoints = pool.length;
 
     const labels = pool.map(r => {
       if (!r.dt) return "";
@@ -1769,7 +1847,8 @@
       borderColor: colors[i % colors.length],
       backgroundColor: bgColors[i % bgColors.length],
       borderWidth: 2,
-      pointRadius: pool.length > 50 ? 2 : 3,
+      pointRadius: 3,
+      pointHoverRadius: 6,
       fill: compareStations.length === 1,
       tension: 0.25,
       spanGaps: true
@@ -1799,18 +1878,54 @@
       }
     });
 
+    // Compute initial visible window
+    let initialMin = 0;
+    let initialMax = totalPoints - 1;
+
+    if (activeDateFilter) {
+      const targetDate = new Date(activeDateFilter);
+      targetDate.setHours(0, 0, 0, 0);
+
+      const startIdx = pool.findIndex(r => {
+        if (!r.dt) return false;
+        const d = new Date(r.dt); d.setHours(0, 0, 0, 0);
+        return d.getTime() === targetDate.getTime();
+      });
+
+      if (startIdx !== -1) {
+        let endIdx = startIdx;
+        for (let i = startIdx; i < pool.length; i++) {
+          const d = new Date(pool[i].dt); d.setHours(0, 0, 0, 0);
+          if (d.getTime() === targetDate.getTime()) endIdx = i;
+          else break;
+        }
+        initialMin = startIdx;
+        initialMax = Math.min(totalPoints - 1, Math.max(startIdx + 12, endIdx));
+      } else {
+        initialMin = Math.max(0, totalPoints - 25);
+        initialMax = totalPoints - 1;
+      }
+    } else if (currentRange === "24h") {
+      initialMin = Math.max(0, totalPoints - 25);
+      initialMax = totalPoints - 1;
+    } else if (currentRange === "7d") {
+      initialMin = Math.max(0, totalPoints - (24 * 7));
+      initialMax = totalPoints - 1;
+    }
+
     document.getElementById("chart-active-panel").style.display = "block";
     document.getElementById("panel-station-name").textContent = compareStations.length === 1 
       ? compareStations[0].name 
       : `Comparison (${compareStations.length} Stations)`;
     document.getElementById("panel-station-sub").textContent = activeDateFilter 
-      ? `Date Snapshot: ${activeDateFilter.toLocaleDateString('en-PH')} (${pool.length} points)`
-      : `Showing last ${currentRange === '7d' ? '7 days' : '24 hours'} (${pool.length} readings)`;
+      ? `Centered on: ${activeDateFilter.toLocaleDateString('en-PH')} (Drag/pan horizontally to view adjacent days)`
+      : `Showing ${currentRange === '7d' ? '7 days' : '24 hours'} (Drag/pan enabled across entire history)`;
 
     const ctx = document.getElementById("chart-pressure").getContext("2d");
     pressureChart = new Chart(ctx, {
       type: "line",
       data: { labels, datasets },
+      plugins: [smartPressureLabelsPlugin],
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -1829,17 +1944,27 @@
           },
           zoom: {
             pan: { enabled: true, mode: 'x', modifierKey: null },
-            zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x' }
+            zoom: { wheel: { enabled: true, speed: 0.08 }, pinch: { enabled: true }, mode: 'x' },
+            limits: { x: { min: 0, max: totalPoints - 1 } }
           }
         },
         scales: {
-          x: { grid: { color: "#F1F5F9" }, ticks: { font: { family: 'JetBrains Mono', size: 9 }, maxTicksLimit: 12, maxRotation: 45 } },
-          y: { title: { display: true, text: "PSI" }, grid: { color: "#F1F5F9" }, suggestedMin: 0, suggestedMax: 20 }
+          x: {
+            min: initialMin,
+            max: initialMax,
+            grid: { color: "#F1F5F9" },
+            ticks: { font: { family: 'JetBrains Mono', size: 9 }, maxTicksLimit: 12, maxRotation: 45 }
+          },
+          y: {
+            title: { display: true, text: "PSI" },
+            grid: { color: "#F1F5F9" },
+            suggestedMin: 0,
+            suggestedMax: 20
+          }
         }
       }
     });
 
-    // Chips above chart with individual removal (✕)
     const strip = document.getElementById("latest-strip");
     if (strip) {
       strip.innerHTML = compareStations.map(s => {
@@ -1848,7 +1973,7 @@
         return `
           <span class="kpi-badge-pill pill-blue" style="padding:4px 8px; font-size:11px; display:inline-flex; align-items:center; gap:6px;">
             ${s.name}: <b>${val !== null ? fmt(val, 2) + ' PSI' : '—'}</b>
-            <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:none; border:none; color:var(--red); font-size:12px; font-weight:800; cursor:pointer; line-height:1;" title="Remove from compare">✕</button>
+            <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:none; border:none; color:var(--red); font-size:12px; font-weight:800; cursor:pointer; line-height:1;" title="Remove">✕</button>
           </span>
         `;
       }).join("");
@@ -1857,10 +1982,15 @@
 
   function setRange(btn, range){
     currentRange = range;
+    activeDateFilter = null; // Clear single-day constraint
+    document.getElementById("date-filter-input").value = "";
+    document.getElementById("date-filter-clear").style.display = "none";
+
     document.querySelectorAll("#chart-active-panel .header-btn").forEach(b => {
       if (b.id === 'btn-range-24h' || b.id === 'btn-range-7d') b.classList.remove("active");
     });
     btn.classList.add("active");
+
     if (compareStations.length > 0) buildCompareChart();
   }
 
@@ -2316,6 +2446,8 @@
 
   // ── PRESSURE REPORT EXPORT ──
   let reportSelectedStations = [];
+  let reportChartInstance = null;
+
   function openReportModal(){
     reportSelectedStations = [];
     document.getElementById('report-station-grid').innerHTML = PRESSURE_STATIONS.map(s => `
@@ -2326,38 +2458,273 @@
     const now = new Date();
     document.getElementById('report-date-from').value = new Date(now.getTime() - 24*3600*1000).toISOString().slice(0,10);
     document.getElementById('report-date-to').value = now.toISOString().slice(0,10);
+    document.getElementById('report-status').textContent = '';
     document.getElementById('report-modal').style.display = 'flex';
   }
-  function closeReportModal(){ document.getElementById('report-modal').style.display = 'none'; }
+
+  function closeReportModal(){ 
+    document.getElementById('report-modal').style.display = 'none'; 
+  }  
+
   function toggleRepSt(col, cb){
-    if(cb.checked && reportSelectedStations.length >= 4) { cb.checked = false; return; }
+    if(cb.checked && reportSelectedStations.length >= 4) { 
+      cb.checked = false; 
+      alert("You can select up to 4 stations per report.");
+      return; 
+    }
     if(cb.checked) reportSelectedStations.push(col);
     else reportSelectedStations = reportSelectedStations.filter(c => c !== col);
   }
 
   async function generatePressureReport(){
-    if(!reportSelectedStations.length) return;
+    const statusEl = document.getElementById('report-status');
+    if(!reportSelectedStations.length) {
+      statusEl.textContent = 'Please select at least 1 station.';
+      return;
+    }
     const dF = document.getElementById('report-date-from').value;
     const dT = document.getElementById('report-date-to').value;
-    const filtered = pressureRaw.filter(r => r.dt >= new Date(dF+"T00:00:00") && r.dt <= new Date(dT+"T23:59:59"));
+    if(!dF || !dT) {
+      statusEl.textContent = 'Select both From and To dates.';
+      return;
+    }
+
+    const startDt = new Date(`${dF}T00:00:00`);
+    const endDt = new Date(`${dT}T23:59:59`);
+    if(startDt > endDt) {
+      statusEl.textContent = 'Start date must be before End date.';
+      return;
+    }
+
+    const filtered = pressureRaw.filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
+    if(!filtered.length) {
+      statusEl.textContent = 'No pressure readings found in that date range.';
+      return;
+    }
+
+    statusEl.textContent = 'Rendering report...';
+    statusEl.style.color = 'var(--blue)';
+
+    const format = document.querySelector('input[name="report-format"]:checked')?.value || 'pdf';
     const stations = PRESSURE_STATIONS.filter(s => reportSelectedStations.includes(s.col));
-    const labels = filtered.map(r => r.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric', hour:'2-digit'}));
-    const datasets = stations.map((s, i) => ({
-      label: s.name, data: filtered.map(r => r.vals[s.col]),
-      borderColor: ['#2563EB','#0D9488','#F59E0B','#EF4444'][i], borderWidth: 2, pointRadius: 2
+    const colors = ['#1560BD', '#0D9488', '#D97706', '#7C3AED'];
+
+    // Calculate Summary Statistics Matrix
+    const stationStats = stations.map(s => {
+      const validVals = filtered.map(r => r.vals[s.col]).filter(v => v !== null && !isNaN(v));
+      const count = validVals.length;
+      if (!count) return { name: s.name, count: 0, min: 0, max: 0, avg: 0, alertCount: 0, thresh: s.customAlertPsi || ALERT_PSI };
+      const min = Math.min(...validVals);
+      const max = Math.max(...validVals);
+      const avg = validVals.reduce((a, b) => a + b, 0) / count;
+      const thresh = s.customAlertPsi || ALERT_PSI;
+      const alertCount = validVals.filter(v => v <= thresh).length;
+      return { name: s.name, count, min, max, avg, alertCount, thresh };
+    });
+
+    // Render off-screen chart
+    const chartCanvas = document.getElementById('report-chart-canvas');
+    chartCanvas.width = 1400;
+    chartCanvas.height = 560;
+
+    const chartLabels = filtered.map(r => 
+      r.dt.toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    );
+
+    const chartDatasets = stations.map((s, i) => ({
+      label: s.name,
+      data: filtered.map(r => r.vals[s.col]),
+      borderColor: colors[i % colors.length],
+      backgroundColor: colors[i % colors.length],
+      borderWidth: 2.5,
+      pointRadius: filtered.length > 48 ? 2 : 4,
+      pointBackgroundColor: colors[i % colors.length],
+      spanGaps: true,
+      tension: 0.25
     }));
 
-    const ctx = document.getElementById('report-chart-canvas').getContext('2d');
-    const chart = new Chart(ctx, { type: 'line', data: { labels, datasets }, options: { animation: false } });
-    await new Promise(r => setTimeout(r, 300));
+    chartDatasets.push({
+      label: 'Critical Threshold (6.5 PSI)',
+      data: chartLabels.map(() => ALERT_PSI),
+      borderColor: '#DC2626',
+      borderWidth: 1.8,
+      borderDash: [6, 4],
+      pointRadius: 0,
+      fill: false
+    });
 
-    const canvas = document.getElementById('report-chart-canvas');
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, 277, 135);
-    pdf.save(`Pressure_Report_${dF}_to_${dT}.pdf`);
-    chart.destroy();
-    closeReportModal();
+    if (reportChartInstance) {
+      reportChartInstance.destroy();
+      reportChartInstance = null;
+    }
+
+    reportChartInstance = new Chart(chartCanvas.getContext('2d'), {
+      type: 'line',
+      data: { labels: chartLabels, datasets: chartDatasets },
+      options: {
+        responsive: false,
+        animation: false,
+        devicePixelRatio: 2,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 14, font: { family: 'Arial', size: 12, weight: 'bold' }, color: '#1E293B' } }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#475569', maxRotation: 45, minRotation: 45, font: { size: 10, family: 'Arial' } },
+            grid: { color: '#E2E8F0' }
+          },
+          y: {
+            title: { display: true, text: 'Pressure (PSI)', color: '#1E293B', font: { size: 12, weight: 'bold', family: 'Arial' } },
+            ticks: { color: '#475569', font: { size: 11, family: 'Arial' } },
+            grid: { color: '#E2E8F0' },
+            suggestedMin: 0
+          }
+        }
+      }
+    });
+
+    await new Promise(r => setTimeout(r, 400));
+
+    // Construct Composite Publication Page
+    const scale = 2;
+    const width = 1600;
+    const height = 1130;
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = width * scale;
+    outCanvas.height = height * scale;
+    const octx = outCanvas.getContext('2d');
+    octx.scale(scale, scale);
+
+    octx.fillStyle = '#FFFFFF';
+    octx.fillRect(0, 0, width, height);
+
+    octx.fillStyle = '#0D1B2A';
+    octx.fillRect(0, 0, width, 8);
+
+    const pad = 40;
+    octx.fillStyle = '#1560BD';
+    octx.font = 'bold 24px Arial, sans-serif';
+    octx.fillText('PUERTO PRINCESA CITY WATER DISTRICT', pad, 50);
+
+    octx.fillStyle = '#64748B';
+    octx.font = '13px Arial, sans-serif';
+    octx.fillText('Engineering & Operations Division  •  SCADA Telemetry Network Monitoring', pad, 72);
+
+    octx.textAlign = 'right';
+    octx.fillStyle = '#0F172A';
+    octx.font = 'bold 18px Arial, sans-serif';
+    octx.fillText('PRESSURE TELEMETRY AUDIT REPORT', width - pad, 48);
+
+    const genDateStr = new Date().toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
+    octx.fillStyle = '#64748B';
+    octx.font = '12px Arial, sans-serif';
+    octx.fillText(`Generated: ${genDateStr}`, width - pad, 68);
+    octx.fillText(`Reporting Window: ${dF} to ${dT}`, width - pad, 86);
+    octx.textAlign = 'left';
+
+    octx.strokeStyle = '#CBD5E1';
+    octx.lineWidth = 1.5;
+    octx.beginPath();
+    octx.moveTo(pad, 102);
+    octx.lineTo(width - pad, 102);
+    octx.stroke();
+
+    // Metrics Matrix Table
+    const tableY = 120;
+    octx.fillStyle = '#F8FAFC';
+    octx.fillRect(pad, tableY, width - (pad * 2), 32);
+    octx.strokeStyle = '#E2E8F0';
+    octx.strokeRect(pad, tableY, width - (pad * 2), 32);
+
+    octx.fillStyle = '#475569';
+    octx.font = 'bold 11px Arial, sans-serif';
+    octx.fillText('MONITORED STATION', pad + 15, tableY + 20);
+    octx.fillText('MIN PSI', pad + 520, tableY + 20);
+    octx.fillText('MAX PSI', pad + 660, tableY + 20);
+    octx.fillText('AVERAGE PSI', pad + 800, tableY + 20);
+    octx.fillText('READINGS', pad + 950, tableY + 20);
+    octx.fillText('OPERATIONAL STATUS', pad + 1100, tableY + 20);
+
+    let curRowY = tableY + 32;
+    stationStats.forEach((st, idx) => {
+      octx.fillStyle = idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
+      octx.fillRect(pad, curRowY, width - (pad * 2), 30);
+      octx.strokeStyle = '#F1F5F9';
+      octx.strokeRect(pad, curRowY, width - (pad * 2), 30);
+
+      octx.fillStyle = colors[idx % colors.length];
+      octx.beginPath();
+      octx.arc(pad + 20, curRowY + 15, 5, 0, Math.PI * 2);
+      octx.fill();
+
+      octx.fillStyle = '#0F172A';
+      octx.font = 'bold 12px Arial, sans-serif';
+      octx.fillText(st.name, pad + 35, curRowY + 19);
+
+      octx.font = '12px Courier, monospace';
+      octx.fillStyle = st.min <= st.thresh ? '#DC2626' : '#0F172A';
+      octx.fillText(`${st.min.toFixed(2)} PSI`, pad + 520, curRowY + 19);
+
+      octx.fillStyle = '#0F172A';
+      octx.fillText(`${st.max.toFixed(2)} PSI`, pad + 660, curRowY + 19);
+      octx.fillText(`${st.avg.toFixed(2)} PSI`, pad + 800, curRowY + 19);
+      octx.fillText(`${st.count}`, pad + 950, curRowY + 19);
+
+      octx.font = 'bold 11px Arial, sans-serif';
+      if (st.alertCount > 0) {
+        octx.fillStyle = '#DC2626';
+        octx.fillText(`⚠️ Low Pressure (${st.alertCount} logs ≤ ${st.thresh} PSI)`, pad + 1100, curRowY + 19);
+      } else {
+        octx.fillStyle = '#059669';
+        octx.fillText(`✓ Normal Operation (> ${st.thresh} PSI)`, pad + 1100, curRowY + 19);
+      }
+      curRowY += 30;
+    });
+
+    const chartY = curRowY + 20;
+    const chartW = width - (pad * 2);
+    const chartH = height - chartY - 60;
+    octx.drawImage(chartCanvas, pad, chartY, chartW, chartH);
+
+    const footY = height - 25;
+    octx.strokeStyle = '#E2E8F0';
+    octx.lineWidth = 1;
+    octx.beginPath();
+    octx.moveTo(pad, footY - 15);
+    octx.lineTo(width - pad, footY - 15);
+    octx.stroke();
+
+    octx.fillStyle = '#94A3B8';
+    octx.font = '10.5px Arial, sans-serif';
+    octx.fillText('PPCWD SCADA Telemetry System  •  Official Water Supply & Distribution Audit Record', pad, footY);
+
+    octx.textAlign = 'right';
+    octx.fillText('Puerto Princesa City Water District, Palawan, Philippines', width - pad, footY);
+    octx.textAlign = 'left';
+
+    const fileSafeNames = stations.map(s => s.name.replace(/[^a-zA-Z0-9]/g, '')).join('_').slice(0, 30);
+    const fileName = `PPCWD_Pressure_Report_${fileSafeNames}_${dF}_to_${dT}`;
+
+    if (format === 'png') {
+      outCanvas.toBlob(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.png`;
+        link.click();
+        statusEl.textContent = 'High-resolution PNG exported successfully!';
+        statusEl.style.color = 'var(--green)';
+        setTimeout(closeReportModal, 1200);
+      }, 'image/png');
+    } else {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const imgData = outCanvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', 0, 0, 297, 210, undefined, 'FAST');
+      pdf.save(`${fileName}.pdf`);
+      statusEl.textContent = 'Formal PDF Report exported successfully!';
+      statusEl.style.color = 'var(--green)';
+      setTimeout(closeReportModal, 1200);
+    }
   }
 
   // ── AUTO-REFRESH TIMER (Every 5 Minutes) ──
