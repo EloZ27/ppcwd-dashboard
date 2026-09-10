@@ -1995,29 +1995,61 @@
     } catch(err) { console.error("Production err", err); }
   }
 
+  // Helper to match database station names with frontend labels
+  function matchStation(dbRawName, s) {
+    const db = String(dbRawName || "").toLowerCase().trim();
+    const front = String(s.name || "").toLowerCase().trim();
+
+    // 1. Direct match
+    if (db === front) return true;
+
+    // 2. Specific aliases
+    if (db.includes("marcelo") && front.includes("gemma")) return true;
+    if (db.includes("uv") && front.includes("uv")) return true;
+    if (db.includes("lapu") && front.includes("lapu")) return true;
+
+    // 3. Keyword matching for Manalo intersections & known points
+    if (db.includes("valencia") && front.includes("valencia")) return true;
+    if (db.includes("roxas") && front.includes("roxas")) return true;
+    if (db.includes("ppci") && front.includes("ppci")) return true;
+    if (db.includes("villarosa") && front.includes("villarosa")) return true;
+    if (db.includes("escalante") && front.includes("escalante")) return true;
+    if (db.includes("marianne") && front.includes("marianne")) return true;
+    if (db.includes("camella") && front.includes("camella")) return true;
+    if (db.includes("tanduay") && front.includes("tanduay")) return true;
+    if (db.includes("princesa garden") && front.includes("princesa garden")) return true;
+
+    // 4. Normalized fallback (strip 'st', 'street', 'cor', 'rd', and non-alphanumerics)
+    const cleanDb = db.replace(/\b(street|st|cor|rd|ave)\b/gi, "").replace(/[^a-z0-9]/gi, "");
+    const cleanFront = front.replace(/\b(street|st|cor|rd|ave)\b/gi, "").replace(/[^a-z0-9]/gi, "");
+    return cleanDb.length > 3 && cleanDb === cleanFront;
+  }
+
   async function loadPressure(isAutoRefresh = false) {
     try {
       const res = await fetch('/api/getPressure');
       const dbData = await res.json();
       const grouped = {};
+
       dbData.forEach(row => {
         const dt = new Date(row.reading_time);
         dt.setSeconds(0, 0);
         const key = dt.getTime();
+
         if (!grouped[key]) {
           grouped[key] = { dt, vals: {} };
           PRESSURE_STATIONS.forEach(s => grouped[key].vals[s.col] = null);
         }
-        const st = PRESSURE_STATIONS.find(s => {
-          const dbName = String(row.station_name || "").toLowerCase();
-          const frontName = s.name.toLowerCase();
-          return dbName === frontName || (dbName.includes("marcelo") && frontName.includes("gemma")) || (dbName.includes("uv") && frontName.includes("uv"));
-        });
+
+        const st = PRESSURE_STATIONS.find(s => matchStation(row.station_name, s));
         if (st) grouped[key].vals[st.col] = row.psi;
       });
+
       pressureRaw = Object.values(grouped).sort((a, b) => a.dt - b.dt);
       if (typeof renderOverview === 'function') renderOverview();
-    } catch(e) { console.error("Pressure err", e); }
+    } catch(e) { 
+      console.error("Pressure err", e); 
+    }
   }
 
   async function loadRiverFlow() {
