@@ -887,11 +887,11 @@
       
       <!-- Left: Crisis Progress & Production Breakdown -->
       <div class="chart-card" style="display: flex; flex-direction: column; justify-content: space-between;">
-        <div class="chart-title">LWUA Drought & Production Target Tracking</div>
+        <div class="chart-title">Weekly Production Report</div>
         <div style="margin: 10px 0 20px;">
           <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: var(--font-mono); margin-bottom: 6px;">
             <span>City Proper Unified Progress</span>
-            <span id="ov-progress-label" style="font-weight: 600;">0% (Target: 391,233 m³)</span>
+            <span id="ov-progress-label" style="font-weight: 600;">0% (Target: 392,545 m³)</span>
           </div>
           <div style="background: rgba(255,255,255,0.08); height: 10px; border-radius: 5px; overflow: hidden;">
             <div id="ov-progress-bar" style="height: 100%; width: 0%; background: var(--teal2); transition: width 0.4s ease;"></div>
@@ -907,8 +907,8 @@
 
       <!-- Right: Primary Strategic Pressure Points -->
       <div class="chart-card" style="display: flex; flex-direction: column;">
-        <div class="chart-title">Strategic Pressure Transmission Nodes</div>
-        <div style="font-size: 10px; color: var(--text2); font-family: var(--font-mono); margin-bottom: 12px;">Live / snapshot readings from critical SCADA monitoring points</div>
+        <div class="chart-title">Pressure Transmission Nodes</div>
+        <div style="font-size: 10px; color: var(--text2); font-family: var(--font-mono); margin-bottom: 12px;">Live and recent readings from the pressure monitoring points</div>
         <div style="display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: space-around;">
           
           <!-- Manalo Booster -->
@@ -1023,7 +1023,7 @@
     </div>
     <div class="cap-note" style="border-top:none; border-bottom:1px solid var(--border); padding: 0 0 16px 0; margin-bottom: 24px; font-size: 11px;">
       <strong>LWUA Advisory Alert Criteria:</strong> 🟢 Level 1 (Watch): &lt; 10% drop (≥90% capacity) | 🟡 Level 2 (Alert): 10% to 25% drop (75% to 89.9%) | 🔴 Level 3 (Critical Emergency): &gt; 25% drop (&lt; 75%).<br>
-      <em>Note: Consolidated District Target is 397,681.32 m³/week (2,367.15 m³/hr). City Proper Main System Target is 391,233.36 m³/week (1,700,000 m³/month).</em>
+      <em>Note: Consolidated District Target is 392,544.66 m³/week (1,570,178.63 m³ for 4 weeks / 28 days vs 1,705,700.00 m³ monthly baseline).</em>
     </div>
 
     
@@ -1632,7 +1632,7 @@ const RIVER_STATIONS = [
     const overallSys = CRISIS_SYSTEMS.find(s => s.id === "overall_system");
     if (overallSys) {
       const actualAll = num(d.grandTotal) || overallSys.keys.reduce((sum, k) => sum + num(d[k]), 0);
-      const targetWeekly = overallSys.weeklyTarget || 397681.32;
+      const targetWeekly = overallSys.weeklyTarget || 392545;
       const pct = targetWeekly > 0 ? (actualAll / targetWeekly) * 100 : 0;
       const alert = getAlertInfo(pct);
 
@@ -1645,7 +1645,7 @@ const RIVER_STATIONS = [
       const sub = document.getElementById("ov-crisis-sub");
       if (sub) {
         const alertColor = alert.lvl === 1 ? "#34D399" : (alert.lvl === 2 ? "var(--amber2)" : "#FCA5A5");
-        sub.innerHTML = `<span style="font-weight:600; color:${alertColor};">${alert.name}</span> · Target: 397,681 m³/wk`;
+        sub.innerHTML = `<span style="font-weight:600; color:${alertColor};">${alert.name}</span> · Target: 392,545 m³/wk`;
       }
 
       const pLabel = document.getElementById("ov-progress-label");
@@ -4192,7 +4192,7 @@ setInterval(() => {
       </div>
       
       <div style="font-size:11px; color:var(--text2); margin-bottom:16px; line-height:1.4;">
-        Select a single week or span multiple weeks. Targets prorate to 397,681.32 m³/week (1,590,725.28 m³ for 4 weeks / 28 days vs 1,728,020.00 m³ monthly baseline).
+        Select a single week or span multiple weeks. Targets prorate to 392,544.66 m³/week (1,570,178.63 m³ for 4 weeks / 28 days vs 1,705,700.00 m³ monthly baseline).
       </div>
 
       <div style="display:flex; gap:8px; margin-bottom:16px;">
@@ -4271,7 +4271,7 @@ setInterval(() => {
 
     <div style="margin-top:20px; font-size:9px; color:#94A3B8; text-align:justify; line-height:1.4; border-top:1px solid #E2E8F0; padding-top:10px;">
       <strong>* Alert Level Standards:</strong> Evaluated using LWUA crisis criteria — Level 1 (Watch): Drop &lt; 10% (≥90% capacity) | Level 2 (Alert): Drop 10% to 25% (75% to 89.9%) | Level 3 (Critical): Drop &gt; 25% (&lt; 75%).<br>
-      <strong>* Target Calculation &amp; Proration:</strong> Production Division sets an overall consolidated benchmark of 1,728,020.00 m³/month (2,367.15 m³/hr across a standardized 730-hour month), equating to 397,681.32 m³/week. Because operational telemetry is logged in 7-day cycles, a 4-week period reflects exactly 28 days (672 operating hours), prorating to 1,590,725.28 m³. Prorating to elapsed hours maintains mathematical accuracy against actual recorded production.<br>
+      <strong>* Target Calculation &amp; Proration:</strong> Production Division sets an overall consolidated benchmark of 1,705,700.00 m³/month (2,336.58 m³/hr across a standardized 730-hour month), equating to 392,544.66 m³/week. Because operational telemetry is logged in 7-day cycles, a 4-week period reflects exactly 28 days (672 operating hours), prorating to 1,570,178.63 m³. Prorating to elapsed hours maintains mathematical accuracy against actual recorded production.<br>
       <strong>Prepared by:</strong> Task Force El Niño Committee — PPCWD &nbsp;|&nbsp; <strong>Report generated via PPCWD Monitoring Dashboard.</strong>
     </div>
   </div>
