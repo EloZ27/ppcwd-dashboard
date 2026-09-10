@@ -1528,6 +1528,7 @@
       const alertThreshold = s.customAlertPsi || ALERT_PSI;
       const isAlert = val !== null && val <= alertThreshold;
       const hasData = val !== null;
+      const inCompare = compareStations.some(cs => cs.col === s.col);
 
       let dotClass = "pressure-dot dot-nodata";
       if(hasData) dotClass = isAlert ? "pressure-dot dot-alert" : "pressure-dot dot-ok";
@@ -1536,7 +1537,6 @@
       if(cIdx === 0) dotClass += " dot-compare-1";
       if(cIdx === 1) dotClass += " dot-compare-2";
 
-      // 46px Circle with 1-decimal point precision
       const label = val !== null ? fmt(val, 1) : "—";
       const icon = L.divIcon({
         className: "",
@@ -1561,8 +1561,10 @@
             ${isAlert ? '⚠️ Pressure below threshold' : '✓ Normal operating pressure'}
           </div>
           <div style="display:flex; gap:6px;">
-            <button onclick="viewHistoryFromPopup(${s.col})" style="flex:1; padding:6px 0; border-radius:6px; background:#0D9488; color:white; border:none; font-family:var(--font-mono); font-size:10px; font-weight:600; cursor:pointer;">History</button>
-            <button onclick="toggleCompareFromPopup(${s.col})" style="flex:1; padding:6px 0; border-radius:6px; background:#EFF6FF; border:1px solid #BFDBFE; color:#2563EB; font-family:var(--font-mono); font-size:10px; font-weight:600; cursor:pointer;">+ Compare</button>
+            <button onclick="viewHistoryFromPopup(${s.col})" style="flex:1; padding:6px 0; border-radius:6px; background:#0D9488; color:white; border:none; font-family:var(--font-mono); font-size:10px; font-weight:600; cursor:pointer;">View</button>
+            <button onclick="toggleCompareFromPopup(${s.col})" style="flex:1; padding:6px 0; border-radius:6px; background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; font-family:var(--font-mono); font-size:10px; font-weight:600; cursor:pointer;">
+              ${inCompare ? '✕ Remove' : '+ Compare'}
+            </button>
           </div>
         </div>
       `;
@@ -1582,46 +1584,67 @@
     const priorityStations = PRESSURE_STATIONS.filter(s => PRIORITY_NAMES.includes(s.name));
     const regularStations  = PRESSURE_STATIONS.filter(s => !PRIORITY_NAMES.includes(s.name));
 
+    // Priority Cards
     priorityEl.innerHTML = priorityStations.map(s => {
       const { recent, isFallback } = getLatestOrFallback(s);
       const val = recent ? recent.vals[s.col] : null;
       const alertThreshold = s.customAlertPsi || ALERT_PSI;
       const isAlert = val !== null && val <= alertThreshold;
+      const inCompare = compareStations.some(cs => cs.col === s.col);
       const timeStr = recent && recent.dt ? 
         recent.dt.toLocaleDateString("en-PH") + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
 
       return `
-        <div class="kpi-card-white" style="border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; cursor:pointer;" onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))">
+        <div class="kpi-card-white" style="border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}">
           <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">${s.name}</div>
-          <div style="font-size:32px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'};">
+          <div style="font-size:32px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; margin: 4px 0;">
             ${val !== null ? fmt(val, 2) : "—"}<span style="font-size:11px; color:var(--text-muted); font-weight:500;">PSI</span>
           </div>
           <div style="font-size:10px; color:${isAlert ? 'var(--red)' : 'var(--green)'}; font-weight:600;">
             ${isAlert ? '⚠️ Below Threshold' : '✓ Normal Operations'}
           </div>
-          <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:6px;">
+          <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
             🕒 ${timeStr} ${isFallback ? '(Last recorded)' : ''}
+          </div>
+
+          <div style="display:flex; gap:6px; margin-top:10px; border-top: 1px solid var(--card-border); padding-top:8px;">
+            <button onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:4px 8px; font-size:10px;">
+              View History
+            </button>
+            <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:4px 8px; font-size:10px; ${inCompare ? 'background:var(--red-light); color:var(--red); border-color:var(--red-border);' : 'background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);'}">
+              ${inCompare ? '✕ Remove' : '+ Compare'}
+            </button>
           </div>
         </div>
       `;
     }).join("");
 
+    // Distribution Station Grid Cards
     regularEl.innerHTML = regularStations.map(s => {
       const { recent, isFallback } = getLatestOrFallback(s);
       const val = recent ? recent.vals[s.col] : null;
       const alertThreshold = s.customAlertPsi || ALERT_PSI;
       const isAlert = val !== null && val <= alertThreshold;
+      const inCompare = compareStations.some(cs => cs.col === s.col);
       const timeStr = recent && recent.dt ? 
         recent.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
 
       return `
-        <div class="kpi-card-white" style="padding:12px; cursor:pointer;" onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))">
-          <div style="font-size:10px; font-weight:600; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</div>
-          <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'};">
-            ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted);">PSI</span>
+        <div class="kpi-card-white" style="padding:10px 12px; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
+            <div style="font-size:10px; font-weight:600; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${s.name}">${s.name}</div>
+            <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;">
+              ${inCompare ? '✕' : '+ Compare'}
+            </button>
           </div>
-          <div style="font-size:9px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
-            ${timeStr} ${isFallback ? '*' : ''}
+
+          <div onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="cursor:pointer;">
+            <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'};">
+              ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted);">PSI</span>
+            </div>
+            <div style="font-size:9px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
+              ${timeStr} ${isFallback ? '*' : ''}
+            </div>
           </div>
         </div>
       `;
@@ -1666,21 +1689,33 @@
   function showChartPanel(station){
     compareStations = [station];
     buildCompareChart();
-    document.getElementById("compare-clear").style.display = "block";
+    buildLeafletMarkers();
+    buildStationCards();
+    const clearBtn = document.getElementById("compare-clear");
+    if (clearBtn) clearBtn.style.display = "block";
+    document.getElementById("chart-active-panel").scrollIntoView({ behavior: 'smooth' });
   }
 
   function addStationToCompare(station){
     const idx = compareStations.findIndex(s => s.col === station.col);
-    if(idx >= 0) compareStations.splice(idx, 1);
-    else {
-      if(compareStations.length >= 2) compareStations.shift();
+    if (idx >= 0) {
+      compareStations.splice(idx, 1);
+    } else {
+      if (compareStations.length >= 4) {
+        compareStations.shift(); // Cycle off oldest to keep maximum 4
+      }
       compareStations.push(station);
     }
+
     buildLeafletMarkers();
-    document.getElementById("compare-clear").style.display = compareStations.length > 0 ? "block" : "none";
-    if(compareStations.length === 0) {
+    buildStationCards();
+
+    const clearBtn = document.getElementById("compare-clear");
+    if (clearBtn) clearBtn.style.display = compareStations.length > 0 ? "block" : "none";
+
+    if (compareStations.length === 0) {
       document.getElementById("chart-active-panel").style.display = "none";
-      if(pressureChart) { pressureChart.destroy(); pressureChart = null; }
+      if (pressureChart) { pressureChart.destroy(); pressureChart = null; }
     } else {
       buildCompareChart();
     }
@@ -1688,10 +1723,12 @@
 
   function clearCompare(){
     compareStations = [];
-    if(pressureChart) { pressureChart.destroy(); pressureChart = null; }
+    if (pressureChart) { pressureChart.destroy(); pressureChart = null; }
     document.getElementById("chart-active-panel").style.display = "none";
-    document.getElementById("compare-clear").style.display = "none";
+    const clearBtn = document.getElementById("compare-clear");
+    if (clearBtn) clearBtn.style.display = "none";
     buildLeafletMarkers();
+    buildStationCards();
   }
 
   function buildCompareChart(){
@@ -1702,7 +1739,6 @@
 
     let pool = pressureRaw;
 
-    // 1. Time filtering: Time Machine date vs. 24h/7d sliding window
     if (activeDateFilter) {
       pool = pressureRaw.filter(r => {
         if (!r.dt) return false;
@@ -1711,33 +1747,27 @@
         return rd.getTime() === fd.getTime();
       });
     } else if (pool.length > 0) {
-      // Calculate cutoff based on the newest recorded reading in the dataset
       const latestTime = pool[pool.length - 1].dt ? pool[pool.length - 1].dt.getTime() : Date.now();
       const hoursWindow = currentRange === "7d" ? (7 * 24) : 24;
       const cutoff = latestTime - (hoursWindow * 60 * 60 * 1000);
-
       const filtered = pool.filter(r => r.dt && r.dt.getTime() >= cutoff);
       pool = filtered.length > 0 ? filtered : pool.slice(-24);
     }
 
-    // 2. Format X-Axis timestamps
     const labels = pool.map(r => {
       if (!r.dt) return "";
       const d = r.dt;
-      const m = d.getMonth() + 1;
-      const day = d.getDate();
-      const timeStr = d.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
-      return `${m}/${day} ${timeStr}`;
+      return `${d.getMonth() + 1}/${d.getDate()} ${d.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })}`;
     });
 
-    const colors = ['#2563EB', '#0D9488'];
+    const colors = ['#2563EB', '#0D9488', '#F59E0B', '#8B5CF6'];
+    const bgColors = ['rgba(37,99,235,0.06)', 'rgba(13,148,136,0.06)', 'rgba(245,158,11,0.06)', 'rgba(139,92,246,0.06)'];
 
-    // 3. Build Station Datasets
     const datasets = compareStations.map((s, i) => ({
       label: s.name,
       data: pool.map(r => r.vals[s.col]),
       borderColor: colors[i % colors.length],
-      backgroundColor: colors[i % colors.length] === '#2563EB' ? 'rgba(37,99,235,0.06)' : 'rgba(13,148,136,0.06)',
+      backgroundColor: bgColors[i % bgColors.length],
       borderWidth: 2,
       pointRadius: pool.length > 50 ? 2 : 3,
       fill: compareStations.length === 1,
@@ -1745,7 +1775,6 @@
       spanGaps: true
     }));
 
-    // 4. Critical Alert Reference Line
     datasets.push({
       label: "Alert 6.5 PSI",
       data: labels.map(() => ALERT_PSI),
@@ -1756,7 +1785,6 @@
       fill: false
     });
 
-    // 5. Custom High-Pressure Alert Lines (e.g., UV Facility 110 PSI, Campo Uno 90 PSI)
     compareStations.forEach(s => {
       if (s.customAlertPsi) {
         datasets.push({
@@ -1772,12 +1800,13 @@
     });
 
     document.getElementById("chart-active-panel").style.display = "block";
-    document.getElementById("panel-station-name").textContent = compareStations.map(s => s.name).join(" vs ");
+    document.getElementById("panel-station-name").textContent = compareStations.length === 1 
+      ? compareStations[0].name 
+      : `Comparison (${compareStations.length} Stations)`;
     document.getElementById("panel-station-sub").textContent = activeDateFilter 
       ? `Date Snapshot: ${activeDateFilter.toLocaleDateString('en-PH')} (${pool.length} points)`
       : `Showing last ${currentRange === '7d' ? '7 days' : '24 hours'} (${pool.length} readings)`;
 
-    // 6. Instantiate Chart with Zoom and Drag enabled
     const ctx = document.getElementById("chart-pressure").getContext("2d");
     pressureChart = new Chart(ctx, {
       type: "line",
@@ -1785,74 +1814,43 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false
-        },
+        interaction: { mode: 'index', intersect: false },
         plugins: {
-          legend: {
-            position: 'top',
-            labels: { boxWidth: 12, font: { family: 'Plus Jakarta Sans', size: 11 } }
-          },
+          legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Plus Jakarta Sans', size: 11 } } },
           tooltip: {
             backgroundColor: '#0F172A',
-            titleFont: { family: 'Plus Jakarta Sans', size: 11 },
-            bodyFont: { family: 'JetBrains Mono', size: 11 },
-            padding: 10,
             callbacks: {
               label: ctx => {
                 if (ctx.dataset.label && ctx.dataset.label.includes("Alert")) return null;
                 const v = ctx.raw;
-                if (v === null || v === undefined) return ` ${ctx.dataset.label}: No data`;
-                return ` ${ctx.dataset.label}: ${fmt(v, 2)} PSI`;
+                return v !== null && v !== undefined ? ` ${ctx.dataset.label}: ${fmt(v, 2)} PSI` : ` ${ctx.dataset.label}: No data`;
               }
             }
           },
           zoom: {
-            pan: {
-              enabled: true,
-              mode: 'x',
-              modifierKey: null // Drag directly with mouse click or touch
-            },
-            zoom: {
-              wheel: {
-                enabled: true,
-                speed: 0.1 // Smooth mouse-wheel scrolling
-              },
-              pinch: {
-                enabled: true // Pinch zoom on mobile / trackpad
-              },
-              mode: 'x'
-            }
+            pan: { enabled: true, mode: 'x', modifierKey: null },
+            zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x' }
           }
         },
         scales: {
-          x: {
-            grid: { color: "#F1F5F9" },
-            ticks: {
-              font: { family: 'JetBrains Mono', size: 9 },
-              maxTicksLimit: 12,
-              maxRotation: 45
-            }
-          },
-          y: {
-            title: { display: true, text: "PSI", font: { family: 'JetBrains Mono', size: 10 } },
-            grid: { color: "#F1F5F9" },
-            ticks: { font: { family: 'JetBrains Mono', size: 10 } },
-            suggestedMin: 0,
-            suggestedMax: 20
-          }
+          x: { grid: { color: "#F1F5F9" }, ticks: { font: { family: 'JetBrains Mono', size: 9 }, maxTicksLimit: 12, maxRotation: 45 } },
+          y: { title: { display: true, text: "PSI" }, grid: { color: "#F1F5F9" }, suggestedMin: 0, suggestedMax: 20 }
         }
       }
     });
 
-    // 7. Update bottom summary chips
+    // Chips above chart with individual removal (✕)
     const strip = document.getElementById("latest-strip");
     if (strip) {
       strip.innerHTML = compareStations.map(s => {
         const { recent } = getLatestOrFallback(s);
         const val = recent ? recent.vals[s.col] : null;
-        return `<span class="kpi-badge-pill pill-blue">${s.name}: <b>${val !== null ? fmt(val, 2) + ' PSI' : '—'}</b></span>`;
+        return `
+          <span class="kpi-badge-pill pill-blue" style="padding:4px 8px; font-size:11px; display:inline-flex; align-items:center; gap:6px;">
+            ${s.name}: <b>${val !== null ? fmt(val, 2) + ' PSI' : '—'}</b>
+            <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:none; border:none; color:var(--red); font-size:12px; font-weight:800; cursor:pointer; line-height:1;" title="Remove from compare">✕</button>
+          </span>
+        `;
       }).join("");
     }
   }
