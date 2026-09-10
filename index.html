@@ -726,9 +726,10 @@
               <div id="panel-station-name" style="font-size:15px; font-weight:700; color:var(--text-main);">Pressure History</div>
               <div id="panel-station-sub" style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Telemetry History</div>
             </div>
-            <div style="display:flex; gap:6px;">
-              <button class="header-btn active" onclick="setRange(this,'24h')">24h</button>
-              <button class="header-btn" onclick="setRange(this,'7d')">7 Days</button>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="header-btn active" id="btn-range-24h" onclick="setRange(this,'24h')">24h</button>
+              <button class="header-btn" id="btn-range-7d" onclick="setRange(this,'7d')">7 Days</button>
+              <button class="header-btn" onclick="resetChartZoom()" style="color:var(--text-muted);">🔍 Reset Zoom</button>
               <button class="header-btn" onclick="openReportModal()" style="color:var(--blue);">📄 Export Report</button>
             </div>
           </div>
@@ -1694,66 +1695,186 @@
   }
 
   function buildCompareChart(){
-    if(pressureChart) { pressureChart.destroy(); pressureChart = null; }
-    let pool = activeDateFilter ? pressureRaw.filter(r => {
-      if(!r.dt) return false;
-      const rd = new Date(r.dt); rd.setHours(0,0,0,0);
-      const fd = new Date(activeDateFilter); fd.setHours(0,0,0,0);
-      return rd.getTime() === fd.getTime();
-    }) : pressureRaw;
+    if (pressureChart) { 
+      pressureChart.destroy(); 
+      pressureChart = null; 
+    }
 
-    if (!pool.length) pool = pressureRaw;
+    let pool = pressureRaw;
 
-    const labels = pool.map(r => r.dt ? `${r.dt.getMonth()+1}/${r.dt.getDate()} ${r.dt.getHours().toString().padStart(2,"0")}:${r.dt.getMinutes().toString().padStart(2,"0")}` : "");
+    // 1. Time filtering: Time Machine date vs. 24h/7d sliding window
+    if (activeDateFilter) {
+      pool = pressureRaw.filter(r => {
+        if (!r.dt) return false;
+        const rd = new Date(r.dt); rd.setHours(0, 0, 0, 0);
+        const fd = new Date(activeDateFilter); fd.setHours(0, 0, 0, 0);
+        return rd.getTime() === fd.getTime();
+      });
+    } else if (pool.length > 0) {
+      // Calculate cutoff based on the newest recorded reading in the dataset
+      const latestTime = pool[pool.length - 1].dt ? pool[pool.length - 1].dt.getTime() : Date.now();
+      const hoursWindow = currentRange === "7d" ? (7 * 24) : 24;
+      const cutoff = latestTime - (hoursWindow * 60 * 60 * 1000);
+
+      const filtered = pool.filter(r => r.dt && r.dt.getTime() >= cutoff);
+      pool = filtered.length > 0 ? filtered : pool.slice(-24);
+    }
+
+    // 2. Format X-Axis timestamps
+    const labels = pool.map(r => {
+      if (!r.dt) return "";
+      const d = r.dt;
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      const timeStr = d.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+      return `${m}/${day} ${timeStr}`;
+    });
+
     const colors = ['#2563EB', '#0D9488'];
 
+    // 3. Build Station Datasets
     const datasets = compareStations.map((s, i) => ({
       label: s.name,
       data: pool.map(r => r.vals[s.col]),
-      borderColor: colors[i],
-      backgroundColor: colors[i] === '#2563EB' ? 'rgba(37,99,235,0.06)' : 'rgba(13,148,136,0.06)',
+      borderColor: colors[i % colors.length],
+      backgroundColor: colors[i % colors.length] === '#2563EB' ? 'rgba(37,99,235,0.06)' : 'rgba(13,148,136,0.06)',
       borderWidth: 2,
-      pointRadius: 3,
+      pointRadius: pool.length > 50 ? 2 : 3,
       fill: compareStations.length === 1,
       tension: 0.25,
       spanGaps: true
     }));
 
+    // 4. Critical Alert Reference Line
     datasets.push({
       label: "Alert 6.5 PSI",
       data: labels.map(() => ALERT_PSI),
       borderColor: "#EF4444",
       borderWidth: 1.5,
       borderDash: [6, 4],
-      pointRadius: 0
+      pointRadius: 0,
+      fill: false
+    });
+
+    // 5. Custom High-Pressure Alert Lines (e.g., UV Facility 110 PSI, Campo Uno 90 PSI)
+    compareStations.forEach(s => {
+      if (s.customAlertPsi) {
+        datasets.push({
+          label: `Alert (${s.name})`,
+          data: labels.map(() => s.customAlertPsi),
+          borderColor: "rgba(239, 68, 68, 0.5)",
+          borderWidth: 1.5,
+          borderDash: [4, 4],
+          pointRadius: 0,
+          fill: false
+        });
+      }
     });
 
     document.getElementById("chart-active-panel").style.display = "block";
     document.getElementById("panel-station-name").textContent = compareStations.map(s => s.name).join(" vs ");
-    document.getElementById("panel-station-sub").textContent = `Pressure history tracking (${pool.length} data points)`;
+    document.getElementById("panel-station-sub").textContent = activeDateFilter 
+      ? `Date Snapshot: ${activeDateFilter.toLocaleDateString('en-PH')} (${pool.length} points)`
+      : `Showing last ${currentRange === '7d' ? '7 days' : '24 hours'} (${pool.length} readings)`;
 
-    pressureChart = new Chart(document.getElementById("chart-pressure"), {
+    // 6. Instantiate Chart with Zoom and Drag enabled
+    const ctx = document.getElementById("chart-pressure").getContext("2d");
+    pressureChart = new Chart(ctx, {
       type: "line",
       data: { labels, datasets },
       options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: { y: { title: { display: true, text: "PSI" }, suggestedMin: 0, suggestedMax: 20 } }
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { boxWidth: 12, font: { family: 'Plus Jakarta Sans', size: 11 } }
+          },
+          tooltip: {
+            backgroundColor: '#0F172A',
+            titleFont: { family: 'Plus Jakarta Sans', size: 11 },
+            bodyFont: { family: 'JetBrains Mono', size: 11 },
+            padding: 10,
+            callbacks: {
+              label: ctx => {
+                if (ctx.dataset.label && ctx.dataset.label.includes("Alert")) return null;
+                const v = ctx.raw;
+                if (v === null || v === undefined) return ` ${ctx.dataset.label}: No data`;
+                return ` ${ctx.dataset.label}: ${fmt(v, 2)} PSI`;
+              }
+            }
+          },
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: 'x',
+              modifierKey: null // Drag directly with mouse click or touch
+            },
+            zoom: {
+              wheel: {
+                enabled: true,
+                speed: 0.1 // Smooth mouse-wheel scrolling
+              },
+              pinch: {
+                enabled: true // Pinch zoom on mobile / trackpad
+              },
+              mode: 'x'
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: "#F1F5F9" },
+            ticks: {
+              font: { family: 'JetBrains Mono', size: 9 },
+              maxTicksLimit: 12,
+              maxRotation: 45
+            }
+          },
+          y: {
+            title: { display: true, text: "PSI", font: { family: 'JetBrains Mono', size: 10 } },
+            grid: { color: "#F1F5F9" },
+            ticks: { font: { family: 'JetBrains Mono', size: 10 } },
+            suggestedMin: 0,
+            suggestedMax: 20
+          }
+        }
       }
     });
 
+    // 7. Update bottom summary chips
     const strip = document.getElementById("latest-strip");
-    strip.innerHTML = compareStations.map(s => {
-      const { recent } = getLatestOrFallback(s);
-      const val = recent ? recent.vals[s.col] : null;
-      return `<span class="kpi-badge-pill pill-blue">${s.name}: <b>${val !== null ? fmt(val, 2) + ' PSI' : '—'}</b></span>`;
-    }).join("");
+    if (strip) {
+      strip.innerHTML = compareStations.map(s => {
+        const { recent } = getLatestOrFallback(s);
+        const val = recent ? recent.vals[s.col] : null;
+        return `<span class="kpi-badge-pill pill-blue">${s.name}: <b>${val !== null ? fmt(val, 2) + ' PSI' : '—'}</b></span>`;
+      }).join("");
+    }
   }
 
   function setRange(btn, range){
     currentRange = range;
-    document.querySelectorAll("#chart-active-panel .header-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#chart-active-panel .header-btn").forEach(b => {
+      if (b.id === 'btn-range-24h' || b.id === 'btn-range-7d') b.classList.remove("active");
+    });
     btn.classList.add("active");
-    if(compareStations.length > 0) buildCompareChart();
+    if (compareStations.length > 0) buildCompareChart();
+  }
+
+  function resetChartZoom() {
+    if (pressureChart) {
+      pressureChart.resetZoom();
+    }
+  }
+
+  function showPressureStationDetails(col) {
+    const s = PRESSURE_STATIONS.find(st => st.col === col);
+    if (s) showChartPanel(s);
   }
 
   function stepTime(hrs) {
