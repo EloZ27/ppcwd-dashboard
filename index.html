@@ -563,22 +563,7 @@
         </div>
       </div>
 
-      <!-- ── TAB 1: OVERVIEW ── -->
-        <div class="card" style="margin-bottom: 20px; padding: 16px 20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div>
-              <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Monthly Production &bull; LWUA 5% Trigger Monitoring</div>
-              <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-top:2px;" id="ov-monthly-headline">Target: 1,705,700 m³/mo &bull; Cutoff: 1,620,415 m³/mo</div>
-            </div>
-            <div style="display:flex; align-items:center; gap:12px;">
-              <div id="ov-monthly-kpi" style="font-family:var(--font-mono); font-size:13px; font-weight:800;">—</div>
-              <button onclick="switchNavTab('monthly')" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">
-                Open Monthly Portal &rarr;
-              </button>
-            </div>
-          </div>
-        </div>
-      
+      <!-- ── TAB 1: OVERVIEW ── -->   
       <div class="page-content active" id="page-overview">
         <div class="kpi-row-layout">
           <div class="kpi-card-white">
@@ -605,6 +590,21 @@
             <div class="kpi-card-lbl">Active Consumer Reports</div>
             <div class="kpi-card-num" id="ov-complaints-count" style="color: var(--red);">—</div>
             <div class="kpi-card-foot" id="ov-complaints-sub" style="color: var(--text-muted);">Verified complaints</div>
+          </div>
+          <!-- Monthly Production LWUA 5% Executive Highlight Card -->
+          <div class="card" style="margin-bottom: 20px; padding: 16px 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Monthly Production &bull; LWUA 5% Trigger Monitoring</div>
+                <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-top:2px;" id="ov-monthly-headline">Target: 1,705,700 m³/mo &bull; Cutoff: 1,620,415 m³/mo</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div id="ov-monthly-kpi" style="font-family:var(--font-mono); font-size:13px; font-weight:800;">—</div>
+                <button onclick="switchNavTab('monthly')" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">
+                  Open Monthly Portal &rarr;
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
