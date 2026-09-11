@@ -515,7 +515,7 @@
         <button class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon">⚠️</span><span>Crisis Monitor</span></button>
         <button class="nav-btn" onclick="switchNavTab('riverflow')"><span class="nav-icon">🌊</span><span>River Hydrology</span></button>
         <button class="nav-btn" onclick="switchNavTab('complaints')"><span class="nav-icon">📋</span><span>Customer Reports</span></button>
-
+        <button class="nav-btn" onclick="switchNavTab('monthly')"><span class="nav-icon">📅</span><span>Monthly Report</span></button>
         <div class="sidebar-divider"></div>
         <a href="uploader.html" class="nav-btn" style="color: #38BDF8;"><span class="nav-icon">⚡</span><span>Genset &amp; Data Admin</span></a>
       </nav>
@@ -564,6 +564,21 @@
       </div>
 
       <!-- ── TAB 1: OVERVIEW ── -->
+        <div class="card" style="border-left: 4px solid var(--blue); margin-bottom: 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Monthly Production &bull; LWUA 5% Trigger Monitoring</div>
+              <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-top:2px;" id="ov-monthly-headline">Target: 1,705,700 m³/mo &bull; Cutoff: 1,620,415 m³/mo</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div id="ov-monthly-kpi" style="font-family:var(--font-mono); font-size:14px; font-weight:800;">—</div>
+              <button onclick="switchNavTab('monthly')" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                Open Monthly Portal &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      
       <div class="page-content active" id="page-overview">
         <div class="kpi-row-layout">
           <div class="kpi-card-white">
@@ -831,6 +846,195 @@
         <div class="table-container">
           <div class="table-head-bar"><div class="table-head-title">Customer Care Verified Incidents Feed</div></div>
           <div id="complaints-feed" style="padding:14px; max-height:500px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+      </div>
+
+      <!-- ── TAB 7: MONTHLY PRODUCTION CAPACITY & UTILIZATION ── -->
+      <div class="page-content" id="page-monthly">
+        
+        <!-- Header Controls Bar -->
+        <div class="card" style="margin-bottom: 16px; padding: 14px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-weight:700; color:var(--text-main);">Reporting Month:</span>
+              <input type="month" id="monthly-picker" class="header-btn" onchange="loadMonthlyData(this.value)">
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue);">
+                ✏️ Input / Edit Volumes
+              </button>
+              <button class="header-btn" onclick="exportMonthlyXLS()" style="color:var(--green); border-color:var(--green-border);">
+                📊 Export Excel (XLS)
+              </button>
+              <button class="header-btn" onclick="generateMonthlyPDF()" style="color:var(--red); border-color:var(--red-border);">
+                📄 Export PDF Report
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="kpi-row-layout">
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Monthly Target</div>
+            <div class="kpi-card-num">1,705,700<span class="unit">m³</span></div>
+            <div class="kpi-card-foot">2,336.58 m³/hr (730 hrs)</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">LWUA 5% Cutoff</div>
+            <div class="kpi-card-num" style="color:var(--amber);">1,620,415<span class="unit">m³</span></div>
+            <div class="kpi-card-foot">Mandatory notice threshold</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Actual Produced</div>
+            <div class="kpi-card-num" id="m-kpi-actual">—<span class="unit">m³</span></div>
+            <div class="kpi-card-foot" id="m-kpi-pct">—% of target</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Hourly Equivalent</div>
+            <div class="kpi-card-num" id="m-kpi-hourly">—<span class="unit">m³/h</span></div>
+            <div class="kpi-card-foot">Standard: 2,336.58 m³/h</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">LWUA Action Status</div>
+            <div class="kpi-card-num" id="m-kpi-status" style="font-size:16px;">—</div>
+            <div class="kpi-card-foot" id="m-kpi-status-sub">—</div>
+          </div>
+        </div>
+
+        <!-- Charts: Source Split & Production Breakdown -->
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 20px;">
+          <div class="card">
+            <div class="card-title">SW vs GW Monthly Share</div>
+            <div style="height: 240px;"><canvas id="chart-monthly-pie"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Top 10 Producing Stations (m³/month)</div>
+            <div style="height: 240px;"><canvas id="chart-monthly-bar"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Detailed Stations Table -->
+        <div class="table-container">
+          <div class="table-head-bar">
+            <div class="table-head-title">Station Capacity &amp; Monthly Utilization Ledger (34 Stations)</div>
+            <span id="monthly-table-record-count" style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">0 / 34 entered</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Station Name</th>
+                  <th>Classification</th>
+                  <th class="right">Monthly Production (m³)</th>
+                  <th class="right">Hourly Yield (m³/hr)</th>
+                  <th class="right">% Share</th>
+                  <th class="right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="monthly-station-tbody">
+                <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No records found for this month. Click "Input / Edit Volumes" to enter data.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── MODAL: DIRECT VOLUMETRIC INPUT (SUPABASE) ── -->
+      <div id="monthly-input-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFFFFF; border-radius:14px; width:940px; max-width:96vw; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.25);">
+          
+          <div style="padding:18px 24px; border-bottom:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h3 style="font-size:16px; font-weight:800; color:var(--text-main);">Input Monthly Production Capacity (34 Stations)</h3>
+              <p style="font-size:11px; color:var(--text-muted);">Direct cloud sync to Supabase &bull; Auto-computes hourly rate (÷ 730 hrs)</p>
+            </div>
+            <button onclick="closeMonthlyInputModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">✕</button>
+          </div>
+
+          <form id="monthly-data-form" onsubmit="submitMonthlyData(event)" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+            
+            <div style="padding:12px 24px; background:#F8FAFC; border-bottom:1px solid var(--card-border); display:flex; align-items:center; gap:12px;">
+              <label style="font-weight:700; font-size:12px;">Target Month:</label>
+              <input type="month" id="modal-month-picker" class="header-btn" required>
+            </div>
+
+            <div style="flex:1; overflow-y:auto; padding:20px 24px;">
+              <h4 style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--teal); font-family:var(--font-mono); margin-bottom:10px; border-bottom:1px solid var(--teal-border); padding-bottom:4px;">Surface Water Stations (15)</h4>
+              <div id="modal-sw-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px;"></div>
+
+              <h4 style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--blue); font-family:var(--font-mono); margin-bottom:10px; border-bottom:1px solid var(--blue-border); padding-bottom:4px;">Groundwater Stations (19)</h4>
+              <div id="modal-gw-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+            </div>
+
+            <div style="padding:14px 24px; border-top:1px solid var(--card-border); background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+              <span id="modal-submit-status" style="font-size:11px; font-weight:600; color:var(--text-muted);"></span>
+              <div style="display:flex; gap:8px;">
+                <button type="button" onclick="closeMonthlyInputModal()" class="header-btn">Cancel</button>
+                <button type="submit" id="btn-save-monthly" class="header-btn" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">Save to Supabase</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      <!-- ── HIDDEN A4 PDF TEMPLATE: MONTHLY LWUA REPORT ── -->
+      <div id="hidden-monthly-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Plus Jakarta Sans',sans-serif; padding:40px; box-sizing:border-box;">
+        <div style="border-bottom: 2px solid #1560BD; padding-bottom: 8px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:flex-end;">
+          <div>
+            <h1 style="margin:0; font-size:20px; color:#1560BD; font-weight:800;">MONTHLY PRODUCTION CAPACITY &amp; UTILIZATION REPORT</h1>
+            <div style="font-size:11px; color:#64748B;">Puerto Princesa City Water District &bull; Task Force El Niño</div>
+          </div>
+          <div style="text-align:right;">
+            <div id="mr-pdf-period" style="font-size:13px; font-weight:700;"></div>
+            <div id="mr-pdf-date" style="font-size:10px; color:#94A3B8;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:16px;">
+          <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:10px; border-radius:6px;">
+            <div style="font-size:9px; color:#64748B; font-weight:700;">TARGET SUPPLY</div>
+            <div style="font-size:16px; font-weight:800; font-family:var(--font-mono);">1,705,700 m³</div>
+            <div style="font-size:8px; color:#64748B;">2,336.58 m³/hr (730 hrs)</div>
+          </div>
+          <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:10px; border-radius:6px;">
+            <div style="font-size:9px; color:#64748B; font-weight:700;">LWUA 5% CUTOFF</div>
+            <div style="font-size:16px; font-weight:800; color:#D97706; font-family:var(--font-mono);">1,620,415 m³</div>
+            <div style="font-size:8px; color:#64748B;">Trigger for mandatory notice</div>
+          </div>
+          <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:10px; border-radius:6px;">
+            <div style="font-size:9px; color:#64748B; font-weight:700;">ACTUAL PRODUCED</div>
+            <div id="mr-pdf-actual" style="font-size:16px; font-weight:800; font-family:var(--font-mono);">—</div>
+            <div id="mr-pdf-hourly" style="font-size:8px; color:#64748B;">— m³/hr</div>
+          </div>
+          <div style="flex:1; background:#F8FAFC; border:1px solid #E2E8F0; padding:10px; border-radius:6px;">
+            <div style="font-size:9px; color:#64748B; font-weight:700;">LWUA COMPLIANCE</div>
+            <div id="mr-pdf-status" style="font-size:12px; font-weight:800;">—</div>
+            <div id="mr-pdf-var" style="font-size:8px;">—</div>
+          </div>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; font-size:10px;">
+          <thead>
+            <tr style="background:#F1F5F9; border-bottom:2px solid #CBD5E1;">
+              <th style="padding:6px 8px; text-align:left;">Station Name</th>
+              <th style="padding:6px 8px; text-align:left;">Type</th>
+              <th style="padding:6px 8px; text-align:right;">Monthly Volume (m³)</th>
+              <th style="padding:6px 8px; text-align:right;">Hourly Rate (m³/hr)</th>
+              <th style="padding:6px 8px; text-align:right;">% Share</th>
+            </tr>
+          </thead>
+          <tbody id="mr-pdf-tbody"></tbody>
+        </table>
+
+        <div style="margin-top:14px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:8px; line-height:1.4;">
+          <strong>LWUA Regulatory Benchmark:</strong> Under mandatory guidelines, when aggregate actual monthly supply falls below 5% of the 1,705,700 m³ operational baseline (&lt; 1,620,415 m³), formal notification and drought contingency schedules must be submitted to the Local Water Utilities Administration (LWUA).
         </div>
       </div>
 
@@ -2772,7 +2976,8 @@
         loadPressure(),
         loadRiverFlow(),
         loadComplaints(),
-        loadGensets()
+        loadGensets(),
+        loadMonthlyData()
       ]);
       renderOverview();
     } catch(err) {
@@ -2780,6 +2985,357 @@
     } finally {
       document.getElementById("loader").classList.add("hidden");
     }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // ── 34 STATIONS MONTHLY CAPACITY & LWUA 5% REPORTING ENGINE ──
+  // ══════════════════════════════════════════════════════════════════════════════
+  const MONTHLY_TARGET = 1705700.00;
+  const MONTHLY_HOURLY_TARGET = 2336.58;
+  const MONTHLY_LWUA_CUTOFF = 1620415.00; // 5% drop threshold
+
+  const MONTHLY_STATIONS_MASTER = [
+    // Surface Water (15)
+    { name: "Campo Uno (Line #1 & #2)", category: "Surface Water" },
+    { name: "Infiltration Well Pump #1", category: "Surface Water" },
+    { name: "Infiltration Well Pump #2", category: "Surface Water" },
+    { name: "Lapu-Lapu Source", category: "Surface Water" },
+    { name: "Montible Source", category: "Surface Water" },
+    { name: "Bahile PS", category: "Surface Water" },
+    { name: "Sabang (SW)", category: "Surface Water" },
+    { name: "Binduyan (SW)", category: "Surface Water" },
+    { name: "Napsan (SW)", category: "Surface Water" },
+    { name: "San Rafael (SW)", category: "Surface Water" },
+    { name: "Sta. Lucia Station - 1 (Genset)", category: "Surface Water" },
+    { name: "Sta. Lucia Station - 2 (Solar)", category: "Surface Water" },
+    { name: "Bacungan Station", category: "Surface Water" },
+    { name: "Maoyon Station - Gravity", category: "Surface Water" },
+    { name: "Maoyon Station - Well Pump", category: "Surface Water" },
+
+    // Groundwater (19)
+    { name: "DA 1", category: "Groundwater" },
+    { name: "Pump Center #5", category: "Groundwater" },
+    { name: "Pump Center #6", category: "Groundwater" },
+    { name: "Kaakbayan PS", category: "Groundwater" },
+    { name: "New Public Market PS", category: "Groundwater" },
+    { name: "Esteban PS", category: "Groundwater" },
+    { name: "BOS II PS", category: "Groundwater" },
+    { name: "San Jose (Pump 13)", category: "Groundwater" },
+    { name: "Princeville PS", category: "Groundwater" },
+    { name: "NHA Villa PS", category: "Groundwater" },
+    { name: "Macasaet PS", category: "Groundwater" },
+    { name: "Inagawan Satellite Station", category: "Groundwater" },
+    { name: "Pablico PS", category: "Groundwater" },
+    { name: "Villa Princesa PS", category: "Groundwater" },
+    { name: "Sabang PS (GW)", category: "Groundwater" },
+    { name: "Villa Ello PS", category: "Groundwater" },
+    { name: "Baldosano PS", category: "Groundwater" },
+    { name: "Sta. Monica PS", category: "Groundwater" },
+    { name: "Macarascas PS", category: "Groundwater" }
+  ];
+
+  let currentMonthlyRecords = [];
+  let currentSelectedMonth = "";
+  let chartMonthlyPie = null;
+  let chartMonthlyBar = null;
+
+  async function loadMonthlyData(monthVal) {
+    if (!monthVal) {
+      const now = new Date();
+      monthVal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    }
+    currentSelectedMonth = monthVal;
+    document.getElementById("monthly-picker").value = monthVal;
+
+    try {
+      const res = await fetch(`/api/monthlyProduction?month=${monthVal}`);
+      if (!res.ok) throw new Error(await res.text());
+      currentMonthlyRecords = await res.json();
+      renderMonthlyDashboard();
+    } catch (e) {
+      console.warn("Could not load monthly data:", e.message);
+      currentMonthlyRecords = [];
+      renderMonthlyDashboard();
+    }
+  }
+
+  function renderMonthlyDashboard() {
+    // Map master list with entered records
+    const mapped = MONTHLY_STATIONS_MASTER.map(st => {
+      const rec = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
+      const mVol = rec ? parseFloat(rec.monthly_volume) || 0 : 0;
+      const hVol = mVol / 730.0;
+      return { ...st, monthly_volume: mVol, hourly_volume: hVol };
+    });
+
+    const totalActual = mapped.reduce((sum, r) => sum + r.monthly_volume, 0);
+    const totalHourly = totalActual / 730.0;
+    const pctAchieved = (totalActual / MONTHLY_TARGET) * 100;
+    const isBelowCutoff = totalActual > 0 && totalActual < MONTHLY_LWUA_CUTOFF;
+    const hasData = totalActual > 0;
+
+    // Update Tab KPIs
+    document.getElementById("m-kpi-actual").innerHTML = `${fmt(totalActual, 0)}<span class="unit">m³</span>`;
+    document.getElementById("m-kpi-pct").textContent = hasData ? `${fmt(pctAchieved, 1)}% achieved` : "No data logged";
+    document.getElementById("m-kpi-hourly").innerHTML = `${fmt(totalHourly, 2)}<span class="unit">m³/h</span>`;
+
+    const statusEl = document.getElementById("m-kpi-status");
+    const statusSubEl = document.getElementById("m-kpi-status-sub");
+    if (!hasData) {
+      statusEl.textContent = "Awaiting Input";
+      statusEl.style.color = "var(--text-muted)";
+      statusSubEl.textContent = "Click 'Input / Edit Volumes'";
+    } else if (isBelowCutoff) {
+      statusEl.textContent = "⚠️ REPORT TO LWUA";
+      statusEl.style.color = "var(--red)";
+      statusSubEl.textContent = `Falls below 5% target (-${fmt(MONTHLY_TARGET - totalActual, 0)} m³)`;
+    } else {
+      statusEl.textContent = "✓ COMPLIANT";
+      statusEl.style.color = "var(--green)";
+      statusSubEl.textContent = "Within 5% standard target threshold";
+    }
+
+    // Sync Overview Tab Card
+    const ovHeadline = document.getElementById("ov-monthly-headline");
+    const ovKpi = document.getElementById("ov-monthly-kpi");
+    if (ovHeadline && ovKpi) {
+      if (!hasData) {
+        ovHeadline.textContent = `Month: ${currentSelectedMonth} &bull; No monthly entries logged yet`;
+        ovKpi.innerHTML = `<span style="color:var(--text-muted);">Awaiting Log</span>`;
+      } else {
+        ovHeadline.textContent = `Month: ${currentSelectedMonth} &bull; Produced: ${fmt(totalActual, 0)} m³ (${fmt(pctAchieved, 1)}%)`;
+        ovKpi.innerHTML = isBelowCutoff
+          ? `<span style="color:var(--red);">⚠️ LWUA Report Required (${fmt(totalActual, 0)} < 1,620,415 m³)</span>`
+          : `<span style="color:var(--green);">✓ Compliant (> 5% Band)</span>`;
+      }
+    }
+
+    // Render Detailed Table
+    const tbody = document.getElementById("monthly-station-tbody");
+    document.getElementById("monthly-table-record-count").textContent = `${currentMonthlyRecords.length} / 34 entered`;
+    
+    tbody.innerHTML = mapped.map(r => {
+      const share = totalActual > 0 ? (r.monthly_volume / totalActual) * 100 : 0;
+      const isSw = r.category === "Surface Water";
+      return `
+        <tr>
+          <td style="font-weight:700; color:var(--text-main);">${r.name}</td>
+          <td><span class="cat-pill ${isSw ? 'cat-sw' : 'cat-gw'}">${r.category}</span></td>
+          <td class="right mono" style="font-weight:700;">${r.monthly_volume > 0 ? fmt(r.monthly_volume, 2) : '—'}</td>
+          <td class="right mono">${r.hourly_volume > 0 ? fmt(r.hourly_volume, 2) : '—'}</td>
+          <td class="right mono">${share > 0 ? fmt(share, 1) + '%' : '—'}</td>
+          <td class="right">
+            <span class="kpi-badge-pill ${r.monthly_volume > 0 ? 'pill-green' : 'pill-amber'}">
+              ${r.monthly_volume > 0 ? 'Logged' : 'Standby / 0'}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // Charts
+    const swTotal = mapped.filter(r => r.category === "Surface Water").reduce((a, b) => a + b.monthly_volume, 0);
+    const gwTotal = mapped.filter(r => r.category === "Groundwater").reduce((a, b) => a + b.monthly_volume, 0);
+
+    if (chartMonthlyPie) chartMonthlyPie.destroy();
+    chartMonthlyPie = new Chart(document.getElementById("chart-monthly-pie"), {
+      type: "doughnut",
+      data: {
+        labels: ["Surface Water", "Groundwater"],
+        datasets: [{
+          data: [swTotal, gwTotal],
+          backgroundColor: ["#0D9488", "#2563EB"],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "70%",
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+
+    const topStations = [...mapped].sort((a, b) => b.monthly_volume - a.monthly_volume).slice(0, 10);
+    if (chartMonthlyBar) chartMonthlyBar.destroy();
+    chartMonthlyBar = new Chart(document.getElementById("chart-monthly-bar"), {
+      type: "bar",
+      data: {
+        labels: topStations.map(s => s.name),
+        datasets: [{
+          label: "m³/month",
+          data: topStations.map(s => s.monthly_volume),
+          backgroundColor: topStations.map(s => s.category === "Surface Water" ? "rgba(13,148,136,0.85)" : "rgba(37,99,235,0.85)"),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: "#F1F5F9" } }, y: { ticks: { font: { size: 9 } } } }
+      }
+    });
+  }
+
+  // ── MODAL INPUT FORM BUILDER ──
+  function openMonthlyInputModal() {
+    const swContainer = document.getElementById("modal-sw-grid");
+    const gwContainer = document.getElementById("modal-gw-grid");
+    document.getElementById("modal-month-picker").value = currentSelectedMonth;
+    document.getElementById("modal-submit-status").textContent = "";
+
+    const generateField = st => {
+      const existing = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
+      const val = existing ? existing.monthly_volume : "";
+      const fieldId = "inp-" + st.name.replace(/[^a-zA-Z0-9]/g, "");
+      return `
+        <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+          <label style="font-size:11px; font-weight:600; color:var(--text-main); flex:1; padding-right:8px;" for="${fieldId}">${st.name}</label>
+          <input type="number" step="0.01" min="0" placeholder="m³/mo" id="${fieldId}" data-station="${st.name}" data-cat="${st.category}" value="${val}"
+                 style="width:130px; padding:6px 8px; border:1px solid var(--card-border); border-radius:6px; font-family:var(--font-mono); font-size:12px; text-align:right; outline:none;">
+        </div>
+      `;
+    };
+
+    swContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === "Surface Water").map(generateField).join("");
+    gwContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === "Groundwater").map(generateField).join("");
+    document.getElementById("monthly-input-modal").style.display = "flex";
+  }
+
+  function closeMonthlyInputModal() {
+    document.getElementById("monthly-input-modal").style.display = "none";
+  }
+
+  async function submitMonthlyData(e) {
+    e.preventDefault();
+    const btn = document.getElementById("btn-save-monthly");
+    const status = document.getElementById("modal-submit-status");
+    const targetMonth = document.getElementById("modal-month-picker").value;
+
+    if (!targetMonth) {
+      status.textContent = "Please select a target month.";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Syncing to Cloud...";
+    status.textContent = "Transmitting to Supabase...";
+    status.style.color = "var(--blue)";
+
+    const inputs = document.querySelectorAll("#monthly-input-modal input[data-station]");
+    const payload = [];
+
+    inputs.forEach(inp => {
+      const val = parseFloat(inp.value);
+      if (!isNaN(val) && val >= 0) {
+        payload.push({
+          month_year: targetMonth,
+          station_name: inp.dataset.station,
+          category: inp.dataset.cat,
+          monthly_volume: val
+        });
+      }
+    });
+
+    try {
+      const res = await fetch("/api/monthlyProduction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ records: payload })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Save failed.");
+
+      status.textContent = `Success! Saved ${data.count || payload.length} stations.`;
+      status.style.color = "var(--green)";
+      setTimeout(() => {
+        closeMonthlyInputModal();
+        loadMonthlyData(targetMonth);
+      }, 1000);
+    } catch (err) {
+      status.textContent = "Error: " + err.message;
+      status.style.color = "var(--red)";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Save to Supabase";
+    }
+  }
+
+  // ── EXPORT XLS (EXCEL COMPATIBLE CSV) ──
+  function exportMonthlyXLS() {
+    if (!currentMonthlyRecords.length) {
+      alert("No data to export for this month.");
+      return;
+    }
+
+    let csvContent = "\uFEFFStation Name,Category,Monthly Volume (m3),Hourly Yield (m3/hr),Target Benchmark (m3)\n";
+    MONTHLY_STATIONS_MASTER.forEach(st => {
+      const rec = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
+      const mVol = rec ? parseFloat(rec.monthly_volume) || 0 : 0;
+      const hVol = (mVol / 730.0).toFixed(2);
+      csvContent += `"${st.name}","${st.category}",${mVol},${hVol},1705700\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `PPCWD_Monthly_Production_${currentSelectedMonth}.csv`;
+    link.click();
+  }
+
+  // ── EXPORT FORMAL PDF REPORT ──
+  async function generateMonthlyPDF() {
+    const mapped = MONTHLY_STATIONS_MASTER.map(st => {
+      const rec = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
+      const mVol = rec ? parseFloat(rec.monthly_volume) || 0 : 0;
+      return { ...st, monthly_volume: mVol, hourly_volume: mVol / 730.0 };
+    });
+
+    const totalActual = mapped.reduce((sum, r) => sum + r.monthly_volume, 0);
+    const totalHourly = totalActual / 730.0;
+    const isBelowCutoff = totalActual > 0 && totalActual < MONTHLY_LWUA_CUTOFF;
+
+    document.getElementById("mr-pdf-period").textContent = `Period: ${currentSelectedMonth}`;
+    document.getElementById("mr-pdf-date").textContent = `Generated: ${new Date().toLocaleDateString('en-PH')}`;
+    document.getElementById("mr-pdf-actual").textContent = `${fmt(totalActual, 0)} m³`;
+    document.getElementById("mr-pdf-hourly").textContent = `${fmt(totalHourly, 2)} m³/hr`;
+
+    const statusEl = document.getElementById("mr-pdf-status");
+    const varEl = document.getElementById("mr-pdf-var");
+    if (isBelowCutoff) {
+      statusEl.textContent = "REPORT REQUIRED";
+      statusEl.style.color = "#DC2626";
+      varEl.textContent = `Deficit: -${fmt(MONTHLY_TARGET - totalActual, 0)} m³ (>5% drop)`;
+      varEl.style.color = "#DC2626";
+    } else {
+      statusEl.textContent = "COMPLIANT";
+      statusEl.style.color = "#059669";
+      varEl.textContent = "Within approved 5% operating variance";
+      varEl.style.color = "#059669";
+    }
+
+    document.getElementById("mr-pdf-tbody").innerHTML = mapped.map(r => {
+      const share = totalActual > 0 ? (r.monthly_volume / totalActual) * 100 : 0;
+      return `
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:5px 8px; font-weight:600;">${r.name}</td>
+          <td style="padding:5px 8px;">${r.category}</td>
+          <td style="padding:5px 8px; text-align:right; font-family:monospace;">${fmt(r.monthly_volume, 2)}</td>
+          <td style="padding:5px 8px; text-align:right; font-family:monospace;">${fmt(r.hourly_volume, 2)}</td>
+          <td style="padding:5px 8px; text-align:right; font-family:monospace;">${fmt(share, 1)}%</td>
+        </tr>
+      `;
+    }).join("");
+
+    await new Promise(r => setTimeout(r, 400));
+    const el = document.getElementById("hidden-monthly-report");
+    const canvas = await html2canvas(el, { scale: 2.2, useCORS: true, backgroundColor: "#FFFFFF" });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 210, (canvas.height * 210) / canvas.width);
+    pdf.save(`PPCWD_Monthly_Production_Report_${currentSelectedMonth}.pdf`);
   }
 
   window.addEventListener('DOMContentLoaded', init);
