@@ -1,391 +1,687 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PPCWD — Operations Management &amp; Asset Portal</title>
+  <title>PPCWD — Generator Asset Management Portal</title>
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
+    /* ── EXECUTIVE DESIGN SYSTEM (Matches index.html) ── */
     :root {
-      --navy: #0D1B2A;
-      --navy2: #152336;
-      --navy3: #1E3554;
-      --white: #F8FAFC;
-      --text: #E2E8F0;
-      --text2: #94A3B8;
-      --border: rgba(255, 255, 255, 0.08);
-      --card: rgba(255, 255, 255, 0.04);
-      --card2: rgba(255, 255, 255, 0.07);
-      --teal: #1B8C7D;
-      --teal2: #24B5A3;
-      --blue: #1560BD;
-      --blue2: #4A90D9;
-      --amber: #D97706;
-      --amber2: #F59E0B;
-      --green: #059669;
-      --green2: #34D399;
-      --red: #DC2626;
-      --red2: #FCA5A5;
-      --font-sans: "Montserrat", sans-serif;
+      --sidebar-bg: #1E293B;
+      --sidebar-hover: rgba(255, 255, 255, 0.06);
+      --sidebar-active: #2563EB;
+      --sidebar-text: #94A3B8;
+      --sidebar-text-active: #FFFFFF;
+      --sidebar-border: rgba(255, 255, 255, 0.08);
+
+      --app-bg: #F4F6F9;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      --card-shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.07);
+
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-subtle: #94A3B8;
+
+      --teal: #0D9488;
+      --teal-light: #F0FDFA;
+      --teal-border: #99F6E4;
+
+      --blue: #2563EB;
+      --blue-light: #EFF6FF;
+      --blue-border: #BFDBFE;
+
+      --green: #10B981;
+      --green-light: #ECFDF5;
+      --green-border: #A7F3D0;
+
+      --amber: #F59E0B;
+      --amber-light: #FFFBEB;
+      --amber-border: #FDE68A;
+
+      --red: #EF4444;
+      --red-light: #FEF2F2;
+      --red-border: #FECACA;
+
+      --font-sans: "Plus Jakarta Sans", sans-serif;
       --font-mono: "JetBrains Mono", monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--navy);
-      color: var(--text);
+      background: var(--app-bg);
+      color: var(--text-main);
       font-family: var(--font-sans);
       font-size: 13px;
+      line-height: 1.5;
       min-height: 100vh;
-      background-image:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(27,140,125,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 30% at 90% 90%, rgba(21,96,189,0.10) 0%, transparent 50%);
+      overflow-x: hidden;
     }
 
-    /* Header */
-    header {
-      height: 60px;
-      background: rgba(13, 27, 42, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* ── SIDEBAR ── */
+    .app-sidebar {
+      width: 250px;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 150;
+      border-right: 1px solid var(--sidebar-border);
+      transition: transform 0.3s ease;
+    }
+    .sidebar-brand {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #38BDF8;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    .brand-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: block;
+    }
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 9px;
+      color: var(--sidebar-text);
+      background: transparent;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover { background: var(--sidebar-hover); color: #FFFFFF; }
+    .nav-btn.active {
+      background: var(--sidebar-active);
+      color: var(--sidebar-text-active);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+    .sidebar-divider { height: 1px; background: var(--sidebar-border); margin: 12px 6px; }
+    .sidebar-footer { padding: 16px 14px; border-top: 1px solid var(--sidebar-border); }
+    .status-pill-box {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--sidebar-border);
+      border-radius: 9px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .status-dot-pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite; flex-shrink: 0;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.15); } }
+
+    /* ── MAIN WORKSPACE ── */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--app-bg);
+    }
+    .app-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
       position: sticky;
       top: 0;
       z-index: 100;
     }
-    .logo-block { display: flex; align-items: center; gap: 12px; }
-    .logo-mark {
-      width: 34px; height: 34px;
-      background: linear-gradient(135deg, var(--teal), var(--blue));
+    .header-titles h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+    .header-titles p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
       border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-mono); font-weight: 700; font-size: 11px; color: white;
+      padding: 7px 13px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      text-decoration: none;
     }
-    .logo-text strong { display: block; font-size: 13px; font-weight: 600; color: var(--white); }
-    .logo-text span { font-size: 10px; color: var(--text2); }
+    .header-btn:hover { border-color: #CBD5E1; background: #F8FAFC; color: var(--text-main); }
 
-    .back-btn {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--card2); border: 1px solid var(--border);
-      border-radius: 6px; padding: 6px 14px;
-      color: var(--teal2); font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-      text-decoration: none; transition: all 0.2s;
-    }
-    .back-btn:hover { background: rgba(36,181,163,0.15); border-color: var(--teal2); }
-
-    /* Layout Wrapper */
-    .container {
-      max-width: 1150px;
-      margin: 30px auto;
-      padding: 0 20px 60px;
+    /* ── PAGE CONTAINER ── */
+    .page-content {
+      padding: 24px 28px 40px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
     }
 
-    /* Card Panels */
-    .panel {
-      background: var(--navy2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
     }
-    .panel-header {
+    .card-header-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--card-border);
       padding-bottom: 16px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .panel-title {
+    .card-heading h2 {
       font-size: 15px;
-      font-weight: 600;
-      color: var(--white);
+      font-weight: 800;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .panel-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
-
-    /* Action Toggle Switchers */
-    .tab-pills { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
-    .tab-pill {
-      background: transparent; border: none; border-radius: 6px;
-      padding: 6px 14px; font-family: var(--font-mono); font-size: 10px; font-weight: 600;
-      color: var(--text2); cursor: pointer; transition: all 0.15s;
+    .card-heading p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
-    .tab-pill.active { background: var(--teal); color: white; }
 
-    /* Forms */
+    /* Action Segment Toggle */
+    .segment-pills {
+      display: flex;
+      gap: 4px;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .seg-pill {
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .seg-pill.active {
+      background: #FFFFFF;
+      color: var(--blue);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Form Fields */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin-bottom: 14px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .form-grid { grid-template-columns: 1fr; }
     }
-    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
     .form-lbl {
       font-family: var(--font-mono);
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text2);
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
     }
     .form-input {
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
       padding: 9px 12px;
-      color: var(--white);
+      color: var(--text-main);
       font-family: var(--font-sans);
       font-size: 12px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background 0.2s;
       width: 100%;
     }
-    .form-input:focus { border-color: var(--teal2); background: rgba(13,27,42,0.9); }
-    select.form-input { font-family: var(--font-mono); cursor: pointer; }
+    .form-input:focus {
+      border-color: var(--blue);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+    }
+    select.form-input { cursor: pointer; }
 
-    /* Buttons */
-    .submit-btn {
-      background: var(--teal);
-      border: none;
-      border-radius: 6px;
+    .btn-submit {
+      background: var(--blue);
+      border: 1px solid var(--blue);
+      border-radius: 8px;
       color: white;
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 600;
-      padding: 10px 20px;
+      font-weight: 700;
+      padding: 9px 18px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.2s;
+      transition: background 0.15s ease;
     }
-    .submit-btn:hover { background: var(--teal2); }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:hover { background: #1D4ED8; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* Status Strip */
+    /* Alert Banner */
     .alert-box {
       padding: 12px 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-family: var(--font-mono);
       font-size: 11px;
+      font-weight: 600;
       margin-bottom: 16px;
       display: none;
     }
 
-    /* Table */
-    .table-wrap {
-      border: 1px solid var(--border);
-      border-radius: 8px;
+    /* Table Container */
+    .table-container {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
       overflow: hidden;
-      background: var(--card);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
     }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    thead th {
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid var(--border);
+    .table-head-bar {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .table-head-title { font-size: 13px; font-weight: 800; color: var(--text-main); }
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+    table.data-table thead th {
+      background: #F8FAFC;
+      color: var(--text-muted);
       font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 600;
-      text-transform: uppercase;
+      font-size: 9.5px;
+      font-weight: 700;
       letter-spacing: 0.8px;
-      color: var(--text2);
+      text-transform: uppercase;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
     }
-    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.15s; }
-    tbody tr:hover { background: var(--card2); }
-    tbody tr:last-child { border-bottom: none; }
-    tbody td { padding: 10px 14px; font-size: 12px; }
+    table.data-table tbody tr { border-bottom: 1px solid #F1F5F9; transition: background 0.15s ease; }
+    table.data-table tbody tr:hover { background: #F8FAFC; }
+    table.data-table tbody td { padding: 11px 16px; color: var(--text-main); }
 
-    .status-badge {
+    /* Status Pills */
+    .kpi-badge-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 8px;
-      border-radius: 12px;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
       font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 600;
     }
-    .badge-op { background: rgba(5,150,105,0.15); color: #34D399; border: 1px solid rgba(5,150,105,0.3); }
-    .badge-warn { background: rgba(217,119,6,0.15); color: var(--amber2); border: 1px solid rgba(217,119,6,0.3); }
-    .badge-err { background: rgba(220,38,38,0.15); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.3); }
+    .pill-green { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .pill-amber { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
+    .pill-red { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+
+    /* Responsive Drawer */
+    .menu-toggle-btn { display: none; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main); }
+    @media (max-width: 820px) {
+      .app-sidebar { position: fixed; left: -260px; top: 0; bottom: 0; }
+      .app-sidebar.open { transform: translateX(260px); box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
+      .menu-toggle-btn { display: block; }
+      .app-header { padding: 14px 18px; }
+      .page-content { padding: 16px 14px; }
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo-block">
-      <div class="logo-mark">PPCWD</div>
-      <div class="logo-text">
-        <strong>Puerto Princesa City Water District</strong>
-        <span>Operations &amp; Telemetry Management Portal</span>
+  <div class="app-layout">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img">
+        <div>
+          <span class="brand-title">PUERTO PRINCESA</span>
+          <span class="brand-sub">City Water District</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-btn">
+          <span class="nav-icon">📊</span>
+          <span>Back to Dashboard</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <button class="nav-btn active" style="pointer-events:none;">
+          <span class="nav-icon">⚡</span>
+          <span>Genset &amp; Asset Admin</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-pill-box">
+          <div class="status-dot-pulse"></div>
+          <div>
+            <div style="font-size: 10px; font-weight: 700; color: #FFFFFF;">Portal Status</div>
+            <div style="font-size: 9.5px; color: #94A3B8;">Direct Supabase Sync</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <div class="app-main">
+      <header class="app-header">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+          <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 32px; height: 32px;">
+          <div class="header-titles">
+            <h1>Operations &amp; Asset Portal</h1>
+            <p><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <a href="index.html" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+            &larr; Exit to Dashboard
+          </a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        
+        <!-- Form Panel -->
+        <div class="card">
+          <div class="card-header-bar">
+            <div class="card-heading">
+              <h2>⚡ Standby Generator Asset Management</h2>
+              <p>Assign stations, log preventive maintenance (PMS), record emergency repairs, and track relocations</p>
+            </div>
+            <div class="segment-pills">
+              <button type="button" class="seg-pill active" id="tab-btn-log" onclick="switchGensetView('log')">Log Action / Service</button>
+              <button type="button" class="seg-pill" id="tab-btn-create" onclick="switchGensetView('create')">+ Register New Unit</button>
+            </div>
+          </div>
+
+          <div id="gs-alert-box" class="alert-box"></div>
+
+          <!-- FORM 1: LOG ACTION / SERVICE -->
+          <form id="form-genset-log" onsubmit="submitGensetAction(event)">
+            <input type="hidden" name="action" value="update_log">
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Select Generator Unit *</label>
+                <select id="gs-select-unit" name="genset_id" required class="form-input" onchange="onGensetUnitSelected(this.value)">
+                  <option value="">Loading fleet units...</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Action / Event Type *</label>
+                <select name="event_type" required class="form-input">
+                  <option value="Preventive Maintenance (PMS)">Preventive Maintenance (PMS)</option>
+                  <option value="Transfer / Relocation">Transfer / Relocation</option>
+                  <option value="Emergency Repair">Emergency Repair</option>
+                  <option value="Battery Replacement">Battery Replacement</option>
+                  <option value="Fuel Refill & Testing">Fuel Refill &amp; Testing</option>
+                  <option value="Status Adjustment">Status Adjustment</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Station Deployed *</label>
+                <select id="gs-select-station" name="new_station" required class="form-input"></select>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Operating Status *</label>
+                <select id="gs-select-status" name="new_status" class="form-input">
+                  <option value="Operational">Operational 🟢</option>
+                  <option value="Under Maintenance">Under Maintenance 🟡</option>
+                  <option value="Standby">Standby 🟠</option>
+                  <option value="Offline">Offline / Defective 🔴</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Service / Transfer Date</label>
+                <input type="date" name="serviced_date" id="gs-serviced-date" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Personnel / In-Charge</label>
+                <input type="text" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 18px;">
+              <label class="form-lbl">Work Done / Action Remarks</label>
+              <textarea name="remarks" rows="3" placeholder="Specify parts replaced, reason for relocation, or run test results..." class="form-input"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn-submit" id="btn-submit-log">Save &amp; Log Generator Action</button>
+            </div>
+          </form>
+
+          <!-- FORM 2: REGISTER NEW GENSET -->
+          <form id="form-genset-create" onsubmit="submitNewGenset(event)" style="display:none;">
+            <input type="hidden" name="action" value="create_genset">
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Genset Identification Number *</label>
+                <input type="text" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Brand &amp; Engine Model</label>
+                <input type="text" name="brand_model" placeholder="e.g. Cummins 6BT5.9 / Perkins" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Capacity Rating (kVA)</label>
+                <input type="number" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Initial Station Assignment *</label>
+                <select id="gs-create-station" name="new_station" required class="form-input"></select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
+                <input type="number" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Commissioning Status</label>
+                <select name="new_status" class="form-input">
+                  <option value="Operational">Operational 🟢</option>
+                  <option value="Standby">Standby 🟠</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 18px;">
+              <label class="form-lbl">Initial Notes / Asset Tagging</label>
+              <textarea name="remarks" rows="2" placeholder="Acquisition details or initial deployment condition..." class="form-input"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn-submit" id="btn-submit-create">+ Register Unit into Fleet</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Inventory Table -->
+        <div class="table-container">
+          <div class="table-head-bar">
+            <div>
+              <div class="table-head-title">📋 Active Fleet Deployment &amp; Readiness</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Station assignments and latest maintenance audit logs</div>
+            </div>
+            <button onclick="fetchGensetFleet()" class="header-btn" style="color:var(--blue); font-size:10px;">↻ Refresh</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Genset ID</th>
+                  <th>Deployed Station</th>
+                  <th>Rating</th>
+                  <th>Status</th>
+                  <th>Latest Maintenance / Movement</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="gs-inventory-tbody">
+                <tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
-    <a href="index.html" class="back-btn">← Back to Monitoring Dashboard</a>
-  </header>
+  </div>
 
-  <div class="container">
-    <div class="panel">
-      <div class="panel-header">
-        <div>
-          <div class="panel-title">⚡ Standby Generator Asset Management</div>
-          <div class="panel-sub">Assign stations, log preventive maintenance (PMS), record repairs, and track movements</div>
-        </div>
-        <div class="tab-pills">
-          <button type="button" class="tab-pill active" id="tab-btn-log" onclick="switchGensetView('log')">Log Action / Repair</button>
-          <button type="button" class="tab-pill" id="tab-btn-create" onclick="switchGensetView('create')">+ Register Unit</button>
-        </div>
+  <!-- ── MODAL: EDIT GENSET DETAILS ── -->
+  <div id="edit-genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#FFFFFF; border-radius:14px; width:580px; max-width:95vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--card-border);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--card-border); padding-bottom:12px;">
+        <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">✏️ Edit Generator Specifications</h3>
+        <button onclick="closeEditModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">✕</button>
       </div>
-      <div id="gs-alert-box" class="alert-box"></div>
 
-      <!-- FORM 1: LOG ACTION / TRANSFER -->
-      <form id="form-genset-log" onsubmit="submitGensetAction(event)">
-        <input type="hidden" name="action" value="update_log">
+      <form onsubmit="submitEditGenset(event)">
+        <input type="hidden" id="edit-gs-id" name="genset_id">
 
-        <div class="form-grid">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
           <div class="field-group">
-            <label class="form-lbl">Select Generator Unit *</label>
-            <select id="gs-select-unit" name="genset_id" required class="form-input" onchange="onGensetUnitSelected(this.value)">
-              <option value="">Loading fleet units...</option>
-            </select>
+            <label class="form-lbl">Genset ID *</label>
+            <input type="text" id="edit-gs-no" name="genset_no" required class="form-input">
           </div>
           <div class="field-group">
-            <label class="form-lbl">Action / Event Type *</label>
-            <select name="event_type" required class="form-input">
-              <option value="Preventive Maintenance (PMS)">Preventive Maintenance (PMS)</option>
-              <option value="Transfer / Relocation">Transfer / Relocation</option>
-              <option value="Emergency Repair">Emergency Repair</option>
-              <option value="Battery Replacement">Battery Replacement</option>
-              <option value="Fuel Refill & Testing">Fuel Refill &amp; Testing</option>
-              <option value="Status Adjustment">Status Adjustment</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label class="form-lbl">Station Deployed *</label>
-            <select id="gs-select-station" name="new_station" required class="form-input"></select>
+            <label class="form-lbl">Brand &amp; Engine Model</label>
+            <input type="text" id="edit-gs-model" name="brand_model" class="form-input">
           </div>
         </div>
 
-        <div class="form-grid">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
           <div class="field-group">
-            <label class="form-lbl">Operating Status *</label>
-            <select id="gs-select-status" name="new_status" class="form-input">
+            <label class="form-lbl">Capacity Rating (kVA)</label>
+            <input type="number" step="0.01" id="edit-gs-kva" name="capacity_kva" class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
+            <input type="number" step="0.1" id="edit-gs-fuel" name="fuel_capacity_liters" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:18px;">
+          <div class="field-group">
+            <label class="form-lbl">Assigned Station</label>
+            <select id="edit-gs-station" name="new_station" required class="form-input"></select>
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Status</label>
+            <select id="edit-gs-status" name="new_status" class="form-input">
               <option value="Operational">Operational 🟢</option>
               <option value="Under Maintenance">Under Maintenance 🟡</option>
               <option value="Standby">Standby 🟠</option>
               <option value="Offline">Offline / Defective 🔴</option>
             </select>
           </div>
-          <div class="field-group">
-            <label class="form-lbl">Service / Transfer Date</label>
-            <input type="date" name="serviced_date" id="gs-serviced-date" class="form-input">
-          </div>
-          <div class="field-group">
-            <label class="form-lbl">Personnel / In-Charge</label>
-            <input type="text" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
-          </div>
         </div>
 
-        <div class="field-group" style="margin-bottom: 18px;">
-          <label class="form-lbl">Work Done / Action Remarks</label>
-          <textarea name="remarks" rows="3" placeholder="Specify parts replaced, reason for relocation, or generator run tests..." class="form-input"></textarea>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end;">
-          <button type="submit" class="submit-btn" id="btn-submit-log">Save &amp; Log Generator Action</button>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" onclick="closeEditModal()" class="header-btn">Cancel</button>
+          <button type="submit" class="btn-submit" id="btn-save-edit">Save Changes</button>
         </div>
       </form>
-
-      <!-- FORM 2: REGISTER NEW GENSET -->
-      <form id="form-genset-create" onsubmit="submitNewGenset(event)" style="display:none;">
-        <input type="hidden" name="action" value="create_genset">
-
-        <div class="form-grid">
-          <div class="field-group">
-            <label class="form-lbl">Genset Identification Number *</label>
-            <input type="text" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
-          </div>
-          <div class="field-group">
-            <label class="form-lbl">Brand &amp; Engine Model</label>
-            <input type="text" name="brand_model" placeholder="e.g. Cummins 6BT5.9 / Perkins" class="form-input">
-          </div>
-          <div class="field-group">
-            <label class="form-lbl">Capacity Rating (kVA)</label>
-            <input type="number" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
-          </div>
-        </div>
-
-        <div class="form-grid">
-          <div class="field-group">
-            <label class="form-lbl">Initial Station Assignment *</label>
-            <select id="gs-create-station" name="new_station" required class="form-input"></select>
-          </div>
-          <div class="field-group">
-            <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
-            <input type="number" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
-          </div>
-          <div class="field-group">
-            <label class="form-lbl">Commissioning Status</label>
-            <select name="new_status" class="form-input">
-              <option value="Operational">Operational 🟢</option>
-              <option value="Standby">Standby 🟠</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field-group" style="margin-bottom: 18px;">
-          <label class="form-lbl">Initial Notes / Asset Tagging</label>
-          <textarea name="remarks" rows="2" placeholder="Acquisition details or initial deployment condition..." class="form-input"></textarea>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end;">
-          <button type="submit" class="submit-btn" id="btn-submit-create" style="background:var(--blue);">+ Register Unit into Fleet</button>
-        </div>
-      </form>
-
     </div>
-
-    <!-- Active Fleet Table -->
-    <div class="panel">
-      <div class="panel-header" style="border-bottom:none; margin-bottom:12px; padding-bottom:0;">
-        <div>
-          <div class="panel-title">📋 Active Fleet Deployment &amp; Readiness</div>
-          <div class="panel-sub">Station assignments and latest maintenance audit logs</div>
-        </div>
-        <button onclick="fetchGensetFleet()" class="tab-pill" style="border:1px solid var(--border); color:var(--teal2);">↻ Refresh</button>
-      </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Genset ID</th>
-              <th>Deployed Station</th>
-              <th>Rating</th>
-              <th>Status</th>
-              <th>Latest Maintenance / Movement</th>
-              <th style="text-align:right;">Action</th>
-            </tr>
-          </thead>
-          <tbody id="gs-inventory-tbody">
-            <tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text2); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </div>
 
   <script>
@@ -399,6 +695,10 @@
     ];
 
     let fleet = [];
+
+    function toggleSidebar() {
+      document.getElementById('app-sidebar').classList.toggle('open');
+    }
 
     function populateStations() {
       const opts = PPCWD_STATIONS.map(st => `<option value="${st}">${st}</option>`).join("");
@@ -427,7 +727,7 @@
         const unitSel = document.getElementById("gs-select-unit");
         if (fleet.length === 0) {
           unitSel.innerHTML = '<option value="">No units registered yet</option>';
-          tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text2); font-family:var(--font-mono);">No generator units in database. Fill out the form above to register GS-63.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No generator units in database. Register one using the form above.</td></tr>`;
           return;
         }
 
@@ -437,22 +737,22 @@
         tbody.innerHTML = fleet.map(g => {
           const isOp = g.status === 'Operational';
           const isMaint = g.status === 'Under Maintenance' || g.status === 'Standby';
-          const badgeCls = isOp ? 'badge-op' : (isMaint ? 'badge-warn' : 'badge-err');
+          const badgeCls = isOp ? 'pill-green' : (isMaint ? 'pill-amber' : 'pill-red');
           const latestLog = g.genset_logs && g.genset_logs[0] ? g.genset_logs[0] : null;
 
           return `
             <tr>
-              <td style="font-weight:700; font-family:var(--font-mono); color:var(--white);">${g.genset_no}</td>
-              <td style="color:var(--text); font-weight:500;">${g.current_station}</td>
-              <td style="font-family:var(--font-mono); color:var(--text2); font-size:11px;">${g.capacity_kva ? g.capacity_kva + ' kVA' : '—'}</td>
-              <td><span class="status-badge ${badgeCls}">● ${g.status}</span></td>
-              <td style="font-size:11px; color:var(--text2);">
-                ${latestLog ? `${latestLog.event_type} <span style="font-family:var(--font-mono); font-size:9px; color:var(--text2);">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : '<span style="color:var(--text2);">Initial state</span>'}
+              <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">${g.genset_no}</td>
+              <td style="font-weight:600;">${g.current_station}</td>
+              <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11px;">${g.capacity_kva ? g.capacity_kva + ' kVA' : '—'}</td>
+              <td><span class="kpi-badge-pill ${badgeCls}">● ${g.status}</span></td>
+              <td style="font-size:11px; color:var(--text-muted);">
+                ${latestLog ? `${latestLog.event_type} <span style="font-family:var(--font-mono); font-size:9.5px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
               </td>
               <td style="text-align:right; white-space:nowrap;">
-                <button type="button" onclick="openEditModal('${g.id}')" style="background:rgba(36,181,163,0.15); border:1px solid rgba(36,181,163,0.3); color:var(--teal2); padding:4px 8px; border-radius:4px; font-family:var(--font-mono); font-size:10px; cursor:pointer;">✏️ Edit</button>
-                <button type="button" onclick="selectGensetForEdit('${g.id}')" style="background:rgba(21,96,189,0.15); border:1px solid rgba(21,96,189,0.3); color:var(--blue2); padding:4px 8px; border-radius:4px; font-family:var(--font-mono); font-size:10px; cursor:pointer; margin-left:4px;">⚡ Log Action</button>
-                <button type="button" onclick="deleteGenset('${g.id}', '${g.genset_no}')" style="background:rgba(220,38,38,0.15); border:1px solid rgba(220,38,38,0.3); color:#FCA5A5; padding:4px 8px; border-radius:4px; font-family:var(--font-mono); font-size:10px; cursor:pointer; margin-left:4px;">🗑️</button>
+                <button type="button" onclick="openEditModal('${g.id}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">✏️ Edit</button>
+                <button type="button" onclick="selectGensetForEdit('${g.id}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">⚡ Log Action</button>
+                <button type="button" onclick="deleteGenset('${g.id}', '${g.genset_no}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">🗑️</button>
               </td>
             </tr>
           `;
@@ -460,7 +760,7 @@
 
       } catch (err) {
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red2); font-family:var(--font-mono);">⚠️ ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red); font-family:var(--font-mono);">⚠️ ${err.message}</td></tr>`;
       }
     }
 
@@ -501,9 +801,9 @@
     function notify(text, isError = false) {
       const box = document.getElementById("gs-alert-box");
       box.style.display = "block";
-      box.style.background = isError ? "rgba(220,38,38,0.15)" : "rgba(5,150,105,0.15)";
-      box.style.border = isError ? "1px solid rgba(220,38,38,0.4)" : "1px solid rgba(5,150,105,0.4)";
-      box.style.color = isError ? "#FCA5A5" : "#34D399";
+      box.style.background = isError ? "var(--red-light)" : "var(--green-light)";
+      box.style.border = isError ? "1px solid var(--red-border)" : "1px solid var(--green-border)";
+      box.style.color = isError ? "var(--red)" : "var(--green)";
       box.textContent = text;
       setTimeout(() => { box.style.display = "none"; }, 4500);
     }
@@ -575,50 +875,68 @@
     }
 
     function openEditModal(id) {
-    const g = fleet.find(item => item.id === id);
-    if (!g) return;
-    document.getElementById("edit-gs-id").value = g.id;
-    document.getElementById("edit-gs-no").value = g.genset_no;
-    document.getElementById("edit-gs-model").value = g.brand_model || "";
-    document.getElementById("edit-gs-kva").value = g.capacity_kva || "";
-    document.getElementById("edit-gs-fuel").value = g.fuel_capacity_liters || "";
-    document.getElementById("edit-gs-station").value = g.current_station;
-    document.getElementById("edit-gs-status").value = g.status;
-    document.getElementById("edit-genset-modal").style.display = "flex";
-  }
-
-  function closeEditModal() {
-    document.getElementById("edit-genset-modal").style.display = "none";
-  }
-
-  async function submitEditGenset(e) {
-    e.preventDefault();
-    const btn = document.getElementById("btn-save-edit");
-    btn.disabled = true;
-    btn.textContent = "Saving...";
-
-    const payload = Object.fromEntries(new FormData(e.target).entries());
-    payload.action = "edit_details";
-
-    try {
-      const res = await fetch('/api/updateGenset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to update specs.");
-
-      notify(data.message || "Generator updated!");
-      closeEditModal();
-      await fetchGensetFleet();
-    } catch (err) {
-      alert("Error: " + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Save Changes";
+      const g = fleet.find(item => item.id === id);
+      if (!g) return;
+      document.getElementById("edit-gs-id").value = g.id;
+      document.getElementById("edit-gs-no").value = g.genset_no;
+      document.getElementById("edit-gs-model").value = g.brand_model || "";
+      document.getElementById("edit-gs-kva").value = g.capacity_kva || "";
+      document.getElementById("edit-gs-fuel").value = g.fuel_capacity_liters || "";
+      document.getElementById("edit-gs-station").value = g.current_station;
+      document.getElementById("edit-gs-status").value = g.status;
+      document.getElementById("edit-genset-modal").style.display = "flex";
     }
-  }
+
+    function closeEditModal() {
+      document.getElementById("edit-genset-modal").style.display = "none";
+    }
+
+    async function submitEditGenset(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-save-edit");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+      payload.action = "edit_details";
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to update specs.");
+
+        notify(data.message || "Generator updated!");
+        closeEditModal();
+        await fetchGensetFleet();
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save Changes";
+      }
+    }
+
+    async function deleteGenset(id, no) {
+      if (!confirm(`Are you sure you want to permanently delete generator "${no}"? This will remove all associated service logs.`)) return;
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete_genset', genset_id: id })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Delete failed.");
+        notify(`Generator ${no} deleted.`);
+        await fetchGensetFleet();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
 
     window.addEventListener("DOMContentLoaded", () => {
       populateStations();
@@ -626,64 +944,6 @@
       const dateInput = document.getElementById("gs-serviced-date");
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     });
-
   </script>
-
-  <!-- ── EDIT GENSET DETAILS MODAL ── -->
-<div id="edit-genset-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:var(--navy2);border:1px solid var(--border);border-radius:12px;width:600px;max-width:95vw;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:12px;">
-      <div style="font-size:14px;font-weight:600;color:var(--white);font-family:var(--font-mono);">✏️ Edit Generator Specifications</div>
-      <button onclick="closeEditModal()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;">✕</button>
-    </div>
-
-    <form onsubmit="submitEditGenset(event)">
-      <input type="hidden" id="edit-gs-id" name="genset_id">
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
-        <div class="field-group">
-          <label class="form-lbl">Genset Identification Number *</label>
-          <input type="text" id="edit-gs-no" name="genset_no" required class="form-input">
-        </div>
-        <div class="field-group">
-          <label class="form-lbl">Brand &amp; Engine Model</label>
-          <input type="text" id="edit-gs-model" name="brand_model" class="form-input">
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
-        <div class="field-group">
-          <label class="form-lbl">Capacity Rating (kVA)</label>
-          <input type="number" step="0.01" id="edit-gs-kva" name="capacity_kva" class="form-input">
-        </div>
-        <div class="field-group">
-          <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
-          <input type="number" step="0.1" id="edit-gs-fuel" name="fuel_capacity_liters" class="form-input">
-        </div>
-      </div>
-
-      <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:18px;">
-        <div class="field-group">
-          <label class="form-lbl">Assigned Station</label>
-          <select id="edit-gs-station" name="new_station" required class="form-input"></select>
-        </div>
-        <div class="field-group">
-          <label class="form-lbl">Status</label>
-          <select id="edit-gs-status" name="new_status" class="form-input">
-            <option value="Operational">Operational 🟢</option>
-            <option value="Under Maintenance">Under Maintenance 🟡</option>
-            <option value="Standby">Standby 🟠</option>
-            <option value="Offline">Offline / Defective 🔴</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:flex-end;gap:8px;">
-        <button type="button" onclick="closeEditModal()" class="tab-pill" style="border:1px solid var(--border);">Cancel</button>
-        <button type="submit" class="submit-btn" id="btn-save-edit">Save Changes</button>
-      </div>
-    </form>
-  </div>
-</div>
 </body>
 </html>
