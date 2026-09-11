@@ -558,8 +558,13 @@
         <div>
           <select id="week-select" class="week-dropdown" onchange="renderWeek(this.value)"></select>
         </div>
-        <div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 55.33 MLD</span>
+          
+          <!-- Global Monthly Production Status Pill -->
+          <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
+            <span id="global-monthly-text">Loading Monthly...</span>
+          </button>
         </div>
       </div>
 
@@ -590,21 +595,6 @@
             <div class="kpi-card-lbl">Active Consumer Reports</div>
             <div class="kpi-card-num" id="ov-complaints-count" style="color: var(--red);">—</div>
             <div class="kpi-card-foot" id="ov-complaints-sub" style="color: var(--text-muted);">Verified complaints</div>
-          </div>
-          <!-- Monthly Production LWUA 5% Executive Highlight Card -->
-          <div class="card" style="margin-bottom: 20px; padding: 16px 20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-              <div>
-                <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Monthly Production &bull; LWUA 5% Trigger Monitoring</div>
-                <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-top:2px;" id="ov-monthly-headline">Target: 1,705,700 m³/mo &bull; Cutoff: 1,620,415 m³/mo</div>
-              </div>
-              <div style="display:flex; align-items:center; gap:12px;">
-                <div id="ov-monthly-kpi" style="font-family:var(--font-mono); font-size:13px; font-weight:800;">—</div>
-                <button onclick="switchNavTab('monthly')" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">
-                  Open Monthly Portal &rarr;
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -852,7 +842,7 @@
       <!-- ── TAB 7: PRODUCTION MONTHLY REPORT ── -->
       <div class="page-content" id="page-monthly">
         
-        <!-- Header Controls Bar -->
+        <!-- Controls Bar -->
         <div class="card" style="margin-bottom: 16px; padding: 14px 20px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -861,13 +851,13 @@
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">
-                ✏️ Input / Edit Volumes
+                Input / Edit Volumes
               </button>
               <button class="header-btn" onclick="exportMonthlyXLS()" style="color:var(--green); border-color:var(--green-border);">
-                📊 Export Excel (XLS)
+                Export Excel (XLS)
               </button>
               <button class="header-btn" onclick="generateMonthlyPDF()" style="color:var(--red); border-color:var(--red-border);">
-                📄 Export PDF Report
+                Export PDF Report
               </button>
             </div>
           </div>
@@ -3060,6 +3050,19 @@
     }
   }
 
+  function formatMonthYear(monthStr) {
+    if (!monthStr) return "";
+    const parts = String(monthStr).split('-');
+    if (parts.length < 2) return monthStr;
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10) - 1;
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return `${months[m] || ''} ${y}`;
+  }
+
   function renderMonthlyDashboard() {
     const mapped = MONTHLY_STATIONS_MASTER.map(st => {
       const rec = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
@@ -3073,8 +3076,9 @@
     const pctAchieved = (totalActual / MONTHLY_TARGET) * 100;
     const isBelowCutoff = totalActual > 0 && totalActual < MONTHLY_LWUA_CUTOFF;
     const hasData = totalActual > 0;
+    const monthLabel = formatMonthYear(currentSelectedMonth);
 
-    // Monthly Tab KPI Cards
+    // 1. Monthly Tab KPIs
     document.getElementById("m-kpi-actual").innerHTML = `${fmt(totalActual, 0)}<span class="unit">m³</span>`;
     document.getElementById("m-kpi-pct").textContent = hasData ? `${fmt(pctAchieved, 1)}% achieved` : "No data logged";
     document.getElementById("m-kpi-hourly").innerHTML = `${fmt(totalHourly, 2)}<span class="unit">m³/h</span>`;
@@ -3095,22 +3099,29 @@
       statusSubEl.textContent = "Within 5% standard target threshold";
     }
 
-    // Overview Tab Card (uses literal bullet "•")
-    const ovHeadline = document.getElementById("ov-monthly-headline");
-    const ovKpi = document.getElementById("ov-monthly-kpi");
-    if (ovHeadline && ovKpi) {
+    // 2. Global Period Bar Monthly Status Pill
+    const globalPill = document.getElementById("global-monthly-pill");
+    const globalText = document.getElementById("global-monthly-text");
+    if (globalPill && globalText) {
       if (!hasData) {
-        ovHeadline.textContent = `Month: ${currentSelectedMonth} • No monthly entries logged yet`;
-        ovKpi.innerHTML = `<span class="kpi-badge-pill pill-blue" style="font-size:11.5px; padding:3px 9px;">Awaiting Log</span>`;
+        globalText.textContent = `${monthLabel}: Awaiting Data`;
+        globalPill.style.background = "#F1F5F9";
+        globalPill.style.borderColor = "#CBD5E1";
+        globalPill.style.color = "var(--text-muted)";
+      } else if (isBelowCutoff) {
+        globalText.textContent = `${monthLabel}: For Reporting (${fmt(pctAchieved, 1)}%)`;
+        globalPill.style.background = "var(--red-light)";
+        globalPill.style.borderColor = "var(--red-border)";
+        globalPill.style.color = "var(--red)";
       } else {
-        ovHeadline.textContent = `Month: ${currentSelectedMonth} • Produced: ${fmt(totalActual, 0)} m³ (${fmt(pctAchieved, 1)}% of Target)`;
-        ovKpi.innerHTML = isBelowCutoff
-          ? `<span class="kpi-badge-pill pill-red" style="font-size:11.5px; padding:3px 9px;">⚠️ For Reporting (${fmt(pctAchieved, 1)}%)</span>`
-          : `<span class="kpi-badge-pill pill-green" style="font-size:11.5px; padding:3px 9px;">In Capacity ✓ (${fmt(pctAchieved, 1)}%)</span>`;
+        globalText.textContent = `${monthLabel}: In Capacity (${fmt(pctAchieved, 1)}%)`;
+        globalPill.style.background = "var(--green-light)";
+        globalPill.style.borderColor = "var(--green-border)";
+        globalPill.style.color = "var(--green)";
       }
     }
 
-    // Detailed Station Ledger Table
+    // 3. Detailed Station Ledger Table
     const tbody = document.getElementById("monthly-station-tbody");
     document.getElementById("monthly-table-record-count").textContent = `${currentMonthlyRecords.length} / 34 entered`;
 
@@ -3133,7 +3144,7 @@
       `;
     }).join("");
 
-    // Render Charts
+    // 4. Charts
     const swTotal = mapped.filter(r => r.category === "Surface Water").reduce((a, b) => a + b.monthly_volume, 0);
     const gwTotal = mapped.filter(r => r.category === "Groundwater").reduce((a, b) => a + b.monthly_volume, 0);
 
@@ -3168,11 +3179,11 @@
     });
   }
 
-  // Reload input values whenever the user picks a new month in the modal
+  // Reloads inputs and resets unlogged stations to blank when month changes in modal
   async function onModalMonthChange(selectedMonth) {
     if (!selectedMonth) return;
     const status = document.getElementById("modal-submit-status");
-    status.textContent = `Loading records for ${selectedMonth}...`;
+    status.textContent = `Loading ${formatMonthYear(selectedMonth)}...`;
     status.style.color = "var(--blue)";
 
     try {
@@ -3182,6 +3193,7 @@
         monthRecords = await res.json();
       }
 
+      // Reset all 34 inputs: fill if present, blank if empty
       MONTHLY_STATIONS_MASTER.forEach(st => {
         const fieldId = "inp-" + st.name.replace(/[^a-zA-Z0-9]/g, "");
         const inp = document.getElementById(fieldId);
@@ -3190,7 +3202,8 @@
           inp.value = (rec && rec.monthly_volume !== null && rec.monthly_volume !== undefined) ? rec.monthly_volume : "";
         }
       });
-      status.textContent = `Loaded ${monthRecords.length} saved stations for ${selectedMonth}`;
+
+      status.textContent = `Loaded ${monthRecords.length} saved stations for ${formatMonthYear(selectedMonth)}`;
       status.style.color = "var(--text-muted)";
     } catch (e) {
       status.textContent = "Error loading month records: " + e.message;
@@ -3202,12 +3215,15 @@
     const swContainer = document.getElementById("modal-sw-grid");
     const gwContainer = document.getElementById("modal-gw-grid");
     const currentMonthVal = document.getElementById("monthly-picker").value || currentSelectedMonth;
-    document.getElementById("modal-month-picker").value = currentMonthVal;
+    
+    const picker = document.getElementById("modal-month-picker");
+    picker.value = currentMonthVal;
+    picker.setAttribute("onchange", "onModalMonthChange(this.value)");
     document.getElementById("modal-submit-status").textContent = "";
 
     const generateField = st => {
       const existing = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
-      const val = existing ? existing.monthly_volume : "";
+      const val = (existing && existing.monthly_volume !== null && existing.monthly_volume !== undefined) ? existing.monthly_volume : "";
       const fieldId = "inp-" + st.name.replace(/[^a-zA-Z0-9]/g, "");
       return `
         <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
