@@ -490,6 +490,29 @@
   </style>
 </head>
 <body>
+  <!-- ── ADMIN PASSCODE GATE ── -->
+  <div id="admin-lock-overlay" style="position:fixed; inset:0; background:#0D1B2A; z-index:999999; display:flex; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#152336; border:1px solid rgba(255,255,255,0.12); border-radius:14px; width:380px; max-width:92vw; padding:28px 24px; text-align:center; box-shadow:0 12px 40px rgba(0,0,0,0.6);">
+      <div style="width:48px; height:48px; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.3); border-radius:12px; display:inline-flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:14px;">
+        🔒
+      </div>
+      <h3 style="font-size:16px; font-weight:700; color:#FFFFFF; margin-bottom:6px; font-family:'Plus Jakarta Sans', sans-serif;">PPCWD Admin Portal</h3>
+      <p style="font-size:11px; color:#94A3B8; margin-bottom:18px; font-family:'JetBrains Mono', monospace;">Enter authorized passcode to manage fleet</p>
+
+      <form onsubmit="verifyAdminPasscode(event)">
+        <input type="password" id="admin-passcode-input" placeholder="Enter Access Code" required autofocus
+              style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:10px 14px; color:#FFFFFF; font-family:'JetBrains Mono', monospace; font-size:14px; text-align:center; letter-spacing:2px; outline:none; margin-bottom:12px;">
+        
+        <div id="admin-auth-err" style="color:#FCA5A5; font-size:11px; font-family:'JetBrains Mono', monospace; min-height:16px; margin-bottom:12px; display:none;">
+          ⚠️ Incorrect passcode. Access denied.
+        </div>
+
+        <button type="submit" id="btn-unlock-portal" style="width:100%; padding:10px; background:#2563EB; border:none; border-radius:8px; color:#FFFFFF; font-weight:700; font-family:'JetBrains Mono', monospace; font-size:12px; cursor:pointer;">
+          Unlock System &rarr;
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Loading Screen -->
   <div class="loading-overlay" id="loader">
@@ -2608,6 +2631,69 @@
     });
 
     await new Promise(r => setTimeout(r, 400));
+
+    // ── PASSCODE PROTECTION CONFIGURATION ──
+  // Default Passcode: "PPCWD2026!"
+  // Replace this hash with your own if you want a different password
+  const CORRECT_PASSCODE_HASH = "b5dc3fc5fae5ffebae40f7d5ca4421b920fcad941a4a1a5b822d6b38c237c87c";
+
+  // SHA-256 hashing helper using Web Crypto API
+  async function hashString(str) {
+    const buffer = new TextEncoder().encode(str);
+    const hash = await crypto.subtle.digest("SHA-256", buffer);
+    return Array.from(new Uint8Array(hash))
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  // Check on load if this browser session is already unlocked
+  function checkSessionAuth() {
+    const isAuth = sessionStorage.getItem("ppcwd_admin_unlocked");
+    const overlay = document.getElementById("admin-lock-overlay");
+    if (isAuth === "true") {
+      if (overlay) overlay.style.display = "none";
+    } else {
+      if (overlay) overlay.style.display = "flex";
+      const input = document.getElementById("admin-passcode-input");
+      if (input) setTimeout(() => input.focus(), 100);
+    }
+  }
+
+  // Form submission handler
+  async function verifyAdminPasscode(e) {
+    e.preventDefault();
+    const input = document.getElementById("admin-passcode-input");
+    const errEl = document.getElementById("admin-auth-err");
+    const btn = document.getElementById("btn-unlock-portal");
+
+    btn.disabled = true;
+    btn.textContent = "Verifying...";
+
+    const enteredHash = await hashString(input.value.trim());
+
+    if (enteredHash === CORRECT_PASSCODE_HASH) {
+      sessionStorage.setItem("ppcwd_admin_unlocked", "true");
+      document.getElementById("admin-lock-overlay").style.display = "none";
+      errEl.style.display = "none";
+      input.value = "";
+    } else {
+      errEl.style.display = "block";
+      input.value = "";
+      input.focus();
+    }
+
+    btn.disabled = false;
+    btn.textContent = "Unlock System \u2192";
+  }
+
+  // Optional: Function to lock the page again
+  function lockPortal() {
+    sessionStorage.removeItem("ppcwd_admin_unlocked");
+    checkSessionAuth();
+  }
+
+  // Run the check immediately before rendering content
+  checkSessionAuth();
 
     // Construct Composite Publication Page
     const scale = 2;
