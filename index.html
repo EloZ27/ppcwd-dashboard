@@ -559,7 +559,7 @@
           <select id="week-select" class="week-dropdown" onchange="renderWeek(this.value)"></select>
         </div>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 55.33 MLD</span>
+          <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 56.86 MLD</span>
           
           <!-- Global Monthly Production Status Pill -->
           <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
@@ -674,7 +674,7 @@
         </div>
 
         <div class="card" style="margin-bottom:20px;">
-          <div class="card-title">MLD Trend vs 55.33 Target</div>
+          <div class="card-title">MLD Trend vs 56.86 Target</div>
           <div style="height:300px"><canvas id="chart-mld"></canvas></div>
         </div>
 
@@ -1153,7 +1153,7 @@
 
   <!-- ── SCRIPTS ── -->
   <script>
-  const TARGET_MLD = 55.33;
+  const TARGET_MLD = 56.86;
   const ALERT_PSI  = 6.5;
 
   const PRESSURE_STATIONS = [
@@ -1367,7 +1367,7 @@
     const gw = num(d.totalGW);
 
     document.getElementById("ov-prod-total").innerHTML = `${fmt(total)}<span class="unit">m³</span>`;
-    document.getElementById("ov-mld-sub").textContent = `${fmt(mld, 2)} MLD (Target: 55.33)`;
+    document.getElementById("ov-mld-sub").textContent = `${fmt(mld, 2)} MLD (Target: 56.86)`;
     document.getElementById("ov-sw-total").innerHTML = `${fmt(sw)}<span class="unit">m³</span>`;
     document.getElementById("ov-sw-pct").textContent = `${fmt(total > 0 ? (sw/total*100) : 0, 1)}% Surface`;
     document.getElementById("ov-gw-total").innerHTML = `${fmt(gw)}<span class="unit">m³</span>`;
@@ -1606,7 +1606,7 @@
         labels,
         datasets: [
           { label: "MLD", data: rows.map(r => num(r[COL.mld])), borderColor: "#0D9488", backgroundColor: "rgba(13,148,136,0.08)", borderWidth: 2, fill: true, tension: 0.35 },
-          { label: "Target (55.33)", data: labels.map(() => TARGET_MLD), borderColor: "#F59E0B", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 }
+          { label: "Target (56.86)", data: labels.map(() => TARGET_MLD), borderColor: "#F59E0B", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 }
         ]
       },
       options: { responsive: true, maintainAspectRatio: false }
@@ -3031,17 +3031,36 @@
   let chartMonthlyBar = null;
 
   async function loadMonthlyData(monthVal) {
-    if (!monthVal) {
-      const now = new Date();
-      monthVal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    }
-    currentSelectedMonth = monthVal;
-    document.getElementById("monthly-picker").value = monthVal;
-
     try {
-      const res = await fetch(`/api/monthlyProduction?month=${monthVal}`);
-      if (!res.ok) throw new Error(await res.text());
-      currentMonthlyRecords = await res.json();
+      let monthToLoad = monthVal;
+      let data = [];
+
+      if (!monthToLoad) {
+        const res = await fetch('/api/monthlyProduction');
+        if (!res.ok) throw new Error(await res.text());
+        const allRecords = await res.json();
+
+        if (allRecords && allRecords.length > 0) {
+          monthToLoad = allRecords[0].month_year;
+          data = allRecords.filter(r => r.month_year === monthToLoad);
+        } else {
+          const prev = new Date();
+          prev.setDate(1);
+          prev.setMonth(prev.getMonth() - 1);
+          monthToLoad = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, '0')}`;
+        }
+      } else {
+        const res = await fetch(`/api/monthlyProduction?month=${monthToLoad}`);
+        if (!res.ok) throw new Error(await res.text());
+        data = await res.json();
+      }
+
+      currentSelectedMonth = monthToLoad;
+      
+      const picker = document.getElementById("monthly-picker");
+      if (picker) picker.value = monthToLoad;
+
+      currentMonthlyRecords = data;
       renderMonthlyDashboard();
     } catch (e) {
       console.warn("Could not load monthly data:", e.message);
