@@ -439,7 +439,7 @@
     .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
 
     /* ── CRISIS MONITORING STYLES ── */
-    .crisis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .crisis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px; margin-bottom: 24px; }
     .crisis-card {
       background: #FFFFFF;
       border: 1px solid var(--card-border);
@@ -460,21 +460,184 @@
     .crisis-details-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #E2E8F0; padding-bottom: 3px; }
     .crisis-details-row:last-child { border-bottom: none; }
 
-    /* ── RESPONSIVE DRAWER ── */
-    .menu-toggle-btn { display: none; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main); }
+    /* ── RESPONSIVE GRIDS & LAYOUT CLASSES ── */
+    .grid-overview-split {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .grid-production-charts {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .grid-priority-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .grid-stations {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .grid-river-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+    }
+    .grid-complaints-charts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .grid-monthly-charts {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .grid-genset-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 14px 24px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .modal-station-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* ── RESPONSIVE DRAWER & OVERLAY ── */
+    .menu-toggle-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--text-main);
+      padding: 4px;
+      line-height: 1;
+    }
+    .sidebar-close-btn {
+      display: none;
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #FFFFFF;
+      font-size: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .sidebar-close-btn:hover { background: rgba(255, 255, 255, 0.2); }
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 149;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── BREAKPOINTS & RESPONSIVE POLISH ── */
     @media (max-width: 1024px) {
       .kpi-row-layout { grid-template-columns: repeat(3, 1fr); }
+      .grid-production-charts { grid-template-columns: 1fr 1fr; }
+      .grid-production-charts > :first-child { grid-column: span 2; }
+      .grid-complaints-charts { grid-template-columns: 1fr 1fr; }
+      .grid-complaints-charts > :first-child { grid-column: span 2; }
     }
+
     @media (max-width: 820px) {
-      .app-sidebar { position: fixed; left: -260px; top: 0; bottom: 0; }
-      .app-sidebar.open { transform: translateX(260px); box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
-      .menu-toggle-btn { display: block; }
-      .kpi-row-layout { grid-template-columns: repeat(2, 1fr); }
-      .app-header { padding: 14px 18px; }
-      .page-content { padding: 16px 14px; }
-      .period-bar-wrap { flex-direction: column; align-items: stretch; gap: 10px; }
+      .app-sidebar {
+        position: fixed;
+        left: -270px;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        z-index: 160;
+      }
+      .app-sidebar.open {
+        transform: translateX(270px);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+      }
+      .menu-toggle-btn { display: flex; align-items: center; justify-content: center; }
+      .sidebar-close-btn { display: flex; }
+
+      .kpi-row-layout { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .app-header { padding: 12px 16px; }
+      .header-titles h1 { font-size: 15px; }
+      .header-titles p { display: none; }
+
+      .page-content { padding: 14px 12px; }
+      .period-bar-wrap { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 14px; }
+      .period-bar-wrap select.week-dropdown { width: 100%; }
+
+      .grid-overview-split { grid-template-columns: 1fr; }
+      .grid-production-charts { grid-template-columns: 1fr; }
+      .grid-production-charts > :first-child { grid-column: auto; }
+      .grid-priority-cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .grid-river-layout { grid-template-columns: 1fr; }
+      #river-list-container { max-height: 220px !important; }
+      .grid-complaints-charts { grid-template-columns: 1fr; }
+      .grid-complaints-charts > :first-child { grid-column: auto; }
+      .grid-monthly-charts { grid-template-columns: 1fr; }
+
+      .map-frame-box { height: 360px; }
     }
-    @media (max-width: 480px) { .kpi-row-layout { grid-template-columns: 1fr; } }
+
+    @media (max-width: 640px) {
+      .card { padding: 14px; border-radius: 12px; margin-bottom: 12px; }
+      .table-container { border-radius: 12px; margin-bottom: 16px; }
+      .table-head-bar { padding: 10px 14px; }
+      table.data-table th, table.data-table td { padding: 7px 10px; }
+
+      .modal-station-grid { grid-template-columns: 1fr; }
+      .grid-genset-summary { grid-template-columns: repeat(2, 1fr); padding: 12px 14px; }
+      .grid-priority-cards { grid-template-columns: 1fr; }
+
+      .kpi-card-white { padding: 12px 14px; }
+      .kpi-card-num { font-size: 20px; }
+
+      .chart-panel-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 440px) {
+      .kpi-row-layout { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .kpi-card-white { padding: 10px 10px; }
+      .kpi-card-lbl { font-size: 9.5px; }
+      .kpi-card-num { font-size: 18px; margin: 4px 0; }
+      .grid-stations { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .grid-stations .kpi-card-white { padding: 8px 10px; }
+      .header-btn { padding: 6px 10px; font-size: 10.5px; }
+    }
 
     .loading-overlay {
       position: fixed; inset: 0; background: #FFFFFF; z-index: 9999;
@@ -500,6 +663,7 @@
     
     <!-- ── SIDEBAR ── -->
     <aside class="app-sidebar" id="app-sidebar">
+      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Close sidebar">✕</button>
       <div class="sidebar-brand">
         <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img">
         <div>
@@ -529,20 +693,24 @@
       </div>
     </aside>
 
+    <!-- Sidebar backdrop for mobile drawer -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
     <!-- ── MAIN CONTENT ── -->
     <div class="app-main">
       <header class="app-header">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
-          <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 32px; height: 32px;">
-          <div class="header-titles">
-            <h1 id="top-bar-title">Monitoring Dashboard</h1>
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+          <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px; flex-shrink:0;">
+          <div class="header-titles" style="min-width: 0;">
+            <h1 id="top-bar-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitoring Dashboard</h1>
             <p><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Live telemetry &bull; Updated continuously from Supabase</p>
           </div>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" style="flex-shrink: 0;">
           <button class="header-btn" onclick="openGensetModal()" style="color: var(--blue); font-weight: 700; border-color: var(--blue-border); background: var(--blue-light);">
-            Standby Generators
+            <span class="desktop-text">Standby Generators</span>
+            <span class="mobile-text" style="display:none;">⚡ Gensets</span>
           </button>
         </div>
       </header>
@@ -596,7 +764,7 @@
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:1.15fr 1fr; gap:16px; margin-bottom:20px;">
+        <div class="grid-overview-split">
           <div class="card">
             <div class="card-title">
               <span>Production Distribution &bull; Source Split</span>
@@ -665,7 +833,7 @@
           <div class="kpi-card-white"><div class="kpi-card-lbl">Target Achievement</div><div class="kpi-card-num" id="kpi-target-pct">—<span class="unit">%</span></div><div class="kpi-card-foot" id="kpi-target-sub"></div></div>
         </div>
 
-        <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:16px; margin-bottom:20px;">
+        <div class="grid-production-charts">
           <div class="card"><div class="card-title">Weekly Total Production (m³)</div><div style="height:210px"><canvas id="chart-bar"></canvas></div></div>
           <div class="card"><div class="card-title">SW vs GW Split</div><div style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
           <div class="card"><div class="card-title">Source Breakdown</div><div style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
@@ -703,11 +871,11 @@
       <div class="page-content" id="page-pressure">
         <div class="card" style="margin-bottom: 16px; padding: 12px 18px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:11px;">
+            <div style="display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:11px; flex-wrap:wrap;">
               <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);"></span> Normal (&gt; 6.5 PSI)</span>
               <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);"></span> Alert (&le; 6.5 PSI)</span>
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <input type="date" id="date-filter-input" class="header-btn" onchange="applyDateFilter()">
               <div style="display:flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden;">
                 <button onclick="stepTime(-1)" class="header-btn" style="border:none; border-radius:0;">◀</button>
@@ -725,15 +893,15 @@
 
         <!-- Priority Nodes Strip -->
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:10px;">Primary Strategic Nodes</div>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px;" id="priority-cards-row"></div>
+        <div class="grid-priority-cards" id="priority-cards-row"></div>
 
         <!-- Distribution Stations Grid -->
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:10px;">Distribution Network Monitoring Points</div>
-        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 24px;" id="station-cards-grid"></div>
+        <div class="grid-stations" id="station-cards-grid"></div>
 
         <!-- Chart History Container -->
         <div class="card" id="chart-active-panel" style="display:none; margin-bottom:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="chart-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <div>
               <div id="panel-station-name" style="font-size:15px; font-weight:700; color:var(--text-main);">Pressure History</div>
               <div id="panel-station-sub" style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Telemetry History</div>
@@ -764,7 +932,7 @@
 
       <!-- ── TAB 4: CRISIS MONITOR ── -->
       <div class="page-content" id="page-crisis">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
           <div>
             <h2 style="font-size:16px; font-weight:800; color:var(--text-main);">LWUA Crisis &amp; Drought Monitoring</h2>
             <div style="font-size:11px; color:var(--text-muted);">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
@@ -789,7 +957,7 @@
           <div style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
         </div>
 
-        <div style="display:grid; grid-template-columns: 280px 1fr; gap: 18px;">
+        <div class="grid-river-layout">
           <div class="card" style="padding:14px; max-height:550px; overflow-y:auto;" id="river-list-container"></div>
           <div>
             <div class="card" id="river-chart-container" style="margin-bottom:16px;">
@@ -812,20 +980,20 @@
       <!-- ── TAB 6: CUSTOMER REPORTS ── -->
       <div class="page-content" id="page-complaints">
         <div class="card" style="margin-bottom: 16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="font-weight:700;">Reporting Cycle Filter</div>
             <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
           </div>
         </div>
 
-        <div class="kpi-row-layout" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="kpi-row-layout">
           <div class="kpi-card-white"><div class="kpi-card-lbl">Total Reports</div><div class="kpi-card-num" id="comp-kpi-total">—</div></div>
           <div class="kpi-card-white"><div class="kpi-card-lbl">Top Barangay</div><div class="kpi-card-num" id="comp-kpi-brgy" style="font-size:18px;">—</div></div>
           <div class="kpi-card-white"><div class="kpi-card-lbl">Primary Issue</div><div class="kpi-card-num" id="comp-kpi-issue" style="font-size:18px;">—</div></div>
           <div class="kpi-card-white"><div class="kpi-card-lbl">Peak Window</div><div class="kpi-card-num" id="comp-kpi-time" style="font-size:18px;">—</div></div>
         </div>
 
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div class="grid-complaints-charts">
           <div class="card"><div class="card-title">By Type</div><div style="height:210px"><canvas id="chart-complaints-type"></canvas></div></div>
           <div class="card"><div class="card-title">By Barangay (Top 10)</div><div style="height:210px"><canvas id="chart-complaints-brgy"></canvas></div></div>
           <div class="card"><div class="card-title">By Time of Day</div><div style="height:210px"><canvas id="chart-complaints-time"></canvas></div></div>
@@ -847,7 +1015,7 @@
               <span style="font-weight:700; color:var(--text-main);">Reporting Month:</span>
               <input type="month" id="monthly-picker" class="header-btn" onchange="loadMonthlyData(this.value)">
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">
                 Input / Edit Volumes
               </button>
@@ -895,7 +1063,7 @@
         </div>
 
         <!-- Charts: Source Split & Production Breakdown -->
-        <div style="display:grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 20px;">
+        <div class="grid-monthly-charts">
           <div class="card">
             <div class="card-title">SW vs GW Monthly Share</div>
             <div style="height: 240px;"><canvas id="chart-monthly-pie"></canvas></div>
