@@ -667,10 +667,11 @@
               </tbody>
             </table>
           </div>
-        </div> <!-- end #section-gensets -->
+        </div>
+      </div>
 
-        <!-- ── COMPLAINTS INGESTION SECTION ── -->
-        <div id="section-complaints" style="display:none;">
+      <!-- ── COMPLAINTS INGESTION SECTION ── -->
+      <div id="section-complaints" style="display:none;">
           
           <!-- Card 1: Form Panel -->
           <div class="card">
@@ -1232,16 +1233,17 @@
       btn.textContent = "Saving to Supabase...";
 
       const form = e.target;
+      const fd = new FormData(form);
       const payload = {
         action: 'create',
         record: {
-          date: form.date.value,
-          barangay: form.barangay.value,
-          stubout_number: form.stubout_number.value,
-          account_number: form.account_number.value,
-          type: form.type.value,
-          complaint_count: form.complaint_count.value,
-          consumer_remarks: form.consumer_remarks.value
+          date: fd.get('date'),
+          barangay: fd.get('barangay'),
+          stubout_number: fd.get('stubout_number'),
+          account_number: fd.get('account_number'),
+          type: fd.get('type'),
+          complaint_count: fd.get('complaint_count'),
+          consumer_remarks: fd.get('consumer_remarks')
         }
       };
 
