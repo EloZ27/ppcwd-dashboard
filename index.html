@@ -982,7 +982,12 @@
         <div class="card" style="margin-bottom: 16px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="font-weight:700;">Reporting Cycle Filter</div>
-            <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
+              <a href="uploader.html#complaints" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">
+                📥 Log / Import Complaints ↗
+              </a>
+            </div>
           </div>
         </div>
 
@@ -990,18 +995,25 @@
           <div class="kpi-card-white"><div class="kpi-card-lbl">Total Reports</div><div class="kpi-card-num" id="comp-kpi-total">—</div></div>
           <div class="kpi-card-white"><div class="kpi-card-lbl">Top Barangay</div><div class="kpi-card-num" id="comp-kpi-brgy" style="font-size:18px;">—</div></div>
           <div class="kpi-card-white"><div class="kpi-card-lbl">Primary Issue</div><div class="kpi-card-num" id="comp-kpi-issue" style="font-size:18px;">—</div></div>
-          <div class="kpi-card-white"><div class="kpi-card-lbl">Peak Window</div><div class="kpi-card-num" id="comp-kpi-time" style="font-size:18px;">—</div></div>
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Top Impacted Stubout</div>
+            <div class="kpi-card-num" id="comp-kpi-stubout" style="font-size:18px; color:var(--amber);">—</div>
+            <div class="kpi-card-foot" id="comp-kpi-stubout-sub" style="color:var(--text-muted);">Highest cluster</div>
+          </div>
         </div>
 
         <div class="grid-complaints-charts">
           <div class="card"><div class="card-title">By Type</div><div style="height:210px"><canvas id="chart-complaints-type"></canvas></div></div>
           <div class="card"><div class="card-title">By Barangay (Top 10)</div><div style="height:210px"><canvas id="chart-complaints-brgy"></canvas></div></div>
-          <div class="card"><div class="card-title">By Time of Day</div><div style="height:210px"><canvas id="chart-complaints-time"></canvas></div></div>
+          <div class="card"><div class="card-title">Top 10 Hotspot Stubouts</div><div style="height:210px"><canvas id="chart-complaints-stubouts"></canvas></div></div>
         </div>
 
         <div class="table-container">
-          <div class="table-head-bar"><div class="table-head-title">Customer Care Verified Incidents Feed</div></div>
-          <div id="complaints-feed" style="padding:14px; max-height:500px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+          <div class="table-head-bar">
+            <div class="table-head-title">Customer Care Verified Incidents Feed</div>
+            <span id="comp-feed-count" style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">0 records</span>
+          </div>
+          <div id="complaints-feed" style="padding:14px; max-height:520px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
         </div>
       </div>
 
@@ -1448,7 +1460,7 @@
 
   let barChart, pieSwGw, pieSources, mldChart, ovSplitChart;
   let pressureChart, riverChart, riverLeaderboardChart;
-  let complaintTypeChart, complaintBrgyChart, complaintTimeChart;
+  let complaintTypeChart, complaintBrgyChart, complaintStuboutChart;
   let leafletMap = null, leafletMarkers = {};
 
   function num(v){ if(v===null||v===undefined||v==="") return 0; const n = parseFloat(String(v).replace(/,/g,"")); return isNaN(n)?0:n; }
@@ -2535,37 +2547,45 @@
       const [s, e] = cycleVal.split('|');
       filtered = complaintsRaw.filter(c => c.date >= s && c.date <= e);
     }
-    const brgys = {}, types = {}, times = {"4 AM - 8 AM":0, "8 AM - 12 NN":0, "12 NN - 4 PM":0, "4 PM - 8 PM":0, "8 PM - 4 AM":0};
+    const brgys = {}, types = {}, stubouts = {};
     let total = 0;
     filtered.forEach(c => {
       const b = (c.barangay || "Unknown").toUpperCase().trim();
       const t = (c.type || "Unclassified").trim();
+      const so = (c.stubout_number || c.stubout || c.stubout_no || "").trim();
       const n = parseInt(c.complaint_count, 10) || 1;
       total += n;
       brgys[b] = (brgys[b] || 0) + n;
       types[t] = (types[t] || 0) + n;
-      if (c.time) {
-        const h = parseInt(c.time.split(':')[0], 10);
-        if (h >= 4 && h < 8) times["4 AM - 8 AM"] += n;
-        else if (h >= 8 && h < 12) times["8 AM - 12 NN"] += n;
-        else if (h >= 12 && h < 16) times["12 NN - 4 PM"] += n;
-        else if (h >= 16 && h < 20) times["4 PM - 8 PM"] += n;
-        else times["8 PM - 4 AM"] += n;
+      if (so && so !== "—" && so !== "Unassigned") {
+        stubouts[so] = (stubouts[so] || 0) + n;
       }
     });
     const sBrgy = Object.entries(brgys).sort((a,b) => b[1] - a[1]);
     const sType = Object.entries(types).sort((a,b) => b[1] - a[1]);
-    const sTime = Object.entries(times).sort((a,b) => b[1] - a[1]);
+    const sStubout = Object.entries(stubouts).sort((a,b) => b[1] - a[1]);
 
-    document.getElementById('comp-kpi-total').textContent = total;
+    document.getElementById('comp-kpi-total').textContent = fmt(total);
     document.getElementById('comp-kpi-brgy').textContent = sBrgy[0]?.[0] || '—';
     document.getElementById('comp-kpi-issue').textContent = sType[0]?.[0] || '—';
-    document.getElementById('comp-kpi-time').textContent = sTime[0]?.[0] || '—';
+
+    // Top Impacted Stubout KPI
+    const topSoEl = document.getElementById('comp-kpi-stubout');
+    const topSoSub = document.getElementById('comp-kpi-stubout-sub');
+    if (topSoEl) {
+      if (sStubout[0]) {
+        topSoEl.textContent = sStubout[0][0];
+        if (topSoSub) topSoSub.textContent = `${sStubout[0][1]} reports logged`;
+      } else {
+        topSoEl.textContent = '—';
+        if (topSoSub) topSoSub.textContent = 'None identified';
+      }
+    }
 
     if (complaintTypeChart) complaintTypeChart.destroy();
     complaintTypeChart = new Chart(document.getElementById('chart-complaints-type'), {
       type: 'doughnut',
-      data: { labels: sType.map(t => t[0]), datasets: [{ data: sType.map(t => t[1]), backgroundColor: ['#EF4444', '#F59E0B', '#3B82F6', '#10B981'] }] },
+      data: { labels: sType.map(t => t[0]), datasets: [{ data: sType.map(t => t[1]), backgroundColor: ['#EF4444', '#F59E0B', '#3B82F6', '#10B981', '#8B5CF6'] }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
     });
 
@@ -2576,23 +2596,64 @@
       options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 
-    if (complaintTimeChart) complaintTimeChart.destroy();
-    complaintTimeChart = new Chart(document.getElementById('chart-complaints-time'), {
-      type: 'bar',
-      data: { labels: Object.keys(times), datasets: [{ data: Object.values(times), backgroundColor: '#0D9488', borderRadius: 4 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-    });
+    // Top 10 Critical Stubouts Hotspot Chart
+    if (complaintStuboutChart) complaintStuboutChart.destroy();
+    const stuboutCanvas = document.getElementById('chart-complaints-stubouts');
+    if (stuboutCanvas) {
+      complaintStuboutChart = new Chart(stuboutCanvas, {
+        type: 'bar',
+        data: {
+          labels: sStubout.slice(0, 10).map(s => s[0]),
+          datasets: [{
+            label: 'Complaints',
+            data: sStubout.slice(0, 10).map(s => s[1]),
+            backgroundColor: '#F59E0B',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { font: { family: 'JetBrains Mono', size: 10 } } },
+            y: { beginAtZero: true, ticks: { precision: 0 } }
+          }
+        }
+      });
+    }
 
-    document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => `
-      <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:8px; padding:10px 14px; font-size:12px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-          <strong style="color:var(--text-main);">${c.barangay}</strong>
-          <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${c.date} ${c.time || ''}</span>
+    const feedCountEl = document.getElementById('comp-feed-count');
+    if (feedCountEl) feedCountEl.textContent = `${filtered.length} recorded`;
+
+    document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
+      const so = c.stubout_number || c.stubout || c.stubout_no;
+      const acc = c.account_number || c.account_no;
+      const isNoWater = (c.type || '').toLowerCase().includes('no water');
+      const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';
+      const remarks = c.consumer_remarks || c.remarks;
+      const count = parseInt(c.complaint_count, 10) || 1;
+
+      return `
+        <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:3px solid ${isNoWater ? 'var(--red)' : 'var(--amber)'}; border-radius:8px; padding:10px 14px; font-size:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:4px;">
+            <div>
+              <strong style="color:var(--text-main); font-size:12.5px;">${c.barangay || 'UNKNOWN'}</strong>
+              ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${so}</b></span>` : ''}
+            </div>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${c.date || ''}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="kpi-badge-pill ${typeBadge}">${c.type || 'Incident'}</span>
+              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);">Acc: <b>${acc}</b></span>` : ''}
+            </div>
+            <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
+          </div>
+          ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${remarks}"</div>` : ''}
         </div>
-        <div style="color:var(--blue); font-weight:600; font-size:11px;">${c.type} (${c.complaint_count || 1} report)</div>
-        <div style="color:var(--text-muted); font-size:11px; margin-top:2px;">"${c.consumer_remarks || 'No remarks provided'}"</div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
   // ── DATA INGESTION ──

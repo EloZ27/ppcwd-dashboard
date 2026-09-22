@@ -402,14 +402,49 @@
     .pill-amber { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
     .pill-red { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
 
-    /* Responsive Drawer */
-    .menu-toggle-btn { display: none; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main); }
+    /* Responsive Drawer & Overlay */
+    .menu-toggle-btn { display: none; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-main); }
+    .sidebar-close-btn {
+      display: none;
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #FFFFFF;
+      font-size: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 149;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     @media (max-width: 820px) {
-      .app-sidebar { position: fixed; left: -260px; top: 0; bottom: 0; }
-      .app-sidebar.open { transform: translateX(260px); box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
-      .menu-toggle-btn { display: block; }
-      .app-header { padding: 14px 18px; }
-      .page-content { padding: 16px 14px; }
+      .app-sidebar { position: fixed; left: -270px; top: 0; bottom: 0; z-index: 160; }
+      .app-sidebar.open { transform: translateX(270px); box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
+      .menu-toggle-btn { display: flex; align-items: center; justify-content: center; }
+      .sidebar-close-btn { display: flex; }
+      .app-header { padding: 12px 16px; }
+      .page-content { padding: 14px 12px; }
     }
   </style>
 </head>
@@ -419,6 +454,7 @@
 
     <!-- ── SIDEBAR ── -->
     <aside class="app-sidebar" id="app-sidebar">
+      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Close sidebar">✕</button>
       <div class="sidebar-brand">
         <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img">
         <div>
@@ -435,9 +471,14 @@
 
         <div class="sidebar-divider"></div>
 
-        <button class="nav-btn active" style="pointer-events:none;">
+        <button class="nav-btn active" id="sidebar-btn-gensets" onclick="switchPortalSection('gensets')">
           <span class="nav-icon">⚡</span>
           <span>Genset &amp; Asset Admin</span>
+        </button>
+
+        <button class="nav-btn" id="sidebar-btn-complaints" onclick="switchPortalSection('complaints')">
+          <span class="nav-icon">📋</span>
+          <span>Customer Complaints</span>
         </button>
       </nav>
 
@@ -452,6 +493,9 @@
       </div>
     </aside>
 
+    <!-- Sidebar backdrop for mobile drawer -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
     <!-- ── MAIN CONTENT ── -->
     <div class="app-main">
       <header class="app-header">
@@ -459,8 +503,8 @@
           <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
           <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 32px; height: 32px;">
           <div class="header-titles">
-            <h1>Operations &amp; Asset Portal</h1>
-            <p><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
+            <h1 id="portal-title">Operations &amp; Asset Portal</h1>
+            <p id="portal-subtitle"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
           </div>
         </div>
 
@@ -473,8 +517,10 @@
 
       <div class="page-content">
         
-        <!-- Form Panel -->
-        <div class="card">
+        <!-- ── GENSETS SECTION ── -->
+        <div id="section-gensets">
+          <!-- Form Panel -->
+          <div class="card">
           <div class="card-header-bar">
             <div class="card-heading">
               <h2>⚡ Standby Generator Asset Management</h2>
@@ -621,6 +667,177 @@
               </tbody>
             </table>
           </div>
+        </div> <!-- end #section-gensets -->
+
+        <!-- ── COMPLAINTS INGESTION SECTION ── -->
+        <div id="section-complaints" style="display:none;">
+          
+          <!-- Card 1: Form Panel -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>📋 Customer Complaints &amp; Service Incidents</h2>
+                <p>Log verified customer reports, track affected stubouts, and bulk import daily incident telemetry into Supabase</p>
+              </div>
+              <div class="segment-pills">
+                <button type="button" class="seg-pill active" id="tab-btn-comp-single" onclick="switchComplaintView('single')">Single Incident Entry</button>
+                <button type="button" class="seg-pill" id="tab-btn-comp-bulk" onclick="switchComplaintView('bulk')">📄 Paste from Excel / CSV</button>
+              </div>
+            </div>
+
+            <div id="comp-alert-box" class="alert-box"></div>
+
+            <!-- VIEW 1: SINGLE INCIDENT ENTRY -->
+            <form id="form-complaint-single" onsubmit="submitSingleComplaint(event)">
+              <div class="form-grid">
+                <div class="field-group">
+                  <label class="form-lbl">Date of Incident *</label>
+                  <input type="date" id="comp-date" name="date" required class="form-input">
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Barangay *</label>
+                  <input type="text" id="comp-barangay" name="barangay" list="barangay-datalist" required placeholder="e.g. SAN PEDRO" class="form-input" style="text-transform:uppercase;">
+                  <datalist id="barangay-datalist">
+                    <option value="SAN MIGUEL">
+                    <option value="STA MONICA">
+                    <option value="BANCAO-BANCAO">
+                    <option value="SAN MANUEL">
+                    <option value="SAN PEDRO">
+                    <option value="SICSICAN">
+                    <option value="TAGBUROS">
+                    <option value="SAN JOSE">
+                    <option value="MANGGAHAN">
+                    <option value="MANDARAGAT">
+                    <option value="MILAGROSA">
+                    <option value="IRAWAN">
+                    <option value="MASIPAG">
+                    <option value="MARUYOGON">
+                    <option value="BACUNGAN">
+                    <option value="TANGLAW">
+                    <option value="BAGONG SILANG">
+                    <option value="TINIGUIBAN">
+                    <option value="SANTA LOURDES">
+                    <option value="SANTA CRUZ">
+                  </datalist>
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Complaint Type *</label>
+                  <select id="comp-type" name="type" required class="form-input">
+                    <option value="No Water">No Water (Interruption)</option>
+                    <option value="Low Pressure">Low Pressure</option>
+                    <option value="Turbid Water">Turbid / Discolored Water</option>
+                    <option value="Leakage / Line Break">Pipe Leakage / Line Break</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <label class="form-lbl">Stubout Number</label>
+                  <input type="text" id="comp-stubout" name="stubout_number" placeholder="e.g. SO-14 or 22" class="form-input">
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Account Number</label>
+                  <input type="text" id="comp-account" name="account_number" placeholder="e.g. 01-12345-01" class="form-input">
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Incident Count (Reports) *</label>
+                  <input type="number" id="comp-count" name="complaint_count" value="1" min="1" required class="form-input">
+                </div>
+              </div>
+
+              <div class="field-group" style="margin-bottom: 18px;">
+                <label class="form-lbl">Consumer Remarks / Details (Optional)</label>
+                <input type="text" id="comp-remarks" name="consumer_remarks" placeholder="Optional notes from customer care..." class="form-input">
+              </div>
+
+              <div style="display:flex; justify-content:flex-end;">
+                <button type="submit" id="btn-save-complaint" class="btn-submit">
+                  <span>+ Save Incident to Supabase</span>
+                </button>
+              </div>
+            </form>
+
+            <!-- VIEW 2: BULK EXCEL / CSV IMPORT -->
+            <div id="comp-bulk-panel" style="display:none;">
+              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:14px;">
+                <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">📋 How to Paste Data from Excel or Google Sheets:</div>
+                <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
+                  Copy rows from your spreadsheet and paste directly into the box below. Columns are expected in this standard order:<br>
+                  <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">Date | Stubout Number | Type of Complaint | Barangay | Account Number | Complaint Count</code><br>
+                  <span style="font-size:10px; color:var(--teal); font-weight:600;">✓ Supports Tab-separated (direct copy-paste from Excel) and Comma-separated (CSV).</span>
+                </div>
+              </div>
+
+              <textarea id="comp-bulk-input" class="form-input" style="font-family:var(--font-mono); font-size:11.5px; min-height:140px; resize:vertical; margin-bottom:12px;" placeholder="2026-09-22&#9;SO-14&#9;No Water&#9;SAN PEDRO&#9;01-23456&#9;1&#10;2026-09-22&#9;SO-22&#9;Low Pressure&#9;STA MONICA&#9;01-98765&#9;2"></textarea>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+                <button type="button" class="header-btn" onclick="populateSamplePaste()">Fill Sample Template</button>
+                <button type="button" id="btn-parse-paste" class="btn-submit" onclick="parseBulkComplaints()">
+                  🔍 Parse &amp; Preview Rows
+                </button>
+              </div>
+
+              <!-- Preview Area -->
+              <div id="comp-preview-container" style="display:none; border-top:1px solid var(--card-border); padding-top:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                  <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Preview Parsed Records (<span id="comp-preview-count">0</span> valid rows)</h4>
+                  <button type="button" id="btn-upload-bulk-complaints" onclick="uploadBulkComplaints()" class="btn-submit" style="background:var(--green); border-color:var(--green);">
+                    🚀 Upload All to Supabase
+                  </button>
+                </div>
+                <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Barangay</th>
+                        <th>Stubout #</th>
+                        <th>Type</th>
+                        <th>Account #</th>
+                        <th style="text-align:right;">Reports</th>
+                      </tr>
+                    </thead>
+                    <tbody id="comp-preview-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Live Ledger Table -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">📋 Verified Complaints Ledger (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Live incoming telemetry from customer care triage</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="comp-search-input" placeholder="Filter by barangay, stubout, account..." class="form-input" style="width:230px; padding:6px 10px; font-size:11px;" oninput="filterComplaintsTable()">
+                <button onclick="fetchComplaintsList()" class="header-btn" style="color:var(--blue); font-size:10px;">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Barangay</th>
+                    <th>Stubout #</th>
+                    <th>Account #</th>
+                    <th>Type</th>
+                    <th style="text-align:right;">Reports</th>
+                    <th>Remarks</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="comp-ledger-tbody">
+                  <tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -698,7 +915,10 @@
     let fleet = [];
 
     function toggleSidebar() {
-      document.getElementById('app-sidebar').classList.toggle('open');
+      const sb = document.getElementById('app-sidebar');
+      const bd = document.getElementById('sidebar-backdrop');
+      sb.classList.toggle('open');
+      if (bd) bd.classList.toggle('active', sb.classList.contains('open'));
     }
 
     function populateStations() {
@@ -939,11 +1159,305 @@
       }
     }
 
+    // ── PORTAL SECTION SWITCHER ──
+    function switchPortalSection(sec) {
+      const gensetsSec = document.getElementById('section-gensets');
+      const complaintsSec = document.getElementById('section-complaints');
+      const btnGensets = document.getElementById('sidebar-btn-gensets');
+      const btnComplaints = document.getElementById('sidebar-btn-complaints');
+      const pTitle = document.getElementById('portal-title');
+      const pSub = document.getElementById('portal-subtitle');
+
+      if (sec === 'complaints') {
+        gensetsSec.style.display = 'none';
+        complaintsSec.style.display = 'block';
+        btnGensets.classList.remove('active');
+        btnComplaints.classList.add('active');
+        if (pTitle) pTitle.textContent = "Customer Complaints Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block;"></span> Service Incidents Ingestion &bull; Direct Supabase Telemetry`;
+        window.location.hash = 'complaints';
+        fetchComplaintsList();
+      } else {
+        gensetsSec.style.display = 'block';
+        complaintsSec.style.display = 'none';
+        btnGensets.classList.add('active');
+        btnComplaints.classList.remove('active');
+        if (pTitle) pTitle.textContent = "Operations & Asset Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit`;
+        window.location.hash = 'gensets';
+      }
+
+      if (window.innerWidth <= 820) {
+        document.getElementById('app-sidebar').classList.remove('open');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (bd) bd.classList.remove('active');
+      }
+    }
+
+    // ── COMPLAINTS MANAGEMENT ──
+    let complaintsList = [];
+    let parsedBulkRows = [];
+
+    function switchComplaintView(view) {
+      const singleForm = document.getElementById('form-complaint-single');
+      const bulkPanel = document.getElementById('comp-bulk-panel');
+      const btnSingle = document.getElementById('tab-btn-comp-single');
+      const btnBulk = document.getElementById('tab-btn-comp-bulk');
+
+      if (view === 'bulk') {
+        singleForm.style.display = 'none';
+        bulkPanel.style.display = 'block';
+        btnSingle.classList.remove('active');
+        btnBulk.classList.add('active');
+      } else {
+        singleForm.style.display = 'block';
+        bulkPanel.style.display = 'none';
+        btnSingle.classList.add('active');
+        btnBulk.classList.remove('active');
+      }
+    }
+
+    function notifyComp(msg, isErr = false) {
+      const box = document.getElementById("comp-alert-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
+      setTimeout(() => { box.className = "alert-box"; }, 4000);
+    }
+
+    async function submitSingleComplaint(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-save-complaint");
+      btn.disabled = true;
+      btn.textContent = "Saving to Supabase...";
+
+      const form = e.target;
+      const payload = {
+        action: 'create',
+        record: {
+          date: form.date.value,
+          barangay: form.barangay.value,
+          stubout_number: form.stubout_number.value,
+          account_number: form.account_number.value,
+          type: form.type.value,
+          complaint_count: form.complaint_count.value,
+          consumer_remarks: form.consumer_remarks.value
+        }
+      };
+
+      try {
+        const res = await fetch('/api/saveComplaints', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save complaint.');
+
+        notifyComp(`Complaint recorded for ${payload.record.barangay}!`);
+        form.reset();
+        document.getElementById("comp-date").value = new Date().toISOString().split('T')[0];
+        document.getElementById("comp-count").value = 1;
+        await fetchComplaintsList();
+      } catch (err) {
+        notifyComp(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "+ Save Incident to Supabase";
+      }
+    }
+
+    function populateSamplePaste() {
+      const today = new Date().toISOString().split('T')[0];
+      const sample = `${today}\tSO-14\tNo Water\tSAN PEDRO\t01-23456\t1\n${today}\tSO-22\tLow Pressure\tSTA MONICA\t01-98765\t2\n${today}\tSO-08\tNo Water\tSAN JOSE\t01-54321\t1`;
+      document.getElementById('comp-bulk-input').value = sample;
+    }
+
+    function parseBulkComplaints() {
+      const text = document.getElementById('comp-bulk-input').value.trim();
+      if (!text) {
+        alert("Please paste data rows into the box first.");
+        return;
+      }
+
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      parsedBulkRows = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (i === 0 && (line.toLowerCase().includes('date') || line.toLowerCase().includes('stubout'))) {
+          continue;
+        }
+
+        let parts = line.includes('\t') ? line.split('\t') : line.split(',');
+        parts = parts.map(p => p.trim().replace(/^["']|["']$/g, ''));
+
+        if (parts.length >= 2) {
+          // Expected: Date | Stubout | Type | Barangay | Account | Count
+          const date = parts[0] || new Date().toISOString().split('T')[0];
+          const stubout = parts[1] || '';
+          const type = parts[2] || 'No Water';
+          const barangay = parts[3] || 'UNKNOWN';
+          const account = parts[4] || '';
+          const count = parseInt(parts[5], 10) || 1;
+
+          parsedBulkRows.push({
+            date,
+            stubout_number: stubout,
+            type,
+            barangay: barangay.toUpperCase(),
+            account_number: account,
+            complaint_count: count
+          });
+        }
+      }
+
+      if (parsedBulkRows.length === 0) {
+        alert("Could not parse any valid rows. Please check format.");
+        return;
+      }
+
+      document.getElementById('comp-preview-count').textContent = parsedBulkRows.length;
+      document.getElementById('comp-preview-tbody').innerHTML = parsedBulkRows.map(r => `
+        <tr>
+          <td class="mono">${r.date}</td>
+          <td><b>${r.barangay}</b></td>
+          <td class="mono">${r.stubout_number || '—'}</td>
+          <td class="mono">${r.account_number || '—'}</td>
+          <td><span class="kpi-badge-pill ${r.type === 'No Water' ? 'pill-red' : 'pill-amber'}">${r.type}</span></td>
+          <td style="text-align:right;" class="mono">${r.complaint_count}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('comp-preview-container').style.display = 'block';
+    }
+
+    async function uploadBulkComplaints() {
+      if (!parsedBulkRows.length) return;
+      const btn = document.getElementById('btn-upload-bulk-complaints');
+      btn.disabled = true;
+      btn.textContent = `Uploading ${parsedBulkRows.length} Rows...`;
+
+      try {
+        const res = await fetch('/api/saveComplaints', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'bulk',
+            records: parsedBulkRows
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Bulk upload failed.');
+
+        notifyComp(`Successfully uploaded ${data.count || parsedBulkRows.length} complaints!`);
+        document.getElementById('comp-bulk-input').value = '';
+        document.getElementById('comp-preview-container').style.display = 'none';
+        parsedBulkRows = [];
+        await fetchComplaintsList();
+      } catch (err) {
+        notifyComp(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "🚀 Upload All to Supabase";
+      }
+    }
+
+    async function fetchComplaintsList() {
+      const tbody = document.getElementById('comp-ledger-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = `<tr><td colspan="8" style="padding:20px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Refreshing records from Supabase...</td></tr>`;
+
+      try {
+        const res = await fetch('/api/getComplaints');
+        if (!res.ok) throw new Error('Could not load complaints.');
+        complaintsList = await res.json();
+        renderComplaintsTable(complaintsList);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="padding:20px; text-align:center; color:var(--red); font-family:var(--font-mono);">Error: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderComplaintsTable(list) {
+      const tbody = document.getElementById('comp-ledger-tbody');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No complaint records found in database.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.slice(0, 100).map(c => {
+        const typeClass = c.type === 'No Water' ? 'pill-red' : (c.type === 'Low Pressure' ? 'pill-amber' : 'pill-green');
+        const stubout = c.stubout_number || c.stubout || c.stubout_no || '—';
+        const account = c.account_number || c.account_no || '—';
+        const count = c.complaint_count || 1;
+        const remarks = c.consumer_remarks || c.remarks || '—';
+
+        return `
+          <tr>
+            <td class="mono" style="white-space:nowrap;">${c.date || '—'}</td>
+            <td><strong>${c.barangay || 'UNKNOWN'}</strong></td>
+            <td class="mono">${stubout}</td>
+            <td class="mono">${account}</td>
+            <td><span class="kpi-badge-pill ${typeClass}">${c.type || 'Unclassified'}</span></td>
+            <td style="text-align:right; font-weight:700;" class="mono">${count}</td>
+            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${remarks}">${remarks}</td>
+            <td style="text-align:right;">
+              ${c.id ? `<button onclick="deleteComplaintRecord('${c.id}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">🗑️ Delete</button>` : ''}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterComplaintsTable() {
+      const q = (document.getElementById('comp-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderComplaintsTable(complaintsList);
+        return;
+      }
+      const filtered = complaintsList.filter(c => {
+        const b = (c.barangay || '').toLowerCase();
+        const s = (c.stubout_number || c.stubout || c.stubout_no || '').toLowerCase();
+        const a = (c.account_number || c.account_no || '').toLowerCase();
+        const t = (c.type || '').toLowerCase();
+        return b.includes(q) || s.includes(q) || a.includes(q) || t.includes(q);
+      });
+      renderComplaintsTable(filtered);
+    }
+
+    async function deleteComplaintRecord(id) {
+      if (!confirm("Are you sure you want to permanently delete this complaint record from Supabase?")) return;
+
+      try {
+        const res = await fetch('/api/saveComplaints', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+
+        notifyComp("Record deleted successfully.");
+        await fetchComplaintsList();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       populateStations();
       fetchGensetFleet();
       const dateInput = document.getElementById("gs-serviced-date");
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+      const compDateInput = document.getElementById("comp-date");
+      if (compDateInput) compDateInput.value = new Date().toISOString().split('T')[0];
+
+      if (window.location.hash === '#complaints') {
+        switchPortalSection('complaints');
+      }
     });
   </script>
 </body>
