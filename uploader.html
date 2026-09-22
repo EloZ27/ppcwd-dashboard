@@ -351,6 +351,19 @@
       margin-bottom: 16px;
       display: none;
     }
+    .alert-box.show {
+      display: block;
+    }
+    .alert-box.alert-error {
+      background: var(--red-light);
+      border: 1px solid var(--red-border);
+      color: var(--red);
+    }
+    .alert-box.alert-success {
+      background: var(--green-light);
+      border: 1px solid var(--green-border);
+      color: var(--green);
+    }
 
     /* Table Container */
     .table-container {
@@ -1254,8 +1267,9 @@
       const box = document.getElementById("comp-alert-box");
       if (!box) return;
       box.textContent = msg;
+      box.style.display = "block";
       box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
-      setTimeout(() => { box.className = "alert-box"; }, 4000);
+      setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
     }
 
     async function submitSingleComplaint(e) {
@@ -1271,7 +1285,7 @@
         record: {
           date: fd.get('date'),
           barangay: fd.get('barangay'),
-          stubout_number: fd.get('stubout_number'),
+          stub_out_no: fd.get('stubout_number') || fd.get('stub_out_no'),
           account_number: fd.get('account_number'),
           type: fd.get('type'),
           complaint_count: fd.get('complaint_count'),
@@ -1337,7 +1351,7 @@
 
           parsedBulkRows.push({
             date,
-            stubout_number: stubout,
+            stub_out_no: stubout,
             type,
             barangay: barangay.toUpperCase(),
             account_number: account,
@@ -1356,7 +1370,7 @@
         <tr>
           <td class="mono">${r.date}</td>
           <td><b>${r.barangay}</b></td>
-          <td class="mono">${r.stubout_number || '—'}</td>
+          <td class="mono">${r.stub_out_no || r.stubout_number || '—'}</td>
           <td class="mono">${r.account_number || '—'}</td>
           <td><span class="kpi-badge-pill ${r.type === 'No Water' ? 'pill-red' : 'pill-amber'}">${r.type}</span></td>
           <td style="text-align:right;" class="mono">${r.complaint_count}</td>
@@ -1423,10 +1437,11 @@
 
       tbody.innerHTML = list.slice(0, 100).map(c => {
         const typeClass = c.type === 'No Water' ? 'pill-red' : (c.type === 'Low Pressure' ? 'pill-amber' : 'pill-green');
-        const stubout = c.stubout_number || c.stubout || c.stubout_no || '—';
+        const stubout = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '—';
         const account = c.account_number || c.account_no || '—';
         const count = c.complaint_count || 1;
         const remarks = c.consumer_remarks || c.remarks || '—';
+        const recordKey = c.jo_number || c.id;
 
         return `
           <tr>
@@ -1438,7 +1453,7 @@
             <td style="text-align:right; font-weight:700;" class="mono">${count}</td>
             <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${remarks}">${remarks}</td>
             <td style="text-align:right;">
-              ${c.id ? `<button onclick="deleteComplaintRecord('${c.id}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">🗑️ Delete</button>` : ''}
+              ${recordKey ? `<button onclick="deleteComplaintRecord('${recordKey}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">🗑️ Delete</button>` : ''}
             </td>
           </tr>
         `;
@@ -1453,10 +1468,11 @@
       }
       const filtered = complaintsList.filter(c => {
         const b = (c.barangay || '').toLowerCase();
-        const s = (c.stubout_number || c.stubout || c.stubout_no || '').toLowerCase();
+        const s = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '').toLowerCase();
         const a = (c.account_number || c.account_no || '').toLowerCase();
         const t = (c.type || '').toLowerCase();
-        return b.includes(q) || s.includes(q) || a.includes(q) || t.includes(q);
+        const jo = (c.jo_number || '').toLowerCase();
+        return b.includes(q) || s.includes(q) || a.includes(q) || t.includes(q) || jo.includes(q);
       });
       renderComplaintsTable(filtered);
     }

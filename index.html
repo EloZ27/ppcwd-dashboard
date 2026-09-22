@@ -2555,7 +2555,7 @@
     filtered.forEach(c => {
       const b = (c.barangay || "Unknown").toUpperCase().trim();
       const t = (c.type || "Unclassified").trim();
-      const so = (c.stubout_number || c.stubout || c.stubout_no || "").trim();
+      const so = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || "").trim();
       const n = parseInt(c.complaint_count, 10) || 1;
       total += n;
       brgys[b] = (brgys[b] || 0) + n;
@@ -2726,7 +2726,7 @@
     if (feedCountEl) feedCountEl.textContent = `${filtered.length} recorded`;
 
     document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
-      const so = c.stubout_number || c.stubout || c.stubout_no;
+      const so = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no;
       const acc = c.account_number || c.account_no;
       const isNoWater = (c.type || '').toLowerCase().includes('no water');
       const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';

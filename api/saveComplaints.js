@@ -22,12 +22,20 @@ export default async function handler(req, res) {
   try {
     // 1. DELETE COMPLAINT RECORD
     if (action === 'delete') {
-      if (!id) return res.status(400).json({ error: 'id is required for deletion.' });
+      const targetId = id || req.body.jo_number;
+      if (!targetId) return res.status(400).json({ error: 'id or jo_number is required for deletion.' });
 
-      const delRes = await fetch(`${SUPABASE_URL}/rest/v1/complaints?id=eq.${id}`, {
+      let delRes = await fetch(`${SUPABASE_URL}/rest/v1/complaints?jo_number=eq.${encodeURIComponent(targetId)}`, {
         method: 'DELETE',
         headers
       });
+
+      if (!delRes.ok) {
+        delRes = await fetch(`${SUPABASE_URL}/rest/v1/complaints?id=eq.${encodeURIComponent(targetId)}`, {
+          method: 'DELETE',
+          headers
+        });
+      }
 
       if (!delRes.ok) throw new Error(await delRes.text());
       return res.status(200).json({ success: true, message: 'Complaint record deleted successfully.' });
@@ -39,10 +47,11 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Payload must contain a non-empty records array.' });
       }
 
-      const formatted = records.map(r => ({
+      const formatted = records.map((r, idx) => ({
+        jo_number: r.jo_number || `WEB-${Date.now()}-${idx + 1}-${Math.floor(Math.random() * 1000)}`,
         date: r.date || new Date().toISOString().split('T')[0],
-        barangay: r.barangay ? String(r.barangay).trim().toUpperCase() : 'UNKNOWN',
-        stubout_number: r.stubout_number || r.stubout || r.stubout_no || null,
+        barangay: r.barangay ? String(r.barangay).trim() : 'Unknown',
+        stub_out_no: r.stub_out_no || r.stubout_number || r.stubout || r.stubout_no || null,
         account_number: r.account_number || r.account_no || null,
         type: r.type || 'No Water',
         complaint_count: parseInt(r.complaint_count, 10) || 1,
@@ -68,9 +77,10 @@ export default async function handler(req, res) {
       }
 
       const singlePayload = {
+        jo_number: dataToSave.jo_number || `WEB-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         date: dataToSave.date,
-        barangay: String(dataToSave.barangay).trim().toUpperCase(),
-        stubout_number: dataToSave.stubout_number || dataToSave.stubout || dataToSave.stubout_no || null,
+        barangay: String(dataToSave.barangay).trim(),
+        stub_out_no: dataToSave.stub_out_no || dataToSave.stubout_number || dataToSave.stubout || dataToSave.stubout_no || null,
         account_number: dataToSave.account_number || dataToSave.account_no || null,
         type: dataToSave.type || 'No Water',
         complaint_count: parseInt(dataToSave.complaint_count, 10) || 1,
