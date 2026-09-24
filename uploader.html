@@ -463,6 +463,43 @@
 </head>
 <body>
 
+  <!-- ── SECURITY AUTHENTICATION GATE OVERLAY ── -->
+  <div id="portal-auth-gate" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#FFFFFF; border-radius:18px; width:440px; max-width:95vw; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); border:1px solid rgba(226,232,240,0.8); text-align:center;">
+      <div style="width:68px; height:68px; border-radius:50%; background:#EFF6FF; border:2px solid #BFDBFE; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+        <img src="logo.png" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;">
+      </div>
+      <h2 style="font-size:17px; font-weight:800; color:var(--text-main); margin-bottom:4px;">PPCWD Operations Portal</h2>
+      <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">
+        Restricted Access &bull; Production, Hydrology, Customer Incidents &amp; Generator Fleet Ingestion
+      </p>
+
+      <div id="auth-gate-alert" class="alert-box alert-error" style="display:none; text-align:left; margin-bottom:16px;"></div>
+
+      <form onsubmit="submitPortalAuth(event)">
+        <div style="margin-bottom:14px; text-align:left;">
+          <label class="form-lbl" style="margin-bottom:6px; display:block;">Authorization Passkey / PIN *</label>
+          <div style="position:relative;">
+            <input type="password" id="auth-passkey-input" class="form-input" placeholder="Enter Division Passkey..." style="padding-right:40px; font-size:13px; font-weight:600;" required autocomplete="current-password">
+            <button type="button" onclick="togglePasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;" title="Show/Hide passkey">👁️</button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; font-size:11.5px; color:var(--text-muted);">
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="auth-remember-chk">
+            Remember on this workstation
+          </label>
+          <a href="index.html" style="color:var(--blue); text-decoration:none; font-weight:600;">← Public View</a>
+        </div>
+
+        <button type="submit" id="btn-auth-unlock" class="btn-submit" style="width:100%; justify-content:center; padding:11px; font-size:12px; font-weight:700;">
+          🔓 Authenticate &amp; Unlock Portal
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="app-layout">
 
     <!-- ── SIDEBAR ── -->
@@ -506,12 +543,17 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="status-pill-box">
-          <div class="status-dot-pulse"></div>
-          <div>
-            <div style="font-size: 10px; font-weight: 700; color: #FFFFFF;">Portal Status</div>
-            <div style="font-size: 9.5px; color: #94A3B8;">Direct Supabase Sync</div>
+        <div class="status-pill-box" style="justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="status-dot-pulse"></div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #FFFFFF;">Portal Protected</div>
+              <div style="font-size: 9.5px; color: #94A3B8;">Passkey Verified</div>
+            </div>
           </div>
+          <button type="button" onclick="lockPortal()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#F1F5F9; font-size:10px; font-weight:700; padding:4px 8px; cursor:pointer;" title="Lock Portal & Sign Out">
+            🔒 Lock
+          </button>
         </div>
       </div>
     </aside>
@@ -1239,6 +1281,115 @@
   </div>
 
   <script>
+    // ══════════════════════════════════════════════════════════════════
+    // ── 🔒 PORTAL PASSKEY SECURITY & ACCESS CONTROL ──
+    // ══════════════════════════════════════════════════════════════════
+
+    function getStoredPasskey() {
+      return sessionStorage.getItem('ppcwd_admin_passkey') || localStorage.getItem('ppcwd_admin_passkey') || '';
+    }
+
+    function getAuthHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'x-admin-passkey': getStoredPasskey()
+      };
+    }
+
+    function togglePasskeyVisibility() {
+      const inp = document.getElementById('auth-passkey-input');
+      if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+
+    async function submitPortalAuth(e) {
+      if (e) e.preventDefault();
+      const inp = document.getElementById('auth-passkey-input');
+      const passkey = inp?.value.trim();
+      const remember = document.getElementById('auth-remember-chk')?.checked;
+      const alertBox = document.getElementById('auth-gate-alert');
+      const btn = document.getElementById('btn-auth-unlock');
+
+      if (!passkey) {
+        if (alertBox) {
+          alertBox.textContent = 'Please enter the authorization passkey.';
+          alertBox.style.display = 'block';
+        }
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Verifying Passkey...'; }
+      if (alertBox) alertBox.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/verifyPasskey', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passkey })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Invalid authorization passkey.');
+
+        if (remember) {
+          localStorage.setItem('ppcwd_admin_passkey', passkey);
+          sessionStorage.removeItem('ppcwd_admin_passkey');
+        } else {
+          sessionStorage.setItem('ppcwd_admin_passkey', passkey);
+          localStorage.removeItem('ppcwd_admin_passkey');
+        }
+
+        unlockPortal();
+      } catch (err) {
+        if (alertBox) {
+          alertBox.textContent = err.message || 'Invalid authorization passkey.';
+          alertBox.style.display = 'block';
+        }
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🔓 Authenticate & Unlock Portal'; }
+      }
+    }
+
+    function unlockPortal() {
+      const gate = document.getElementById('portal-auth-gate');
+      if (gate) gate.style.display = 'none';
+    }
+
+    function lockPortal() {
+      sessionStorage.removeItem('ppcwd_admin_passkey');
+      localStorage.removeItem('ppcwd_admin_passkey');
+      const gate = document.getElementById('portal-auth-gate');
+      if (gate) gate.style.display = 'flex';
+      const inp = document.getElementById('auth-passkey-input');
+      if (inp) { inp.value = ''; inp.focus(); }
+      const alertBox = document.getElementById('auth-gate-alert');
+      if (alertBox) alertBox.style.display = 'none';
+    }
+
+    async function checkPortalAuth() {
+      const stored = getStoredPasskey();
+      if (!stored) {
+        const gate = document.getElementById('portal-auth-gate');
+        if (gate) gate.style.display = 'flex';
+        return false;
+      }
+
+      try {
+        const res = await fetch('/api/verifyPasskey', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-passkey': stored }
+        });
+        if (res.ok) {
+          unlockPortal();
+          return true;
+        } else {
+          lockPortal();
+          return false;
+        }
+      } catch (err) {
+        unlockPortal();
+        return true;
+      }
+    }
+
     const PPCWD_STATIONS = [
       "Baldosano PS", "Sta. Monica PS", "Pump Center #5", "Pump Center #6",
       "DA", "Sicsican", "Villa Ello", "NHA", "Princeville", "Villa Princesa",
@@ -1377,9 +1528,10 @@
       try {
         const res = await fetch('/api/updateGenset', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload)
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Update failed.");
 
@@ -1406,9 +1558,10 @@
       try {
         const res = await fetch('/api/updateGenset', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload)
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const text = await res.text();
         
         let data;
@@ -1461,9 +1614,10 @@
       try {
         const res = await fetch('/api/updateGenset', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload)
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to update specs.");
 
@@ -1484,9 +1638,10 @@
       try {
         const res = await fetch('/api/updateGenset', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ action: 'delete_genset', genset_id: id })
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Delete failed.");
         notify(`Generator ${no} deleted.`);
@@ -1611,9 +1766,10 @@
       try {
         const res = await fetch('/api/saveComplaints', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload)
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save complaint.');
 
@@ -1704,12 +1860,13 @@
       try {
         const res = await fetch('/api/saveComplaints', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: 'bulk',
             records: parsedBulkRows
           })
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Bulk upload failed.');
 
@@ -1798,9 +1955,10 @@
       try {
         const res = await fetch('/api/saveComplaints', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ action: 'delete', id })
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Delete failed.');
 
@@ -2053,14 +2211,14 @@
       try {
         const res = await fetch('/api/saveRiverFlow', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: 'save',
             recorded_date,
             readings_map
           })
         });
-
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save river flow.');
 
@@ -2146,9 +2304,10 @@
       try {
         const res = await fetch('/api/saveRiverFlow', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ action: 'delete', id })
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Delete failed.');
 
@@ -2937,7 +3096,7 @@
 
         const res = await fetch('/api/saveProductionWeekly', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: 'save',
             id: currentEditingProdId,
@@ -2947,7 +3106,7 @@
             row_data
           })
         });
-
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save production data.');
 
@@ -3061,9 +3220,10 @@
       try {
         const res = await fetch('/api/saveProductionWeekly', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ action: 'delete', id: id || undefined, week_label: weekLabel })
         });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Delete failed.');
 
@@ -3089,7 +3249,8 @@
       renderProductionLedger(filtered);
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", async () => {
+      await checkPortalAuth();
       populateStations();
       fetchGensetFleet();
       const dateInput = document.getElementById("gs-serviced-date");

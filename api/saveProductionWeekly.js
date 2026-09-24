@@ -18,6 +18,13 @@ export default async function handler(req, res) {
     'Prefer': 'return=representation'
   };
 
+  const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
+  const providedPasskey = req.headers['x-admin-passkey'] || req.body?.admin_passkey;
+
+  if (!providedPasskey || providedPasskey !== configuredPasskey) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
+  }
+
   const { action, id, week_label, date_recorded, period_label, row_data, metadata } = req.body;
 
   try {
