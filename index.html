@@ -730,6 +730,10 @@
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 56.86 MLD</span>
           
+          <a href="uploader.html#production" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Input or manage weekly production records">
+            <span>⚡ Log Weekly Production ↗</span>
+          </a>
+
           <!-- Global Monthly Production Status Pill -->
           <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
             <span id="global-monthly-text">Loading Monthly...</span>
@@ -848,7 +852,12 @@
         </div>
 
         <div class="table-container">
-          <div class="table-head-bar"><div class="table-head-title">Production by Source Group</div></div>
+          <div class="table-head-bar">
+            <div class="table-head-title">Production by Source Group</div>
+            <a href="uploader.html#production" class="header-btn" style="color:var(--blue); font-size:11px; font-weight:700; text-decoration:none;" title="Open Weekly Production Monitoring Portal">
+              <span>⚡ Input / Update Weekly Production ↗</span>
+            </a>
+          </div>
           <div class="table-responsive">
             <table class="data-table">
               <thead><tr><th>Source</th><th>Category</th><th class="right">Production (m³)</th><th class="right">MLD</th><th class="right">% of Total</th><th style="width:140px">Share</th></tr></thead>

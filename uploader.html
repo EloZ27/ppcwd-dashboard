@@ -498,6 +498,11 @@
           <span class="nav-icon">🌊</span>
           <span>River Hydrology</span>
         </button>
+
+        <button class="nav-btn" id="sidebar-btn-production" onclick="switchPortalSection('production')">
+          <span class="nav-icon">💧</span>
+          <span>Weekly Production</span>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -1013,6 +1018,165 @@
           </div>
         </div> <!-- end #section-riverflow -->
 
+        <!-- ── WEEKLY PRODUCTION MONITORING SECTION ── -->
+        <div id="section-production" style="display:none;">
+
+          <!-- Card 1: Weekly Production Monitoring Entry Panel -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>💧 Weekly Groundwater &amp; Surface Water Monitoring Entry</h2>
+                <p>Production Division &bull; Weekly Update Status of Groundwater and Surface Water Monitoring (Direct Supabase Telemetry)</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="header-btn" onclick="clearProductionForm()">✕ Clear Form</button>
+                <button type="button" class="header-btn" onclick="loadPreviousProdReadings()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                  ↻ Load Previous As Baseline
+                </button>
+                <button type="button" id="btn-save-production" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
+                  💾 Save Production to Supabase
+                </button>
+              </div>
+            </div>
+
+            <div id="prod-alert-box" class="alert-box"></div>
+
+            <!-- Cycle & Period Configuration Bar -->
+            <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Week Label *</label>
+                  <input type="text" id="prod-week-label" class="form-input" placeholder="e.g. Week 25" style="width:130px; font-weight:700;" onchange="onProdWeekChange(this.value)">
+                </div>
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Recorded Date *</label>
+                  <input type="date" id="prod-date" class="form-input" style="width:160px; font-weight:700;" onchange="onProdDateChange(this.value)">
+                </div>
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Period Label *</label>
+                  <input type="text" id="prod-period-label" class="form-input" placeholder="e.g. September 11 - 18, 2026" style="width:230px; font-weight:600;">
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <span style="font-size:11px; color:var(--text-muted);">Audit Cycle Status:</span>
+                  <span id="prod-cycle-status" style="font-size:12px; font-weight:700; color:var(--blue);">Ready for weekly submission</span>
+                </div>
+              </div>
+
+              <!-- Quick Helper Button -->
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" onclick="autoSuggestNextWeek()" class="header-btn" style="font-size:11px;" title="Suggest next week label & date based on latest submission">
+                  ⚡ Auto-Next Cycle
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Executive KPI HUD Bar -->
+            <div style="background:linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius:12px; padding:18px 24px; color:#FFFFFF; margin-bottom:22px; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:18px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+              <div>
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Grand Total Production</div>
+                <div id="prod-hud-total" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#38BDF8; margin-top:2px;">0.00 <span style="font-size:12px; color:#94A3B8;">m³</span></div>
+                <div style="font-size:10px; color:#CBD5E1; margin-top:2px;" id="prod-hud-stations">0 stations encoded</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Weekly Yield (MLD)</div>
+                <div id="prod-hud-mld" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#4ADE80; margin-top:2px;">0.00 <span style="font-size:12px; color:#94A3B8;">MLD</span></div>
+                <div style="font-size:10px; color:#CBD5E1; margin-top:2px;" id="prod-hud-target">0.0% of 56.86 MLD Target</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Surface Water Yield</div>
+                <div id="prod-hud-sw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#2DD4BF; margin-top:2px;">0.00 <span style="font-size:11px; color:#94A3B8;">m³</span></div>
+                <div style="font-size:10px; color:#2DD4BF; margin-top:2px;" id="prod-hud-sw-pct">0.0% Share</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Ground Water Yield</div>
+                <div id="prod-hud-gw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#818CF8; margin-top:2px;">0.00 <span style="font-size:11px; color:#94A3B8;">m³</span></div>
+                <div style="font-size:10px; color:#818CF8; margin-top:2px;" id="prod-hud-gw-pct">0.0% Share</div>
+              </div>
+            </div>
+
+            <!-- View / Filter Mode Segmented Bar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+              <div class="segment-pills" id="prod-cat-pills">
+                <button class="seg-pill active" onclick="switchProdCatView('all')">All Monitored Sources</button>
+                <button class="seg-pill" onclick="switchProdCatView('swCity')">1. SW City Proper</button>
+                <button class="seg-pill" onclick="switchProdCatView('swSat')">2. SW Satellite</button>
+                <button class="seg-pill" onclick="switchProdCatView('gwCity')">3. GW City Proper</button>
+                <button class="seg-pill" onclick="switchProdCatView('aug')">4. Augmented PS</button>
+                <button class="seg-pill" onclick="switchProdCatView('gwSat')">5. GW Satellite</button>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:8px;">
+                <label style="font-size:11px; font-weight:600; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="prod-chk-lapu-combine" onchange="toggleLapuLapuMode(this.checked)">
+                  Combine Lapu-Lapu as Single Reading
+                </label>
+              </div>
+            </div>
+
+            <datalist id="prod-remarks-datalist">
+              <option value="Normal operational status">
+              <option value="Operational - Normal yield">
+              <option value="Operational - High demand cycle">
+              <option value="Backup standby - Ready">
+              <option value="Under preventive maintenance">
+              <option value="Under repair / Electrical fault">
+              <option value="Low water level / Drought throttled">
+              <option value="Turbid / River intake throttled">
+              <option value="Power interruption / Genset run">
+              <option value="No production / Offline">
+            </datalist>
+
+            <!-- Dynamic Category Tables Container -->
+            <div id="prod-tables-container">
+              <!-- Rendered via renderProductionTables() -->
+            </div>
+
+            <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <span style="font-size:11px; color:var(--text-muted);">
+                💡 Tip: Type meter readings and press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd>. Volume (m³) is auto-calculated (<b style="font-family:var(--font-mono);">Present - Previous</b>), or enter volume directly.
+              </span>
+              <button type="button" id="btn-save-production-bottom" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
+                💾 Save Production to Supabase
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Historical Production Records Ledger -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">📋 Weekly Production Status History (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly production audits stored in cloud database</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="prod-search-input" placeholder="Search by week or period..." class="form-input" style="width:220px; padding:6px 10px; font-size:11px;" oninput="filterProductionHistory()">
+                <button onclick="fetchProductionHistory()" class="header-btn" style="color:var(--blue); font-size:10px;">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Week</th>
+                    <th>Period Covered</th>
+                    <th>Recorded Date</th>
+                    <th style="text-align:right;">SW Production (m³)</th>
+                    <th style="text-align:right;">GW Production (m³)</th>
+                    <th style="text-align:right;">Total Production (m³)</th>
+                    <th style="text-align:right;">MLD</th>
+                    <th style="text-align:right;">Target %</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="prod-ledger-tbody">
+                  <tr><td colspan="9" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase production telemetry...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> <!-- end #section-production -->
+
       </div>
     </div>
   </div>
@@ -1337,9 +1501,11 @@
       const gensetsSec = document.getElementById('section-gensets');
       const complaintsSec = document.getElementById('section-complaints');
       const riverflowSec = document.getElementById('section-riverflow');
+      const productionSec = document.getElementById('section-production');
       const btnGensets = document.getElementById('sidebar-btn-gensets');
       const btnComplaints = document.getElementById('sidebar-btn-complaints');
       const btnRiverflow = document.getElementById('sidebar-btn-riverflow');
+      const btnProduction = document.getElementById('sidebar-btn-production');
       const pTitle = document.getElementById('portal-title');
       const pSub = document.getElementById('portal-subtitle');
 
@@ -1347,11 +1513,20 @@
       gensetsSec.style.display = 'none';
       complaintsSec.style.display = 'none';
       if (riverflowSec) riverflowSec.style.display = 'none';
+      if (productionSec) productionSec.style.display = 'none';
       btnGensets.classList.remove('active');
       btnComplaints.classList.remove('active');
       if (btnRiverflow) btnRiverflow.classList.remove('active');
+      if (btnProduction) btnProduction.classList.remove('active');
 
-      if (sec === 'complaints') {
+      if (sec === 'production') {
+        if (productionSec) productionSec.style.display = 'block';
+        if (btnProduction) btnProduction.classList.add('active');
+        if (pTitle) pTitle.textContent = "Weekly Production Monitoring Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Production Division &bull; Groundwater &amp; Surface Water Telemetry`;
+        window.location.hash = 'production';
+        initProductionPortal();
+      } else if (sec === 'complaints') {
         complaintsSec.style.display = 'block';
         btnComplaints.classList.add('active');
         if (pTitle) pTitle.textContent = "Customer Complaints Portal";
@@ -1998,6 +2173,922 @@
       renderRiverflowLedger(filtered);
     }
 
+    // ══════════════════════════════════════════════════════════════════
+    // ── ⚡ WEEKLY PRODUCTION MONITORING LOGIC (DIRECT SUPABASE SYNC) ──
+    // ══════════════════════════════════════════════════════════════════
+
+    const PROD_CATEGORIES = [
+      {
+        id: "swCity",
+        name: "Surface Water / City Proper",
+        shortName: "SW City Proper",
+        subColIdx: 8,
+        badgeClass: "pill-teal",
+        stations: [
+          { id: "wtp1", col: 3, no: 1, name: "Irawan WTP-1 / Campo Uno", subName: "Main WTP Intake" },
+          { id: "wtp2", col: 4, no: 2, name: "Irawan WTP-2 / Campo Uno", subName: "Main WTP Intake" },
+          {
+            id: "infilCity", col: 5, no: 3, name: "Irawan Infiltration Well",
+            isGroup: true,
+            subs: [
+              { subId: "well1", name: "Infiltration Well 1" },
+              { subId: "well2", name: "Infiltration Well 2" }
+            ]
+          },
+          {
+            id: "lapulapu", col: 6, no: 4, name: "From Lapu-Lapu Source",
+            isGroup: true,
+            canCombine: true,
+            combinedLabel: "Lapu-Lapu Combined Transmission",
+            subs: [
+              { subId: "lineA", name: "Line A" },
+              { subId: "lineB", name: "Line B" },
+              { subId: "lineC", name: "Line C" },
+              { subId: "lineD", name: "Line D" }
+            ]
+          },
+          { id: "montible", col: 7, no: 5, name: "Montible (Teruvian)", subName: "River Dam Intake" }
+        ]
+      },
+      {
+        id: "swSat",
+        name: "Surface Water / Satellite Subsystems",
+        shortName: "SW Satellite",
+        subColIdx: 17,
+        badgeClass: "pill-teal",
+        stations: [
+          {
+            id: "stalucia", col: 9, no: 1, name: "Sta. Lucia PS",
+            isGroup: true,
+            subs: [
+              { subId: "wtp", name: "WTP Meter" },
+              { subId: "dol", name: "DOL Meter" },
+              { subId: "solar", name: "Solar Meter" }
+            ]
+          },
+          { id: "sabangSW", col: 10, no: 2, name: "Sabang SW", subName: "Surface Subsystem" },
+          { id: "sanrafael", col: 11, no: 3, name: "San Rafael SW", subName: "Surface Subsystem" },
+          { id: "bahile", col: 12, no: 4, name: "Bahile SW", subName: "Surface Subsystem" },
+          { id: "napsan", col: 13, no: 5, name: "Napsan", subName: "Surface Subsystem" },
+          { id: "binduyan", col: 14, no: 6, name: "Binduyan", subName: "Surface Subsystem" },
+          { id: "bacungan", col: 15, no: 7, name: "Bacungan SW", subName: "Surface Subsystem" },
+          {
+            id: "maoyon", col: 16, no: 8, name: "Maoyon Infiltration Well",
+            isGroup: true,
+            subs: [
+              { subId: "p1", name: "Pump #1" },
+              { subId: "p2", name: "Pump #2" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "gwCity",
+        name: "Ground Water / City Proper",
+        shortName: "GW City Proper",
+        subColIdx: 35,
+        badgeClass: "pill-blue",
+        stations: [
+          { id: "macasaet", col: 18, no: 1, name: "Macasaet-I" },
+          { id: "pc5", col: 19, no: 2, name: "Pump Center #5" },
+          { id: "pc6", col: 20, no: 3, name: "Pump Center #6" },
+          { id: "da1", col: 21, no: 4, name: "DA #1" },
+          { id: "sicsican", col: 22, no: 5, name: "Sicsican" },
+          { id: "villaello", col: 23, no: 6, name: "Villa Ello" },
+          { id: "nha", col: 24, no: 7, name: "NHA" },
+          { id: "princeville", col: 25, no: 8, name: "Princeville" },
+          { id: "villaprin", col: 26, no: 9, name: "Villa Princesa" },
+          { id: "sanjose", col: 27, no: 10, name: "San Jose" },
+          { id: "bos", col: 28, no: 11, name: "BOS-II" },
+          { id: "esteban", col: 29, no: 12, name: "Esteban" },
+          { id: "kaakbayan", col: 30, no: 13, name: "Kaakbayan" },
+          { id: "newmarket", col: 31, no: 14, name: "New Market" },
+          { id: "pablico", col: 32, no: 15, name: "Pablico" },
+          { id: "baldosano", col: 33, no: 16, name: "Baldosano PS" },
+          { id: "stamonica", col: 34, no: 17, name: "Sta. Monica PS" }
+        ]
+      },
+      {
+        id: "aug",
+        name: "Augmented Pumping Stations",
+        shortName: "Augmented Stations",
+        subColIdx: 41,
+        badgeClass: "pill-amber",
+        stations: [
+          { id: "abueg", col: 36, no: 1, name: "Abueg PS" },
+          { id: "visapa", col: 37, no: 2, name: "Visapa PS" },
+          { id: "acacia", col: 38, no: 3, name: "Acacia PS" },
+          { id: "citywoods", col: 39, no: 4, name: "Citywood PS" },
+          { id: "virginia", col: 40, no: 5, name: "Virginia" }
+        ]
+      },
+      {
+        id: "gwSat",
+        name: "Ground Water / Satellite",
+        shortName: "GW Satellite",
+        subColIdx: 46,
+        badgeClass: "pill-blue",
+        stations: [
+          { id: "lucbuan", col: 42, no: 1, name: "Lucbuan #1" },
+          { id: "sabangGW", col: 43, no: 2, name: "Sabang GW" },
+          { id: "inagawan", col: 44, no: 3, name: "Inagawan" },
+          { id: "macarascas", col: 45, no: 4, name: "Macarascas PS" }
+        ]
+      }
+    ];
+
+    let productionHistory = [];
+    let customStations = [];
+    let currentEditingProdId = null;
+    let activeCatView = 'all';
+    let combineLapuLapu = false;
+
+    function notifyProd(msg, isErr = false) {
+      const box = document.getElementById("prod-alert-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.style.display = "block";
+      box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
+      setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
+    }
+
+    async function initProductionPortal() {
+      await fetchProductionHistory();
+      renderProductionTables();
+      const dateInp = document.getElementById("prod-date");
+      const weekInp = document.getElementById("prod-week-label");
+      if (dateInp && !dateInp.value && weekInp && !weekInp.value) {
+        autoSuggestNextWeek();
+      }
+    }
+
+    async function fetchProductionHistory() {
+      const tbody = document.getElementById('prod-ledger-tbody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="9" style="padding:20px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase production telemetry...</td></tr>`;
+      }
+
+      try {
+        const res = await fetch('/api/getProduction');
+        if (!res.ok) throw new Error('Could not fetch production data.');
+        const data = await res.json();
+
+        // Sort descending by week number
+        productionHistory = data.sort((a, b) => {
+          const numA = parseInt(String(a.week_label || (a.row_data && a.row_data[0]) || '').replace(/[^0-9]/g, '')) || 0;
+          const numB = parseInt(String(b.week_label || (b.row_data && b.row_data[0]) || '').replace(/[^0-9]/g, '')) || 0;
+          return numB - numA;
+        });
+
+        renderProductionLedger(productionHistory);
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="9" style="padding:20px; text-align:center; color:var(--red); font-family:var(--font-mono);">Error: ${err.message}</td></tr>`;
+        }
+      }
+    }
+
+    function renderProductionTables() {
+      const container = document.getElementById('prod-tables-container');
+      if (!container) return;
+
+      container.innerHTML = PROD_CATEGORIES.map(cat => {
+        const isHidden = (activeCatView !== 'all' && activeCatView !== cat.id) ? 'display:none;' : '';
+        const catCustoms = customStations.filter(cs => cs.catId === cat.id);
+
+        let rowsHtml = '';
+        cat.stations.forEach(st => {
+          if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+            // Combined single row for Lapu-Lapu
+            rowsHtml += `
+              <tr class="prod-row-item" data-station="${st.id}">
+                <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${st.no}</td>
+                <td>
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
+                  <div style="font-size:10.5px; color:var(--blue); font-weight:600;">Combined Single Transmission Reading</div>
+                </td>
+                <td><span class="kpi-badge-pill pill-teal" style="font-size:9.5px;">Combined</span></td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--blue);" oninput="onProdVolChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                </td>
+              </tr>
+            `;
+          } else if (st.isGroup) {
+            // Group with sub-meter items
+            st.subs.forEach((sub, sIdx) => {
+              const isFirst = sIdx === 0;
+              const rowSpan = isFirst ? `rowspan="${st.subs.length}"` : '';
+              const stationCell = isFirst ? `
+                <td ${rowSpan} style="vertical-align:middle; background:#FAFAFA; border-right:1px solid #E2E8F0;">
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
+                  <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Group of ${st.subs.length} sub-meters</div>
+                  <div style="margin-top:6px; font-family:var(--font-mono); font-size:11px; font-weight:800; color:var(--blue);" id="prod-group-total-${st.id}">Subtotal: 0.00 m³</div>
+                </td>
+              ` : '';
+              const noCell = isFirst ? `<td ${rowSpan} style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px; vertical-align:middle;">${st.no}</td>` : '';
+
+              rowsHtml += `
+                <tr class="prod-row-item" data-station="${st.id}" data-sub="${sub.subId}">
+                  ${noCell}
+                  ${stationCell}
+                  <td>
+                    <span class="kpi-badge-pill pill-blue" style="font-size:10px;">${sub.name}</span>
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--blue);" oninput="onProdVolChange('${st.id}')">
+                  </td>
+                  <td>
+                    <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}-${sub.subId}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                  </td>
+                </tr>
+              `;
+            });
+          } else {
+            // Standard single-meter station
+            rowsHtml += `
+              <tr class="prod-row-item" data-station="${st.id}">
+                <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${st.no}</td>
+                <td>
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
+                  ${st.subName ? `<div style="font-size:10.5px; color:var(--text-muted);">${st.subName}</div>` : ''}
+                </td>
+                <td><span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Main Flow Meter</span></td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--blue);" oninput="onProdVolChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                </td>
+              </tr>
+            `;
+          }
+        });
+
+        // Add custom backup stations for this category
+        catCustoms.forEach((cs, cIdx) => {
+          rowsHtml += `
+            <tr class="prod-row-item custom-backup-row" data-custom-id="${cs.id}" style="background:#FFFBEB;">
+              <td style="text-align:center; color:var(--amber); font-weight:700; font-family:var(--font-mono); font-size:11px;">+</td>
+              <td>
+                <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${cs.name}</div>
+                <div style="font-size:10px; color:var(--amber); font-weight:700;">Backup / Newly Commissioned Station</div>
+              </td>
+              <td>
+                <span class="kpi-badge-pill pill-amber" style="font-size:9.5px;">Backup Unit</span>
+                <button type="button" onclick="removeCustomStation('${cs.id}')" style="background:none; border:none; color:var(--red); cursor:pointer; font-size:11px; margin-left:4px;" title="Remove this backup station">✕</button>
+              </td>
+              <td>
+                <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-cust-${cs.id}" value="${cs.prevReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onCustomReadingChange('${cs.id}')">
+              </td>
+              <td>
+                <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-cust-${cs.id}" value="${cs.presReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onCustomReadingChange('${cs.id}')">
+              </td>
+              <td>
+                <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-cust-${cs.id}" value="${cs.volume || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--amber);" oninput="onCustomVolChange('${cs.id}')">
+              </td>
+              <td>
+                <input type="text" class="form-input prod-rem-input" id="prod-rem-cust-${cs.id}" value="${cs.remarks || 'Backup operational'}" list="prod-remarks-datalist">
+              </td>
+            </tr>
+          `;
+        });
+
+        return `
+          <div class="prod-cat-card" id="cat-card-${cat.id}" style="margin-bottom:20px; ${isHidden}">
+            <div style="background:#F1F5F9; border:1px solid var(--card-border); border-radius:8px 8px 0 0; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:800; font-size:13px; color:var(--text-main);">${cat.name}</span>
+                <span class="kpi-badge-pill ${cat.badgeClass}" style="font-size:10px;">${cat.stations.length} Default Stations</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--text-main);">
+                  Subtotal: <span id="prod-subtotal-${cat.id}" style="font-family:var(--font-mono); color:var(--blue); font-size:13px;">0.00 m³</span>
+                </div>
+                <button type="button" onclick="addCustomBackupStation('${cat.id}')" class="header-btn" style="font-size:10.5px; padding:4px 10px; color:var(--blue);" title="Add backup or ongoing operational station to this category">
+                  + Add Backup Station
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="border:1px solid var(--card-border); border-top:none; border-radius:0 0 8px 8px;">
+              <table class="data-table" style="background:#FFFFFF;">
+                <thead>
+                  <tr>
+                    <th style="width:38px; text-align:center;">#</th>
+                    <th style="min-width:210px;">Monitored Station</th>
+                    <th style="min-width:130px;">Meter / Line</th>
+                    <th style="min-width:160px;">Previous Reading</th>
+                    <th style="min-width:160px;">Present Reading</th>
+                    <th style="min-width:170px;">Total Production (m³) *</th>
+                    <th style="min-width:200px;">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      calculateProductionTotals();
+    }
+
+    function switchProdCatView(view) {
+      activeCatView = view;
+      document.querySelectorAll('#prod-cat-pills .seg-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(`'${view}'`));
+      });
+
+      PROD_CATEGORIES.forEach(cat => {
+        const el = document.getElementById(`cat-card-${cat.id}`);
+        if (el) {
+          el.style.display = (view === 'all' || view === cat.id) ? 'block' : 'none';
+        }
+      });
+    }
+
+    function toggleLapuLapuMode(checked) {
+      combineLapuLapu = checked;
+      renderProductionTables();
+    }
+
+    function onProdReadingChange(stId, subId) {
+      const prevId = subId ? `prod-prev-${stId}-${subId}` : `prod-prev-${stId}`;
+      const presId = subId ? `prod-pres-${stId}-${subId}` : `prod-pres-${stId}`;
+      const volId = subId ? `prod-vol-${stId}-${subId}` : `prod-vol-${stId}`;
+
+      const prevInp = document.getElementById(prevId);
+      const presInp = document.getElementById(presId);
+      const volInp = document.getElementById(volId);
+
+      if (prevInp && presInp && volInp) {
+        const prev = parseFloat(prevInp.value);
+        const pres = parseFloat(presInp.value);
+        if (!isNaN(prev) && !isNaN(pres)) {
+          const diff = pres - prev;
+          volInp.value = diff.toFixed(2);
+        }
+      }
+
+      // If station has sub-meters, update station group subtotal
+      if (subId) {
+        updateGroupStationTotal(stId);
+      }
+
+      calculateProductionTotals();
+    }
+
+    function updateGroupStationTotal(stId) {
+      const volInputs = document.querySelectorAll(`[id^="prod-vol-${stId}-"]`);
+      let grpSum = 0;
+      volInputs.forEach(inp => {
+        const v = parseFloat(inp.value);
+        if (!isNaN(v)) grpSum += v;
+      });
+      const lbl = document.getElementById(`prod-group-total-${stId}`);
+      if (lbl) {
+        lbl.textContent = `Subtotal: ${grpSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+      }
+    }
+
+    function onProdVolChange(stId) {
+      calculateProductionTotals();
+    }
+
+    function onCustomReadingChange(customId) {
+      const prevInp = document.getElementById(`prod-prev-cust-${customId}`);
+      const presInp = document.getElementById(`prod-pres-cust-${customId}`);
+      const volInp = document.getElementById(`prod-vol-cust-${customId}`);
+      if (prevInp && presInp && volInp) {
+        const prev = parseFloat(prevInp.value);
+        const pres = parseFloat(presInp.value);
+        if (!isNaN(prev) && !isNaN(pres)) {
+          volInp.value = (pres - prev).toFixed(2);
+        }
+      }
+      onCustomVolChange(customId);
+    }
+
+    function onCustomVolChange(customId) {
+      const cs = customStations.find(c => c.id === customId);
+      if (cs) {
+        const v = parseFloat(document.getElementById(`prod-vol-cust-${customId}`)?.value);
+        cs.volume = isNaN(v) ? 0 : v;
+        cs.prevReading = document.getElementById(`prod-prev-cust-${customId}`)?.value || '';
+        cs.presReading = document.getElementById(`prod-pres-cust-${customId}`)?.value || '';
+        cs.remarks = document.getElementById(`prod-rem-cust-${customId}`)?.value || '';
+      }
+      calculateProductionTotals();
+    }
+
+    function getStationVolume(st) {
+      if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+        const v = parseFloat(document.getElementById(`prod-vol-${st.id}`)?.value);
+        return isNaN(v) ? 0 : v;
+      }
+      if (st.isGroup) {
+        let sum = 0;
+        st.subs.forEach(sub => {
+          const v = parseFloat(document.getElementById(`prod-vol-${st.id}-${sub.subId}`)?.value);
+          if (!isNaN(v)) sum += v;
+        });
+        return sum;
+      }
+      const v = parseFloat(document.getElementById(`prod-vol-${st.id}`)?.value);
+      return isNaN(v) ? 0 : v;
+    }
+
+    function calculateProductionTotals() {
+      let swCitySub = 0;
+      let swSatSub = 0;
+      let gwCitySub = 0;
+      let augSub = 0;
+      let gwSatSub = 0;
+      let encodedCount = 0;
+
+      PROD_CATEGORIES.forEach(cat => {
+        let catSum = 0;
+        cat.stations.forEach(st => {
+          const vol = getStationVolume(st);
+          catSum += vol;
+          if (vol > 0) encodedCount++;
+        });
+
+        // Add custom stations in this category
+        const catCustoms = customStations.filter(cs => cs.catId === cat.id);
+        catCustoms.forEach(cs => {
+          if (cs.volume > 0) {
+            catSum += cs.volume;
+            encodedCount++;
+          }
+        });
+
+        if (cat.id === "swCity") swCitySub = catSum;
+        else if (cat.id === "swSat") swSatSub = catSum;
+        else if (cat.id === "gwCity") gwCitySub = catSum;
+        else if (cat.id === "aug") augSub = catSum;
+        else if (cat.id === "gwSat") gwSatSub = catSum;
+
+        const subLbl = document.getElementById(`prod-subtotal-${cat.id}`);
+        if (subLbl) {
+          subLbl.textContent = `${catSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+        }
+      });
+
+      const totalSW = swCitySub + swSatSub;
+      const totalGW = gwCitySub + augSub + gwSatSub;
+      const grandTotal = totalSW + totalGW;
+      const mld = grandTotal > 0 ? Number((grandTotal / 7000).toFixed(2)) : 0;
+      const swPct = grandTotal > 0 ? ((totalSW / grandTotal) * 100).toFixed(1) : "0.0";
+      const gwPct = grandTotal > 0 ? ((totalGW / grandTotal) * 100).toFixed(1) : "0.0";
+      const targetPct = ((mld / 56.86) * 100).toFixed(1);
+
+      // Update Live HUD
+      const hudTotal = document.getElementById("prod-hud-total");
+      const hudMld = document.getElementById("prod-hud-mld");
+      const hudTarget = document.getElementById("prod-hud-target");
+      const hudSw = document.getElementById("prod-hud-sw");
+      const hudSwPct = document.getElementById("prod-hud-sw-pct");
+      const hudGw = document.getElementById("prod-hud-gw");
+      const hudGwPct = document.getElementById("prod-hud-gw-pct");
+      const hudStations = document.getElementById("prod-hud-stations");
+
+      if (hudTotal) hudTotal.innerHTML = `${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:12px; color:#94A3B8;">m³</span>`;
+      if (hudMld) hudMld.innerHTML = `${mld.toFixed(2)} <span style="font-size:12px; color:#94A3B8;">MLD</span>`;
+      if (hudTarget) hudTarget.textContent = `${targetPct}% of 56.86 MLD Target`;
+      if (hudSw) hudSw.innerHTML = `${totalSW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:11px; color:#94A3B8;">m³</span>`;
+      if (hudSwPct) hudSwPct.textContent = `${swPct}% Surface Share`;
+      if (hudGw) hudGw.innerHTML = `${totalGW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:11px; color:#94A3B8;">m³</span>`;
+      if (hudGwPct) hudGwPct.textContent = `${gwPct}% Ground Share`;
+      if (hudStations) hudStations.textContent = `${encodedCount} stations reporting production`;
+
+      return { swCitySub, swSatSub, gwCitySub, augSub, gwSatSub, totalSW, totalGW, grandTotal, mld, swPct, gwPct };
+    }
+
+    function addCustomBackupStation(catId) {
+      const cat = PROD_CATEGORIES.find(c => c.id === catId);
+      const name = prompt(`Enter Backup / Future Station Name for ${cat ? cat.name : catId}:`);
+      if (!name || !name.trim()) return;
+
+      const newStation = {
+        id: 'cust_' + Date.now(),
+        name: name.trim(),
+        catId: catId,
+        volume: 0,
+        prevReading: '',
+        presReading: '',
+        remarks: 'Backup operational'
+      };
+
+      customStations.push(newStation);
+      renderProductionTables();
+      notifyProd(`Backup station "${newStation.name}" added to ${cat.shortName}.`);
+    }
+
+    function removeCustomStation(customId) {
+      const idx = customStations.findIndex(cs => cs.id === customId);
+      if (idx !== -1) {
+        const removed = customStations.splice(idx, 1)[0];
+        renderProductionTables();
+        notifyProd(`Backup station "${removed.name}" removed.`);
+      }
+    }
+
+    function autoSuggestNextWeek() {
+      let maxWeek = 23;
+      let latestDate = new Date("2026-09-04");
+
+      if (productionHistory && productionHistory.length > 0) {
+        productionHistory.forEach(r => {
+          const wkNum = parseInt(String(r.week_label || (r.row_data && r.row_data[0]) || '').replace(/[^0-9]/g, '')) || 0;
+          if (wkNum > maxWeek) maxWeek = wkNum;
+          const dtStr = r.date_recorded || (r.row_data && r.row_data[1]);
+          if (dtStr) {
+            const dt = new Date(dtStr);
+            if (!isNaN(dt) && dt > latestDate) latestDate = dt;
+          }
+        });
+      }
+
+      const nextWeekNum = maxWeek + 1;
+      const nextEndDate = new Date(latestDate.getTime() + (7 * 24 * 60 * 60 * 1000));
+      const nextStartDate = new Date(latestDate.getTime());
+
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const sMonth = months[nextStartDate.getMonth()];
+      const eMonth = months[nextEndDate.getMonth()];
+      const sDay = nextStartDate.getDate();
+      const eDay = nextEndDate.getDate();
+      const eYear = nextEndDate.getFullYear();
+
+      let periodStr = "";
+      if (sMonth === eMonth) {
+        periodStr = `${sMonth} ${sDay} - ${eDay}, ${eYear}`;
+      } else {
+        periodStr = `${sMonth} ${sDay} - ${eMonth} ${eDay}, ${eYear}`;
+      }
+
+      const weekInp = document.getElementById("prod-week-label");
+      const dateInp = document.getElementById("prod-date");
+      const periodInp = document.getElementById("prod-period-label");
+
+      if (weekInp) weekInp.value = `Week ${nextWeekNum}`;
+      if (dateInp) dateInp.value = nextEndDate.toISOString().split('T')[0];
+      if (periodInp) periodInp.value = periodStr;
+
+      onProdWeekChange(`Week ${nextWeekNum}`);
+    }
+
+    function onProdWeekChange(val) {
+      if (!val) return;
+      const statusEl = document.getElementById("prod-cycle-status");
+      const existing = productionHistory.find(r => {
+        const wk = String(r.week_label || (r.row_data && r.row_data[0]) || '').trim().toLowerCase();
+        return wk === val.trim().toLowerCase();
+      });
+
+      if (existing) {
+        currentEditingProdId = existing.id;
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--amber);">⚠️ Existing record loaded (${val}) &bull; Ready to update</span>`;
+        }
+      } else {
+        currentEditingProdId = null;
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--blue);">🟢 Ready for new weekly entry (${val})</span>`;
+        }
+      }
+    }
+
+    function onProdDateChange(val) {
+      if (!val) return;
+      const periodInp = document.getElementById("prod-period-label");
+      if (periodInp && !periodInp.value) {
+        const dt = new Date(val);
+        const dtPrev = new Date(dt.getTime() - (7 * 24 * 60 * 60 * 1000));
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        periodInp.value = `${months[dtPrev.getMonth()]} ${dtPrev.getDate()} - ${months[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
+      }
+    }
+
+    function loadPreviousProdReadings() {
+      if (!productionHistory || productionHistory.length === 0) {
+        alert("No previous production records found in Supabase.");
+        return;
+      }
+
+      const currentWk = document.getElementById("prod-week-label")?.value || "";
+      let prior = productionHistory.find(r => (r.week_label || (r.row_data && r.row_data[0])) !== currentWk);
+      if (!prior) prior = productionHistory[0];
+
+      if (!prior || !Array.isArray(prior.row_data)) {
+        alert("Baseline row_data not available.");
+        return;
+      }
+
+      let loadedCount = 0;
+      PROD_CATEGORIES.forEach(cat => {
+        cat.stations.forEach(st => {
+          const val = prior.row_data[st.col];
+          if (val !== undefined && val !== null) {
+            if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+              const inp = document.getElementById(`prod-prev-${st.id}`);
+              if (inp) { inp.value = val; loadedCount++; }
+            } else if (st.isGroup) {
+              // Group: distribute or mark baseline
+              st.subs.forEach(sub => {
+                const inp = document.getElementById(`prod-prev-${st.id}-${sub.subId}`);
+                if (inp && !inp.value) {
+                  inp.placeholder = `Prior m³: ${val}`;
+                }
+              });
+            } else {
+              const inp = document.getElementById(`prod-prev-${st.id}`);
+              if (inp) {
+                // If it's pure production volume, store as reference
+                inp.placeholder = `Prior: ${val}`;
+                loadedCount++;
+              }
+            }
+          }
+        });
+      });
+
+      const label = prior.week_label || (prior.row_data && prior.row_data[0]) || prior.period_label || "";
+      notifyProd(`Loaded baseline references from ${label}!`);
+    }
+
+    function clearProductionForm() {
+      currentEditingProdId = null;
+      customStations = [];
+      document.getElementById("prod-week-label").value = "";
+      document.getElementById("prod-date").value = "";
+      document.getElementById("prod-period-label").value = "";
+      document.getElementById("prod-cycle-status").textContent = "Ready for weekly submission";
+      renderProductionTables();
+      notifyProd("Production form cleared.");
+    }
+
+    async function submitProduction(e) {
+      if (e) e.preventDefault();
+      const weekInp = document.getElementById("prod-week-label");
+      const dateInp = document.getElementById("prod-date");
+      const periodInp = document.getElementById("prod-period-label");
+
+      const week_label = weekInp?.value.trim();
+      const date_recorded = dateInp?.value.trim();
+      const period_label = periodInp?.value.trim();
+
+      if (!week_label) {
+        alert("Please specify a Week Label (e.g. Week 25).");
+        weekInp?.focus();
+        return;
+      }
+      if (!date_recorded) {
+        alert("Please select the Recorded Date.");
+        dateInp?.focus();
+        return;
+      }
+      if (!period_label) {
+        alert("Please enter the Period Label (e.g. September 11 - 18, 2026).");
+        periodInp?.focus();
+        return;
+      }
+
+      const btn1 = document.getElementById("btn-save-production");
+      const btn2 = document.getElementById("btn-save-production-bottom");
+      if (btn1) { btn1.disabled = true; btn1.textContent = "Saving to Supabase..."; }
+      if (btn2) { btn2.disabled = true; btn2.textContent = "Saving to Supabase..."; }
+
+      try {
+        const totals = calculateProductionTotals();
+
+        // Build standard 53-element array matching COL
+        const row_data = new Array(53).fill(0);
+        row_data[0] = week_label;
+        row_data[1] = date_recorded;
+        row_data[2] = period_label;
+
+        // Category 1: SW City
+        PROD_CATEGORIES[0].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[8] = totals.swCitySub;
+
+        // Category 2: SW Satellite
+        PROD_CATEGORIES[1].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[17] = totals.swSatSub;
+
+        // Category 3: GW City
+        PROD_CATEGORIES[2].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[35] = totals.gwCitySub;
+
+        // Category 4: Augmented
+        PROD_CATEGORIES[3].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[41] = totals.augSub;
+
+        // Category 5: GW Satellite
+        PROD_CATEGORIES[4].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[46] = totals.gwSatSub;
+
+        // Totals & KPIs
+        row_data[47] = totals.totalSW;
+        row_data[48] = totals.totalGW;
+        row_data[49] = totals.grandTotal;
+        row_data[50] = totals.mld;
+        row_data[51] = parseFloat(totals.swPct);
+        row_data[52] = parseFloat(totals.gwPct);
+
+        // Preserve custom backup stations
+        if (customStations.length > 0) {
+          row_data[53] = { custom_stations: customStations };
+        }
+
+        const res = await fetch('/api/saveProductionWeekly', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save',
+            id: currentEditingProdId,
+            week_label,
+            date_recorded,
+            period_label,
+            row_data
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save production data.');
+
+        notifyProd(data.message || `Production data for ${week_label} successfully saved!`);
+        await fetchProductionHistory();
+        onProdWeekChange(week_label);
+      } catch (err) {
+        notifyProd(err.message, true);
+      } finally {
+        if (btn1) { btn1.disabled = false; btn1.textContent = "💾 Save Production to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "💾 Save Production to Supabase"; }
+      }
+    }
+
+    function renderProductionLedger(list) {
+      const tbody = document.getElementById('prod-ledger-tbody');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No weekly production records found in Supabase.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(r => {
+        const wk = r.week_label || (r.row_data && r.row_data[0]) || '—';
+        const period = r.period_label || (r.row_data && r.row_data[2]) || '—';
+        const dateStr = r.date_recorded || (r.row_data && r.row_data[1]) || '—';
+
+        let sw = 0, gw = 0, total = 0, mld = 0, targetPct = 0;
+        if (Array.isArray(r.row_data)) {
+          sw = Number(r.row_data[47] || 0);
+          gw = Number(r.row_data[48] || 0);
+          total = Number(r.row_data[49] || 0);
+          mld = Number(r.row_data[50] || 0);
+          targetPct = (mld / 56.86 * 100).toFixed(1);
+        }
+
+        const isTargetMet = mld >= 56.86;
+        const targetBadgeClass = isTargetMet ? 'pill-green' : (mld >= 45 ? 'pill-teal' : 'pill-amber');
+
+        return `
+          <tr>
+            <td class="mono" style="font-weight:800; color:var(--text-main); font-size:12.5px;">${wk}</td>
+            <td style="font-size:12px;">${period}</td>
+            <td class="mono" style="font-size:11.5px; color:var(--text-muted);">${dateStr}</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--teal); font-weight:700;">${sw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--blue); font-weight:700;">${gw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--text-main);">${total.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--green);">${mld.toFixed(2)}</td>
+            <td style="text-align:right;"><span class="kpi-badge-pill ${targetBadgeClass}">${targetPct}%</span></td>
+            <td style="text-align:right; white-space:nowrap;">
+              <button onclick="editProductionRecord('${r.id || wk}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">✏️ Edit</button>
+              <button onclick="deleteProductionRecord('${r.id || ''}', '${wk}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">🗑️ Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function editProductionRecord(recordIdOrWeek) {
+      const record = productionHistory.find(r => (r.id === recordIdOrWeek) || ((r.week_label || (r.row_data && r.row_data[0])) === recordIdOrWeek));
+      if (!record || !Array.isArray(record.row_data)) return;
+
+      currentEditingProdId = record.id || null;
+      const weekInp = document.getElementById("prod-week-label");
+      const dateInp = document.getElementById("prod-date");
+      const periodInp = document.getElementById("prod-period-label");
+
+      if (weekInp) weekInp.value = record.week_label || record.row_data[0] || '';
+      if (dateInp) dateInp.value = record.date_recorded || record.row_data[1] || '';
+      if (periodInp) periodInp.value = record.period_label || record.row_data[2] || '';
+
+      // Check if custom stations were stored in index 53
+      if (record.row_data[53] && Array.isArray(record.row_data[53].custom_stations)) {
+        customStations = [...record.row_data[53].custom_stations];
+      } else {
+        customStations = [];
+      }
+
+      renderProductionTables();
+
+      // Populate volumes from row_data
+      PROD_CATEGORIES.forEach(cat => {
+        cat.stations.forEach(st => {
+          const v = record.row_data[st.col];
+          if (v !== undefined && v !== null) {
+            if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+              const inp = document.getElementById(`prod-vol-${st.id}`);
+              if (inp) inp.value = v;
+            } else if (st.isGroup) {
+              const inpFirst = document.getElementById(`prod-vol-${st.id}-${st.subs[0].subId}`);
+              if (inpFirst) inpFirst.value = v;
+              updateGroupStationTotal(st.id);
+            } else {
+              const inp = document.getElementById(`prod-vol-${st.id}`);
+              if (inp) inp.value = v;
+            }
+          }
+        });
+      });
+
+      calculateProductionTotals();
+      document.getElementById("section-production")?.scrollIntoView({ behavior: 'smooth' });
+      notifyProd(`Record for ${record.week_label || record.row_data[0]} loaded into form for editing.`);
+      onProdWeekChange(weekInp.value);
+    }
+
+    async function deleteProductionRecord(id, weekLabel) {
+      if (!confirm(`Are you sure you want to permanently delete the production record for "${weekLabel}" from Supabase?`)) return;
+
+      try {
+        const res = await fetch('/api/saveProductionWeekly', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id: id || undefined, week_label: weekLabel })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+
+        notifyProd(`Record for ${weekLabel} deleted successfully.`);
+        await fetchProductionHistory();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
+    function filterProductionHistory() {
+      const q = (document.getElementById('prod-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderProductionLedger(productionHistory);
+        return;
+      }
+      const filtered = productionHistory.filter(r => {
+        const wk = String(r.week_label || (r.row_data && r.row_data[0]) || '').toLowerCase();
+        const p = String(r.period_label || (r.row_data && r.row_data[2]) || '').toLowerCase();
+        const d = String(r.date_recorded || (r.row_data && r.row_data[1]) || '').toLowerCase();
+        return wk.includes(q) || p.includes(q) || d.includes(q);
+      });
+      renderProductionLedger(filtered);
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       populateStations();
       fetchGensetFleet();
@@ -2011,6 +3102,8 @@
         switchPortalSection('complaints');
       } else if (window.location.hash === '#riverflow') {
         switchPortalSection('riverflow');
+      } else if (window.location.hash === '#production') {
+        switchPortalSection('production');
       }
     });
   </script>
