@@ -94,7 +94,11 @@
       height: 100vh;
       z-index: 150;
       border-right: 1px solid var(--sidebar-border);
-      transition: transform 0.3s ease;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+      overflow-x: hidden;
+    }
+    .app-sidebar.collapsed {
+      margin-left: -250px;
     }
     .sidebar-brand {
       padding: 24px 20px 20px;
@@ -516,35 +520,47 @@
       gap: 10px;
     }
 
-    /* ── RESPONSIVE DRAWER & OVERLAY ── */
+    /* ── SIDEBAR TOGGLE & DRAWER ── */
     .menu-toggle-btn {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      font-size: 15px;
       cursor: pointer;
       color: var(--text-main);
-      padding: 4px;
-      line-height: 1;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .menu-toggle-btn:hover {
+      border-color: #CBD5E1;
+      background: #F8FAFC;
+      color: var(--blue);
     }
     .sidebar-close-btn {
-      display: none;
+      display: flex;
       position: absolute;
       top: 18px;
-      right: 16px;
+      right: 14px;
       background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: #FFFFFF;
-      font-size: 16px;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #CBD5E1;
+      font-size: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
       z-index: 10;
+      transition: all 0.15s ease;
     }
-    .sidebar-close-btn:hover { background: rgba(255, 255, 255, 0.2); }
+    .sidebar-close-btn:hover { background: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
     .sidebar-backdrop {
       display: none;
       position: fixed;
@@ -582,6 +598,7 @@
         bottom: 0;
         height: 100vh;
         z-index: 160;
+        margin-left: 0 !important;
       }
       .app-sidebar.open {
         transform: translateX(270px);
@@ -666,7 +683,7 @@
     
     <!-- ── SIDEBAR ── -->
     <aside class="app-sidebar" id="app-sidebar">
-      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Close sidebar">✕</button>
+      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Collapse sidebar" title="Hide Sidebar (Collapse)">✕</button>
       <div class="sidebar-brand">
         <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img">
         <div>
@@ -703,7 +720,7 @@
     <div class="app-main">
       <header class="app-header">
         <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
-          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
           <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px; flex-shrink:0;">
           <div class="header-titles" style="min-width: 0;">
             <h1 id="top-bar-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitoring Dashboard</h1>
@@ -1485,7 +1502,24 @@
   function fmtDiff(n){ return (n>=0?"+":"")+fmt(n,0); }
   function rowToObj(row){ const obj={}; for(const[k,i]of Object.entries(COL))obj[k]=row[i]; obj._period=row[COL.period]||row[COL.date]||"—"; return obj; }
 
-  function toggleSidebar(){ document.getElementById('app-sidebar').classList.toggle('open'); }
+  function toggleSidebar(){
+    const sb = document.getElementById('app-sidebar');
+    const bd = document.getElementById('sidebar-backdrop');
+    const isMobile = window.innerWidth <= 820;
+
+    if (isMobile) {
+      sb.classList.toggle('open');
+      if (bd) bd.classList.toggle('active', sb.classList.contains('open'));
+    } else {
+      sb.classList.toggle('collapsed');
+      const isCollapsed = sb.classList.contains('collapsed');
+      try { localStorage.setItem('ppcwd_dash_sidebar_collapsed', isCollapsed ? '1' : '0'); } catch(e){}
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        if (typeof leafletMap !== 'undefined' && leafletMap) leafletMap.invalidateSize();
+      }, 260);
+    }
+  }
 
   function switchNavTab(tab){
     document.querySelectorAll(".page-content").forEach(p => p.classList.remove("active"));
@@ -1512,7 +1546,10 @@
       periodBar.style.display = 'none';
     }
 
-    if (window.innerWidth <= 820) document.getElementById('app-sidebar').classList.remove('open');
+    if (window.innerWidth <= 820) {
+      document.getElementById('app-sidebar')?.classList.remove('open');
+      document.getElementById('sidebar-backdrop')?.classList.remove('active');
+    }
 
     if(tab === 'overview') renderOverview();
     if(tab === 'production') {
@@ -3732,7 +3769,27 @@
     pdf.save(`PPCWD_Monthly_Production_Report_${currentSelectedMonth}.pdf`);
   }
 
-  window.addEventListener('DOMContentLoaded', init);
+  window.addEventListener('DOMContentLoaded', () => {
+    init();
+
+    // Restore collapsed sidebar preference on desktop
+    try {
+      if (window.innerWidth > 820 && localStorage.getItem('ppcwd_dash_sidebar_collapsed') === '1') {
+        document.getElementById('app-sidebar')?.classList.add('collapsed');
+      }
+    } catch(e){}
+
+    // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        if (tag !== 'input' && tag !== 'textarea') {
+          e.preventDefault();
+          toggleSidebar();
+        }
+      }
+    });
+  });
   </script>
 </body>
 </html>
