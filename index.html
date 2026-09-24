@@ -956,7 +956,12 @@
       <!-- ── TAB 5: RIVER HYDROLOGY ── -->
       <div class="page-content" id="page-riverflow">
         <div class="card" style="margin-bottom: 20px;">
-          <div class="card-title">System-Wide Watershed Discharge Leaderboard (m³/day)</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+            <div class="card-title" style="margin-bottom:0;">System-Wide Watershed Discharge Leaderboard (m³/day)</div>
+            <a href="uploader.html#riverflow" class="header-btn" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
+              📥 Log / Input River Flow ↗
+            </a>
+          </div>
           <div style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
         </div>
 

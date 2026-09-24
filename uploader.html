@@ -493,6 +493,11 @@
           <span class="nav-icon">📋</span>
           <span>Customer Complaints</span>
         </button>
+
+        <button class="nav-btn" id="sidebar-btn-riverflow" onclick="switchPortalSection('riverflow')">
+          <span class="nav-icon">🌊</span>
+          <span>River Hydrology</span>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -886,6 +891,128 @@
           </div>
         </div>
 
+        <!-- ── RIVER HYDROLOGY SECTION ── -->
+        <div id="section-riverflow" style="display:none;">
+
+          <!-- Card 1: River Flow Weekly Entry Panel -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>🌊 River Flow Measurement Weekly Entry</h2>
+                <p>Environment Water Resources Division &bull; Record streamflow discharge (m³/day) across 19 monitored stations</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="header-btn" onclick="clearRiverflowForm()">✕ Clear Form</button>
+                <button type="button" class="header-btn" onclick="loadPreviousRiverReadings()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light);">
+                  ↻ Load Previous As Baseline
+                </button>
+                <button type="button" id="btn-save-riverflow" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
+                  💾 Save Readings to Supabase
+                </button>
+              </div>
+            </div>
+
+            <div id="rf-alert-box" class="alert-box"></div>
+
+            <!-- Date Picker and Summary Strip -->
+            <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Measurement Date *</label>
+                  <input type="date" id="rf-date" class="form-input" style="width:190px; font-weight:700;" onchange="onRiverDateChange(this.value)">
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <span style="font-size:11px; color:var(--text-muted);">Current Cycle Status:</span>
+                  <span id="rf-cycle-status" style="font-size:12px; font-weight:700; color:var(--teal);">Ready for weekly submission</span>
+                </div>
+              </div>
+
+              <!-- Live KPI strip -->
+              <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div style="text-align:right;">
+                  <div style="font-size:10px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Monitored Rivers</div>
+                  <div id="rf-kpi-count" style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:var(--text-main);">0 / 19</div>
+                </div>
+                <div style="height:32px; width:1px; background:var(--card-border);"></div>
+                <div style="text-align:right;">
+                  <div style="font-size:10px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Total Watershed Discharge</div>
+                  <div id="rf-kpi-total" style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:var(--teal);">0.00 m³/day</div>
+                </div>
+              </div>
+            </div>
+
+            <datalist id="river-remarks-datalist">
+              <option value="Normal flow">
+              <option value="Low flow / Dry season">
+              <option value="High flow / Heavy rain">
+              <option value="Turbid / Siltation observed">
+              <option value="Station dry / Nil flow">
+              <option value="Inaccessible / Bad weather">
+              <option value="Estimated / Float method">
+            </datalist>
+
+            <!-- River Flow Measurement Rapid-Entry Table -->
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+              <table class="data-table" id="rf-entry-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px; text-align:center;">#</th>
+                    <th style="min-width:200px;">Location / River Station</th>
+                    <th style="width:140px;">Watershed Zone</th>
+                    <th style="min-width:180px;">Previous (Date &amp; Discharge)</th>
+                    <th style="min-width:180px;">Discharge (m³/day) *</th>
+                    <th style="min-width:220px;">Remarks / Field Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="rf-entry-tbody">
+                  <!-- Populated dynamically with 19 rivers -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <span style="font-size:11px; color:var(--text-muted);">
+                💡 Tip: Press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd> to quickly jump directly to the next river's discharge input.
+              </span>
+              <button type="button" id="btn-save-riverflow-bottom" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
+                💾 Save Readings to Supabase
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Historical River Flow Ledger -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">📋 Weekly River Flow Records History (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly discharge benchmarks stored in cloud database</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="rf-search-input" placeholder="Search by date or keyword..." class="form-input" style="width:210px; padding:6px 10px; font-size:11px;" oninput="filterRiverflowHistory()">
+                <button onclick="fetchRiverflowHistory()" class="header-btn" style="color:var(--teal); font-size:10px;">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Recorded Date</th>
+                    <th>Date Label</th>
+                    <th style="text-align:right;">Monitored Rivers</th>
+                    <th style="text-align:right;">Total Discharge (m³/day)</th>
+                    <th>Highest Contributing River</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="rf-ledger-tbody">
+                  <tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> <!-- end #section-riverflow -->
+
       </div>
     </div>
   </div>
@@ -1209,25 +1336,38 @@
     function switchPortalSection(sec) {
       const gensetsSec = document.getElementById('section-gensets');
       const complaintsSec = document.getElementById('section-complaints');
+      const riverflowSec = document.getElementById('section-riverflow');
       const btnGensets = document.getElementById('sidebar-btn-gensets');
       const btnComplaints = document.getElementById('sidebar-btn-complaints');
+      const btnRiverflow = document.getElementById('sidebar-btn-riverflow');
       const pTitle = document.getElementById('portal-title');
       const pSub = document.getElementById('portal-subtitle');
 
+      // Hide all sections first
+      gensetsSec.style.display = 'none';
+      complaintsSec.style.display = 'none';
+      if (riverflowSec) riverflowSec.style.display = 'none';
+      btnGensets.classList.remove('active');
+      btnComplaints.classList.remove('active');
+      if (btnRiverflow) btnRiverflow.classList.remove('active');
+
       if (sec === 'complaints') {
-        gensetsSec.style.display = 'none';
         complaintsSec.style.display = 'block';
-        btnGensets.classList.remove('active');
         btnComplaints.classList.add('active');
         if (pTitle) pTitle.textContent = "Customer Complaints Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block;"></span> Service Incidents Ingestion &bull; Direct Supabase Telemetry`;
         window.location.hash = 'complaints';
         fetchComplaintsList();
+      } else if (sec === 'riverflow') {
+        if (riverflowSec) riverflowSec.style.display = 'block';
+        if (btnRiverflow) btnRiverflow.classList.add('active');
+        if (pTitle) pTitle.textContent = "River Hydrology Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Environment & Water Resources &bull; Weekly Streamflow (m³/day)`;
+        window.location.hash = 'riverflow';
+        initRiverflowPortal();
       } else {
         gensetsSec.style.display = 'block';
-        complaintsSec.style.display = 'none';
         btnGensets.classList.add('active');
-        btnComplaints.classList.remove('active');
         if (pTitle) pTitle.textContent = "Operations & Asset Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit`;
         window.location.hash = 'gensets';
@@ -1496,6 +1636,368 @@
       }
     }
 
+    // ── RIVER HYDROLOGY MANAGEMENT ──
+    const RIVER_STATIONS = [
+      { name: "Montible Teruvian", col: 2, group: "City / Primary Sources" },
+      { name: "Montible Bridge 1", col: 3, group: "City / Primary Sources" },
+      { name: "Upper Montible", col: 4, group: "City / Primary Sources" },
+      { name: "Lapu Lapu Upstream", col: 5, group: "City / Primary Sources" },
+      { name: "Lapu Lapu Downstream", col: 6, group: "City / Primary Sources" },
+      { name: "Sta. Lucia", col: 7, group: "Satellite South" },
+      { name: "Santiago", col: 8, group: "Satellite South" },
+      { name: "Campo Uno", col: 9, group: "City / Primary Sources" },
+      { name: "Binuan", col: 10, group: "Satellite South" },
+      { name: "Napsan", col: 11, group: "Satellite South" },
+      { name: "San Rafael", col: 12, group: "Satellite North" },
+      { name: "Binduyan", col: 13, group: "Satellite North" },
+      { name: "Bacungan", col: 14, group: "Satellite North" },
+      { name: "Langogan Downstream", col: 15, group: "Satellite North" },
+      { name: "San Rafael Downstream", col: 16, group: "Satellite North" },
+      { name: "Maoyon", col: 17, group: "Satellite North" },
+      { name: "Tanabag Downstream", col: 18, group: "Satellite North" },
+      { name: "Olangoan Downstream", col: 19, group: "Satellite North" },
+      { name: "Maranat II", col: 20, group: "Satellite South" }
+    ];
+
+    let riverflowHistory = [];
+
+    function notifyRf(msg, isErr = false) {
+      const box = document.getElementById("rf-alert-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.style.display = "block";
+      box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
+      setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
+    }
+
+    async function initRiverflowPortal() {
+      const dateInput = document.getElementById("rf-date");
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+      await fetchRiverflowHistory();
+      renderRiverEntryTable();
+      if (dateInput) onRiverDateChange(dateInput.value);
+    }
+
+    async function fetchRiverflowHistory() {
+      const tbody = document.getElementById('rf-ledger-tbody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase river telemetry...</td></tr>`;
+      }
+
+      try {
+        const res = await fetch('/api/getRiverFlow');
+        if (!res.ok) throw new Error('Could not fetch river flow data.');
+        riverflowHistory = await res.json();
+        renderRiverflowLedger(riverflowHistory);
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; text-align:center; color:var(--red); font-family:var(--font-mono);">Error: ${err.message}</td></tr>`;
+        }
+      }
+    }
+
+    function renderRiverEntryTable() {
+      const tbody = document.getElementById("rf-entry-tbody");
+      if (!tbody) return;
+
+      const currentDate = document.getElementById("rf-date")?.value || "";
+
+      // Find baseline record (most recent record with a recorded_date strictly before current selected date)
+      const priorRecords = riverflowHistory
+        .filter(r => r.recorded_date && r.recorded_date < currentDate)
+        .sort((a, b) => new Date(b.recorded_date) - new Date(a.recorded_date));
+      const priorRecord = priorRecords.length > 0 ? priorRecords[0] : (riverflowHistory[0] || null);
+
+      tbody.innerHTML = RIVER_STATIONS.map((s, idx) => {
+        // Group badge
+        const isCity = s.group.includes("City");
+        const isNorth = s.group.includes("North");
+        const groupBadgeClass = isCity ? "pill-blue" : (isNorth ? "pill-teal" : "pill-amber");
+
+        // Previous reading reference
+        let prevText = "—";
+        if (priorRecord && Array.isArray(priorRecord.readings)) {
+          const prevVal = priorRecord.readings[s.col];
+          if (prevVal !== null && prevVal !== undefined && prevVal !== "") {
+            const formattedVal = parseFloat(prevVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const dateLabel = priorRecord.recorded_date || priorRecord.readings[1] || "";
+            prevText = `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${dateLabel}:</span> <b style="font-family:var(--font-mono); font-size:11px; color:var(--teal);">${formattedVal}</b>`;
+          }
+        }
+
+        return `
+          <tr>
+            <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${idx + 1}</td>
+            <td>
+              <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${s.name}</div>
+            </td>
+            <td>
+              <span class="kpi-badge-pill ${groupBadgeClass}" style="font-size:10px;">${s.group}</span>
+            </td>
+            <td>${prevText}</td>
+            <td>
+              <input type="number" step="0.01" min="0" class="form-input rf-input-val" id="rf-val-${s.col}" data-col="${s.col}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="calculateRiverTotals()">
+            </td>
+            <td>
+              <input type="text" class="form-input rf-input-rem" id="rf-rem-${s.col}" data-col="${s.col}" list="river-remarks-datalist" placeholder="Optional notes...">
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      calculateRiverTotals();
+    }
+
+    function calculateRiverTotals() {
+      let total = 0;
+      let count = 0;
+      const inputs = document.querySelectorAll('.rf-input-val');
+
+      inputs.forEach(inp => {
+        const val = parseFloat(inp.value);
+        if (!isNaN(val) && inp.value.trim() !== '') {
+          total += val;
+          count++;
+        }
+      });
+
+      const totalEl = document.getElementById("rf-kpi-total");
+      const countEl = document.getElementById("rf-kpi-count");
+
+      if (totalEl) {
+        totalEl.textContent = `${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³/day`;
+      }
+      if (countEl) {
+        countEl.textContent = `${count} / ${RIVER_STATIONS.length}`;
+        countEl.style.color = count === RIVER_STATIONS.length ? "var(--green)" : "var(--text-main)";
+      }
+    }
+
+    function onRiverDateChange(val) {
+      if (!val) return;
+      renderRiverEntryTable();
+
+      // Check if this date already exists in history
+      const existing = riverflowHistory.find(r => r.recorded_date === val);
+      const statusEl = document.getElementById("rf-cycle-status");
+
+      if (existing && Array.isArray(existing.readings)) {
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--amber);">⚠️ Existing record loaded (${val}) &bull; Ready to update</span>`;
+        }
+        // Fill values from existing record
+        RIVER_STATIONS.forEach(s => {
+          const inp = document.getElementById(`rf-val-${s.col}`);
+          if (inp && existing.readings[s.col] !== null && existing.readings[s.col] !== undefined) {
+            inp.value = existing.readings[s.col];
+          }
+        });
+        calculateRiverTotals();
+      } else {
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--teal);">🟢 Ready for new weekly entry (${val})</span>`;
+        }
+      }
+    }
+
+    function clearRiverflowForm() {
+      RIVER_STATIONS.forEach(s => {
+        const inp = document.getElementById(`rf-val-${s.col}`);
+        const rem = document.getElementById(`rf-rem-${s.col}`);
+        if (inp) inp.value = "";
+        if (rem) rem.value = "";
+      });
+      calculateRiverTotals();
+      notifyRf("Form cleared.");
+    }
+
+    function loadPreviousRiverReadings() {
+      const currentDate = document.getElementById("rf-date")?.value || "";
+      const priorRecords = riverflowHistory
+        .filter(r => r.recorded_date && r.recorded_date < currentDate)
+        .sort((a, b) => new Date(b.recorded_date) - new Date(a.recorded_date));
+      const priorRecord = priorRecords.length > 0 ? priorRecords[0] : (riverflowHistory[0] || null);
+
+      if (!priorRecord || !Array.isArray(priorRecord.readings)) {
+        alert("No previous river flow records found in Supabase.");
+        return;
+      }
+
+      let loadedCount = 0;
+      RIVER_STATIONS.forEach(s => {
+        const prevVal = priorRecord.readings[s.col];
+        const inp = document.getElementById(`rf-val-${s.col}`);
+        if (inp && prevVal !== null && prevVal !== undefined && prevVal !== "") {
+          inp.value = prevVal;
+          loadedCount++;
+        }
+      });
+
+      calculateRiverTotals();
+      notifyRf(`Loaded ${loadedCount} baseline readings from ${priorRecord.recorded_date || priorRecord.readings[1]}!`);
+    }
+
+    async function submitRiverflow(e) {
+      if (e) e.preventDefault();
+      const dateInput = document.getElementById("rf-date");
+      const recorded_date = dateInput?.value;
+
+      if (!recorded_date) {
+        alert("Please select a Measurement Date.");
+        dateInput?.focus();
+        return;
+      }
+
+      const btn1 = document.getElementById("btn-save-riverflow");
+      const btn2 = document.getElementById("btn-save-riverflow-bottom");
+      if (btn1) { btn1.disabled = true; btn1.textContent = "Saving to Supabase..."; }
+      if (btn2) { btn2.disabled = true; btn2.textContent = "Saving to Supabase..."; }
+
+      const readings_map = {};
+      let hasReadings = false;
+
+      RIVER_STATIONS.forEach(s => {
+        const inp = document.getElementById(`rf-val-${s.col}`);
+        if (inp && inp.value.trim() !== '') {
+          readings_map[s.col] = parseFloat(inp.value);
+          hasReadings = true;
+        } else {
+          readings_map[s.col] = null;
+        }
+      });
+
+      if (!hasReadings) {
+        alert("Please enter at least one river discharge measurement.");
+        if (btn1) { btn1.disabled = false; btn1.textContent = "💾 Save Readings to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "💾 Save Readings to Supabase"; }
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/saveRiverFlow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save',
+            recorded_date,
+            readings_map
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save river flow.');
+
+        notifyRf(data.message || `River flow measurements saved for ${recorded_date}!`);
+        await fetchRiverflowHistory();
+        onRiverDateChange(recorded_date);
+      } catch (err) {
+        notifyRf(err.message, true);
+      } finally {
+        if (btn1) { btn1.disabled = false; btn1.textContent = "💾 Save Readings to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "💾 Save Readings to Supabase"; }
+      }
+    }
+
+    function renderRiverflowLedger(list) {
+      const tbody = document.getElementById('rf-ledger-tbody');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No river flow records found in Supabase.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(r => {
+        const dateStr = r.recorded_date || '—';
+        const labelStr = (Array.isArray(r.readings) && r.readings[1]) ? r.readings[1] : '—';
+
+        let count = 0;
+        let sum = 0;
+        let topRiver = '—';
+        let maxVal = -1;
+
+        if (Array.isArray(r.readings)) {
+          RIVER_STATIONS.forEach(s => {
+            const v = parseFloat(r.readings[s.col]);
+            if (!isNaN(v) && r.readings[s.col] !== null) {
+              count++;
+              sum += v;
+              if (v > maxVal) {
+                maxVal = v;
+                topRiver = `${s.name} (${v.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³/d)`;
+              }
+            }
+          });
+        }
+
+        const sumStr = sum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const countBadge = count === 19 ? 'pill-green' : (count > 0 ? 'pill-teal' : 'pill-amber');
+
+        return `
+          <tr>
+            <td class="mono" style="font-weight:700;">${dateStr}</td>
+            <td>${labelStr}</td>
+            <td style="text-align:right;"><span class="kpi-badge-pill ${countBadge}">${count} / 19</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:var(--teal);">${sumStr}</td>
+            <td style="font-size:11.5px; color:var(--text-main);">${topRiver}</td>
+            <td style="text-align:right; white-space:nowrap;">
+              <button onclick="editRiverflowRecord('${r.id}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);" title="Load into form for editing">✏️ Edit</button>
+              <button onclick="deleteRiverflowRecord('${r.id}', '${dateStr}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete record">🗑️ Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function editRiverflowRecord(id) {
+      const record = riverflowHistory.find(r => r.id === id);
+      if (!record) return;
+
+      const dateInput = document.getElementById("rf-date");
+      if (dateInput && record.recorded_date) {
+        dateInput.value = record.recorded_date;
+        onRiverDateChange(record.recorded_date);
+      }
+
+      document.getElementById("section-riverflow")?.scrollIntoView({ behavior: 'smooth' });
+      notifyRf(`Record for ${record.recorded_date} loaded into form.`);
+    }
+
+    async function deleteRiverflowRecord(id, dateStr) {
+      if (!confirm(`Are you sure you want to permanently delete the river flow record for "${dateStr}" from Supabase?`)) return;
+
+      try {
+        const res = await fetch('/api/saveRiverFlow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+
+        notifyRf(`Record for ${dateStr} deleted successfully.`);
+        await fetchRiverflowHistory();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
+    function filterRiverflowHistory() {
+      const q = (document.getElementById('rf-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderRiverflowLedger(riverflowHistory);
+        return;
+      }
+      const filtered = riverflowHistory.filter(r => {
+        const d = (r.recorded_date || '').toLowerCase();
+        const l = (Array.isArray(r.readings) && r.readings[1] ? r.readings[1] : '').toLowerCase();
+        return d.includes(q) || l.includes(q);
+      });
+      renderRiverflowLedger(filtered);
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       populateStations();
       fetchGensetFleet();
@@ -1507,6 +2009,8 @@
 
       if (window.location.hash === '#complaints') {
         switchPortalSection('complaints');
+      } else if (window.location.hash === '#riverflow') {
+        switchPortalSection('riverflow');
       }
     });
   </script>
