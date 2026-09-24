@@ -1175,7 +1175,7 @@
 
             <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
               <span style="font-size:11px; color:var(--text-muted);">
-                💡 Tip: Type meter readings and press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd>. Volume (m³) is auto-calculated (<b style="font-family:var(--font-mono);">Present - Previous</b>), or enter volume directly.
+                💡 Tip: Type Previous &amp; Present flow meter readings and press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd>. Net Weekly Yield (m³) is automatically calculated (<b style="font-family:var(--font-mono);">Present - Previous</b>).
               </span>
               <button type="button" id="btn-save-production-bottom" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
                 💾 Save Production to Supabase
@@ -2533,8 +2533,8 @@
                 <td>
                   <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
                 </td>
-                <td>
-                  <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--blue);" oninput="onProdVolChange('${st.id}')">
+                <td style="text-align:right;">
+                  <div id="prod-net-${st.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
                 </td>
                 <td>
                   <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
@@ -2568,8 +2568,8 @@
                   <td>
                     <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
                   </td>
-                  <td>
-                    <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--blue);" oninput="onProdVolChange('${st.id}')">
+                  <td style="text-align:right;">
+                    <div id="prod-net-${st.id}-${sub.subId}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
                   </td>
                   <td>
                     <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}-${sub.subId}" list="prod-remarks-datalist" placeholder="Operational notes...">
@@ -2593,8 +2593,8 @@
                 <td>
                   <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
                 </td>
-                <td>
-                  <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--blue);" oninput="onProdVolChange('${st.id}')">
+                <td style="text-align:right;">
+                  <div id="prod-net-${st.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
                 </td>
                 <td>
                   <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
@@ -2623,8 +2623,8 @@
               <td>
                 <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-cust-${cs.id}" value="${cs.presReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onCustomReadingChange('${cs.id}')">
               </td>
-              <td>
-                <input type="number" step="0.01" class="form-input prod-vol-input" id="prod-vol-cust-${cs.id}" value="${cs.volume || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:800; color:var(--amber);" oninput="onCustomVolChange('${cs.id}')">
+              <td style="text-align:right;">
+                <div id="prod-net-cust-${cs.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--amber); font-size:12.5px;">${(cs.volume || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³</div>
               </td>
               <td>
                 <input type="text" class="form-input prod-rem-input" id="prod-rem-cust-${cs.id}" value="${cs.remarks || 'Backup operational'}" list="prod-remarks-datalist">
@@ -2654,13 +2654,16 @@
               <table class="data-table" style="background:#FFFFFF;">
                 <thead>
                   <tr>
-                    <th style="width:38px; text-align:center;">#</th>
-                    <th style="min-width:210px;">Monitored Station</th>
-                    <th style="min-width:130px;">Meter / Line</th>
-                    <th style="min-width:160px;">Previous Reading</th>
-                    <th style="min-width:160px;">Present Reading</th>
-                    <th style="min-width:170px;">Total Production (m³) *</th>
-                    <th style="min-width:200px;">Remarks</th>
+                    <th rowspan="2" style="width:38px; text-align:center; vertical-align:middle;">#</th>
+                    <th rowspan="2" style="min-width:210px; vertical-align:middle;">Monitored Station</th>
+                    <th rowspan="2" style="min-width:120px; vertical-align:middle;">Meter / Line</th>
+                    <th colspan="2" style="text-align:center; border-bottom:1px solid #CBD5E1; background:#F1F5F9; font-weight:800;">Total Production Reading (m³)</th>
+                    <th rowspan="2" style="text-align:right; min-width:130px; vertical-align:middle;">Net Yield (m³)</th>
+                    <th rowspan="2" style="min-width:180px; vertical-align:middle;">Remarks</th>
+                  </tr>
+                  <tr>
+                    <th style="min-width:150px; background:#F8FAFC;">Previous Reading</th>
+                    <th style="min-width:150px; background:#F8FAFC;">Present Reading</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2697,22 +2700,22 @@
     function onProdReadingChange(stId, subId) {
       const prevId = subId ? `prod-prev-${stId}-${subId}` : `prod-prev-${stId}`;
       const presId = subId ? `prod-pres-${stId}-${subId}` : `prod-pres-${stId}`;
-      const volId = subId ? `prod-vol-${stId}-${subId}` : `prod-vol-${stId}`;
+      const netId = subId ? `prod-net-${stId}-${subId}` : `prod-net-${stId}`;
 
       const prevInp = document.getElementById(prevId);
       const presInp = document.getElementById(presId);
-      const volInp = document.getElementById(volId);
+      const netEl = document.getElementById(netId);
 
-      if (prevInp && presInp && volInp) {
-        const prev = parseFloat(prevInp.value);
-        const pres = parseFloat(presInp.value);
-        if (!isNaN(prev) && !isNaN(pres)) {
-          const diff = pres - prev;
-          volInp.value = diff.toFixed(2);
+      if (prevInp && presInp && netEl) {
+        const prev = parseFloat(prevInp.value) || 0;
+        const pres = parseFloat(presInp.value) || 0;
+        let diff = 0;
+        if (presInp.value.trim() !== '') {
+          diff = Math.max(0, pres - prev);
         }
+        netEl.textContent = `${diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
       }
 
-      // If station has sub-meters, update station group subtotal
       if (subId) {
         updateGroupStationTotal(stId);
       }
@@ -2721,11 +2724,16 @@
     }
 
     function updateGroupStationTotal(stId) {
-      const volInputs = document.querySelectorAll(`[id^="prod-vol-${stId}-"]`);
+      const st = PROD_CATEGORIES.flatMap(c => c.stations).find(s => s.id === stId);
+      if (!st || !st.subs) return;
       let grpSum = 0;
-      volInputs.forEach(inp => {
-        const v = parseFloat(inp.value);
-        if (!isNaN(v)) grpSum += v;
+      st.subs.forEach(sub => {
+        const prev = parseFloat(document.getElementById(`prod-prev-${stId}-${sub.subId}`)?.value) || 0;
+        const presInp = document.getElementById(`prod-pres-${stId}-${sub.subId}`);
+        const pres = parseFloat(presInp?.value) || 0;
+        if (presInp && presInp.value.trim() !== '') {
+          grpSum += Math.max(0, pres - prev);
+        }
       });
       const lbl = document.getElementById(`prod-group-total-${stId}`);
       if (lbl) {
@@ -2733,51 +2741,55 @@
       }
     }
 
-    function onProdVolChange(stId) {
-      calculateProductionTotals();
-    }
-
     function onCustomReadingChange(customId) {
       const prevInp = document.getElementById(`prod-prev-cust-${customId}`);
       const presInp = document.getElementById(`prod-pres-cust-${customId}`);
-      const volInp = document.getElementById(`prod-vol-cust-${customId}`);
-      if (prevInp && presInp && volInp) {
-        const prev = parseFloat(prevInp.value);
-        const pres = parseFloat(presInp.value);
-        if (!isNaN(prev) && !isNaN(pres)) {
-          volInp.value = (pres - prev).toFixed(2);
-        }
-      }
-      onCustomVolChange(customId);
-    }
-
-    function onCustomVolChange(customId) {
+      const netEl = document.getElementById(`prod-net-cust-${customId}`);
       const cs = customStations.find(c => c.id === customId);
+
+      let diff = 0;
+      if (prevInp && presInp) {
+        const prev = parseFloat(prevInp.value) || 0;
+        const pres = parseFloat(presInp.value) || 0;
+        if (presInp.value.trim() !== '') {
+          diff = Math.max(0, pres - prev);
+        }
+        if (netEl) netEl.textContent = `${diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+      }
+
       if (cs) {
-        const v = parseFloat(document.getElementById(`prod-vol-cust-${customId}`)?.value);
-        cs.volume = isNaN(v) ? 0 : v;
-        cs.prevReading = document.getElementById(`prod-prev-cust-${customId}`)?.value || '';
-        cs.presReading = document.getElementById(`prod-pres-cust-${customId}`)?.value || '';
+        cs.volume = diff;
+        cs.prevReading = prevInp?.value || '';
+        cs.presReading = presInp?.value || '';
         cs.remarks = document.getElementById(`prod-rem-cust-${customId}`)?.value || '';
       }
+
       calculateProductionTotals();
     }
 
     function getStationVolume(st) {
       if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
-        const v = parseFloat(document.getElementById(`prod-vol-${st.id}`)?.value);
-        return isNaN(v) ? 0 : v;
+        const prev = parseFloat(document.getElementById(`prod-prev-${st.id}`)?.value) || 0;
+        const presInp = document.getElementById(`prod-pres-${st.id}`);
+        const pres = parseFloat(presInp?.value) || 0;
+        return (presInp && presInp.value.trim() !== '') ? Math.max(0, pres - prev) : 0;
       }
       if (st.isGroup) {
         let sum = 0;
         st.subs.forEach(sub => {
-          const v = parseFloat(document.getElementById(`prod-vol-${st.id}-${sub.subId}`)?.value);
-          if (!isNaN(v)) sum += v;
+          const prev = parseFloat(document.getElementById(`prod-prev-${st.id}-${sub.subId}`)?.value) || 0;
+          const presInp = document.getElementById(`prod-pres-${st.id}-${sub.subId}`);
+          const pres = parseFloat(presInp?.value) || 0;
+          if (presInp && presInp.value.trim() !== '') {
+            sum += Math.max(0, pres - prev);
+          }
         });
         return sum;
       }
-      const v = parseFloat(document.getElementById(`prod-vol-${st.id}`)?.value);
-      return isNaN(v) ? 0 : v;
+      const prev = parseFloat(document.getElementById(`prod-prev-${st.id}`)?.value) || 0;
+      const presInp = document.getElementById(`prod-pres-${st.id}`);
+      const pres = parseFloat(presInp?.value) || 0;
+      return (presInp && presInp.value.trim() !== '') ? Math.max(0, pres - prev) : 0;
     }
 
     function calculateProductionTotals() {
@@ -3194,15 +3206,27 @@
           const v = record.row_data[st.col];
           if (v !== undefined && v !== null) {
             if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
-              const inp = document.getElementById(`prod-vol-${st.id}`);
-              if (inp) inp.value = v;
+              const inpPrev = document.getElementById(`prod-prev-${st.id}`);
+              const inpPres = document.getElementById(`prod-pres-${st.id}`);
+              const netEl = document.getElementById(`prod-net-${st.id}`);
+              if (inpPrev) inpPrev.value = 0;
+              if (inpPres) inpPres.value = v;
+              if (netEl) netEl.textContent = `${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
             } else if (st.isGroup) {
-              const inpFirst = document.getElementById(`prod-vol-${st.id}-${st.subs[0].subId}`);
-              if (inpFirst) inpFirst.value = v;
+              const inpPrev = document.getElementById(`prod-prev-${st.id}-${st.subs[0].subId}`);
+              const inpPres = document.getElementById(`prod-pres-${st.id}-${st.subs[0].subId}`);
+              const netEl = document.getElementById(`prod-net-${st.id}-${st.subs[0].subId}`);
+              if (inpPrev) inpPrev.value = 0;
+              if (inpPres) inpPres.value = v;
+              if (netEl) netEl.textContent = `${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
               updateGroupStationTotal(st.id);
             } else {
-              const inp = document.getElementById(`prod-vol-${st.id}`);
-              if (inp) inp.value = v;
+              const inpPrev = document.getElementById(`prod-prev-${st.id}`);
+              const inpPres = document.getElementById(`prod-pres-${st.id}`);
+              const netEl = document.getElementById(`prod-net-${st.id}`);
+              if (inpPrev) inpPrev.value = 0;
+              if (inpPres) inpPres.value = v;
+              if (netEl) netEl.textContent = `${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
             }
           }
         });
