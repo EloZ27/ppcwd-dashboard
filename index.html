@@ -31,11 +31,11 @@
       --sidebar-text-active: #FFFFFF;
       --sidebar-border: rgba(255, 255, 255, 0.08);
 
-      --app-bg: #F4F6F9;
+      --app-bg: #F8FAFC;
       --card-bg: #FFFFFF;
       --card-border: #E2E8F0;
-      --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
-      --card-shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.07);
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+      --card-shadow-hover: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
 
       --text-main: #0F172A;
       --text-muted: #64748B;
@@ -74,6 +74,8 @@
       line-height: 1.5;
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .app-layout {
@@ -201,9 +203,11 @@
       background: var(--app-bg);
     }
     .app-header {
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--card-border);
-      padding: 16px 28px;
+      padding: 14px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -212,7 +216,7 @@
       z-index: 100;
     }
     .header-titles h1 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--text-main);
       letter-spacing: -0.3px;
@@ -225,38 +229,49 @@
       align-items: center;
       gap: 6px;
     }
-    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
     .header-btn {
       background: #FFFFFF;
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 7px 13px;
-      font-family: var(--font-mono);
-      font-size: 11px;
+      font-family: var(--font-sans);
+      font-size: 11.5px;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
     }
-    .header-btn:hover { border-color: #CBD5E1; background: #F8FAFC; color: var(--text-main); }
-    .header-btn.active { background: var(--blue); border-color: var(--blue); color: #FFF; }
+    .header-btn:hover {
+      border-color: #CBD5E1;
+      background: #F8FAFC;
+      color: var(--text-main);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05);
+    }
+    .header-btn:active {
+      transform: translateY(0);
+    }
+    .header-btn.active { background: var(--blue); border-color: var(--blue); color: #FFF; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3); }
 
     /* ── PERIOD CONTROLLER ── */
     .period-bar-wrap {
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--card-border);
-      padding: 12px 28px;
+      padding: 10px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
     .week-dropdown {
-      background: #F8FAFC;
+      background: #FFFFFF;
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 7px 32px 7px 14px;
@@ -267,9 +282,15 @@
       cursor: pointer;
       outline: none;
       appearance: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 12px center;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+    .week-dropdown:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
 
     /* ── PAGE CONTENT ── */
@@ -319,6 +340,12 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .kpi-card-white:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: #CBD5E1;
     }
     .kpi-card-lbl { font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
     .kpi-card-num {
@@ -328,6 +355,7 @@
       letter-spacing: -0.6px;
       line-height: 1.1;
       margin: 6px 0;
+      font-variant-numeric: tabular-nums;
     }
     .kpi-card-num .unit { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-left: 3px; }
     .kpi-card-foot { font-size: 11px; font-weight: 500; color: var(--text-muted); }
@@ -336,12 +364,14 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 7px;
-      border-radius: 6px;
+      padding: 2.5px 8px;
+      border-radius: 20px;
       font-size: 10px;
       font-weight: 700;
       font-family: var(--font-mono);
+      letter-spacing: 0.2px;
     }
+    .pill-normal { background: rgba(11, 79, 108, 0.1); color: #0b4f6c; border: 1px solid rgba(11, 79, 108, 0.28); }
     .pill-green { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
     .pill-amber { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
     .pill-red { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
@@ -447,45 +477,67 @@
     .crisis-card {
       background: #FFFFFF;
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 16px 18px;
       position: relative;
       overflow: hidden;
       box-shadow: var(--card-shadow);
       cursor: pointer;
-      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
       display: flex;
       flex-direction: column;
     }
     .crisis-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+      transform: translateY(-3px);
+      box-shadow: var(--card-shadow-hover);
       border-color: #CBD5E1;
     }
-    .crisis-card::before { content: ""; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; }
+    .crisis-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 14px 0 0 14px;
+    }
     .crisis-card.lvl-normal::before { background: #0b4f6c; }
     .crisis-card.lvl-1::before { background: var(--green); }
     .crisis-card.lvl-2::before { background: var(--amber); }
     .crisis-card.lvl-3::before { background: var(--red); }
-    .crisis-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .crisis-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
     .crisis-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
-    .crisis-pct { font-size: 32px; font-weight: 800; font-family: var(--font-mono); margin-bottom: 10px; line-height: 1; }
+    .crisis-pct { font-size: 28px; font-weight: 800; font-family: var(--font-mono); line-height: 1; letter-spacing: -0.5px; }
+    .crisis-prog-track {
+      height: 5px;
+      background: #F1F5F9;
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 8px 0 12px;
+    }
+    .crisis-prog-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
     .crisis-details { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); display: flex; flex-direction: column; gap: 4px; }
     .crisis-details-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #E2E8F0; padding-bottom: 3px; }
     .crisis-details-row:last-child { border-bottom: none; }
     .crisis-remarks-cta {
       margin-top: 12px;
-      padding-top: 8px;
+      padding-top: 10px;
       border-top: 1px solid #F1F5F9;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 10.5px;
+      font-size: 11px;
       color: var(--blue);
       font-weight: 600;
+      transition: all 0.15s ease;
     }
-    .crisis-remarks-cta:hover {
+    .crisis-card:hover .crisis-remarks-cta {
       color: #1D4ED8;
+      padding-left: 2px;
     }
 
     /* ── RESPONSIVE GRIDS & LAYOUT CLASSES ── */
@@ -694,6 +746,73 @@
       border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MODERN EXECUTIVE CLEAN ANIMATIONS & MODAL POLISH ── */
+    [id$="-modal"] {
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+      transition: opacity 0.2s ease;
+    }
+    [id$="-modal"] > div {
+      animation: modalScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+    }
+    @keyframes modalScaleIn {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .page-content.active {
+      display: block;
+      animation: pageFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .telemetry-beacon {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+      animation: beaconPulse 2.2s infinite;
+      flex-shrink: 0;
+    }
+    @keyframes beaconPulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .crisis-legend-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .crisis-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .crisis-legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -719,7 +838,7 @@
       <nav class="sidebar-nav">
         <button class="nav-btn active" onclick="switchNavTab('overview')"><span class="nav-icon">📊</span><span>Dashboard</span></button>
         <button class="nav-btn" onclick="switchNavTab('monthly')"><span class="nav-icon">📅</span><span>Production MONTHLY Report</span></button>
-        <button class="nav-btn" onclick="switchNavTab('production')"><span class="nav-icon">📈</span><span>Production WEEKYLY Report</span></button>
+        <button class="nav-btn" onclick="switchNavTab('production')"><span class="nav-icon">📈</span><span>Production WEEKLY Report</span></button>
         <button class="nav-btn" onclick="switchNavTab('pressure')"><span class="nav-icon">🧭</span><span>Network Pressure</span></button>
         <button class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon">⚠️</span><span>Crisis Monitor</span></button>
         <button class="nav-btn" onclick="switchNavTab('riverflow')"><span class="nav-icon">🌊</span><span>River Hydrology</span></button>
@@ -760,7 +879,7 @@
           <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px; flex-shrink:0;">
           <div class="header-titles" style="min-width: 0;">
             <h1 id="top-bar-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitoring Dashboard</h1>
-            <p><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Live telemetry &bull; Updated continuously from Supabase</p>
+            <p><span class="telemetry-beacon"></span> Live telemetry &bull; Updated continuously from Supabase</p>
           </div>
         </div>
         <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
@@ -809,6 +928,9 @@
           <div class="kpi-card-white">
             <div class="kpi-card-lbl">PPCWD Overall System-Wide</div>
             <div class="kpi-card-num" id="ov-crisis-badge" style="color: var(--green);">—<span class="unit">%</span></div>
+            <div id="ov-crisis-bar-wrap" style="height:4px; background:#F1F5F9; border-radius:2px; overflow:hidden; margin:3px 0 7px;">
+              <div id="ov-crisis-bar-fill" style="height:100%; width:0%; background:var(--green); border-radius:2px; transition:width 0.4s ease;"></div>
+            </div>
             <div class="kpi-card-foot" id="ov-crisis-sub" style="color: var(--text-muted);">Target: 397,681 m³/wk</div>
           </div>
           <div class="kpi-card-white">
@@ -1007,6 +1129,27 @@
             <div style="font-size:11px; color:var(--text-muted);" id="crisis-header-subtitle">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
           </div>
           <button class="header-btn" onclick="openCrisisReportModal()" style="background:var(--blue); color:white; border:none;">📄 Generate Crisis Report (PDF)</button>
+        </div>
+
+        <!-- Crisis Alert Levels Executive Legend -->
+        <div class="crisis-legend-bar">
+          <span style="font-size:11px; font-weight:800; color:var(--text-main); margin-right:4px;">Thresholds:</span>
+          <div class="crisis-legend-item">
+            <span class="crisis-legend-dot" style="background:#0b4f6c;"></span>
+            <span>Normal &ge; 100%</span>
+          </div>
+          <div class="crisis-legend-item">
+            <span class="crisis-legend-dot" style="background:var(--green);"></span>
+            <span>Level 1: Watch (90% &ndash; 99.9%)</span>
+          </div>
+          <div class="crisis-legend-item">
+            <span class="crisis-legend-dot" style="background:var(--amber);"></span>
+            <span>Level 2: Alert (75% &ndash; 89.9%)</span>
+          </div>
+          <div class="crisis-legend-item">
+            <span class="crisis-legend-dot" style="background:var(--red);"></span>
+            <span>Level 3: Critical (&lt; 75%)</span>
+          </div>
         </div>
 
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:10px;">Consolidated District Level</div>
@@ -2241,6 +2384,11 @@
       badge.style.color = alert.color;
       document.getElementById("ov-crisis-sub").textContent = `${alert.name} · Target: ${fmt(targetWk, 0)} m³/wk`;
       document.getElementById("ov-progress-label").textContent = `${fmt(pct, 1)}% of weekly benchmark`;
+      const barFill = document.getElementById("ov-crisis-bar-fill");
+      if (barFill) {
+        barFill.style.width = `${Math.min(pct, 100)}%`;
+        barFill.style.background = alert.color;
+      }
     }
 
     const totalComplaints = complaintsRaw.reduce((sum, c) => sum + (parseInt(c.complaint_count, 10) || 1), 0);
@@ -2508,6 +2656,9 @@
       const truncatedRemark = remarkText ? (remarkText.length > 95 ? remarkText.substring(0, 92) + '...' : remarkText) : 'No remarks recorded.';
       const pillBg = alert.lvl === 0 ? 'rgba(11, 79, 108, 0.12)' : (alert.lvl === 1 ? 'var(--green-light)' : (alert.lvl === 2 ? 'var(--amber-light)' : 'var(--red-light)'));
 
+      const progWidth = Math.min(Math.max(pct, 0), 100);
+      const progStatusText = pct >= 100 ? '✓ Target Met' : `${fmt(100 - pct, 1)}% Deficit`;
+
       const cardHtml = `
         <div class="crisis-card ${alert.cls}" onclick="openCrisisRemarks('${sys.id}')" title="Tap to view remarks and committee notes">
           <div class="crisis-header">
@@ -2519,7 +2670,13 @@
             </div>
             <span class="kpi-badge-pill" style="background:${pillBg}; color:${alert.color}; border:1px solid ${alert.color};">${alert.name}</span>
           </div>
-          <div class="crisis-pct" style="color:${alert.color};">${fmt(pct, 1)}%</div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:2px;">
+            <div class="crisis-pct" style="color:${alert.color}; margin-bottom:0;">${fmt(pct, 1)}%</div>
+            <span style="font-size:10.5px; font-weight:700; color:${alert.color}; font-family:var(--font-mono);">${progStatusText}</span>
+          </div>
+          <div class="crisis-prog-track">
+            <div class="crisis-prog-fill" style="width:${progWidth}%; background:${alert.color};"></div>
+          </div>
           <div class="crisis-details">
             <div class="crisis-details-row"><span>Actual Production</span><strong style="color:var(--text-main);">${fmt(actual)} m³</strong></div>
             <div class="crisis-details-row"><span>Target Volume</span><span>${fmt(ratedVol, 2)} m³</span></div>
@@ -4032,6 +4189,19 @@
   // ── INIT BOOT ──
   async function init() {
     try {
+      if (window.Chart) {
+        Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+        Chart.defaults.color = '#64748B';
+        if (Chart.defaults.plugins && Chart.defaults.plugins.tooltip) {
+          Chart.defaults.plugins.tooltip.backgroundColor = '#0F172A';
+          Chart.defaults.plugins.tooltip.padding = 10;
+          Chart.defaults.plugins.tooltip.cornerRadius = 8;
+          Chart.defaults.plugins.tooltip.titleFont = { family: '"Plus Jakarta Sans", sans-serif', weight: '700', size: 12 };
+          Chart.defaults.plugins.tooltip.bodyFont = { family: '"JetBrains Mono", monospace', size: 12 };
+          Chart.defaults.plugins.tooltip.boxPadding = 5;
+        }
+      }
+
       await initReportSecurity();
       await Promise.allSettled([
         loadProductionData(),
