@@ -862,7 +862,7 @@
             </div>
           </div>
           <button type="button" onclick="lockReportSecurity()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#F1F5F9; font-size:9.5px; font-weight:700; padding:2px 7px; cursor:pointer;" title="Lock Security & Revoke Passkey">
-            🔒 Lock
+            Lock
           </button>
         </div>
       </div>
@@ -884,12 +884,12 @@
         </div>
         <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
           <button id="header-auth-status-btn" class="header-btn" onclick="handleHeaderAuthClick()" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); border-color:var(--card-border); background:#FFFFFF;" title="Report Generation Security Status">
-            <span id="header-auth-status-icon">🔒</span>
+            <span id="header-auth-status-icon"></span>
             <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
           </button>
           <button class="header-btn" onclick="openGensetModal()" style="color: var(--blue); font-weight: 700; border-color: var(--blue-border); background: var(--blue-light);">
             <span class="desktop-text">Standby Generators</span>
-            <span class="mobile-text" style="display:none;">⚡ Gensets</span>
+            <span class="mobile-text" style="display:none;">Gensets</span>
           </button>
         </div>
       </header>
@@ -907,7 +907,7 @@
           <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 56.86 MLD</span>
           
           <a href="uploader.html#production" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Input or manage weekly production records">
-            <span>⚡ Log Weekly Production ↗</span>
+            <span>Log Weekly Production ↗</span>
           </a>
 
           <!-- Global Monthly Production Status Pill -->
@@ -1034,7 +1034,7 @@
           <div class="table-head-bar">
             <div class="table-head-title">Production by Source Group</div>
             <a href="uploader.html#production" class="header-btn" style="color:var(--blue); font-size:11px; font-weight:700; text-decoration:none;" title="Open Weekly Production Monitoring Portal">
-              <span>⚡ Input / Update Weekly Production ↗</span>
+              <span>Input / Update Weekly Production ↗</span>
             </a>
           </div>
           <div class="table-responsive">
@@ -1075,7 +1075,7 @@
               </div>
               <button class="header-btn" id="date-filter-clear" onclick="clearDateFilter()" style="display:none; color:var(--green);">● Go Live</button>
               <button class="header-btn" id="compare-clear" onclick="clearCompare()" style="display:none; color:var(--red);">✕ Clear Compare</button>
-              <button id="btn-toggle-complaints" onclick="toggleComplaints()" class="header-btn" style="color:var(--red);">🗺️ Heatmap</button>
+              <button id="btn-toggle-complaints" onclick="toggleComplaints()" class="header-btn" style="color:var(--red);">Heatmap</button>
             </div>
           </div>
         </div>
@@ -1100,9 +1100,9 @@
             <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
               <button class="header-btn active" id="btn-range-24h" onclick="setRange(this,'24h')">24h</button>
               <button class="header-btn" id="btn-range-7d" onclick="setRange(this,'7d')">7 Days</button>
-              <button class="header-btn" onclick="resetChartZoom()" style="color:var(--text-muted);">🔍 Reset Zoom</button>
-              <button class="header-btn" id="btn-clear-compare-graph" onclick="clearCompare()" style="color:var(--red);">✕ Clear All</button>
-              <button class="header-btn" onclick="openReportModal()" style="color:var(--blue);">📄 Export Report</button>
+              <button class="header-btn" onclick="resetChartZoom()" style="color:var(--text-muted);">Reset Zoom</button>
+              <button class="header-btn" id="btn-clear-compare-graph" onclick="clearCompare()" style="color:var(--red);">Clear All</button>
+              <button class="header-btn" onclick="openReportModal()" style="color:var(--blue);">Export Report</button>
           </div>
           </div>
           <div style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
@@ -1128,7 +1128,7 @@
             <h2 style="font-size:16px; font-weight:800; color:var(--text-main);">LWUA Crisis &amp; Drought Monitoring</h2>
             <div style="font-size:11px; color:var(--text-muted);" id="crisis-header-subtitle">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
           </div>
-          <button class="header-btn" onclick="openCrisisReportModal()" style="background:var(--blue); color:white; border:none;">📄 Generate Crisis Report (PDF)</button>
+          <button class="header-btn" onclick="openCrisisReportModal()" style="background:var(--blue); color:white; border:none;">Generate Crisis Report (PDF)</button>
         </div>
 
         <!-- Crisis Alert Levels Executive Legend -->
@@ -1168,7 +1168,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
             <div class="card-title" style="margin-bottom:0;">System-Wide Watershed Discharge Leaderboard (m³/day)</div>
             <a href="uploader.html#riverflow" class="header-btn" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
-              📥 Log / Input River Flow ↗
+              Log / Input River Flow ↗
             </a>
           </div>
           <div style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
@@ -1202,7 +1202,7 @@
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
               <a href="uploader.html#complaints" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">
-                📥 Log / Import Complaints ↗
+                Log / Import Complaints ↗
               </a>
             </div>
           </div>
@@ -1466,8 +1466,8 @@
         <div style="margin-bottom:14px; text-align:left;">
           <label style="margin-bottom:6px; display:block; font-size:11px; font-weight:700; color:var(--text-main); text-transform:uppercase; font-family:var(--font-mono);">Division Passkey / PIN *</label>
           <div style="position:relative;">
-            <input type="password" id="report-auth-passkey-input" placeholder="Enter Division Passkey..." style="width:100%; box-sizing:border-box; padding:10px 40px 10px 12px; border:1px solid var(--card-border); border-radius:8px; font-size:13px; font-weight:600; outline:none; font-family:inherit;" required autocomplete="current-password">
-            <button type="button" onclick="toggleReportPasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;" title="Show/Hide passkey">👁️</button>
+            <input type="password" id="report-auth-passkey-input" placeholder="Enter Division Passkey..." style="width:100%; box-sizing:border-box; padding:10px 52px 10px 12px; border:1px solid var(--card-border); border-radius:8px; font-size:13px; font-weight:600; outline:none; font-family:inherit;" required autocomplete="current-password">
+            <button type="button" onclick="toggleReportPasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:10px; font-weight:700; font-family:var(--font-mono);" title="Show or hide passkey">SHOW</button>
           </div>
         </div>
 
@@ -1484,7 +1484,7 @@
             Cancel
           </button>
           <button type="submit" id="btn-report-auth-unlock" class="header-btn" style="flex:2; justify-content:center; padding:10px; font-size:12px; font-weight:700; background:var(--blue); color:#FFF; border-color:var(--blue);">
-            🔓 Verify &amp; Generate Report
+            Verify &amp; Generate Report
           </button>
         </div>
       </form>
@@ -1564,10 +1564,10 @@
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px; margin:0;">
-              📋 Station Operational Remarks
+              Station Operational Remarks
             </label>
             <button type="button" id="crm-btn-edit-toggle" onclick="requestCrisisRemarkAuth()" class="header-btn" style="font-size:11px; padding:3px 10px; background:var(--blue); color:white; border:none; font-weight:700;">
-              🔒 Input / Edit Remark
+              Input / Edit Remark
             </button>
           </div>
           <div id="crm-view-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:14px; font-size:12px; color:#334155; line-height:1.55;">
@@ -1579,9 +1579,9 @@
         <div id="crm-editor-container" style="display:none; flex-direction:column; gap:8px; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:8px; padding:12px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:0.4px;">
-              ✍️ Operational Remarks Editor
+              Operational Remarks Editor
             </span>
-            <span style="font-size:10px; color:var(--green); font-weight:600;">✓ Passkey Authorized</span>
+            <span style="font-size:10px; color:var(--green); font-weight:600;">Passkey Authorized</span>
           </div>
           <textarea id="crm-custom-input" rows="3" class="form-input" style="width:100%; font-size:12px; line-height:1.4; resize:vertical; box-sizing:border-box;" placeholder="Enter operational remarks, field actions, demand observations, or notes for this water system..."></textarea>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
@@ -1671,7 +1671,7 @@
       <tbody id="cr-pdf-tbody"></tbody>
     </table>
     <div style="margin-top:16px; border-top:1px solid #CBD5E1; padding-top:12px; font-size:9.5px; color:#475569; line-height:1.45;">
-      <div style="font-weight:700; color:#1E293B; margin-bottom:5px; font-size:10px;">📋 Task Force Committee &amp; Board of Directors Operational Remarks:</div>
+      <div style="font-weight:700; color:#1E293B; margin-bottom:5px; font-size:10px;">Task Force Committee &amp; Board of Directors Operational Remarks:</div>
       <div id="cr-pdf-remarks-summary" style="display:flex; flex-direction:column; gap:4px;"></div>
     </div>
   </div>
@@ -1730,14 +1730,14 @@
 
     if (hBtn && hIcon && hText) {
       if (isReportPasskeyVerified) {
-        hIcon.textContent = '🛡️';
+        hIcon.textContent = '';
         hText.textContent = 'Reports Authorized';
         hBtn.style.color = 'var(--green)';
         hBtn.style.borderColor = 'var(--green-border)';
         hBtn.style.background = 'var(--green-light)';
         hBtn.title = 'Report security verified with Division Passkey. Click to lock session.';
       } else {
-        hIcon.textContent = '🔒';
+        hIcon.textContent = '';
         hText.textContent = 'Reports Protected';
         hBtn.style.color = 'var(--text-muted)';
         hBtn.style.borderColor = 'var(--card-border)';
@@ -1784,7 +1784,7 @@
     }
     if (btn) {
       btn.disabled = false;
-      btn.textContent = '🔓 Verify & Generate Report';
+      btn.textContent = 'Verify & Generate Report';
     }
     if (inp) {
       inp.value = '';
@@ -1843,7 +1843,7 @@
         alertBox.textContent = check.error || 'Invalid authorization passkey.';
         alertBox.style.display = 'block';
       }
-      if (btn) { btn.disabled = false; btn.textContent = '🔓 Verify & Generate Report'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Verify & Generate Report'; }
       if (inp) inp.focus();
     }
   }
@@ -2176,12 +2176,12 @@
     const periodNoticeEl = document.getElementById("crm-period-notice");
     if (["bacungan", "sabang", "maoyon"].includes(sysId)) {
       if (isAugPlus) {
-        periodNoticeEl.innerHTML = `<strong>⚡ Active Benchmark (August 2026 Onwards):</strong> Weekly target calibrated to <strong>${fmt(targetInfo.weeklyTarget, 2)} m³/wk</strong> (${fmt(targetInfo.ratedHr, 2)} m³/hr) as agreed by technical committee.`;
+        periodNoticeEl.innerHTML = `<strong>Active Benchmark (August 2026 Onwards):</strong> Weekly target calibrated to <strong>${fmt(targetInfo.weeklyTarget, 2)} m³/wk</strong> (${fmt(targetInfo.ratedHr, 2)} m³/hr) as agreed by technical committee.`;
         periodNoticeEl.style.borderColor = '#BFDBFE';
         periodNoticeEl.style.background = '#EFF6FF';
         periodNoticeEl.style.color = '#1E40AF';
       } else {
-        periodNoticeEl.innerHTML = `<strong>⏳ Historical Benchmark (Up to July 2026):</strong> Active week reflects pre-August baseline of <strong>${fmt(targetInfo.weeklyTarget, 2)} m³/wk</strong> (${fmt(targetInfo.ratedHr, 2)} m³/hr).`;
+        periodNoticeEl.innerHTML = `<strong>Historical Benchmark (Up to July 2026):</strong> Active week reflects pre-August baseline of <strong>${fmt(targetInfo.weeklyTarget, 2)} m³/wk</strong> (${fmt(targetInfo.ratedHr, 2)} m³/hr).`;
         periodNoticeEl.style.borderColor = '#CBD5E1';
         periodNoticeEl.style.background = '#F8FAFC';
         periodNoticeEl.style.color = '#475569';
@@ -2213,7 +2213,7 @@
       localStorage.removeItem(`ppcwd_crisis_remark_${currentRemarkSysId}`);
     }
     const statusEl = document.getElementById("crm-save-status");
-    statusEl.textContent = "✓ Remark saved successfully!";
+    statusEl.textContent = "Remark saved successfully!";
     updateCrisisRemarksView();
     cancelCrisisRemarkEdit();
     setTimeout(() => {
@@ -2657,17 +2657,12 @@
       const pillBg = alert.lvl === 0 ? 'rgba(11, 79, 108, 0.12)' : (alert.lvl === 1 ? 'var(--green-light)' : (alert.lvl === 2 ? 'var(--amber-light)' : 'var(--red-light)'));
 
       const progWidth = Math.min(Math.max(pct, 0), 100);
-      const progStatusText = pct >= 100 ? '✓ Target Met' : `${fmt(100 - pct, 1)}% Deficit`;
+      const progStatusText = pct >= 100 ? 'Target Met' : `${fmt(100 - pct, 1)}% Deficit`;
 
       const cardHtml = `
         <div class="crisis-card ${alert.cls}" onclick="openCrisisRemarks('${sys.id}')" title="Tap to view remarks and committee notes">
           <div class="crisis-header">
-            <div>
-              <div class="crisis-title">${sys.name}</div>
-              <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
-                Target: ${fmt(sysRatedHr, 2)} m³/hr &bull; ${fmt(sysWeeklyTarget, 1)} m³/wk
-              </div>
-            </div>
+            <div class="crisis-title">${sys.name}</div>
             <span class="kpi-badge-pill" style="background:${pillBg}; color:${alert.color}; border:1px solid ${alert.color};">${alert.name}</span>
           </div>
           <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:2px;">
@@ -2684,7 +2679,7 @@
           </div>
           <div class="crisis-remarks-cta">
             <span style="display:flex; align-items:center; gap:5px; font-weight:700;">
-              <span>💬 Remarks:</span>
+              <span>Remarks:</span>
               <span style="font-weight:normal; color:var(--text-muted); max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${truncatedRemark}</span>
             </span>
             <span style="font-size:10px; color:var(--blue); font-weight:700; display:flex; align-items:center; gap:3px;">
