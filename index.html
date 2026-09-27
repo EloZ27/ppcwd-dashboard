@@ -202,18 +202,22 @@
       min-width: 0;
       background: var(--app-bg);
     }
-    .app-header {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .app-top-sticky-container {
       position: sticky;
       top: 0;
       z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .app-header {
+      background: transparent;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .header-titles h1 {
       font-size: 17px;
@@ -260,11 +264,9 @@
 
     /* ── PERIOD CONTROLLER ── */
     .period-bar-wrap {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 10px 28px;
+      background: transparent;
+      border-top: 1px solid rgba(226, 232, 240, 0.7);
+      padding: 8px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -875,47 +877,115 @@
 
     <!-- ── MAIN CONTENT ── -->
     <div class="app-main">
-      <header class="app-header">
-        <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
-          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
-          <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px; flex-shrink:0;">
-          <div class="header-titles" style="min-width: 0;">
-            <h1 id="top-bar-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitoring Dashboard</h1>
-            <p><span class="telemetry-beacon"></span> Live telemetry &bull; Updated continuously from Supabase</p>
+      <!-- ── TOP STICKY CONTAINER (HEADER + PERIOD CONTROLLERS) ── -->
+      <div class="app-top-sticky-container">
+        <header class="app-header">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+            <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
+            <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px; flex-shrink:0;">
+            <div class="header-titles" style="min-width: 0;">
+              <h1 id="top-bar-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitoring Dashboard</h1>
+              <p><span class="telemetry-beacon"></span> Live telemetry &bull; Updated continuously from Supabase</p>
+            </div>
+          </div>
+          <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
+            <button id="header-auth-status-btn" class="header-btn" onclick="handleHeaderAuthClick()" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); border-color:var(--card-border); background:#FFFFFF;" title="Report Generation Security Status">
+              <span id="header-auth-status-icon"></span>
+              <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
+            </button>
+            <button class="header-btn" onclick="openGensetModal()" style="color: var(--blue); font-weight: 700; border-color: var(--blue-border); background: var(--blue-light);">
+              <span class="desktop-text">Standby Generators</span>
+              <span class="mobile-text" style="display:none;">Gensets</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- 1. Global Weekly Period Bar (Dashboard, Weekly Production, Crisis) -->
+        <div id="global-period-bar" class="period-bar-wrap">
+          <div>
+            <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Selected Reporting Cycle</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text-main);" id="period-display">—</div>
+          </div>
+          <div>
+            <select id="week-select" class="week-dropdown" onchange="renderWeek(this.value)"></select>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 56.86 MLD</span>
+            
+            <a href="uploader.html#production" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Input or manage weekly production records">
+              <span>Log Weekly Production ↗</span>
+            </a>
+
+            <!-- Global Monthly Production Status Pill -->
+            <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
+              <span id="global-monthly-text">Loading Monthly...</span>
+            </button>
+
+            <!-- Crisis Report PDF Button (visible when in crisis tab) -->
+            <button id="crisis-pdf-top-btn" class="header-btn" onclick="openCrisisReportModal()" style="display:none; background:var(--blue); color:white; border:none; font-weight:700; border-radius:20px; padding:4px 14px; font-size:11px;" title="Export Crisis Monitoring Report to PDF">
+              Crisis PDF ↗
+            </button>
           </div>
         </div>
-        <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
-          <button id="header-auth-status-btn" class="header-btn" onclick="handleHeaderAuthClick()" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); border-color:var(--card-border); background:#FFFFFF;" title="Report Generation Security Status">
-            <span id="header-auth-status-icon"></span>
-            <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
-          </button>
-          <button class="header-btn" onclick="openGensetModal()" style="color: var(--blue); font-weight: 700; border-color: var(--blue-border); background: var(--blue-light);">
-            <span class="desktop-text">Standby Generators</span>
-            <span class="mobile-text" style="display:none;">Gensets</span>
-          </button>
-        </div>
-      </header>
 
-      <!-- Global Period Controller -->
-      <div id="global-period-bar" class="period-bar-wrap">
-        <div>
-          <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Selected Reporting Cycle</div>
-          <div style="font-size:14px; font-weight:700; color:var(--text-main);" id="period-display">—</div>
+        <!-- 2. Monthly Report Sticky Bar -->
+        <div id="bar-period-monthly" class="period-bar-wrap" style="display:none;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div>
+              <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Selected Reporting Month</div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+                <input type="month" id="monthly-picker" class="header-btn" style="font-weight:700; color:var(--text-main); font-family:var(--font-mono);" onchange="loadMonthlyData(this.value)">
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">
+              Input / Edit Volumes
+            </button>
+            <button class="header-btn" onclick="exportMonthlyXLS()" style="color:var(--green); border-color:var(--green-border); font-weight:700;">
+              Export Excel (XLS)
+            </button>
+            <button class="header-btn" onclick="generateMonthlyPDF()" style="color:var(--red); border-color:var(--red-border); font-weight:700;">
+              Export PDF Report
+            </button>
+          </div>
         </div>
-        <div>
-          <select id="week-select" class="week-dropdown" onchange="renderWeek(this.value)"></select>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 56.86 MLD</span>
-          
-          <a href="uploader.html#production" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Input or manage weekly production records">
-            <span>Log Weekly Production ↗</span>
-          </a>
 
-          <!-- Global Monthly Production Status Pill -->
-          <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
-            <span id="global-monthly-text">Loading Monthly...</span>
-          </button>
+        <!-- 3. Network Pressure Sticky Bar -->
+        <div id="bar-period-pressure" class="period-bar-wrap" style="display:none;">
+          <div style="display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:11px; flex-wrap:wrap;">
+            <div style="margin-right:6px;">
+              <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Telemetry Window</div>
+              <div style="font-size:12px; font-weight:700; color:var(--text-main);">Historical &amp; Live</div>
+            </div>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);"></span> Normal (&gt; 6.5 PSI)</span>
+            <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);"></span> Alert (&le; 6.5 PSI)</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <input type="date" id="date-filter-input" class="header-btn" style="font-family:var(--font-mono); font-weight:600;" onchange="applyDateFilter()">
+            <div style="display:flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden;">
+              <button onclick="stepTime(-1)" class="header-btn" style="border:none; border-radius:0;" title="Step back 1 hour">◀</button>
+              <input type="time" id="time-filter-input" class="header-btn" style="border:none; border-radius:0; font-family:var(--font-mono); font-weight:600;" onchange="applyDateFilter()">
+              <button onclick="stepTime(1)" class="header-btn" style="border:none; border-radius:0;" title="Step forward 1 hour">▶</button>
+            </div>
+            <button class="header-btn" id="date-filter-clear" onclick="clearDateFilter()" style="display:none; color:var(--green); font-weight:700;">● Go Live</button>
+            <button class="header-btn" id="compare-clear" onclick="clearCompare()" style="display:none; color:var(--red); font-weight:700;">✕ Clear Compare</button>
+            <button id="btn-toggle-complaints" onclick="toggleComplaints()" class="header-btn" style="color:var(--red); font-weight:700;">Heatmap</button>
+          </div>
+        </div>
+
+        <!-- 4. Customer Reports (Complaints) Sticky Bar -->
+        <div id="bar-period-complaints" class="period-bar-wrap" style="display:none;">
+          <div>
+            <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">Complaints Period</div>
+            <div style="font-size:13px; font-weight:700; color:var(--text-main);">Reporting Cycle Filter</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
+            <a href="uploader.html#complaints" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
+              Log / Import Complaints ↗
+            </a>
+          </div>
         </div>
       </div>
 
@@ -1062,26 +1132,6 @@
 
       <!-- ── TAB 3: NETWORK PRESSURE ── -->
       <div class="page-content" id="page-pressure">
-        <div class="card" style="margin-bottom: 16px; padding: 12px 18px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:11px; flex-wrap:wrap;">
-              <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);"></span> Normal (&gt; 6.5 PSI)</span>
-              <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);"></span> Alert (&le; 6.5 PSI)</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <input type="date" id="date-filter-input" class="header-btn" onchange="applyDateFilter()">
-              <div style="display:flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden;">
-                <button onclick="stepTime(-1)" class="header-btn" style="border:none; border-radius:0;">◀</button>
-                <input type="time" id="time-filter-input" class="header-btn" style="border:none; border-radius:0;" onchange="applyDateFilter()">
-                <button onclick="stepTime(1)" class="header-btn" style="border:none; border-radius:0;">▶</button>
-              </div>
-              <button class="header-btn" id="date-filter-clear" onclick="clearDateFilter()" style="display:none; color:var(--green);">● Go Live</button>
-              <button class="header-btn" id="compare-clear" onclick="clearCompare()" style="display:none; color:var(--red);">✕ Clear Compare</button>
-              <button id="btn-toggle-complaints" onclick="toggleComplaints()" class="header-btn" style="color:var(--red);">Heatmap</button>
-            </div>
-          </div>
-        </div>
-
         <div class="map-frame-box"><div id="leaflet-map"></div></div>
 
         <!-- Priority Nodes Strip -->
@@ -1198,18 +1248,6 @@
 
       <!-- ── TAB 6: CUSTOMER REPORTS ── -->
       <div class="page-content" id="page-complaints">
-        <div class="card" style="margin-bottom: 16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div style="font-weight:700;">Reporting Cycle Filter</div>
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
-              <a href="uploader.html#complaints" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">
-                Log / Import Complaints ↗
-              </a>
-            </div>
-          </div>
-        </div>
-
         <div class="kpi-row-layout">
           <div class="kpi-card-white"><div class="kpi-card-lbl">Total Reports</div><div class="kpi-card-num" id="comp-kpi-total">—</div></div>
           <div class="kpi-card-white"><div class="kpi-card-lbl">Top Barangay</div><div class="kpi-card-num" id="comp-kpi-brgy" style="font-size:18px;">—</div></div>
@@ -1238,28 +1276,6 @@
 
       <!-- ── TAB 7: PRODUCTION MONTHLY REPORT ── -->
       <div class="page-content" id="page-monthly">
-        
-        <!-- Controls Bar -->
-        <div class="card" style="margin-bottom: 16px; padding: 14px 20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-weight:700; color:var(--text-main);">Reporting Month:</span>
-              <input type="month" id="monthly-picker" class="header-btn" onchange="loadMonthlyData(this.value)">
-            </div>
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">
-                Input / Edit Volumes
-              </button>
-              <button class="header-btn" onclick="exportMonthlyXLS()" style="color:var(--green); border-color:var(--green-border);">
-                Export Excel (XLS)
-              </button>
-              <button class="header-btn" onclick="generateMonthlyPDF()" style="color:var(--red); border-color:var(--red-border);">
-                Export PDF Report
-              </button>
-            </div>
-          </div>
-        </div>
-
         <!-- Metric KPI Cards -->
         <div class="kpi-row-layout">
           <div class="kpi-card-white">
@@ -2289,7 +2305,49 @@
     }
   }
 
+  // ── SCROLL PRESERVATION CONTROLLER ──
+  function preserveScrollRun(actionFn) {
+    const savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    const currentHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      savedScrollY + window.innerHeight
+    );
+
+    if (savedScrollY > 0) {
+      document.body.style.minHeight = currentHeight + 'px';
+    }
+
+    let cleanupTimer;
+    const restore = () => {
+      window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+        clearTimeout(cleanupTimer);
+        cleanupTimer = setTimeout(() => {
+          window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+          document.body.style.minHeight = '';
+        }, 60);
+      });
+    };
+
+    try {
+      const res = actionFn();
+      if (res && typeof res.then === 'function') {
+        return res.finally(() => restore());
+      } else {
+        restore();
+        return res;
+      }
+    } catch (err) {
+      restore();
+      throw err;
+    }
+  }
+
   function switchNavTab(tab){
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
     document.querySelectorAll(".page-content").forEach(p => p.classList.remove("active"));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
 
@@ -2307,11 +2365,26 @@
     };
     document.getElementById("top-bar-title").textContent = titles[tab] || "Monitoring Dashboard";
 
-    const periodBar = document.getElementById("global-period-bar");
-    if (tab === 'overview' || tab === 'production' || tab === 'crisis') {
-      periodBar.style.display = 'flex';
-    } else {
-      periodBar.style.display = 'none';
+    const globalPeriodBar = document.getElementById("global-period-bar");
+    const monthlyBar = document.getElementById("bar-period-monthly");
+    const pressureBar = document.getElementById("bar-period-pressure");
+    const complaintsBar = document.getElementById("bar-period-complaints");
+    const crisisPdfBtn = document.getElementById("crisis-pdf-top-btn");
+
+    if (globalPeriodBar) {
+      globalPeriodBar.style.display = (tab === 'overview' || tab === 'production' || tab === 'crisis') ? 'flex' : 'none';
+    }
+    if (crisisPdfBtn) {
+      crisisPdfBtn.style.display = (tab === 'crisis') ? 'inline-flex' : 'none';
+    }
+    if (monthlyBar) {
+      monthlyBar.style.display = (tab === 'monthly') ? 'flex' : 'none';
+    }
+    if (pressureBar) {
+      pressureBar.style.display = (tab === 'pressure') ? 'flex' : 'none';
+    }
+    if (complaintsBar) {
+      complaintsBar.style.display = (tab === 'complaints') ? 'flex' : 'none';
     }
 
     if (window.innerWidth <= 820) {
@@ -2349,6 +2422,13 @@
     if(tab === 'complaints') {
       populateCycleFilter();
       renderComplaintsDashboard();
+    }
+    if(tab === 'monthly') {
+      if (!currentMonthlyRecords || currentMonthlyRecords.length === 0) {
+        loadMonthlyData();
+      } else {
+        renderMonthlyDashboard();
+      }
     }
   }
 
@@ -2698,25 +2778,27 @@
   }
 
   function renderWeek(weekVal) {
-    const rows = allProdData.filter(r => r[COL.week] === weekVal);
-    const d = rows.length ? rowToObj(rows[0]) : rowToObj(allProdData[allProdData.length - 1]);
-    document.getElementById("period-display").textContent = d._period || weekVal;
+    return preserveScrollRun(() => {
+      const rows = allProdData.filter(r => r[COL.week] === weekVal);
+      const d = rows.length ? rowToObj(rows[0]) : rowToObj(allProdData[allProdData.length - 1]);
+      document.getElementById("period-display").textContent = d._period || weekVal;
 
-    const targetMldWeek = getTargetMld(d);
-    document.getElementById("kpi-total").innerHTML = `${fmt(d.grandTotal)}<span class="unit">m³</span>`;
-    document.getElementById("kpi-mld").innerHTML = `${fmt(d.mld, 2)}<span class="unit">MLD</span>`;
-    document.getElementById("kpi-sw").innerHTML = `${fmt(d.totalSW)}<span class="unit">m³</span>`;
-    document.getElementById("kpi-gw").innerHTML = `${fmt(d.totalGW)}<span class="unit">m³</span>`;
-    document.getElementById("kpi-target-pct").innerHTML = `${fmt(num(d.mld)/targetMldWeek*100, 1)}<span class="unit">%</span>`;
+      const targetMldWeek = getTargetMld(d);
+      document.getElementById("kpi-total").innerHTML = `${fmt(d.grandTotal)}<span class="unit">m³</span>`;
+      document.getElementById("kpi-mld").innerHTML = `${fmt(d.mld, 2)}<span class="unit">MLD</span>`;
+      document.getElementById("kpi-sw").innerHTML = `${fmt(d.totalSW)}<span class="unit">m³</span>`;
+      document.getElementById("kpi-gw").innerHTML = `${fmt(d.totalGW)}<span class="unit">m³</span>`;
+      document.getElementById("kpi-target-pct").innerHTML = `${fmt(num(d.mld)/targetMldWeek*100, 1)}<span class="unit">%</span>`;
 
-    renderBarChart(allProdData);
-    renderPieSwGw(d);
-    renderPieSources(d);
-    renderMldChart(allProdData);
-    renderSourceTable(d);
-    renderCapacityTable(d);
-    renderCrisisMonitoring(d, 1);
-    renderOverview();
+      renderBarChart(allProdData);
+      renderPieSwGw(d);
+      renderPieSources(d);
+      renderMldChart(allProdData);
+      renderSourceTable(d);
+      renderCapacityTable(d);
+      renderCrisisMonitoring(d, 1);
+      renderOverview();
+    });
   }
 
   // ── PRESSURE MAP, 46PX CIRCLES & RAW TABLE RESTORATION ──
@@ -3259,30 +3341,34 @@
   }
 
   function applyDateFilter(){
-    const dateVal = document.getElementById("date-filter-input").value;
-    const timeVal = document.getElementById("time-filter-input").value;
-    if(!dateVal && !timeVal){ clearDateFilter(); return; }
+    return preserveScrollRun(() => {
+      const dateVal = document.getElementById("date-filter-input").value;
+      const timeVal = document.getElementById("time-filter-input").value;
+      if(!dateVal && !timeVal){ clearDateFilter(); return; }
 
-    const activeDateStr = dateVal || new Date().toISOString().split('T')[0];
-    activeDateFilter = new Date(activeDateStr + "T00:00:00");
-    activeTimeFilter = timeVal || null;
-    document.getElementById("date-filter-clear").style.display = "flex";
+      const activeDateStr = dateVal || new Date().toISOString().split('T')[0];
+      activeDateFilter = new Date(activeDateStr + "T00:00:00");
+      activeTimeFilter = timeVal || null;
+      document.getElementById("date-filter-clear").style.display = "flex";
 
-    buildLeafletMarkers();
-    buildStationCards();
-    if(compareStations.length > 0) buildCompareChart();
-    buildPressureRawTable();
+      buildLeafletMarkers();
+      buildStationCards();
+      if(compareStations.length > 0) buildCompareChart();
+      buildPressureRawTable();
+    });
   }
 
   function clearDateFilter(){
-    activeDateFilter = null; activeTimeFilter = null;
-    document.getElementById("date-filter-input").value = "";
-    document.getElementById("time-filter-input").value = "";
-    document.getElementById("date-filter-clear").style.display = "none";
-    buildLeafletMarkers();
-    buildStationCards();
-    if(compareStations.length > 0) buildCompareChart();
-    buildPressureRawTable();
+    return preserveScrollRun(() => {
+      activeDateFilter = null; activeTimeFilter = null;
+      document.getElementById("date-filter-input").value = "";
+      document.getElementById("time-filter-input").value = "";
+      document.getElementById("date-filter-clear").style.display = "none";
+      buildLeafletMarkers();
+      buildStationCards();
+      if(compareStations.length > 0) buildCompareChart();
+      buildPressureRawTable();
+    });
   }
 
   function toggleComplaints(){
@@ -3401,8 +3487,9 @@
   }
 
   function renderComplaintsDashboard(){
-    if(!complaintsRaw.length) return;
-    const cycleVal = document.getElementById('complaint-date-filter')?.value;
+    return preserveScrollRun(() => {
+      if(!complaintsRaw.length) return;
+      const cycleVal = document.getElementById('complaint-date-filter')?.value;
     let filtered = complaintsRaw;
     if(cycleVal){
       const [s, e] = cycleVal.split('|');
@@ -3611,6 +3698,7 @@
         </div>
       `;
     }).join("");
+    });
   }
 
   // ── DATA INGESTION ──
@@ -4269,42 +4357,44 @@
   let chartMonthlyBar = null;
 
   async function loadMonthlyData(monthVal) {
-    try {
-      let monthToLoad = monthVal;
-      let data = [];
+    return preserveScrollRun(async () => {
+      try {
+        let monthToLoad = monthVal;
+        let data = [];
 
-      if (!monthToLoad) {
-        const res = await fetch('/api/monthlyProduction');
-        if (!res.ok) throw new Error(await res.text());
-        const allRecords = await res.json();
+        if (!monthToLoad) {
+          const res = await fetch('/api/monthlyProduction');
+          if (!res.ok) throw new Error(await res.text());
+          const allRecords = await res.json();
 
-        if (allRecords && allRecords.length > 0) {
-          monthToLoad = allRecords[0].month_year;
-          data = allRecords.filter(r => r.month_year === monthToLoad);
+          if (allRecords && allRecords.length > 0) {
+            monthToLoad = allRecords[0].month_year;
+            data = allRecords.filter(r => r.month_year === monthToLoad);
+          } else {
+            const prev = new Date();
+            prev.setDate(1);
+            prev.setMonth(prev.getMonth() - 1);
+            monthToLoad = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, '0')}`;
+          }
         } else {
-          const prev = new Date();
-          prev.setDate(1);
-          prev.setMonth(prev.getMonth() - 1);
-          monthToLoad = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, '0')}`;
+          const res = await fetch(`/api/monthlyProduction?month=${monthToLoad}`);
+          if (!res.ok) throw new Error(await res.text());
+          data = await res.json();
         }
-      } else {
-        const res = await fetch(`/api/monthlyProduction?month=${monthToLoad}`);
-        if (!res.ok) throw new Error(await res.text());
-        data = await res.json();
+
+        currentSelectedMonth = monthToLoad;
+        
+        const picker = document.getElementById("monthly-picker");
+        if (picker) picker.value = monthToLoad;
+
+        currentMonthlyRecords = data;
+        renderMonthlyDashboard();
+      } catch (e) {
+        console.warn("Could not load monthly data:", e.message);
+        currentMonthlyRecords = [];
+        renderMonthlyDashboard();
       }
-
-      currentSelectedMonth = monthToLoad;
-      
-      const picker = document.getElementById("monthly-picker");
-      if (picker) picker.value = monthToLoad;
-
-      currentMonthlyRecords = data;
-      renderMonthlyDashboard();
-    } catch (e) {
-      console.warn("Could not load monthly data:", e.message);
-      currentMonthlyRecords = [];
-      renderMonthlyDashboard();
-    }
+    });
   }
 
   function formatMonthYear(monthStr) {
