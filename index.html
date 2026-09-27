@@ -452,8 +452,18 @@
       position: relative;
       overflow: hidden;
       box-shadow: var(--card-shadow);
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .crisis-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+      border-color: #CBD5E1;
     }
     .crisis-card::before { content: ""; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; }
+    .crisis-card.lvl-normal::before { background: #0b4f6c; }
     .crisis-card.lvl-1::before { background: var(--green); }
     .crisis-card.lvl-2::before { background: var(--amber); }
     .crisis-card.lvl-3::before { background: var(--red); }
@@ -463,6 +473,20 @@
     .crisis-details { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); display: flex; flex-direction: column; gap: 4px; }
     .crisis-details-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #E2E8F0; padding-bottom: 3px; }
     .crisis-details-row:last-child { border-bottom: none; }
+    .crisis-remarks-cta {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .crisis-remarks-cta:hover {
+      color: #1D4ED8;
+    }
 
     /* ── RESPONSIVE GRIDS & LAYOUT CLASSES ── */
     .grid-overview-split {
@@ -980,7 +1004,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
           <div>
             <h2 style="font-size:16px; font-weight:800; color:var(--text-main);">LWUA Crisis &amp; Drought Monitoring</h2>
-            <div style="font-size:11px; color:var(--text-muted);">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
+            <div style="font-size:11px; color:var(--text-muted);" id="crisis-header-subtitle">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
           </div>
           <button class="header-btn" onclick="openCrisisReportModal()" style="background:var(--blue); color:white; border:none;">📄 Generate Crisis Report (PDF)</button>
         </div>
@@ -1354,6 +1378,88 @@
     <canvas id="report-chart-canvas" width="1340" height="650"></canvas>
   </div>
 
+  <!-- Crisis Remarks & Committee Notes Modal -->
+  <div id="crisis-remarks-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:2100; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeCrisisRemarksModal()">
+    <div style="background:#FFFFFF; border-radius:14px; width:520px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 20px 45px rgba(0,0,0,0.25); display:flex; flex-direction:column; border:1px solid #E2E8F0;">
+      <!-- Modal Header -->
+      <div style="padding:18px 22px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:flex-start; background:#F8FAFC; border-radius:14px 14px 0 0;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h3 id="crm-system-name" style="margin:0; font-size:16px; font-weight:800; color:var(--text-main);">Water System Remarks</h3>
+          </div>
+          <div id="crm-system-subtitle" style="font-size:11px; color:var(--text-muted); margin-top:3px; font-family:var(--font-mono);">Benchmark: —</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="crm-alert-pill" class="kpi-badge-pill">—</span>
+          <button onclick="closeCrisisRemarksModal()" style="background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer; line-height:1; padding:2px 6px;">✕</button>
+        </div>
+      </div>
+      
+      <!-- Modal Body -->
+      <div style="padding:20px 22px; display:flex; flex-direction:column; gap:16px;">
+        <!-- Quick Status Strip -->
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; background:#F1F5F9; border-radius:8px; padding:12px 14px;">
+          <div>
+            <div style="font-size:9.5px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Target Volume</div>
+            <div id="crm-stat-target" style="font-size:14px; font-weight:800; font-family:var(--font-mono); color:var(--text-main); margin-top:2px;">—</div>
+          </div>
+          <div>
+            <div style="font-size:9.5px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Actual Yield</div>
+            <div id="crm-stat-actual" style="font-size:14px; font-weight:800; font-family:var(--font-mono); color:var(--text-main); margin-top:2px;">—</div>
+          </div>
+          <div>
+            <div style="font-size:9.5px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">% Benchmark</div>
+            <div id="crm-stat-pct" style="font-size:14px; font-weight:800; font-family:var(--font-mono); margin-top:2px;">—</div>
+          </div>
+        </div>
+
+        <!-- Benchmark Period Notice (For Bacungan, Sabang, and Maoyon) -->
+        <div id="crm-period-notice" style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:10px 12px; font-size:11px; color:#1E40AF; line-height:1.4; display:none;">
+        </div>
+
+        <!-- Remarks View Box -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px; margin:0;">
+              📋 Station Operational Remarks
+            </label>
+            <button type="button" id="crm-btn-edit-toggle" onclick="requestCrisisRemarkAuth()" class="header-btn" style="font-size:11px; padding:3px 10px; background:var(--blue); color:white; border:none; font-weight:700;">
+              🔒 Input / Edit Remark
+            </button>
+          </div>
+          <div id="crm-view-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:14px; font-size:12px; color:#334155; line-height:1.55;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Passkey-Protected Remarks Editor Container -->
+        <div id="crm-editor-container" style="display:none; flex-direction:column; gap:8px; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:8px; padding:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:0.4px;">
+              ✍️ Operational Remarks Editor
+            </span>
+            <span style="font-size:10px; color:var(--green); font-weight:600;">✓ Passkey Authorized</span>
+          </div>
+          <textarea id="crm-custom-input" rows="3" class="form-input" style="width:100%; font-size:12px; line-height:1.4; resize:vertical; box-sizing:border-box;" placeholder="Enter operational remarks, field actions, demand observations, or notes for this water system..."></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <button type="button" onclick="clearCrisisRemark()" class="header-btn" style="font-size:11px; color:var(--red); border-color:#FECACA;">Clear Remark</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" onclick="cancelCrisisRemarkEdit()" class="header-btn" style="font-size:11px;">Cancel</button>
+              <button type="button" onclick="saveCrisisRemark()" class="header-btn" style="background:var(--blue); color:white; font-size:11px; border:none; font-weight:700;">Save Remark</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="crm-save-status" style="font-size:11px; min-height:14px; color:var(--green); font-weight:600;"></div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding:14px 22px; border-top:1px solid #E2E8F0; display:flex; justify-content:flex-end; align-items:center; background:#F8FAFC; border-radius:0 0 14px 14px;">
+        <button type="button" onclick="closeCrisisRemarksModal()" class="header-btn" style="font-size:11px; font-weight:600;">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Crisis Report Modal -->
   <div id="crisis-report-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
     <div style="background:#FFFFFF; border-radius:12px; padding:24px; width:440px; max-width:90vw;">
@@ -1421,6 +1527,10 @@
       </thead>
       <tbody id="cr-pdf-tbody"></tbody>
     </table>
+    <div style="margin-top:16px; border-top:1px solid #CBD5E1; padding-top:12px; font-size:9.5px; color:#475569; line-height:1.45;">
+      <div style="font-weight:700; color:#1E293B; margin-bottom:5px; font-size:10px;">📋 Task Force Committee &amp; Board of Directors Operational Remarks:</div>
+      <div id="cr-pdf-remarks-summary" style="display:flex; flex-direction:column; gap:4px;"></div>
+    </div>
   </div>
 
   <!-- ── SCRIPTS ── -->
@@ -1733,10 +1843,259 @@
     { id: "bacungan", name: "Bacungan Water System", group: "sat", keys: ["bacungan"], ratedHr: 23.67, weeklyTarget: 3976.56 },
     { id: "bahile",   name: "Bahile-Macarascas-Salvacion", group: "sat", keys: ["bahile", "macarascas"], ratedHr: 17.81, weeklyTarget: 2992.08 },
     { id: "sabang",   name: "Sabang Water System", group: "sat", keys: ["sabangSW", "sabangGW"], ratedHr: 15.78, weeklyTarget: 2651.04 },
-    { id: "maoyon",   name: "Maoyon-Lucbuan WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 7.53, weeklyTarget: 1265.04 },
+    { id: "maoyon",   name: "Maoyon-Lucbuan-Maruyogon WS", group: "sat", keys: ["maoyon", "lucbuan"], ratedHr: 7.53, weeklyTarget: 1265.04 },
     { id: "sanrafael",name: "San Rafael Water System", group: "sat", keys: ["sanrafael"], ratedHr: 9.59, weeklyTarget: 1611.12 },
     { id: "binduyan", name: "Binduyan Water System", group: "sat", keys: ["binduyan"], ratedHr: 8.22, weeklyTarget: 1380.96 }
   ];
+
+  // ── DATE / TIMEFRAME DETECTION (AUGUST 2026 ONWARDS VS UP TO JULY 2026) ──
+  function isAugust2026OrLater(dOrRow) {
+    if (!dOrRow) return true; // Default to current/latest
+    let dateStr = "", periodStr = "", weekStr = "";
+
+    if (Array.isArray(dOrRow)) {
+      weekStr = String(dOrRow[COL.week] || "");
+      dateStr = String(dOrRow[COL.date] || "");
+      periodStr = String(dOrRow[COL.period] || "");
+    } else if (typeof dOrRow === "object") {
+      weekStr = String(dOrRow.week || "");
+      dateStr = String(dOrRow.date || "");
+      periodStr = String(dOrRow.period || dOrRow._period || "");
+    } else if (typeof dOrRow === "string") {
+      dateStr = dOrRow;
+      periodStr = dOrRow;
+      weekStr = dOrRow;
+    }
+
+    // 1. Check ISO or standard date in dateStr
+    if (dateStr) {
+      const parsed = new Date(dateStr);
+      if (!isNaN(parsed.getTime())) {
+        const yr = parsed.getFullYear();
+        const mo = parsed.getMonth(); // 0-indexed: 7 is August
+        if (yr > 2026) return true;
+        if (yr === 2026 && mo >= 7) return true;
+        if (yr < 2026 || (yr === 2026 && mo < 7)) return false;
+      }
+    }
+
+    // 2. Search for month names and years in periodStr / dateStr
+    const text = (periodStr + " " + dateStr).toLowerCase();
+    const yrMatch = text.match(/\b(202\d)\b/);
+    const yr = yrMatch ? parseInt(yrMatch[1], 10) : 2026;
+
+    if (yr > 2026) return true;
+    if (yr < 2026) return false;
+
+    const augPlus = /\b(aug|august|sep|sept|september|oct|october|nov|november|dec|december)\b/i;
+    const preAug = /\b(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july)\b/i;
+
+    if (augPlus.test(text) && !preAug.test(text)) return true;
+    if (preAug.test(text) && !augPlus.test(text)) return false;
+    if (augPlus.test(text) && preAug.test(text)) return true; // Crossover week starting August
+
+    // 3. Fallback to Week number (Week 31+ is August onwards in 2026)
+    const wkMatch = weekStr.match(/(?:week\s*|w)?(\d+)/i);
+    if (wkMatch) {
+      const wkNum = parseInt(wkMatch[1], 10);
+      if (wkNum >= 31) return true;
+      if (wkNum > 0 && wkNum < 31) return false;
+    }
+
+    return true; // Default to active calibration
+  }
+
+  const SYSTEM_TARGETS = {
+    bacungan: {
+      baseline: { weeklyTarget: 3976.56, ratedHr: 23.67 },
+      aug2026:  { weeklyTarget: 2122.20, ratedHr: 2122.20 / 168 }
+    },
+    sabang: {
+      baseline: { weeklyTarget: 2651.04, ratedHr: 15.78 },
+      aug2026:  { weeklyTarget: 1549.50, ratedHr: 1549.50 / 168 }
+    },
+    maoyon: {
+      baseline: { weeklyTarget: 1265.04, ratedHr: 7.53 },
+      aug2026:  { weeklyTarget: 969.00,  ratedHr: 969.00 / 168 }
+    }
+  };
+
+  function getSystemTarget(sysId, dOrRow) {
+    const isAugPlus = isAugust2026OrLater(dOrRow);
+    if (SYSTEM_TARGETS[sysId]) {
+      return isAugPlus ? SYSTEM_TARGETS[sysId].aug2026 : SYSTEM_TARGETS[sysId].baseline;
+    }
+    const sys = CRISIS_SYSTEMS.find(s => s.id === sysId);
+    return {
+      weeklyTarget: sys ? sys.weeklyTarget : 0,
+      ratedHr: sys ? sys.ratedHr : 0,
+      monthlyBaseline: sys ? sys.monthlyBaseline : 0
+    };
+  }
+
+  function getStationRatedHr(stationName, dOrRow) {
+    const isAugPlus = isAugust2026OrLater(dOrRow);
+    if (isAugPlus) {
+      if (stationName === "Bacungan SW") return 2122.20 / 168;
+      if (stationName === "Sabang SW") return 1549.50 / 168;
+      if (stationName === "Maoyon Infiltration Wells") return 969.00 / 168;
+    }
+    return RATED[stationName] || 0;
+  }
+
+  function getTargetMld() {
+    return TARGET_MLD; // Constant 56.86 MLD District Benchmark
+  }
+
+  function getCrisisRemarkText(sysId) {
+    const custom = localStorage.getItem(`ppcwd_crisis_remark_${sysId}`);
+    if (custom && custom.trim()) return custom.trim();
+    return "";
+  }
+
+  let currentRemarkSysId = null;
+
+  function updateCrisisRemarksView() {
+    if (!currentRemarkSysId) return;
+    const remark = getCrisisRemarkText(currentRemarkSysId);
+    const viewBox = document.getElementById("crm-view-box");
+    if (!viewBox) return;
+    if (remark) {
+      viewBox.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div style="color:#1E293B; font-weight:500; white-space:pre-line;">${remark}</div>
+          <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">Logged in station records</div>
+        </div>
+      `;
+    } else {
+      viewBox.innerHTML = `<span style="color:var(--text-muted); font-style:italic;">No remarks logged for this water system yet. Authorized personnel may input remarks using the button above.</span>`;
+    }
+  }
+
+  function requestCrisisRemarkAuth() {
+    ensureReportAuthorized(() => {
+      unlockCrisisRemarksEditor();
+    }, "Crisis Remarks Entry");
+  }
+
+  function unlockCrisisRemarksEditor() {
+    const editor = document.getElementById("crm-editor-container");
+    const input = document.getElementById("crm-custom-input");
+    const toggleBtn = document.getElementById("crm-btn-edit-toggle");
+    if (editor) editor.style.display = "flex";
+    if (input) {
+      input.value = getCrisisRemarkText(currentRemarkSysId);
+      input.focus();
+    }
+    if (toggleBtn) toggleBtn.style.display = "none";
+  }
+
+  function cancelCrisisRemarkEdit() {
+    const editor = document.getElementById("crm-editor-container");
+    const toggleBtn = document.getElementById("crm-btn-edit-toggle");
+    if (editor) editor.style.display = "none";
+    if (toggleBtn) toggleBtn.style.display = "inline-flex";
+  }
+
+  function openCrisisRemarks(sysId) {
+    currentRemarkSysId = sysId;
+    const sys = CRISIS_SYSTEMS.find(s => s.id === sysId);
+    if (!sys) return;
+
+    const weekSelect = document.getElementById("week-select");
+    const activeWk = weekSelect?.value || (allProdData.length ? allProdData[allProdData.length - 1][COL.week] : "");
+    const row = allProdData.find(r => r[COL.week] === activeWk) || (allProdData.length ? allProdData[allProdData.length - 1] : []);
+    const d = rowToObj(row);
+
+    const targetInfo = getSystemTarget(sysId, d);
+    const isAugPlus = isAugust2026OrLater(d);
+    const actual = sys.keys.reduce((sum, key) => sum + num(d[key]), 0);
+    const ratedVol = targetInfo.weeklyTarget || (targetInfo.ratedHr * 168);
+    const pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
+    const alert = getAlertInfo(pct);
+
+    document.getElementById("crm-system-name").textContent = sys.name;
+    document.getElementById("crm-system-subtitle").textContent = `Active Period: ${d._period || activeWk || 'Current Cycle'} · Target Rate: ${fmt(targetInfo.ratedHr, 2)} m³/hr`;
+    
+    const alertPill = document.getElementById("crm-alert-pill");
+    alertPill.textContent = alert.name;
+    alertPill.className = `kpi-badge-pill ${alert.cls}`;
+    alertPill.style.background = alert.lvl === 0 ? 'rgba(11, 79, 108, 0.12)' : (alert.lvl === 1 ? 'var(--green-light)' : (alert.lvl === 2 ? 'var(--amber-light)' : 'var(--red-light)'));
+    alertPill.style.color = alert.color;
+    alertPill.style.borderColor = alert.color;
+
+    document.getElementById("crm-stat-target").textContent = `${fmt(ratedVol, 1)} m³`;
+    document.getElementById("crm-stat-actual").textContent = `${fmt(actual, 0)} m³`;
+    const pctEl = document.getElementById("crm-stat-pct");
+    pctEl.textContent = `${fmt(pct, 1)}%`;
+    pctEl.style.color = alert.color;
+
+    const periodNoticeEl = document.getElementById("crm-period-notice");
+    if (["bacungan", "sabang", "maoyon"].includes(sysId)) {
+      if (isAugPlus) {
+        periodNoticeEl.innerHTML = `<strong>⚡ Active Benchmark (August 2026 Onwards):</strong> Weekly target calibrated to <strong>${fmt(targetInfo.weeklyTarget, 2)} m³/wk</strong> (${fmt(targetInfo.ratedHr, 2)} m³/hr) as agreed by technical committee.`;
+        periodNoticeEl.style.borderColor = '#BFDBFE';
+        periodNoticeEl.style.background = '#EFF6FF';
+        periodNoticeEl.style.color = '#1E40AF';
+      } else {
+        periodNoticeEl.innerHTML = `<strong>⏳ Historical Benchmark (Up to July 2026):</strong> Active week reflects pre-August baseline of <strong>${fmt(targetInfo.weeklyTarget, 2)} m³/wk</strong> (${fmt(targetInfo.ratedHr, 2)} m³/hr).`;
+        periodNoticeEl.style.borderColor = '#CBD5E1';
+        periodNoticeEl.style.background = '#F8FAFC';
+        periodNoticeEl.style.color = '#475569';
+      }
+      periodNoticeEl.style.display = "block";
+    } else {
+      periodNoticeEl.style.display = "none";
+    }
+
+    updateCrisisRemarksView();
+    cancelCrisisRemarkEdit();
+    document.getElementById("crm-save-status").textContent = "";
+
+    document.getElementById("crisis-remarks-modal").style.display = "flex";
+  }
+
+  function closeCrisisRemarksModal() {
+    document.getElementById("crisis-remarks-modal").style.display = "none";
+    cancelCrisisRemarkEdit();
+    currentRemarkSysId = null;
+  }
+
+  function saveCrisisRemark() {
+    if (!currentRemarkSysId) return;
+    const val = document.getElementById("crm-custom-input").value.trim();
+    if (val) {
+      localStorage.setItem(`ppcwd_crisis_remark_${currentRemarkSysId}`, val);
+    } else {
+      localStorage.removeItem(`ppcwd_crisis_remark_${currentRemarkSysId}`);
+    }
+    const statusEl = document.getElementById("crm-save-status");
+    statusEl.textContent = "✓ Remark saved successfully!";
+    updateCrisisRemarksView();
+    cancelCrisisRemarkEdit();
+    setTimeout(() => {
+      if (statusEl) statusEl.textContent = "";
+      const weekSelect = document.getElementById("week-select");
+      const activeWk = weekSelect?.value;
+      if (activeWk) renderWeek(activeWk);
+    }, 600);
+  }
+
+  function clearCrisisRemark() {
+    if (!currentRemarkSysId) return;
+    localStorage.removeItem(`ppcwd_crisis_remark_${currentRemarkSysId}`);
+    document.getElementById("crm-custom-input").value = "";
+    const statusEl = document.getElementById("crm-save-status");
+    statusEl.textContent = "Remark cleared.";
+    updateCrisisRemarksView();
+    cancelCrisisRemarkEdit();
+    setTimeout(() => {
+      if (statusEl) statusEl.textContent = "";
+      const weekSelect = document.getElementById("week-select");
+      const activeWk = weekSelect?.value;
+      if (activeWk) renderWeek(activeWk);
+    }, 600);
+  }
 
   const BARANGAY_COORDS = {
     "SAN MIGUEL": [9.7460, 118.7460], "STA MONICA": [9.7620, 118.7300], "BANCAO-BANCAO": [9.7280, 118.7460],
@@ -1862,8 +2221,9 @@
     const sw = num(d.totalSW);
     const gw = num(d.totalGW);
 
+    const targetMldVal = getTargetMld(d);
     document.getElementById("ov-prod-total").innerHTML = `${fmt(total)}<span class="unit">m³</span>`;
-    document.getElementById("ov-mld-sub").textContent = `${fmt(mld, 2)} MLD (Target: 56.86)`;
+    document.getElementById("ov-mld-sub").textContent = `${fmt(mld, 2)} MLD (Target: ${fmt(targetMldVal, 2)})`;
     document.getElementById("ov-sw-total").innerHTML = `${fmt(sw)}<span class="unit">m³</span>`;
     document.getElementById("ov-sw-pct").textContent = `${fmt(total > 0 ? (sw/total*100) : 0, 1)}% Surface`;
     document.getElementById("ov-gw-total").innerHTML = `${fmt(gw)}<span class="unit">m³</span>`;
@@ -1871,12 +2231,15 @@
 
     const overall = CRISIS_SYSTEMS.find(s => s.id === "overall_system");
     if (overall) {
+      const overallTarget = getSystemTarget("overall_system", d);
+      const targetWk = overallTarget.weeklyTarget;
       const actualAll = num(d.grandTotal) || overall.keys.reduce((sum, k) => sum + num(d[k]), 0);
-      const pct = (actualAll / overall.weeklyTarget) * 100;
+      const pct = targetWk > 0 ? (actualAll / targetWk) * 100 : 0;
+      const alert = getAlertInfo(pct);
       const badge = document.getElementById("ov-crisis-badge");
       badge.innerHTML = `${fmt(pct, 1)}<span class="unit">%</span>`;
-      badge.style.color = pct >= 90 ? "var(--green)" : (pct >= 75 ? "var(--amber)" : "var(--red)");
-      document.getElementById("ov-crisis-sub").textContent = `${pct >= 90 ? "Level 1: Watch" : "Level 2: Alert"} · Target: 397,681 m³/wk`;
+      badge.style.color = alert.color;
+      document.getElementById("ov-crisis-sub").textContent = `${alert.name} · Target: ${fmt(targetWk, 0)} m³/wk`;
       document.getElementById("ov-progress-label").textContent = `${fmt(pct, 1)}% of weekly benchmark`;
     }
 
@@ -2024,7 +2387,7 @@
     const cl = { sw: "Surface Water", gw: "Ground Water", aug: "Augmented" };
 
     document.getElementById("capacity-table").innerHTML = stations.map(s => {
-      const rHr = RATED[s.name] || 0;
+      const rHr = getStationRatedHr(s.name, d);
       const rWk = rHr * 168;
       const actual = s.val;
       if (rHr === 0 && actual === 0) return "";
@@ -2102,7 +2465,7 @@
         labels,
         datasets: [
           { label: "MLD", data: rows.map(r => num(r[COL.mld])), borderColor: "#0D9488", backgroundColor: "rgba(13,148,136,0.08)", borderWidth: 2, fill: true, tension: 0.35 },
-          { label: "Target (56.86)", data: labels.map(() => TARGET_MLD), borderColor: "#F59E0B", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 }
+          { label: "Target (MLD)", data: rows.map(r => getTargetMld(rowToObj(r))), borderColor: "#F59E0B", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 }
         ]
       },
       options: { responsive: true, maintainAspectRatio: false }
@@ -2111,6 +2474,7 @@
 
   // ── CRISIS MONITORING RESTORATION ──
   function getAlertInfo(pct) {
+    if (pct >= 100) return { lvl: 0, name: "Normal", cls: "lvl-normal", color: "#0b4f6c" };
     if (pct >= 90) return { lvl: 1, name: "Level 1: Watch", cls: "lvl-1", color: "var(--green)" };
     if (pct >= 75) return { lvl: 2, name: "Level 2: Alert", cls: "lvl-2", color: "var(--amber)" };
     return { lvl: 3, name: "Level 3: Critical", cls: "lvl-3", color: "var(--red)" };
@@ -2124,27 +2488,51 @@
 
     overallGrid.innerHTML = ""; cityGrid.innerHTML = ""; satGrid.innerHTML = "";
     const hrsInPeriod = 168 * numWeeks;
+    const isAugPlus = isAugust2026OrLater(d);
+
+    const overallTarget = getSystemTarget("overall_system", d);
+    const subTitleEl = document.getElementById("crisis-header-subtitle");
+    if (subTitleEl) {
+      subTitleEl.textContent = `Consolidated District Benchmark: ${fmt(overallTarget.weeklyTarget, 2)} m³/wk | City Proper: 391,233.00 m³/wk`;
+    }
 
     CRISIS_SYSTEMS.forEach(sys => {
       const actual = sys.keys.reduce((sum, key) => sum + num(d[key]), 0);
-      const ratedVol = sys.weeklyTarget ? (sys.weeklyTarget * numWeeks) : (sys.ratedHr * hrsInPeriod);
+      const targetInfo = getSystemTarget(sys.id, d);
+      const sysWeeklyTarget = targetInfo.weeklyTarget;
+      const sysRatedHr = targetInfo.ratedHr;
+      const ratedVol = sysWeeklyTarget ? (sysWeeklyTarget * numWeeks) : (sysRatedHr * hrsInPeriod);
       const pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
       const alert = getAlertInfo(pct);
+      const remarkText = getCrisisRemarkText(sys.id);
+      const truncatedRemark = remarkText ? (remarkText.length > 95 ? remarkText.substring(0, 92) + '...' : remarkText) : 'No remarks recorded.';
+      const pillBg = alert.lvl === 0 ? 'rgba(11, 79, 108, 0.12)' : (alert.lvl === 1 ? 'var(--green-light)' : (alert.lvl === 2 ? 'var(--amber-light)' : 'var(--red-light)'));
 
       const cardHtml = `
-        <div class="crisis-card ${alert.cls}">
+        <div class="crisis-card ${alert.cls}" onclick="openCrisisRemarks('${sys.id}')" title="Tap to view remarks and committee notes">
           <div class="crisis-header">
             <div>
               <div class="crisis-title">${sys.name}</div>
-              <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">Target: ${fmt(sys.ratedHr, 2)} m³/hr</div>
+              <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
+                Target: ${fmt(sysRatedHr, 2)} m³/hr &bull; ${fmt(sysWeeklyTarget, 1)} m³/wk
+              </div>
             </div>
-            <span class="kpi-badge-pill" style="background:${alert.lvl===1?'var(--green-light)':(alert.lvl===2?'var(--amber-light)':'var(--red-light)')}; color:${alert.color}; border:1px solid ${alert.color};">${alert.name}</span>
+            <span class="kpi-badge-pill" style="background:${pillBg}; color:${alert.color}; border:1px solid ${alert.color};">${alert.name}</span>
           </div>
           <div class="crisis-pct" style="color:${alert.color};">${fmt(pct, 1)}%</div>
           <div class="crisis-details">
             <div class="crisis-details-row"><span>Actual Production</span><strong style="color:var(--text-main);">${fmt(actual)} m³</strong></div>
             <div class="crisis-details-row"><span>Target Volume</span><span>${fmt(ratedVol, 2)} m³</span></div>
-            <div class="crisis-details-row"><span>Hourly Yield</span><span>${fmt(actual / hrsInPeriod, 2)} / ${fmt(sys.ratedHr, 2)} m³/hr</span></div>
+            <div class="crisis-details-row"><span>Hourly Yield</span><span>${fmt(actual / hrsInPeriod, 2)} / ${fmt(sysRatedHr, 2)} m³/hr</span></div>
+          </div>
+          <div class="crisis-remarks-cta">
+            <span style="display:flex; align-items:center; gap:5px; font-weight:700;">
+              <span>💬 Remarks:</span>
+              <span style="font-weight:normal; color:var(--text-muted); max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${truncatedRemark}</span>
+            </span>
+            <span style="font-size:10px; color:var(--blue); font-weight:700; display:flex; align-items:center; gap:3px;">
+              View &rarr;
+            </span>
           </div>
         </div>
       `;
@@ -2160,11 +2548,12 @@
     const d = rows.length ? rowToObj(rows[0]) : rowToObj(allProdData[allProdData.length - 1]);
     document.getElementById("period-display").textContent = d._period || weekVal;
 
+    const targetMldWeek = getTargetMld(d);
     document.getElementById("kpi-total").innerHTML = `${fmt(d.grandTotal)}<span class="unit">m³</span>`;
     document.getElementById("kpi-mld").innerHTML = `${fmt(d.mld, 2)}<span class="unit">MLD</span>`;
     document.getElementById("kpi-sw").innerHTML = `${fmt(d.totalSW)}<span class="unit">m³</span>`;
     document.getElementById("kpi-gw").innerHTML = `${fmt(d.totalGW)}<span class="unit">m³</span>`;
-    document.getElementById("kpi-target-pct").innerHTML = `${fmt(num(d.mld)/TARGET_MLD*100, 1)}<span class="unit">%</span>`;
+    document.getElementById("kpi-target-pct").innerHTML = `${fmt(num(d.mld)/targetMldWeek*100, 1)}<span class="unit">%</span>`;
 
     renderBarChart(allProdData);
     renderPieSwGw(d);
@@ -3278,7 +3667,10 @@
 
     CRISIS_SYSTEMS.forEach(sys => {
       const actual = sys.keys.reduce((sum, k) => sum + pool.reduce((ws, r) => ws + num(r[COL[k]]), 0), 0);
-      const ratedVol = sys.weeklyTarget ? (sys.weeklyTarget * numWeeks) : (sys.ratedHr * hrs);
+      const ratedVol = pool.reduce((sum, r) => {
+        const t = getSystemTarget(sys.id, rowToObj(r));
+        return sum + (t.weeklyTarget || (t.ratedHr * 168));
+      }, 0);
       const pct = ratedVol > 0 ? (actual / ratedVol) * 100 : 0;
       const alert = getAlertInfo(pct);
 
@@ -3303,6 +3695,19 @@
     document.getElementById("cr-pdf-main-alert").textContent = oAlert.name || "—";
     document.getElementById("cr-pdf-main-alert").style.color = oAlert.color || "var(--green)";
     document.getElementById("cr-pdf-tbody").innerHTML = tableHtml;
+
+    const activeRemarks = CRISIS_SYSTEMS.map(sys => ({
+      name: sys.name,
+      remark: getCrisisRemarkText(sys.id)
+    })).filter(item => item.remark && item.remark.trim() !== "");
+
+    const remarksHtml = activeRemarks.length > 0
+      ? activeRemarks.map(item => `
+          <div style="margin-bottom:4px;"><strong>&bull; ${item.name}:</strong> <span style="color:#334155;">${item.remark}</span></div>
+        `).join("")
+      : '<div style="color:#64748B; font-style:italic;">No operational crisis remarks recorded for this period.</div>';
+    const remarksEl = document.getElementById("cr-pdf-remarks-summary");
+    if (remarksEl) remarksEl.innerHTML = remarksHtml;
 
     await new Promise(r => setTimeout(r, 400));
     const el = document.getElementById("hidden-crisis-report");
