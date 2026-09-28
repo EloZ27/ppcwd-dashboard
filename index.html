@@ -475,94 +475,119 @@
     }
     .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
 
-    /* ── MAP CONTROLS & DIRECTIONAL RADAR PILLS ── */
-    .map-floating-bar {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 1000;
+    /* ── MAP HEADER TOOLBAR & OUTLIER CHIPS (CLEAN & SIMPLE) ── */
+    .map-header-toolbar {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .map-view-toggles {
+      display: flex;
+      align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      padding: 5px 8px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      flex-wrap: wrap;
     }
     .map-mode-btn {
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      background: transparent;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
       color: var(--text-muted);
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 5px;
       transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
     .map-mode-btn:hover {
-      background: #F1F5F9;
+      background: #F8FAFC;
       color: var(--text-main);
+      border-color: #CBD5E1;
     }
     .map-mode-btn.active {
       background: var(--blue);
       color: #FFFFFF;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+      border-color: var(--blue);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
     }
 
-    .radar-edge-pill {
-      position: absolute;
-      z-index: 999;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(6px);
-      color: #FFFFFF;
-      border-radius: 8px;
-      padding: 6px 11px;
-      font-size: 11px;
+    .map-outlier-chips {
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-wrap: wrap;
+    }
+    .outlier-chip {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: var(--text-main);
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      transition: transform 0.15s ease, background 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      white-space: nowrap;
     }
-    .radar-edge-pill:hover {
-      transform: scale(1.04);
-      background: rgba(15, 23, 42, 1);
+    .outlier-chip:hover {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: var(--blue);
     }
-    .radar-edge-pill.west {
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border-left: 3px solid #F59E0B;
+    .outlier-chip span {
+      color: var(--blue);
+      font-weight: 800;
     }
-    .radar-edge-pill.west:hover {
-      transform: translateY(-50%) scale(1.04);
+
+    .section-title-wrap {
+      margin-top: 18px;
+      margin-bottom: 10px;
     }
-    .radar-edge-pill.nw {
-      left: 12px;
-      top: 12px;
-      border-left: 3px solid #818CF8;
+    .section-title-main {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
     }
-    .radar-edge-pill.north {
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-top: 3px solid #0D9488;
+    .section-title-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
     }
-    .radar-edge-pill.north:hover {
-      transform: translateX(-50%) scale(1.04);
+
+    /* ── FEATURED CARDS (Manalo + Outliers) ── */
+    .grid-featured-cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .featured-card {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
     }
 
     .card-mini-map-wrap {
       position: relative;
-      height: 125px;
+      height: 110px;
       width: 100%;
       background: #E2E8F0;
       border-bottom: 1px solid var(--card-border);
@@ -574,7 +599,23 @@
       color: #FFFFFF !important;
       border-color: var(--blue) !important;
     }
-    .hover-underline:hover { text-decoration: underline; }
+    .card-map-overlay-btn {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      z-index: 400;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 9.5px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      transition: all 0.15s ease;
+    }
 
     /* ── CRISIS MONITORING STYLES ── */
     .crisis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px; margin-bottom: 24px; }
@@ -805,15 +846,16 @@
       .grid-overview-split { grid-template-columns: 1fr; }
       .grid-production-charts { grid-template-columns: 1fr; }
       .grid-production-charts > :first-child { grid-column: auto; }
-      .grid-priority-cards, .grid-outlying-cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .grid-priority-cards, .grid-outlying-cards, .grid-featured-cards { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
       .grid-river-layout { grid-template-columns: 1fr; }
       #river-list-container { max-height: 220px !important; }
       .grid-complaints-charts { grid-template-columns: 1fr; }
       .grid-complaints-charts > :first-child { grid-column: auto; }
       .grid-monthly-charts { grid-template-columns: 1fr; }
 
-      .map-frame-box { height: 380px; }
-      .radar-edge-pill.north { display: none; }
+      .map-frame-box { height: 350px; }
+      .map-header-toolbar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .map-outlier-chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
     }
 
     @media (max-width: 640px) {
@@ -824,7 +866,8 @@
 
       .modal-station-grid { grid-template-columns: 1fr; }
       .grid-genset-summary { grid-template-columns: repeat(2, 1fr); padding: 12px 14px; }
-      .grid-priority-cards, .grid-outlying-cards { grid-template-columns: 1fr; }
+      .grid-priority-cards, .grid-outlying-cards, .grid-featured-cards { grid-template-columns: 1fr; }
+      .map-frame-box { height: 300px; }
 
       .kpi-card-white { padding: 12px 14px; }
       .kpi-card-num { font-size: 20px; }
@@ -1239,96 +1282,57 @@
 
       <!-- ── TAB 3: NETWORK PRESSURE ── -->
       <div class="page-content" id="page-pressure">
-        <div class="map-frame-box">
-          <div id="leaflet-map"></div>
-
-          <!-- Map View Controls Overlay Bar -->
-          <div class="map-floating-bar" id="pressure-map-controls">
-            <button id="btn-map-core" class="map-mode-btn active" onclick="setPressureMapMode('core')" title="Focus on 16 clustered urban stations">
-              <span>🏙️</span> <span>Urban Core (16)</span>
+        
+        <!-- Clean Map Header Toolbar (Above map, responsive, no map crowding) -->
+        <div class="map-header-toolbar">
+          <div class="map-view-toggles">
+            <button id="btn-map-core" class="map-mode-btn active" onclick="setPressureMapMode('core')">
+              <span>🏙️</span> <span>Urban Core</span>
             </button>
-            <button id="btn-map-all" class="map-mode-btn" onclick="setPressureMapMode('all')" title="Fit all 20 stations across the regional network">
-              <span>🗺️</span> <span>Full Network (All 20)</span>
+            <button id="btn-map-all" class="map-mode-btn" onclick="setPressureMapMode('all')">
+              <span>🗺️</span> <span>Full Network</span>
             </button>
             <button id="btn-map-lock" class="map-mode-btn" onclick="togglePressureMapLock()" title="Toggle map movement lock">
               <span id="map-lock-icon">🔓</span> <span id="map-lock-label">Free Pan</span>
             </button>
-            <button class="map-mode-btn" onclick="resetPressureMapFraming()" title="Reset to standard Urban Core framing">
-              <span>↺</span> <span>Reset View</span>
+            <button class="map-mode-btn" onclick="resetPressureMapFraming()" title="Reset to Urban Core">
+              <span>↺</span>
             </button>
           </div>
 
-          <!-- Directional Outlying Radar Indicators -->
-          <div id="radar-edge-indicators">
-            <!-- West: UV Facility -->
-            <div class="radar-edge-pill west" onclick="focusMainMapOnStation(19)" title="Focus on UV Facility">
-              <span style="font-weight:800; font-size:12px;">←</span>
-              <div>
-                <div style="font-weight:700; display:flex; align-items:center; gap:5px;">
-                  <span>UV Facility</span>
-                  <span id="radar-val-19" style="color:#F59E0B; font-family:var(--font-mono); font-weight:800;">—</span>
-                </div>
-                <div style="font-size:9.5px; opacity:0.8; font-family:var(--font-mono);">9.1 km W &bull; Montible Line</div>
-              </div>
-            </div>
-
-            <!-- NW: Campo Uno -->
-            <div class="radar-edge-pill nw" onclick="focusMainMapOnStation(8)" title="Focus on Campo Uno Chamber">
-              <span style="font-weight:800; font-size:12px;">↖</span>
-              <div>
-                <div style="font-weight:700; display:flex; align-items:center; gap:5px;">
-                  <span>Campo Uno</span>
-                  <span id="radar-val-8" style="color:#818CF8; font-family:var(--font-mono); font-weight:800;">—</span>
-                </div>
-                <div style="font-size:9.5px; opacity:0.8; font-family:var(--font-mono);">9.5 km NW &bull; Mountain Line</div>
-              </div>
-            </div>
-
-            <!-- North: Sta Monica & Lito Escalante -->
-            <div class="radar-edge-pill north" title="Click to inspect northern stations">
-              <span style="font-weight:800; font-size:12px;">↑</span>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span onclick="event.stopPropagation(); focusMainMapOnStation(10);" style="cursor:pointer;" class="hover-underline">
-                  Sta. Monica <b id="radar-val-10" style="color:#2DD4BF; font-family:var(--font-mono);">—</b> <span style="font-size:9px; opacity:0.75;">(6.4 km N)</span>
-                </span>
-                <span style="opacity:0.4;">|</span>
-                <span onclick="event.stopPropagation(); focusMainMapOnStation(3);" style="cursor:pointer;" class="hover-underline">
-                  Lito Escalante <b id="radar-val-3" style="color:#2DD4BF; font-family:var(--font-mono);">—</b> <span style="font-size:9px; opacity:0.75;">(11.3 km N)</span>
-                </span>
-              </div>
-            </div>
+          <!-- Outlier Station Chips: Name & Pressure Number ONLY -->
+          <div class="map-outlier-chips" id="map-outlier-chips">
+            <button class="outlier-chip" onclick="focusMainMapOnStation(19)" title="Focus UV Facility">
+              UV Facility: <span id="chip-val-19">—</span>
+            </button>
+            <button class="outlier-chip" onclick="focusMainMapOnStation(8)" title="Focus Campo Uno">
+              Campo Uno: <span id="chip-val-8">—</span>
+            </button>
+            <button class="outlier-chip" onclick="focusMainMapOnStation(10)" title="Focus Sta. Monica">
+              Sta. Monica: <span id="chip-val-10">—</span>
+            </button>
+            <button class="outlier-chip" onclick="focusMainMapOnStation(3)" title="Focus Lito Escalante">
+              Lito Escalante: <span id="chip-val-3">—</span>
+            </button>
           </div>
         </div>
 
-        <!-- Outlying Transmission & Perimeter Nodes Strip (Card Map Views) -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div>
-            <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">
-              Outlying Transmission &amp; Perimeter Nodes
-            </div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:1px;">
-              Remote monitoring facilities with dedicated card map views
-            </div>
-          </div>
-          <span style="font-size:10px; font-family:var(--font-mono); background:var(--blue-light); color:var(--blue); border:1px solid var(--blue-border); padding:2px 8px; border-radius:12px; font-weight:700;">
-            4 Remote Facilities
-          </span>
+        <!-- Clean Map Canvas (Completely uncrowded) -->
+        <div class="map-frame-box">
+          <div id="leaflet-map"></div>
         </div>
-        <div class="grid-outlying-cards" id="priority-cards-row"></div>
 
-        <!-- Urban Core Distribution Stations Grid -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div>
-            <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono);">
-              Urban Core Distribution Monitoring Points
-            </div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:1px;">
-              Primary downtown grid nodes visible in the fixed city map
-            </div>
-          </div>
-          <span style="font-size:10px; font-family:var(--font-mono); background:#F1F5F9; color:var(--text-muted); border:1px solid var(--card-border); padding:2px 8px; border-radius:12px; font-weight:700;">
-            16 Urban Nodes
-          </span>
+        <!-- Featured Monitoring Points: Manalo Booster Station + Outlier Stations -->
+        <div class="section-title-wrap">
+          <div class="section-title-main">Primary &amp; Outlying Monitoring Points</div>
+          <div class="section-title-sub">Main Manalo Booster Station (Operator Reporting) &amp; Outlier Telemetry Nodes</div>
+        </div>
+        <div class="grid-featured-cards" id="priority-cards-row"></div>
+
+        <!-- Distribution Network Monitoring Points (Remaining Urban Core Stations) -->
+        <div class="section-title-wrap">
+          <div class="section-title-main">Distribution Network Monitoring Points</div>
+          <div class="section-title-sub">City proper distribution network telemetry (15 Nodes)</div>
         </div>
         <div class="grid-stations" id="station-cards-grid"></div>
 
@@ -3039,14 +3043,6 @@
   let pressureMapLocked = false;
   let outlyingMiniMaps = {};
 
-  const OUTLYING_STATION_META = {
-    19: { sector: "West Transmission Corridor", dist: "9.1 km W", role: "Montible Bulk Treatment & Disinfection", highPressure: true },
-    8:  { sector: "NW Mountain Gravity Intake", dist: "9.5 km NW", role: "Campo Uno / Lapu-Lapu Watershed", highPressure: true },
-    10: { sector: "North Highway Hub", dist: "6.4 km N", role: "Sta. Monica Residential Elevation Node", highPressure: false },
-    3:  { sector: "North Network Terminal", dist: "11.3 km N", role: "Northernmost Perimeter Terminal", highPressure: false }
-  };
-  const OUTLYING_COLS = [19, 8, 10, 3];
-
   function initLeafletMap(){
     if(leafletMap) return;
     leafletMap = L.map("leaflet-map", { 
@@ -3141,7 +3137,7 @@
     }, 1050);
   }
 
-  function updateRadarEdgePills(){
+  function updateOutlierChips(){
     const s19 = PRESSURE_STATIONS.find(s => s.col === 19);
     const s8  = PRESSURE_STATIONS.find(s => s.col === 8);
     const s10 = PRESSURE_STATIONS.find(s => s.col === 10);
@@ -3152,10 +3148,10 @@
     const v10 = s10 ? getLatestOrFallback(s10).recent?.vals[10] : null;
     const v3  = s3  ? getLatestOrFallback(s3).recent?.vals[3]   : null;
 
-    const el19 = document.getElementById("radar-val-19");
-    const el8  = document.getElementById("radar-val-8");
-    const el10 = document.getElementById("radar-val-10");
-    const el3  = document.getElementById("radar-val-3");
+    const el19 = document.getElementById("chip-val-19");
+    const el8  = document.getElementById("chip-val-8");
+    const el10 = document.getElementById("chip-val-10");
+    const el3  = document.getElementById("chip-val-3");
 
     if(el19) el19.textContent = v19 !== null && v19 !== undefined ? fmt(v19, 1) + " PSI" : "—";
     if(el8)  el8.textContent  = v8 !== null && v8 !== undefined ? fmt(v8, 1) + " PSI" : "—";
@@ -3217,11 +3213,15 @@
 
       const marker = L.marker([s.lat, s.lng], { icon }).addTo(leafletMap);
       marker.bindPopup(popupHtml, { maxWidth:240, minWidth:220 });
+      marker.bindTooltip(`${s.name}: ${label} PSI`, { direction: 'top', offset: [0, -24], opacity: 0.95 });
       leafletMarkers[s.col] = marker;
     });
 
-    updateRadarEdgePills();
+    updateOutlierChips();
   }
+
+  // 5 Featured Stations: Main Manalo Booster Station + 4 Far Outliers
+  const FEATURED_COLS = [2, 19, 8, 10, 3];
 
   function buildStationCards(){
     const priorityEl = document.getElementById("priority-cards-row");
@@ -3236,65 +3236,62 @@
       outlyingMiniMaps = {};
     }
 
-    const outlyingStations = OUTLYING_COLS.map(col => PRESSURE_STATIONS.find(s => s.col === col)).filter(Boolean);
-    const urbanStations    = PRESSURE_STATIONS.filter(s => !OUTLYING_COLS.includes(s.col));
+    const featuredStations = FEATURED_COLS.map(col => PRESSURE_STATIONS.find(s => s.col === col)).filter(Boolean);
+    const regularStations  = PRESSURE_STATIONS.filter(s => !FEATURED_COLS.includes(s.col));
 
-    // 1. Render Outlying Station Card Maps (4 Stations)
-    priorityEl.innerHTML = outlyingStations.map(s => {
+    // 1. Render Featured Station Cards (Manalo Booster Station + Outliers)
+    priorityEl.innerHTML = featuredStations.map(s => {
       const { recent, isFallback } = getLatestOrFallback(s);
       const val = recent ? recent.vals[s.col] : null;
       const alertThreshold = s.customAlertPsi || ALERT_PSI;
       const isAlert = val !== null && val <= alertThreshold;
       const inCompare = compareStations.some(cs => cs.col === s.col);
-      const meta = OUTLYING_STATION_META[s.col] || { sector: "Outlying Node", dist: "", role: "Monitoring Node" };
       const timeStr = recent && recent.dt ? 
         recent.dt.toLocaleDateString("en-PH", { month:'short', day:'numeric' }) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
 
       return `
-        <div class="kpi-card-white outlying-card" style="padding:0; overflow:hidden; border-top:3px solid ${isAlert ? 'var(--red)' : (meta.highPressure ? '#F59E0B' : 'var(--teal)')}; display:flex; flex-direction:column; justify-content:space-between; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}">
+        <div class="kpi-card-white featured-card" style="border-top:3px solid ${isAlert ? 'var(--red)' : (s.col === 2 ? 'var(--blue)' : (s.customAlertPsi ? '#F59E0B' : 'var(--green)'))}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}">
           
-          <!-- Mini Card Map Canvas -->
-          <div class="card-mini-map-wrap" onclick="focusMainMapOnStation(${s.col})" title="Click to focus on main map">
+          <!-- Mini Card Map Canvas (Clean, no distance/direction overlays) -->
+          <div class="card-mini-map-wrap" onclick="focusMainMapOnStation(${s.col})" title="Focus on main map">
             <div id="card-map-${s.col}" style="width:100%; height:100%;"></div>
-            <div style="position:absolute; top:8px; left:8px; z-index:400; background:rgba(15,23,42,0.85); backdrop-filter:blur(4px); color:#FFFFFF; font-size:9.5px; font-family:var(--font-mono); font-weight:700; padding:2px 7px; border-radius:4px; border:1px solid rgba(255,255,255,0.2);">
-              ${meta.dist} &bull; ${meta.sector}
-            </div>
-            <button class="card-map-overlay-btn" onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" style="position:absolute; bottom:6px; right:6px; z-index:400; background:rgba(255,255,255,0.92); border:1px solid var(--card-border); color:var(--text-main); font-size:9.5px; font-family:var(--font-mono); font-weight:700; padding:3px 8px; border-radius:5px; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.15); transition:all 0.15s ease;">
+            <button class="card-map-overlay-btn" onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});">
               Focus Map ↗
             </button>
           </div>
 
-          <!-- Telemetry Content -->
-          <div style="padding:12px 14px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:6px;">
-              <div>
-                <div style="font-size:12px; font-weight:800; color:var(--text-main); line-height:1.2;">${s.name}</div>
-                <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">${meta.role}</div>
+          <!-- Telemetry Content: Name, PSI, Status, Time ONLY -->
+          <div style="padding:12px 14px; display:flex; flex-direction:column; flex:1; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; gap:6px;">
+                <div style="font-size:12.5px; font-weight:800; color:var(--text-main); line-height:1.25;" title="${s.name}">
+                  ${s.name}
+                </div>
+                <span style="font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:2px 6px; border-radius:4px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
+                  ${isAlert ? '⚠️ Alert' : '✓ Normal'}
+                </span>
               </div>
-              <span style="font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:2px 6px; border-radius:4px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
-                ${isAlert ? '⚠️ Alert' : '✓ Normal'}
-              </span>
-            </div>
 
-            <div style="display:flex; align-items:baseline; gap:5px; margin:6px 0;">
-              <span style="font-size:26px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
-                ${val !== null ? fmt(val, 1) : "—"}
-              </span>
-              <span style="font-size:11px; font-weight:600; color:var(--text-muted); font-family:var(--font-mono);">PSI</span>
-              <span style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-left:auto;">
-                (Alert &le; ${alertThreshold} PSI)
-              </span>
-            </div>
+              <div style="display:flex; align-items:baseline; gap:5px; margin:4px 0 6px 0;">
+                <span style="font-size:26px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
+                  ${val !== null ? fmt(val, 1) : "—"}
+                </span>
+                <span style="font-size:11px; font-weight:600; color:var(--text-muted); font-family:var(--font-mono);">PSI</span>
+                <span style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-left:auto;">
+                  (&le;${alertThreshold} PSI)
+                </span>
+              </div>
 
-            <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:10px;">
-              🕒 ${timeStr} ${isFallback ? '(Last recorded)' : ''}
+              <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:10px;">
+                🕒 ${timeStr} ${isFallback ? '(Last recorded)' : ''}
+              </div>
             </div>
 
             <div style="display:flex; gap:6px; border-top:1px solid var(--card-border); padding-top:8px;">
-              <button onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:4px 6px; font-size:10px;">
+              <button onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:5px 6px; font-size:10px; font-weight:600;">
                 History
               </button>
-              <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:4px 6px; font-size:10px; ${inCompare ? 'background:var(--red-light); color:var(--red); border-color:var(--red-border);' : 'background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);'}">
+              <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:5px 6px; font-size:10px; font-weight:600; ${inCompare ? 'background:var(--red-light); color:var(--red); border-color:var(--red-border);' : 'background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);'}">
                 ${inCompare ? '✕ Remove' : '+ Compare'}
               </button>
             </div>
@@ -3303,9 +3300,9 @@
       `;
     }).join("");
 
-    // Initialize the 4 mini-maps
+    // Initialize the 5 mini-maps
     setTimeout(() => {
-      outlyingStations.forEach(s => {
+      featuredStations.forEach(s => {
         const elId = `card-map-${s.col}`;
         const el = document.getElementById(elId);
         if(!el) return;
@@ -3313,7 +3310,7 @@
         try {
           const miniMap = L.map(elId, {
             center: [s.lat, s.lng],
-            zoom: 13,
+            zoom: s.col === 2 ? 14 : 13,
             zoomControl: false,
             dragging: false,
             scrollWheelZoom: false,
@@ -3330,7 +3327,7 @@
           const val = recent ? recent.vals[s.col] : null;
           const alertThreshold = s.customAlertPsi || ALERT_PSI;
           const isAlert = val !== null && val <= alertThreshold;
-          const pinColor = isAlert ? 'var(--red)' : (s.customAlertPsi ? '#F59E0B' : 'var(--teal)');
+          const pinColor = isAlert ? 'var(--red)' : (s.col === 2 ? 'var(--blue)' : (s.customAlertPsi ? '#F59E0B' : 'var(--teal)'));
 
           const miniIcon = L.divIcon({
             className: "",
@@ -3350,8 +3347,8 @@
       });
     }, 60);
 
-    // 2. Render Urban Core Distribution Station Grid (16 Stations)
-    regularEl.innerHTML = urbanStations.map(s => {
+    // 2. Render Remaining Distribution Stations Grid (15 Urban Stations)
+    regularEl.innerHTML = regularStations.map(s => {
       const { recent, isFallback } = getLatestOrFallback(s);
       const val = recent ? recent.vals[s.col] : null;
       const alertThreshold = s.customAlertPsi || ALERT_PSI;
@@ -3363,7 +3360,7 @@
       return `
         <div class="kpi-card-white" style="padding:10px 12px; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
-            <div style="font-size:10px; font-weight:600; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${s.name}">${s.name}</div>
+            <div style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${s.name}">${s.name}</div>
             <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;">
               ${inCompare ? '✕' : '+ Compare'}
             </button>
@@ -3373,7 +3370,7 @@
             <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'};">
               ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted);">PSI</span>
             </div>
-            <div style="font-size:9px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
+            <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
               ${timeStr} ${isFallback ? '*' : ''}
             </div>
           </div>
