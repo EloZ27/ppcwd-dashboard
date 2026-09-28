@@ -4008,6 +4008,18 @@
       REPORT_CYCLES.slice().reverse().map(c => `<option value="${c.start}|${c.end}">${c.label}</option>`).join("");
   }
 
+  function redactAccountNumber(acc) {
+    if (!acc) return '';
+    const str = String(acc).trim();
+    if (!str || str === '—' || str === '-' || str.toLowerCase() === 'none' || str.toLowerCase() === 'n/a') return '';
+    const clean = str.replace(/[^a-zA-Z0-9]/g, '');
+    if (clean.length <= 4) {
+      return '••••••••';
+    }
+    const tail = clean.slice(-4);
+    return '•••• ' + tail;
+  }
+
   function renderComplaintsDashboard(){
     return preserveScrollRun(() => {
       if(!complaintsRaw.length) return;
@@ -4194,7 +4206,8 @@
 
     document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
       const so = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no;
-      const acc = c.account_number || c.account_no;
+      const rawAcc = c.account_number || c.account_no;
+      const acc = redactAccountNumber(rawAcc);
       const isNoWater = (c.type || '').toLowerCase().includes('no water');
       const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';
       const remarks = c.consumer_remarks || c.remarks;
@@ -4212,7 +4225,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="kpi-badge-pill ${typeBadge}">${c.type || 'Incident'}</span>
-              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);">Acc: <b>${acc}</b></span>` : ''}
+              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${acc}</b></span>` : ''}
             </div>
             <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
           </div>
