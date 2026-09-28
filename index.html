@@ -1325,7 +1325,6 @@
         <!-- Featured Monitoring Points: Manalo Booster Station + Outlier Stations -->
         <div class="section-title-wrap">
           <div class="section-title-main">Primary &amp; Outlying Monitoring Points</div>
-          <div class="section-title-sub">Main Manalo Booster Station (Operator Reporting) &amp; Outlier Telemetry Nodes</div>
         </div>
         <div class="grid-featured-cards" id="priority-cards-row"></div>
 
@@ -3046,8 +3045,8 @@
   function initLeafletMap(){
     if(leafletMap) return;
     leafletMap = L.map("leaflet-map", { 
-      center:[9.7345, 118.7480], 
-      zoom:14, 
+      center:[9.7360, 118.7450], 
+      zoom:15, 
       zoomControl:false 
     });
     L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
@@ -3059,17 +3058,14 @@
     pressureMapMode = mode;
     const btnCore = document.getElementById("btn-map-core");
     const btnAll  = document.getElementById("btn-map-all");
-    const radarEl = document.getElementById("radar-edge-indicators");
 
     if(mode === 'core'){
       btnCore?.classList.add("active");
       btnAll?.classList.remove("active");
-      if(radarEl) radarEl.style.display = "block";
-      leafletMap.flyTo([9.7345, 118.7480], 14, { duration: 0.8 });
+      leafletMap.flyTo([9.7360, 118.7450], 15, { duration: 0.8 });
     } else {
       btnAll?.classList.add("active");
       btnCore?.classList.remove("active");
-      if(radarEl) radarEl.style.display = "none";
       leafletMap.flyToBounds([
         [9.720, 118.655],
         [9.840, 118.775]
@@ -3128,7 +3124,7 @@
       mapBox.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
-    leafletMap.flyTo([s.lat, s.lng], 15, { duration: 1.0 });
+    leafletMap.flyTo([s.lat, s.lng], 16, { duration: 1.0 });
 
     setTimeout(() => {
       if(leafletMarkers[col]) {
@@ -3310,7 +3306,7 @@
         try {
           const miniMap = L.map(elId, {
             center: [s.lat, s.lng],
-            zoom: s.col === 2 ? 14 : 13,
+            zoom: s.col === 2 ? 16 : 15,
             zoomControl: false,
             dragging: false,
             scrollWheelZoom: false,
@@ -3328,14 +3324,15 @@
           const alertThreshold = s.customAlertPsi || ALERT_PSI;
           const isAlert = val !== null && val <= alertThreshold;
           const pinColor = isAlert ? 'var(--red)' : (s.col === 2 ? 'var(--blue)' : (s.customAlertPsi ? '#F59E0B' : 'var(--teal)'));
+          const displayVal = val !== null ? fmt(val, 1) : '—';
 
           const miniIcon = L.divIcon({
             className: "",
-            html: `<div style="width:28px; height:28px; border-radius:50%; background:${pinColor}; border:2px solid #FFFFFF; box-shadow:0 2px 6px rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; color:white; font-family:var(--font-mono); font-size:9.5px; font-weight:800;">
-              ${val !== null ? Math.round(val) : '—'}
+            html: `<div style="min-width:38px; height:24px; padding:0 5px; border-radius:12px; background:${pinColor}; border:2px solid #FFFFFF; box-shadow:0 2px 6px rgba(0,0,0,0.35); display:inline-flex; align-items:center; justify-content:center; color:white; font-family:var(--font-mono); font-size:10px; font-weight:800; white-space:nowrap;">
+              ${displayVal}
             </div>`,
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
+            iconSize: [38, 24],
+            iconAnchor: [19, 12]
           });
 
           L.marker([s.lat, s.lng], { icon: miniIcon }).addTo(miniMap);
