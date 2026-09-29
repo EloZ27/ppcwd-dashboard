@@ -268,6 +268,20 @@
       transform: translateY(0);
     }
     .header-btn.active { background: var(--blue); border-color: var(--blue); color: #FFF; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3); }
+    .header-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed !important;
+      pointer-events: none;
+      background: #F1F5F9 !important;
+      border-color: #E2E8F0 !important;
+      color: var(--text-muted) !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .spin-icon {
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
 
     /* ── PERIOD CONTROLLER ── */
     .period-bar-wrap {
@@ -1204,6 +1218,14 @@
             <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);"></span> Alert (&le; 6.5 PSI)</span>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button id="btn-refresh-pressure" onclick="triggerManualPressureRefresh()" class="header-btn" style="color:var(--blue); font-weight:700; border-color:var(--blue-border); background:#F8FAFC;" title="Pull latest SCADA telemetry from Supabase">
+              <span id="refresh-pressure-icon" style="display:inline-block; font-size:12px; line-height:1;">↻</span>
+              <span id="refresh-pressure-text">Refresh Live</span>
+            </button>
+            <span id="pressure-last-synced-pill" class="kpi-badge-pill pill-blue" style="font-size:10px; font-family:var(--font-mono); padding:5px 8px; font-weight:600; white-space:nowrap;" title="Last time pressure telemetry was retrieved from Supabase">
+              Synced: <span id="pressure-last-synced-time">—</span>
+            </span>
+
             <input type="date" id="date-filter-input" class="header-btn" style="font-family:var(--font-mono); font-weight:600;" onchange="applyDateFilter()">
             <div style="display:flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden;">
               <button onclick="stepTime(-1)" class="header-btn" style="border:none; border-radius:0;" title="Step back 1 hour">◀</button>
@@ -2684,6 +2706,7 @@
       if(activeWk) renderWeek(activeWk);
     }
     if(tab === 'pressure') {
+      if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
       setTimeout(() => {
         initLeafletMap();
         buildLeafletMarkers();
@@ -4287,9 +4310,111 @@
     return cleanDb.length > 3 && cleanDb === cleanFront;
   }
 
-  async function loadPressure(isAutoRefresh = false) {
+  let lastPressureSyncTimestamp = 0;
+  const PRESSURE_COOLDOWN_MS = 5 * 60 * 1000; // 5-minute cooldown
+  const LS_KEY_PRESSURE_COOLDOWN = 'ppcwd_last_pressure_refresh_ts';
+  let pressureCooldownIntervalId = null;
+
+  function updatePressureSyncBadge(dt) {
+    const el = document.getElementById("pressure-last-synced-time");
+    if (el && dt) {
+      el.textContent = dt.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    }
+  }
+
+  function refreshPressureViewComponents() {
+    if (typeof buildLeafletMarkers === 'function') buildLeafletMarkers();
+    if (typeof buildStationCards === 'function') buildStationCards();
+    if (typeof buildPressureRawTable === 'function') buildPressureRawTable();
+    if (typeof updateOutlierChips === 'function') updateOutlierChips();
+    if (compareStations && compareStations.length > 0 && typeof buildCompareChart === 'function') {
+      buildCompareChart();
+    }
+  }
+
+  function checkPressureCooldownStatus() {
+    const btn = document.getElementById("btn-refresh-pressure");
+    const icon = document.getElementById("refresh-pressure-icon");
+    const label = document.getElementById("refresh-pressure-text");
+    if (!btn || !label) return;
+
+    const lastRefresh = parseInt(localStorage.getItem(LS_KEY_PRESSURE_COOLDOWN) || '0', 10);
+    const now = Date.now();
+    const remainingMs = PRESSURE_COOLDOWN_MS - (now - lastRefresh);
+
+    if (remainingMs > 0) {
+      btn.disabled = true;
+      btn.style.cursor = "not-allowed";
+      btn.style.opacity = "0.65";
+      const totalSec = Math.ceil(remainingMs / 1000);
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      label.textContent = `Wait ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      if (icon) icon.textContent = "⏳";
+      if (!pressureCooldownIntervalId) {
+        pressureCooldownIntervalId = setInterval(checkPressureCooldownStatus, 1000);
+      }
+    } else {
+      btn.disabled = false;
+      btn.style.cursor = "pointer";
+      btn.style.opacity = "1";
+      label.textContent = "Refresh Live";
+      if (icon) {
+        icon.textContent = "↻";
+        icon.classList.remove("spin-icon");
+      }
+      if (pressureCooldownIntervalId) {
+        clearInterval(pressureCooldownIntervalId);
+        pressureCooldownIntervalId = null;
+      }
+    }
+  }
+
+  async function triggerManualPressureRefresh() {
+    const btn = document.getElementById("btn-refresh-pressure");
+    const icon = document.getElementById("refresh-pressure-icon");
+    const label = document.getElementById("refresh-pressure-text");
+    if (!btn || btn.disabled) return;
+
+    const lastRefresh = parseInt(localStorage.getItem(LS_KEY_PRESSURE_COOLDOWN) || '0', 10);
+    if (Date.now() - lastRefresh < PRESSURE_COOLDOWN_MS) {
+      checkPressureCooldownStatus();
+      return;
+    }
+
+    btn.disabled = true;
+    if (icon) {
+      icon.textContent = "↻";
+      icon.classList.add("spin-icon");
+    }
+    if (label) label.textContent = "Fetching...";
+
+    const ok = await loadPressure(false, true);
+
+    if (ok) {
+      localStorage.setItem(LS_KEY_PRESSURE_COOLDOWN, Date.now().toString());
+      if (document.getElementById("page-pressure")?.classList.contains("active")) {
+        refreshPressureViewComponents();
+      }
+      checkPressureCooldownStatus();
+    } else {
+      btn.disabled = false;
+      if (icon) {
+        icon.textContent = "↻";
+        icon.classList.remove("spin-icon");
+      }
+      if (label) label.textContent = "Failed (Retry)";
+      setTimeout(() => checkPressureCooldownStatus(), 3500);
+    }
+  }
+
+  async function loadPressure(isAutoRefresh = false, bypassCache = false) {
     try {
-      const res = await fetch('/api/getPressure');
+      const cacheBust = bypassCache ? `?t=${Date.now()}&nocache=1` : `?t=${Math.floor(Date.now() / 60000)}`;
+      const res = await fetch('/api/getPressure' + cacheBust, {
+        cache: bypassCache ? 'no-store' : 'default'
+      });
+      if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
       const dbData = await res.json();
       const grouped = {};
 
@@ -4308,9 +4433,17 @@
       });
 
       pressureRaw = Object.values(grouped).sort((a, b) => a.dt - b.dt);
+      lastPressureSyncTimestamp = Date.now();
+      updatePressureSyncBadge(new Date());
+
+      const note = document.getElementById("sidebar-status-note");
+      if(note) note.textContent = "Synced at " + new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+
       if (typeof renderOverview === 'function') renderOverview();
+      return true;
     } catch(e) { 
-      console.error("Pressure err", e); 
+      console.error("Pressure fetch error:", e);
+      return false;
     }
   }
 
@@ -4804,17 +4937,32 @@
 
   // ── AUTO-REFRESH TIMER (Every 5 Minutes) ──
   setInterval(async () => {
-    console.log("Auto-refresh: fetching SCADA pressure readings...");
-    await loadPressure(true);
-    if(document.getElementById("page-overview")?.classList.contains("active")) renderOverview();
-    if(document.getElementById("page-pressure")?.classList.contains("active")) {
-      buildLeafletMarkers();
-      buildStationCards();
-      buildPressureRawTable();
+    // Only auto-fetch if we haven't fetched fresh data within the last 4.5 minutes
+    if (Date.now() - lastPressureSyncTimestamp >= 4.5 * 60 * 1000) {
+      console.log("Auto-refresh: fetching SCADA pressure readings...");
+      await loadPressure(true, true);
+      if(document.getElementById("page-overview")?.classList.contains("active")) renderOverview();
+      if(document.getElementById("page-pressure")?.classList.contains("active")) {
+        refreshPressureViewComponents();
+      }
     }
-    const note = document.getElementById("sidebar-status-note");
-    if(note) note.textContent = "Synced at " + new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
   }, 5 * 60 * 1000);
+
+  // ── TAB VISIBILITY RESUME LISTENER ──
+  document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible") {
+      if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
+      const elapsed = Date.now() - lastPressureSyncTimestamp;
+      if (lastPressureSyncTimestamp > 0 && elapsed >= 5 * 60 * 1000) {
+        console.log("Tab resumed and pressure data is stale (> 5 min). Auto-refreshing...");
+        await loadPressure(true, true);
+        if (document.getElementById("page-overview")?.classList.contains("active")) renderOverview();
+        if (document.getElementById("page-pressure")?.classList.contains("active")) {
+          refreshPressureViewComponents();
+        }
+      }
+    }
+  });
 
   // ── INIT BOOT ──
   async function init() {
@@ -4842,6 +4990,7 @@
         loadMonthlyData()
       ]);
       renderOverview();
+      if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
     } catch(err) {
       console.error("Boot err", err);
     } finally {

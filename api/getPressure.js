@@ -17,7 +17,11 @@ export default async function handler(req, res) {
     if (!response.ok) throw new Error(`Supabase returned ${response.status}`);
     const data = await response.json();
 
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=59');
+    if (req.query && (req.query.t || req.query.nocache)) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    } else {
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=59');
+    }
 
     res.status(200).json(data);
   } catch (error) {
