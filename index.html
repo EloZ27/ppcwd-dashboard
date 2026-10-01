@@ -738,6 +738,18 @@
       gap: 10px;
       margin-bottom: 24px;
     }
+    .grid-stations .kpi-card-white {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+    .grid-stations .kpi-card-white:hover {
+      border-color: var(--blue) !important;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15) !important;
+      transform: translateY(-2px);
+    }
     .grid-river-layout {
       display: grid;
       grid-template-columns: 280px 1fr;
@@ -3260,9 +3272,12 @@
       mapBox.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
+    try { leafletMap.invalidateSize(); } catch(e){}
+
     leafletMap.flyTo([s.lat, s.lng], 16, { duration: 1.0 });
 
     setTimeout(() => {
+      try { leafletMap.invalidateSize(); } catch(e){}
       if(leafletMarkers[col]) {
         leafletMarkers[col].openPopup();
       }
@@ -3396,7 +3411,7 @@
           <div style="padding:8px 10px; display:flex; flex-direction:column; flex:1; justify-content:space-between;">
             <div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
-                <div style="font-size:11.5px; font-weight:800; color:var(--text-main); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${s.name}">
+                <div onclick="focusMainMapOnStation(${s.col})" style="cursor:pointer; font-size:11.5px; font-weight:800; color:var(--text-main); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Focus on map: ${s.name}">
                   ${s.name}
                 </div>
                 <span style="font-size:9px; font-weight:700; font-family:var(--font-mono); padding:1px 5px; border-radius:4px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
@@ -3502,21 +3517,39 @@
         recent.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
 
       return `
-        <div class="kpi-card-white" style="padding:10px 12px; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
-            <div style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${s.name}">${s.name}</div>
-            <button onclick="addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;">
-              ${inCompare ? '✕' : '+ Compare'}
-            </button>
+        <div class="kpi-card-white station-card-item" onclick="focusMainMapOnStation(${s.col})" style="padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}" title="Focus ${s.name} on map">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
+              <div onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" title="Focus ${s.name} on map">
+                ${s.name}
+              </div>
+              <button onclick="event.stopPropagation(); addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;" title="${inCompare ? 'Remove from compare' : 'Add to compare'}">
+                ${inCompare ? '✕' : '+ Compare'}
+              </button>
+            </div>
+
+            <div style="margin:2px 0 4px 0;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
+                  ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted); margin-left:2px;">PSI</span>
+                </div>
+                <span style="font-size:8.5px; font-weight:700; font-family:var(--font-mono); padding:1px 4px; border-radius:3px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
+                  ${isAlert ? '⚠️ Alert' : '✓ OK'}
+                </span>
+              </div>
+              <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
+                🕒 ${timeStr} ${isFallback ? '(Last)' : ''}
+              </div>
+            </div>
           </div>
 
-          <div onclick="showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="cursor:pointer;">
-            <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'};">
-              ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted);">PSI</span>
-            </div>
-            <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
-              ${timeStr} ${isFallback ? '*' : ''}
-            </div>
+          <div style="display:flex; gap:4px; border-top:1px solid var(--card-border); padding-top:6px; margin-top:6px;">
+            <button onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);" title="Focus ${s.name} on map">
+              Focus ↗
+            </button>
+            <button onclick="event.stopPropagation(); showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:600;" title="View history chart">
+              History
+            </button>
           </div>
         </div>
       `;
