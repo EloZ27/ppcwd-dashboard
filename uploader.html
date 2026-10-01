@@ -789,7 +789,7 @@
                 </div>
                 <div class="field-group">
                   <label class="form-lbl">Barangay *</label>
-                  <input type="text" id="comp-barangay" name="barangay" list="barangay-datalist" required placeholder="e.g. SAN PEDRO" class="form-input" style="text-transform:uppercase;">
+                  <input type="text" id="comp-barangay" name="barangay" list="barangay-datalist" required placeholder="e.g. SAN PEDRO" class="form-input" style="text-transform:uppercase;" autocapitalize="characters" autocomplete="off" spellcheck="false">
                   <datalist id="barangay-datalist">
                     <option value="BABUYAN">
                     <option value="BACUNGAN">
@@ -798,6 +798,7 @@
                     <option value="BAGONG SILANG">
                     <option value="BAHILE">
                     <option value="BANCAO BANCAO">
+                    <option value="BANCAO-BANCAO">
                     <option value="BINDUYAN">
                     <option value="CABAYUGAN">
                     <option value="INAGAWAN">
@@ -839,7 +840,9 @@
                     <option value="SEASIDE">
                     <option value="SICSICAN">
                     <option value="STA LOURDES">
+                    <option value="STA. LOURDES">
                     <option value="STA MONICA">
+                    <option value="STA. MONICA">
                     <option value="TAGBUROS">
                     <option value="TAGUMPAY">
                     <option value="TANGLAW">
@@ -1779,6 +1782,16 @@
       setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
     }
 
+    // ── OFFICIAL BARANGAYS LOOKUP ──
+    function getOfficialBarangaysSet() {
+      const opts = document.querySelectorAll('#barangay-datalist option');
+      const set = new Set();
+      opts.forEach(o => {
+        if (o.value) set.add(o.value.trim());
+      });
+      return set;
+    }
+
     // ── AUTOMATIC FORMATTERS FOR COMPLAINTS (Stubout: S#-####, Account: ###-####) ──
     function setupComplaintFormatters() {
       const stubInput = document.getElementById('comp-stubout');
@@ -1919,18 +1932,61 @@
           }
         });
       }
+
+      const brgyInput = document.getElementById('comp-barangay');
+      if (brgyInput && !brgyInput.dataset.formatterBound) {
+        brgyInput.dataset.formatterBound = 'true';
+        brgyInput.addEventListener('input', () => {
+          brgyInput.style.borderColor = '';
+          const start = brgyInput.selectionStart;
+          const end = brgyInput.selectionEnd;
+          brgyInput.value = brgyInput.value.toUpperCase();
+          if (start !== null && end !== null) {
+            brgyInput.setSelectionRange(start, end);
+          }
+        });
+
+        brgyInput.addEventListener('change', () => {
+          const val = brgyInput.value.trim();
+          const validSet = getOfficialBarangaysSet();
+          if (val && !validSet.has(val)) {
+            brgyInput.style.borderColor = 'var(--red, #EF4444)';
+          } else {
+            brgyInput.style.borderColor = '';
+          }
+        });
+      }
     }
 
     async function submitSingleComplaint(e) {
       e.preventDefault();
-      const btn = document.getElementById("btn-save-complaint");
-      btn.disabled = true;
-      btn.textContent = "Saving to Supabase...";
-
       const form = e.target;
       const fd = new FormData(form);
       const rawStubout = (fd.get('stubout_number') || fd.get('stub_out_no') || '').trim();
       const rawAccount = (fd.get('account_number') || '').trim();
+      const cleanBrgy = (fd.get('barangay') || '').trim();
+      const brgyInput = document.getElementById('comp-barangay');
+
+      // Case-sensitive validation against official barangay listing
+      const validSet = getOfficialBarangaysSet();
+      if (!cleanBrgy) {
+        notifyComp("Please enter a Barangay.", true);
+        if (brgyInput) { brgyInput.focus(); brgyInput.style.borderColor = 'var(--red, #EF4444)'; }
+        return;
+      }
+
+      if (!validSet.has(cleanBrgy)) {
+        notifyComp(`Error: "${cleanBrgy}" is not recognized in the official Barangay listings. Submission rejected.`, true);
+        if (brgyInput) {
+          brgyInput.focus();
+          brgyInput.style.borderColor = 'var(--red, #EF4444)';
+        }
+        return;
+      }
+
+      const btn = document.getElementById("btn-save-complaint");
+      btn.disabled = true;
+      btn.textContent = "Saving to Supabase...";
 
       const cleanStubout = rawStubout === 'S' ? '' : rawStubout.replace(/-$/, '');
       const cleanAccount = rawAccount.replace(/-$/, '');
@@ -1939,7 +1995,7 @@
         action: 'create',
         record: {
           date: fd.get('date'),
-          barangay: fd.get('barangay'),
+          barangay: cleanBrgy,
           stub_out_no: cleanStubout,
           account_number: cleanAccount,
           type: fd.get('type'),
@@ -2022,22 +2078,40 @@
       }
 
       document.getElementById('comp-preview-count').textContent = parsedBulkRows.length;
-      document.getElementById('comp-preview-tbody').innerHTML = parsedBulkRows.map(r => `
+      const validSet = getOfficialBarangaysSet();
+      let hasUnlisted = false;
+      document.getElementById('comp-preview-tbody').innerHTML = parsedBulkRows.map(r => {
+        const isListed = validSet.has(r.barangay);
+        if (!isListed) hasUnlisted = true;
+        return `
         <tr>
           <td class="mono">${r.date}</td>
-          <td><b>${r.barangay}</b></td>
+          <td><b style="${isListed ? '' : 'color:var(--red); font-weight:700;'}">${r.barangay}</b> ${isListed ? '' : '<span style="font-size:10px; color:var(--red); font-weight:700;">[UNLISTED]</span>'}</td>
           <td class="mono">${r.stub_out_no || r.stubout_number || '—'}</td>
           <td class="mono">${r.account_number || '—'}</td>
           <td><span class="kpi-badge-pill ${r.type === 'No Water' ? 'pill-red' : 'pill-amber'}">${r.type}</span></td>
           <td style="text-align:right;" class="mono">${r.complaint_count}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
+
+      if (hasUnlisted) {
+        notifyComp("Warning: One or more rows contain an unlisted Barangay name. Please check highlighted rows.", true);
+      }
 
       document.getElementById('comp-preview-container').style.display = 'block';
     }
 
     async function uploadBulkComplaints() {
       if (!parsedBulkRows.length) return;
+      const validSet = getOfficialBarangaysSet();
+      const invalidRows = parsedBulkRows.filter(r => !validSet.has(r.barangay));
+      if (invalidRows.length > 0) {
+        const samples = invalidRows.slice(0, 3).map(r => `"${r.barangay}"`).join(', ');
+        notifyComp(`Cannot upload: Found unlisted Barangay(s) (${samples}). All rows must match the official Barangay listing.`, true);
+        return;
+      }
+
       const btn = document.getElementById('btn-upload-bulk-complaints');
       btn.disabled = true;
       btn.textContent = `Uploading ${parsedBulkRows.length} Rows...`;
