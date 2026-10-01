@@ -859,11 +859,11 @@
               <div class="form-grid">
                 <div class="field-group">
                   <label class="form-lbl">Stubout Number</label>
-                  <input type="text" id="comp-stubout" name="stubout_number" placeholder="e.g. SO-14 or 22" class="form-input">
+                  <input type="text" id="comp-stubout" name="stubout_number" placeholder="e.g. S1-1234" class="form-input" maxlength="7" autocapitalize="characters" autocomplete="off" spellcheck="false">
                 </div>
                 <div class="field-group">
                   <label class="form-lbl">Account Number</label>
-                  <input type="text" id="comp-account" name="account_number" placeholder="e.g. 01-12345-01" class="form-input">
+                  <input type="text" id="comp-account" name="account_number" placeholder="e.g. 123-4567" class="form-input" maxlength="8" inputmode="numeric" autocomplete="off" spellcheck="false">
                 </div>
                 <div class="field-group">
                   <label class="form-lbl">Incident Count (Reports) *</label>
@@ -894,7 +894,7 @@
                 </div>
               </div>
 
-              <textarea id="comp-bulk-input" class="form-input" style="font-family:var(--font-mono); font-size:11.5px; min-height:140px; resize:vertical; margin-bottom:12px;" placeholder="2026-09-22&#9;SO-14&#9;No Water&#9;SAN PEDRO&#9;01-23456&#9;1&#10;2026-09-22&#9;SO-22&#9;Low Pressure&#9;STA MONICA&#9;01-98765&#9;2"></textarea>
+              <textarea id="comp-bulk-input" class="form-input" style="font-family:var(--font-mono); font-size:11.5px; min-height:140px; resize:vertical; margin-bottom:12px;" placeholder="2026-09-22&#9;S1-0014&#9;No Water&#9;SAN PEDRO&#9;123-4567&#9;1&#10;2026-09-22&#9;S2-0022&#9;Low Pressure&#9;STA MONICA&#9;234-5678&#9;2"></textarea>
 
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
                 <button type="button" class="header-btn" onclick="populateSamplePaste()">Fill Sample Template</button>
@@ -1724,6 +1724,7 @@
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block;"></span> Service Incidents Ingestion &bull; Direct Supabase Telemetry`;
         window.location.hash = 'complaints';
         fetchComplaintsList();
+        setupComplaintFormatters();
       } else if (sec === 'riverflow') {
         if (riverflowSec) riverflowSec.style.display = 'block';
         if (btnRiverflow) btnRiverflow.classList.add('active');
@@ -1778,6 +1779,148 @@
       setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
     }
 
+    // ── AUTOMATIC FORMATTERS FOR COMPLAINTS (Stubout: S#-####, Account: ###-####) ──
+    function setupComplaintFormatters() {
+      const stubInput = document.getElementById('comp-stubout');
+      const acctInput = document.getElementById('comp-account');
+
+      if (stubInput && !stubInput.dataset.formatterBound) {
+        stubInput.dataset.formatterBound = 'true';
+
+        // Keyboard handler for Backspace past the auto-dash
+        stubInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            const pos = stubInput.selectionStart;
+            const end = stubInput.selectionEnd;
+            // When cursor is right after the dash (e.g. "S1-"), 1 backspace drops back to "S"
+            if (pos === end && pos === 3 && /^S\d-$/.test(stubInput.value)) {
+              e.preventDefault();
+              stubInput.value = 'S';
+              stubInput.setSelectionRange(1, 1);
+            }
+          }
+        });
+
+        stubInput.addEventListener('input', (e) => {
+          const isDelete = e.inputType === 'deleteContentBackward';
+          let val = stubInput.value.toUpperCase();
+
+          if (!val) {
+            stubInput.value = '';
+            return;
+          }
+
+          // Handle mobile Backspace where browser left "S1" after deleting "-"
+          if (isDelete && /^S\d$/.test(val)) {
+            stubInput.value = 'S';
+            stubInput.setSelectionRange(1, 1);
+            return;
+          }
+
+          // Just 'S'
+          if (val === 'S') {
+            stubInput.value = 'S';
+            return;
+          }
+
+          // Strip non-digits to get the zone and stubout numbers
+          const digits = val.replace(/\D/g, '');
+          if (!digits) {
+            stubInput.value = val.startsWith('S') ? 'S' : '';
+            return;
+          }
+
+          const zone = digits[0];
+          const rest = digits.slice(1, 5); // 1 to 4 numbers after the dash
+
+          let formatted = '';
+          if (rest.length > 0) {
+            formatted = `S${zone}-${rest}`;
+          } else {
+            // User entered the first number after S
+            if (isDelete && !val.includes('-')) {
+              formatted = `S${zone}`;
+            } else {
+              formatted = `S${zone}-`;
+            }
+          }
+
+          stubInput.value = formatted;
+        });
+
+        stubInput.addEventListener('blur', () => {
+          // Clean stray "S" or trailing dash when user leaves field
+          if (stubInput.value === 'S') {
+            stubInput.value = '';
+          } else if (stubInput.value.endsWith('-')) {
+            stubInput.value = stubInput.value.slice(0, -1);
+          }
+        });
+      }
+
+      if (acctInput && !acctInput.dataset.formatterBound) {
+        acctInput.dataset.formatterBound = 'true';
+
+        // Keyboard handler for Backspace past the auto-dash
+        acctInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            const pos = acctInput.selectionStart;
+            const end = acctInput.selectionEnd;
+            // When cursor is right after the dash (e.g. "123-"), 1 backspace removes 3rd digit and dash
+            if (pos === end && pos === 4 && /^\d{3}-$/.test(acctInput.value)) {
+              e.preventDefault();
+              acctInput.value = acctInput.value.slice(0, 2);
+              acctInput.setSelectionRange(2, 2);
+            }
+          }
+        });
+
+        acctInput.addEventListener('input', (e) => {
+          const isDelete = e.inputType === 'deleteContentBackward';
+          let val = acctInput.value;
+
+          if (!val) {
+            acctInput.value = '';
+            return;
+          }
+
+          // Handle mobile Backspace where browser left "123" after deleting "-"
+          if (isDelete && /^\d{3}$/.test(val)) {
+            acctInput.value = val.slice(0, 2);
+            return;
+          }
+
+          // Strip non-digits, max 7 digits (3 before dash, 4 after dash)
+          const digits = val.replace(/\D/g, '').slice(0, 7);
+          if (!digits) {
+            acctInput.value = '';
+            return;
+          }
+
+          let formatted = '';
+          if (digits.length > 3) {
+            formatted = digits.slice(0, 3) + '-' + digits.slice(3);
+          } else if (digits.length === 3) {
+            if (isDelete && !val.endsWith('-')) {
+              formatted = digits;
+            } else {
+              formatted = digits + '-';
+            }
+          } else {
+            formatted = digits;
+          }
+
+          acctInput.value = formatted;
+        });
+
+        acctInput.addEventListener('blur', () => {
+          if (acctInput.value.endsWith('-')) {
+            acctInput.value = acctInput.value.slice(0, -1);
+          }
+        });
+      }
+    }
+
     async function submitSingleComplaint(e) {
       e.preventDefault();
       const btn = document.getElementById("btn-save-complaint");
@@ -1786,13 +1929,19 @@
 
       const form = e.target;
       const fd = new FormData(form);
+      const rawStubout = (fd.get('stubout_number') || fd.get('stub_out_no') || '').trim();
+      const rawAccount = (fd.get('account_number') || '').trim();
+
+      const cleanStubout = rawStubout === 'S' ? '' : rawStubout.replace(/-$/, '');
+      const cleanAccount = rawAccount.replace(/-$/, '');
+
       const payload = {
         action: 'create',
         record: {
           date: fd.get('date'),
           barangay: fd.get('barangay'),
-          stub_out_no: fd.get('stubout_number') || fd.get('stub_out_no'),
-          account_number: fd.get('account_number'),
+          stub_out_no: cleanStubout,
+          account_number: cleanAccount,
           type: fd.get('type'),
           complaint_count: fd.get('complaint_count'),
           consumer_remarks: fd.get('consumer_remarks')
@@ -1824,7 +1973,7 @@
 
     function populateSamplePaste() {
       const today = new Date().toISOString().split('T')[0];
-      const sample = `${today}\tSO-14\tNo Water\tSAN PEDRO\t01-23456\t1\n${today}\tSO-22\tLow Pressure\tSTA MONICA\t01-98765\t2\n${today}\tSO-08\tNo Water\tSAN JOSE\t01-54321\t1`;
+      const sample = `${today}\tS1-0014\tNo Water\tSAN PEDRO\t123-4567\t1\n${today}\tS2-0022\tLow Pressure\tSTA MONICA\t234-5678\t2\n${today}\tS1-0008\tNo Water\tSAN JOSE\t345-6789\t1`;
       document.getElementById('comp-bulk-input').value = sample;
     }
 
@@ -3313,6 +3462,7 @@
       await checkPortalAuth();
       populateStations();
       fetchGensetFleet();
+      setupComplaintFormatters();
       const dateInput = document.getElementById("gs-serviced-date");
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
 
