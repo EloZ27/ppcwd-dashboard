@@ -1312,6 +1312,17 @@
   </div>
 
   <script>
+    // ── HTML SANITIZER (XSS MITIGATION) ──
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     // ══════════════════════════════════════════════════════════════════
     // ── 🔒 PORTAL PASSKEY SECURITY & ACCESS CONTROL ──
     // ══════════════════════════════════════════════════════════════════
@@ -2171,21 +2182,21 @@
         const typeClass = c.type === 'No Water' ? 'pill-red' : (c.type === 'Low Pressure' ? 'pill-amber' : 'pill-green');
         const stubout = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '—';
         const account = c.account_number || c.account_no || '—';
-        const count = c.complaint_count || 1;
+        const count = parseInt(c.complaint_count, 10) || 1;
         const remarks = c.consumer_remarks || c.remarks || '—';
         const recordKey = c.jo_number || c.id;
 
         return `
           <tr>
-            <td class="mono" style="white-space:nowrap;">${c.date || '—'}</td>
-            <td><strong>${c.barangay || 'UNKNOWN'}</strong></td>
-            <td class="mono">${stubout}</td>
-            <td class="mono">${account}</td>
-            <td><span class="kpi-badge-pill ${typeClass}">${c.type || 'Unclassified'}</span></td>
+            <td class="mono" style="white-space:nowrap;">${escapeHtml(c.date || '—')}</td>
+            <td><strong>${escapeHtml(c.barangay || 'UNKNOWN')}</strong></td>
+            <td class="mono">${escapeHtml(stubout)}</td>
+            <td class="mono">${escapeHtml(account)}</td>
+            <td><span class="kpi-badge-pill ${typeClass}">${escapeHtml(c.type || 'Unclassified')}</span></td>
             <td style="text-align:right; font-weight:700;" class="mono">${count}</td>
-            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${remarks}">${remarks}</td>
+            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(remarks)}">${escapeHtml(remarks)}</td>
             <td style="text-align:right;">
-              ${recordKey ? `<button onclick="deleteComplaintRecord('${recordKey}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">🗑️ Delete</button>` : ''}
+              ${recordKey ? `<button type="button" data-key="${escapeHtml(recordKey)}" onclick="deleteComplaintRecord(this.dataset.key)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">🗑️ Delete</button>` : ''}
             </td>
           </tr>
         `;

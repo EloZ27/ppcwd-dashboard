@@ -1,26 +1,38 @@
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+  const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
     return res.status(500).json({ error: 'Missing Supabase environment variables.' });
   }
 
   const headers = {
-    'apikey': SUPABASE_ANON_KEY,
-    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'apikey': SUPABASE_KEY,
     'Content-Type': 'application/json',
     'Prefer': 'return=representation'
   };
+  if (SUPABASE_KEY && SUPABASE_KEY.startsWith('ey')) {
+    headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+  }
 
   const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
   const providedPasskey = req.headers['x-admin-passkey'] || req.body?.admin_passkey;
 
-  if (!providedPasskey || providedPasskey !== configuredPasskey) {
+  if (!providedPasskey || typeof providedPasskey !== 'string') {
+    return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
+  }
+
+  const provBuf = Buffer.from(String(providedPasskey));
+  const confBuf = Buffer.from(String(configuredPasskey));
+  const isAuthorized = provBuf.length === confBuf.length && crypto.timingSafeEqual(provBuf, confBuf);
+
+  if (!isAuthorized) {
     return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
   }
 
@@ -85,7 +97,7 @@ export default async function handler(req, res) {
     if (action === 'edit_details') {
       if (!genset_id) return res.status(400).json({ error: 'genset_id is required.' });
 
-      const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}`, {
+      const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${encodeURIComponent(genset_id)}`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify({
@@ -106,7 +118,7 @@ export default async function handler(req, res) {
     if (action === 'delete_genset') {
       if (!genset_id) return res.status(400).json({ error: 'genset_id is required.' });
 
-      const delRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}`, {
+      const delRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${encodeURIComponent(genset_id)}`, {
         method: 'DELETE',
         headers
       });
@@ -120,7 +132,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'genset_id and event_type are required.' });
     }
 
-    const getRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}&select=*`, { headers });
+    const getRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${encodeURIComponent(genset_id)}&select=*`, { headers });
     const rows = await getRes.json();
     const current = rows[0];
     if (!current) throw new Error('Genset not found.');
@@ -131,7 +143,7 @@ export default async function handler(req, res) {
     const patchPayload = { current_station: destStation, status: statusToSet };
     if (serviced_date) patchPayload.last_serviced_date = serviced_date;
 
-    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${genset_id}`, {
+    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/gensets?id=eq.${encodeURIComponent(genset_id)}`, {
       method: 'PATCH',
       headers,
       body: JSON.stringify(patchPayload)

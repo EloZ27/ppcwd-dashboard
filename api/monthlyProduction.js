@@ -1,16 +1,20 @@
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
   const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+  const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
     return res.status(500).json({ error: 'Missing Supabase environment variables.' });
   }
 
   const headers = {
-    'apikey': SUPABASE_ANON_KEY,
-    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'apikey': SUPABASE_KEY,
     'Content-Type': 'application/json'
   };
+  if (SUPABASE_KEY && SUPABASE_KEY.startsWith('ey')) {
+    headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+  }
 
   // 1. GET: Fetch all records or filter by specific month
   if (req.method === 'GET') {
@@ -18,7 +22,7 @@ export default async function handler(req, res) {
       const { month } = req.query;
       let url = `${SUPABASE_URL}/rest/v1/monthly_production?select=*&order=month_year.desc,category.asc,station_name.asc`;
       if (month) {
-        url = `${SUPABASE_URL}/rest/v1/monthly_production?month_year=eq.${month}&select=*&order=category.asc,station_name.asc`;
+        url = `${SUPABASE_URL}/rest/v1/monthly_production?month_year=eq.${encodeURIComponent(month)}&select=*&order=category.asc,station_name.asc`;
       }
 
       const response = await fetch(url, { headers });
@@ -35,7 +39,15 @@ export default async function handler(req, res) {
     const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
     const providedPasskey = req.headers['x-admin-passkey'] || req.body?.admin_passkey;
 
-    if (!providedPasskey || providedPasskey !== configuredPasskey) {
+    if (!providedPasskey || typeof providedPasskey !== 'string') {
+      return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
+    }
+
+    const provBuf = Buffer.from(String(providedPasskey));
+    const confBuf = Buffer.from(String(configuredPasskey));
+    const isAuthorized = provBuf.length === confBuf.length && crypto.timingSafeEqual(provBuf, confBuf);
+
+    if (!isAuthorized) {
       return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
     }
 

@@ -2019,6 +2019,17 @@
 
   <!-- ── SCRIPTS ── -->
   <script>
+  // ── HTML SANITIZER (XSS MITIGATION) ──
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // ══════════════════════════════════════════════════════════════════
   // ── 🔒 REPORT GENERATION SECURITY & PASSKEY ACCESS CONTROL ──
   // ══════════════════════════════════════════════════════════════════
@@ -2054,7 +2065,6 @@
       const data = await res.json().catch(() => ({}));
       return { success: false, error: data.error || 'Invalid authorization passkey.' };
     } catch (err) {
-      if (passkey === 'ppcwd2026') return { success: true };
       return { success: false, error: 'Could not reach authentication server.' };
     }
   }
@@ -4280,19 +4290,19 @@
         <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:3px solid ${isNoWater ? 'var(--red)' : 'var(--amber)'}; border-radius:8px; padding:10px 14px; font-size:12px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:4px;">
             <div>
-              <strong style="color:var(--text-main); font-size:12.5px;">${c.barangay || 'UNKNOWN'}</strong>
-              ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${so}</b></span>` : ''}
+              <strong style="color:var(--text-main); font-size:12.5px;">${escapeHtml(c.barangay || 'UNKNOWN')}</strong>
+              ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${escapeHtml(so)}</b></span>` : ''}
             </div>
-            <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${c.date || ''}</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${escapeHtml(c.date || '')}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="kpi-badge-pill ${typeBadge}">${c.type || 'Incident'}</span>
-              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${acc}</b></span>` : ''}
+              <span class="kpi-badge-pill ${typeBadge}">${escapeHtml(c.type || 'Incident')}</span>
+              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${escapeHtml(acc)}</b></span>` : ''}
             </div>
             <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
           </div>
-          ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${remarks}"</div>` : ''}
+          ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${escapeHtml(remarks)}"</div>` : ''}
         </div>
       `;
     }).join("");

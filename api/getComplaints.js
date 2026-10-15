@@ -1,15 +1,21 @@
 export default async function handler(req, res) {
-  const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
     return res.status(500).json({ error: 'Missing Supabase environment variables.' });
   }
 
   const headers = {
-    'apikey': SUPABASE_ANON_KEY,
-    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'apikey': SUPABASE_KEY,
   };
+  if (SUPABASE_KEY && SUPABASE_KEY.startsWith('ey')) {
+    headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+  }
 
   try {
     // 1. Try ordering by date.desc
@@ -26,9 +32,30 @@ export default async function handler(req, res) {
     }
     
     const data = await response.json();
-    res.status(200).json(data);
+
+    // Check if requester has admin authorization
+    const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
+    const providedPasskey = req.headers['x-admin-passkey'];
+    const isAdmin = Boolean(configuredPasskey && providedPasskey && providedPasskey === configuredPasskey);
+
+    // Server-side PII masking for unauthenticated public requests
+    const sanitized = (data || []).map(record => {
+      if (isAdmin) return record;
+
+      const rawAcc = String(record.account_number || record.account_no || '').trim();
+      const cleanAcc = rawAcc.replace(/[^a-zA-Z0-9]/g, '');
+      const maskedAcc = cleanAcc.length > 4 ? `••••• ${cleanAcc.slice(-4)}` : (cleanAcc ? '••••••••' : null);
+
+      return {
+        ...record,
+        account_number: maskedAcc,
+        account_no: maskedAcc
+      };
+    });
+
+    res.status(200).json(sanitized);
   } catch (error) {
     console.error('getComplaints API error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Failed to retrieve complaints data.' });
   }
 }

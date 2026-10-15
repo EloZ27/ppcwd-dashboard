@@ -1,10 +1,13 @@
+// api/saveRiverFlow.js
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
+  const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     return res.status(500).json({ error: 'Missing Supabase environment variables.' });
@@ -12,15 +15,25 @@ export default async function handler(req, res) {
 
   const headers = {
     'apikey': SUPABASE_KEY,
-    'Authorization': `Bearer ${SUPABASE_KEY}`,
     'Content-Type': 'application/json',
     'Prefer': 'return=representation'
   };
+  if (SUPABASE_KEY && SUPABASE_KEY.startsWith('ey')) {
+    headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+  }
 
   const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
   const providedPasskey = req.headers['x-admin-passkey'] || req.body?.admin_passkey;
 
-  if (!providedPasskey || providedPasskey !== configuredPasskey) {
+  if (!providedPasskey || typeof providedPasskey !== 'string') {
+    return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
+  }
+
+  const provBuf = Buffer.from(String(providedPasskey));
+  const confBuf = Buffer.from(String(configuredPasskey));
+  const isAuthorized = provBuf.length === confBuf.length && crypto.timingSafeEqual(provBuf, confBuf);
+
+  if (!isAuthorized) {
     return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
   }
 
@@ -83,7 +96,7 @@ export default async function handler(req, res) {
       }
 
       // Check if record already exists for this recorded_date
-      const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/river_flow?recorded_date=eq.${recorded_date}&select=id`, {
+      const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/river_flow?recorded_date=eq.${encodeURIComponent(recorded_date)}&select=id`, {
         headers
       });
       const existing = checkRes.ok ? await checkRes.json() : [];
