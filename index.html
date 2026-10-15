@@ -1440,6 +1440,9 @@
             <button class="outlier-chip" onclick="focusMainMapOnStation(3)" title="Focus Lito Escalante">
               Lito Escalante: <span id="chip-val-3">—</span>
             </button>
+            <button class="outlier-chip" onclick="focusMainMapOnStation(5)" title="Focus Tagburos Highway">
+              Tagburos: <span id="chip-val-5">—</span>
+            </button>
           </div>
         </div>
 
@@ -2227,7 +2230,7 @@
     {name:"Manalo Booster Station",   col:2, lat:9.7367449,  lng:118.7403653},
     {name:"Beside Lito Escalante",    col:3, lat:9.83416722, lng:118.7304},
     {name:"Beside Marianne Hotel",    col:4, lat:9.726422,   lng:118.7636752},
-    {name:"Burgos cor Abad Santos",   col:5, lat:9.73642521, lng:118.733794},
+    {name:"Tagburos Highway near Villa Grande", col:5, lat:9.81092778, lng:118.7458356},
     {name:"Fernandez cor Manalo",     col:6, lat:9.73550822, lng:118.743405},
     {name:"Front of Camella Homes",   col:7, lat:9.72811667, lng:118.7643383},
     {name:"Lapu Lapu Campo Uno Chamber Box", col:8, lat:9.801481666, lng:118.69381666, customAlertPsi: 90},
@@ -3289,21 +3292,25 @@
     const s8  = PRESSURE_STATIONS.find(s => s.col === 8);
     const s10 = PRESSURE_STATIONS.find(s => s.col === 10);
     const s3  = PRESSURE_STATIONS.find(s => s.col === 3);
+    const s5  = PRESSURE_STATIONS.find(s => s.col === 5);
 
     const v19 = s19 ? getLatestOrFallback(s19).recent?.vals[19] : null;
     const v8  = s8  ? getLatestOrFallback(s8).recent?.vals[8]   : null;
     const v10 = s10 ? getLatestOrFallback(s10).recent?.vals[10] : null;
     const v3  = s3  ? getLatestOrFallback(s3).recent?.vals[3]   : null;
+    const v5  = s5  ? getLatestOrFallback(s5).recent?.vals[5]   : null;
 
     const el19 = document.getElementById("chip-val-19");
     const el8  = document.getElementById("chip-val-8");
     const el10 = document.getElementById("chip-val-10");
     const el3  = document.getElementById("chip-val-3");
+    const el5  = document.getElementById("chip-val-5");
 
     if(el19) el19.textContent = v19 !== null && v19 !== undefined ? fmt(v19, 1) + " PSI" : "—";
     if(el8)  el8.textContent  = v8 !== null && v8 !== undefined ? fmt(v8, 1) + " PSI" : "—";
     if(el10) el10.textContent = v10 !== null && v10 !== undefined ? fmt(v10, 1) + " PSI" : "—";
     if(el3)  el3.textContent  = v3 !== null && v3 !== undefined ? fmt(v3, 1) + " PSI" : "—";
+    if(el5)  el5.textContent  = v5 !== null && v5 !== undefined ? fmt(v5, 1) + " PSI" : "—";
   }
 
   function buildLeafletMarkers(){
@@ -4325,6 +4332,7 @@
     if (db.includes("marcelo") && front.includes("gemma")) return true;
     if (db.includes("uv") && front.includes("uv")) return true;
     if (db.includes("lapu") && front.includes("lapu")) return true;
+    if ((db.includes("tagburos") || db.includes("burgos")) && (front.includes("tagburos") || front.includes("burgos"))) return true;
 
     // 3. Keyword matching for Manalo intersections & known points
     if (db.includes("valencia") && front.includes("valencia")) return true;
