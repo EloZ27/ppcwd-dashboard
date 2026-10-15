@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -33,10 +35,15 @@ export default async function handler(req, res) {
     
     const data = await response.json();
 
-    // Check if requester has admin authorization
+    // Check if requester has admin authorization (constant-time comparison)
     const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
     const providedPasskey = req.headers['x-admin-passkey'];
-    const isAdmin = Boolean(configuredPasskey && providedPasskey && providedPasskey === configuredPasskey);
+    let isAdmin = false;
+    if (configuredPasskey && providedPasskey && typeof providedPasskey === 'string') {
+      const provBuf = Buffer.from(String(providedPasskey));
+      const confBuf = Buffer.from(String(configuredPasskey));
+      isAdmin = provBuf.length === confBuf.length && crypto.timingSafeEqual(provBuf, confBuf);
+    }
 
     // Server-side PII masking for unauthenticated public requests
     const sanitized = (data || []).map(record => {

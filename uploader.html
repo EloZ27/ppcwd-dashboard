@@ -1492,7 +1492,7 @@
         }
 
         unitSel.innerHTML = '<option value="">-- Choose Generator --</option>' + 
-          fleet.map(g => `<option value="${g.id}">${g.genset_no} — ${g.current_station}</option>`).join("");
+          fleet.map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.genset_no)} — ${escapeHtml(g.current_station)}</option>`).join("");
 
         tbody.innerHTML = fleet.map(g => {
           const isOp = g.status === 'Operational';
@@ -1502,17 +1502,17 @@
 
           return `
             <tr>
-              <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">${g.genset_no}</td>
-              <td style="font-weight:600;">${g.current_station}</td>
-              <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11px;">${g.capacity_kva ? g.capacity_kva + ' kVA' : '—'}</td>
-              <td><span class="kpi-badge-pill ${badgeCls}">● ${g.status}</span></td>
+              <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">${escapeHtml(g.genset_no)}</td>
+              <td style="font-weight:600;">${escapeHtml(g.current_station)}</td>
+              <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11px;">${g.capacity_kva ? escapeHtml(g.capacity_kva) + ' kVA' : '—'}</td>
+              <td><span class="kpi-badge-pill ${badgeCls}">● ${escapeHtml(g.status)}</span></td>
               <td style="font-size:11px; color:var(--text-muted);">
-                ${latestLog ? `${latestLog.event_type} <span style="font-family:var(--font-mono); font-size:9.5px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
+                ${latestLog ? `${escapeHtml(latestLog.event_type)} <span style="font-family:var(--font-mono); font-size:9.5px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
               </td>
               <td style="text-align:right; white-space:nowrap;">
-                <button type="button" onclick="openEditModal('${g.id}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">✏️ Edit</button>
-                <button type="button" onclick="selectGensetForEdit('${g.id}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">⚡ Log Action</button>
-                <button type="button" onclick="deleteGenset('${g.id}', '${g.genset_no}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">🗑️</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="openEditModal(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">✏️ Edit</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="selectGensetForEdit(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">⚡ Log Action</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" data-no="${escapeHtml(g.genset_no)}" onclick="deleteGenset(this.dataset.id, this.dataset.no)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">🗑️</button>
               </td>
             </tr>
           `;
@@ -2097,12 +2097,12 @@
         if (!isListed) hasUnlisted = true;
         return `
         <tr>
-          <td class="mono">${r.date}</td>
-          <td><b style="${isListed ? '' : 'color:var(--red); font-weight:700;'}">${r.barangay}</b> ${isListed ? '' : '<span style="font-size:10px; color:var(--red); font-weight:700;">[UNLISTED]</span>'}</td>
-          <td class="mono">${r.stub_out_no || r.stubout_number || '—'}</td>
-          <td class="mono">${r.account_number || '—'}</td>
-          <td><span class="kpi-badge-pill ${r.type === 'No Water' ? 'pill-red' : 'pill-amber'}">${r.type}</span></td>
-          <td style="text-align:right;" class="mono">${r.complaint_count}</td>
+          <td class="mono">${escapeHtml(r.date)}</td>
+          <td><b style="${isListed ? '' : 'color:var(--red); font-weight:700;'}">${escapeHtml(r.barangay)}</b> ${isListed ? '' : '<span style="font-size:10px; color:var(--red); font-weight:700;">[UNLISTED]</span>'}</td>
+          <td class="mono">${escapeHtml(r.stub_out_no || r.stubout_number || '—')}</td>
+          <td class="mono">${escapeHtml(r.account_number || '—')}</td>
+          <td><span class="kpi-badge-pill ${r.type === 'No Water' ? 'pill-red' : 'pill-amber'}">${escapeHtml(r.type)}</span></td>
+          <td style="text-align:right;" class="mono">${parseInt(r.complaint_count, 10) || 1}</td>
         </tr>
       `;
       }).join('');
@@ -2541,14 +2541,14 @@
 
         return `
           <tr>
-            <td class="mono" style="font-weight:700;">${dateStr}</td>
-            <td>${labelStr}</td>
+            <td class="mono" style="font-weight:700;">${escapeHtml(dateStr)}</td>
+            <td>${escapeHtml(labelStr)}</td>
             <td style="text-align:right;"><span class="kpi-badge-pill ${countBadge}">${count} / 19</span></td>
-            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:var(--teal);">${sumStr}</td>
-            <td style="font-size:11.5px; color:var(--text-main);">${topRiver}</td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:var(--teal);">${escapeHtml(sumStr)}</td>
+            <td style="font-size:11.5px; color:var(--text-main);">${escapeHtml(topRiver)}</td>
             <td style="text-align:right; white-space:nowrap;">
-              <button onclick="editRiverflowRecord('${r.id}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);" title="Load into form for editing">✏️ Edit</button>
-              <button onclick="deleteRiverflowRecord('${r.id}', '${dateStr}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete record">🗑️ Delete</button>
+              <button type="button" data-id="${escapeHtml(r.id)}" onclick="editRiverflowRecord(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);" title="Load into form for editing">✏️ Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id)}" data-date="${escapeHtml(dateStr)}" onclick="deleteRiverflowRecord(this.dataset.id, this.dataset.date)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete record">🗑️ Delete</button>
             </td>
           </tr>
         `;
@@ -3432,17 +3432,17 @@
 
         return `
           <tr>
-            <td class="mono" style="font-weight:800; color:var(--text-main); font-size:12.5px;">${wk}</td>
-            <td style="font-size:12px;">${period}</td>
-            <td class="mono" style="font-size:11.5px; color:var(--text-muted);">${dateStr}</td>
+            <td class="mono" style="font-weight:800; color:var(--text-main); font-size:12.5px;">${escapeHtml(wk)}</td>
+            <td style="font-size:12px;">${escapeHtml(period)}</td>
+            <td class="mono" style="font-size:11.5px; color:var(--text-muted);">${escapeHtml(dateStr)}</td>
             <td style="text-align:right; font-family:var(--font-mono); color:var(--teal); font-weight:700;">${sw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
             <td style="text-align:right; font-family:var(--font-mono); color:var(--blue); font-weight:700;">${gw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
             <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--text-main);">${total.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
             <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--green);">${mld.toFixed(2)}</td>
             <td style="text-align:right;"><span class="kpi-badge-pill ${targetBadgeClass}">${targetPct}%</span></td>
             <td style="text-align:right; white-space:nowrap;">
-              <button onclick="editProductionRecord('${r.id || wk}')" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">✏️ Edit</button>
-              <button onclick="deleteProductionRecord('${r.id || ''}', '${wk}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">🗑️ Delete</button>
+              <button type="button" data-key="${escapeHtml(r.id || wk)}" onclick="editProductionRecord(this.dataset.key)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">✏️ Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id || '')}" data-week="${escapeHtml(wk)}" onclick="deleteProductionRecord(this.dataset.id, this.dataset.week)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">🗑️ Delete</button>
             </td>
           </tr>
         `;
