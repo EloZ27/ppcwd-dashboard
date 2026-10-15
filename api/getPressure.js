@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
   // INCREASED LIMIT TO 5,000 (roughly 10 days of data for 20 stations)
-  const url = `${SUPABASE_URL}/rest/v1/pressure_readings?select=&order=reading_time.desc&limit=3500`;
+  const url = `${SUPABASE_URL}/rest/v1/pressure_readings?select=*&order=reading_time.desc&limit=3500`;
 
   try {
     const headers = { 'apikey': SUPABASE_KEY };
