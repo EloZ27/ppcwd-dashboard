@@ -36,7 +36,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     // Check if requester has admin authorization (constant-time comparison)
-    const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
+    const configuredPasskey = process.env.ADMIN_PASSKEY;
     const providedPasskey = req.headers['x-admin-passkey'];
     let isAdmin = false;
     if (configuredPasskey && providedPasskey && typeof providedPasskey === 'string') {

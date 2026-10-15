@@ -36,7 +36,11 @@ export default async function handler(req, res) {
 
   // 2. POST: Batch Upsert records for a specific month
   if (req.method === 'POST') {
-    const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
+    const configuredPasskey = process.env.ADMIN_PASSKEY;
+    if (!configuredPasskey) {
+      return res.status(500).json({ error: 'Server authentication configuration missing (ADMIN_PASSKEY).' });
+    }
+
     const providedPasskey = req.headers['x-admin-passkey'] || req.body?.admin_passkey;
 
     if (!providedPasskey || typeof providedPasskey !== 'string') {

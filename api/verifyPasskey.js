@@ -6,7 +6,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const configuredPasskey = process.env.ADMIN_PASSKEY || 'ppcwd2026';
+  const configuredPasskey = process.env.ADMIN_PASSKEY;
+  if (!configuredPasskey) {
+    return res.status(500).json({ success: false, error: 'Server authentication configuration missing (ADMIN_PASSKEY).' });
+  }
+
   const providedPasskey = req.headers['x-admin-passkey'] || req.body?.passkey;
 
   if (!providedPasskey || typeof providedPasskey !== 'string') {
