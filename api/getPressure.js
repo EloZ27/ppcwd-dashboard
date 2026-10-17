@@ -17,6 +17,7 @@ export default async function handler(req, res) {
   const since = req.query.since;
   const start = req.query.start;
   const end = req.query.end;
+  const before = req.query.before || (!start && end ? end : null);
 
   if (since) {
     // Delta sync: fetch newer readings since the newest cached timestamp (gte to avoid boundary omissions)
@@ -24,9 +25,13 @@ export default async function handler(req, res) {
   } else if (start && end) {
     // Range query: fetch specific window for reports or deep historical view
     queryParams += `&reading_time=gte.${encodeURIComponent(start)}&reading_time=lte.${encodeURIComponent(end)}&order=reading_time.asc&limit=10000`;
+  } else if (before) {
+    // Historical pagination: fetch readings prior to given timestamp
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10000, 100), 10000);
+    queryParams += `&reading_time=lt.${encodeURIComponent(before)}&order=reading_time.desc&limit=${limit}`;
   } else {
-    // Default initial load: fetch the most recent batch of up to 8,000 readings (~16-20 days initial buffer)
-    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 8000, 100), 10000);
+    // Default initial load: fetch the most recent batch of up to 10,000 readings
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10000, 100), 10000);
     queryParams += `&order=reading_time.desc&limit=${limit}`;
   }
 
@@ -55,6 +60,9 @@ export default async function handler(req, res) {
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     } else if (start && end) {
       // Historical date ranges are immutable: cache at edge for 1 hour
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=300');
+    } else if (before) {
+      // Historical batches are immutable: cache at edge for 1 hour
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=300');
     } else if (since) {
       // Delta sync queries: short Edge cache (60s) to absorb concurrent hits

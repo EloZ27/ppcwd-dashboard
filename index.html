@@ -3163,21 +3163,39 @@
   }
 
   function getLatestOrFallback(s) {
-    const currentPool = activeDateFilter ? pressureRaw.filter(r => {
-      if(!r.dt || r.vals[s.col] === null) return false;
-      const rd = new Date(r.dt); rd.setHours(0,0,0,0);
-      const fd = new Date(activeDateFilter); fd.setHours(0,0,0,0);
-      return rd.getTime() === fd.getTime();
-    }) : pressureRaw.filter(r => r.vals && r.vals[s.col] !== null);
+    if (activeDateFilter) {
+      const fd = new Date(activeDateFilter); fd.setHours(0, 0, 0, 0);
+      const currentPool = pressureRaw.filter(r => {
+        if (!r.dt || r.vals[s.col] === null) return false;
+        const rd = new Date(r.dt); rd.setHours(0, 0, 0, 0);
+        return rd.getTime() === fd.getTime();
+      });
 
+      let recent = getSnapshot(currentPool);
+      let isFallback = false;
+
+      // If no reading found on this filtered date, fall back only to the closest reading on or prior to this date
+      if (!recent || recent.vals[s.col] === null) {
+        const targetTime = fd.getTime() + 86400000;
+        const priorValid = pressureRaw.filter(r => r.vals && r.vals[s.col] !== null && r.dt && r.dt.getTime() <= targetTime);
+        if (priorValid.length > 0) {
+          recent = priorValid[priorValid.length - 1];
+          isFallback = true;
+        } else {
+          recent = null;
+        }
+      }
+      return { recent, isFallback };
+    }
+
+    // Normal Live Mode
+    const currentPool = pressureRaw.filter(r => r.vals && r.vals[s.col] !== null);
     let recent = getSnapshot(currentPool);
     let isFallback = false;
 
-    // Fallback to absolute latest recorded reading across the dataset if not in current view
     if (!recent || recent.vals[s.col] === null) {
-      const allValid = pressureRaw.filter(r => r.vals && r.vals[s.col] !== null);
-      if (allValid.length > 0) {
-        recent = allValid[allValid.length - 1];
+      if (currentPool.length > 0) {
+        recent = currentPool[currentPool.length - 1];
         isFallback = true;
       }
     }
@@ -3578,10 +3596,23 @@
     const tbody = document.getElementById("press-tbody");
     if (!thead || !tbody) return;
 
+    let slice = [];
+    if (activeDateFilter) {
+      const fd = new Date(activeDateFilter); fd.setHours(0, 0, 0, 0);
+      slice = pressureRaw.filter(r => {
+        if (!r.dt) return false;
+        const rd = new Date(r.dt); rd.setHours(0, 0, 0, 0);
+        return rd.getTime() === fd.getTime();
+      }).reverse();
+    }
+
+    if (!activeDateFilter || !slice.length) {
+      slice = pressureRaw.slice(-100).reverse();
+    }
+
     thead.innerHTML = `<th style="min-width:140px;">Date &amp; Time</th>` +
       PRESSURE_STATIONS.map(s => `<th class="right" style="font-size:9.5px;">${s.name.split(" ").slice(0, 2).join(" ")}</th>`).join("");
 
-    const slice = pressureRaw.slice(-100).reverse();
     tbody.innerHTML = slice.map(r => {
       const ds = r.dt ? r.dt.toLocaleDateString("en-PH", { month: 'short', day: 'numeric' }) : "—";
       const ts = r.dt ? r.dt.toLocaleTimeString("en-PH", { hour: '2-digit', minute: '2-digit' }) : "—";
@@ -3928,41 +3959,108 @@
   }
 
   function stepTime(hrs) {
-    const input = document.getElementById("time-filter-input");
-    let [h, m] = input.value ? input.value.split(":") : [new Date().getHours(), 0];
-    let d = new Date(); d.setHours(parseInt(h, 10) + hrs, 0, 0, 0);
-    input.value = `${String(d.getHours()).padStart(2, '0')}:00`;
+    const timeInput = document.getElementById("time-filter-input");
+    const dateInput = document.getElementById("date-filter-input");
+
+    // Determine current reference date & time
+    let curDateStr = dateInput.value;
+    if (!curDateStr && pressureRaw && pressureRaw.length > 0) {
+      const latestDt = pressureRaw[pressureRaw.length - 1].dt;
+      if (latestDt) {
+        const y = latestDt.getFullYear();
+        const m = String(latestDt.getMonth() + 1).padStart(2, '0');
+        const d = String(latestDt.getDate()).padStart(2, '0');
+        curDateStr = `${y}-${m}-${d}`;
+        dateInput.value = curDateStr;
+      }
+    }
+
+    let [h, m] = timeInput.value ? timeInput.value.split(":") : [
+      (pressureRaw && pressureRaw.length > 0 && pressureRaw[pressureRaw.length - 1].dt)
+        ? pressureRaw[pressureRaw.length - 1].dt.getHours()
+        : 17, 
+      0
+    ];
+
+    let base = curDateStr ? new Date(curDateStr + "T00:00:00") : new Date();
+    base.setHours(parseInt(h, 10) + hrs, 0, 0, 0);
+
+    // Update inputs to new date & hour
+    const y = base.getFullYear();
+    const mo = String(base.getMonth() + 1).padStart(2, '0');
+    const da = String(base.getDate()).padStart(2, '0');
+    dateInput.value = `${y}-${mo}-${da}`;
+    timeInput.value = `${String(base.getHours()).padStart(2, '0')}:00`;
+
     applyDateFilter();
   }
 
-  function applyDateFilter(){
-    return preserveScrollRun(() => {
-      const dateVal = document.getElementById("date-filter-input").value;
-      const timeVal = document.getElementById("time-filter-input").value;
-      if(!dateVal && !timeVal){ clearDateFilter(); return; }
+  async function applyDateFilter(){
+    return preserveScrollRun(async () => {
+      const dateInput = document.getElementById("date-filter-input");
+      const timeInput = document.getElementById("time-filter-input");
+      let dateVal = dateInput.value;
+      const timeVal = timeInput.value;
 
-      const activeDateStr = dateVal || new Date().toISOString().split('T')[0];
-      activeDateFilter = new Date(activeDateStr + "T00:00:00");
+      if (!dateVal && !timeVal) { 
+        clearDateFilter(); 
+        return; 
+      }
+
+      // If user only selected a time, default to the date of the latest reading in pressureRaw
+      if (!dateVal && pressureRaw && pressureRaw.length > 0) {
+        const latestDt = pressureRaw[pressureRaw.length - 1].dt;
+        if (latestDt) {
+          const y = latestDt.getFullYear();
+          const m = String(latestDt.getMonth() + 1).padStart(2, '0');
+          const d = String(latestDt.getDate()).padStart(2, '0');
+          dateVal = `${y}-${m}-${d}`;
+          dateInput.value = dateVal;
+        }
+      }
+
+      if (!dateVal) {
+        dateVal = new Date().toISOString().split('T')[0];
+      }
+
+      activeDateFilter = new Date(dateVal + "T00:00:00");
       activeTimeFilter = timeVal || null;
       document.getElementById("date-filter-clear").style.display = "inline-flex";
 
+      // Check if this date exists in pressureRaw. If not, fetch on-demand from Supabase!
+      const fd = new Date(activeDateFilter); fd.setHours(0, 0, 0, 0);
+      const hasDateInMemory = pressureRaw.some(r => {
+        if (!r.dt) return false;
+        const rd = new Date(r.dt); rd.setHours(0, 0, 0, 0);
+        return rd.getTime() === fd.getTime();
+      });
+
+      if (!hasDateInMemory) {
+        const startOfDay = new Date(activeDateFilter); startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay   = new Date(activeDateFilter); endOfDay.setHours(23, 59, 59, 999);
+        await fetchPressureRange(startOfDay, endOfDay);
+      }
+
       buildLeafletMarkers();
       buildStationCards();
-      if(compareStations.length > 0) buildCompareChart();
+      if (compareStations.length > 0) buildCompareChart();
       buildPressureRawTable();
+      if (typeof updateOutlierChips === 'function') updateOutlierChips();
     });
   }
 
   function clearDateFilter(){
     return preserveScrollRun(() => {
-      activeDateFilter = null; activeTimeFilter = null;
+      activeDateFilter = null; 
+      activeTimeFilter = null;
       document.getElementById("date-filter-input").value = "";
       document.getElementById("time-filter-input").value = "";
       document.getElementById("date-filter-clear").style.display = "none";
       buildLeafletMarkers();
       buildStationCards();
-      if(compareStations.length > 0) buildCompareChart();
+      if (compareStations.length > 0) buildCompareChart();
       buildPressureRawTable();
+      if (typeof updateOutlierChips === 'function') updateOutlierChips();
     });
   }
 
@@ -4625,6 +4723,32 @@
     }
   }
 
+  // Background historical backfill to cache 30-60 days into IndexedDB
+  let isFetchingOlderHistory = false;
+  async function fetchOlderHistoryBatch() {
+    if (isFetchingOlderHistory || !pressureRaw || pressureRaw.length === 0) return;
+    isFetchingOlderHistory = true;
+    try {
+      const oldestRecord = pressureRaw[0];
+      if (!oldestRecord || !oldestRecord.dt) return;
+      const oldestIso = oldestRecord.dt.toISOString();
+      const res = await fetch(`/api/getPressure?before=${encodeURIComponent(oldestIso)}&limit=10000`);
+      if (!res.ok) return;
+      const olderRows = await res.json();
+      if (Array.isArray(olderRows) && olderRows.length > 0) {
+        mergeRowsIntoMemory(olderRows);
+        await PressureDB.putBatch(olderRows);
+        if (compareStations.length > 0 && typeof buildCompareChart === 'function') {
+          buildCompareChart();
+        }
+      }
+    } catch (err) {
+      console.warn('Background older history fetch error:', err);
+    } finally {
+      isFetchingOlderHistory = false;
+    }
+  }
+
   async function loadPressure(isAutoRefresh = false, bypassCache = false) {
     try {
       // 1. If in-memory pressureRaw is empty, load from IndexedDB first for instant 0ms UI render
@@ -4650,12 +4774,12 @@
 
       // 3. Build query URL:
       // If we have cached data, fetch only delta since maxReadingTime (typically ~20 rows = ~2 KB).
-      // If no cached data (first run), fetch initial window of up to 8,000 readings.
+      // If no cached data (first run), fetch initial window of up to 10,000 readings.
       let queryUrl = '/api/getPressure?';
       if (maxReadingTime) {
         queryUrl += `since=${encodeURIComponent(maxReadingTime)}`;
       } else {
-        queryUrl += 'limit=8000';
+        queryUrl += 'limit=10000';
       }
 
       if (bypassCache) {
@@ -4675,6 +4799,26 @@
         await PressureDB.putBatch(newRows);
         // Prune older records > 60 days in background
         PressureDB.pruneOlderThan(60);
+      }
+
+      // Background backfill: ensure full 30-60 days is populated into local cache
+      if (pressureRaw && pressureRaw.length > 0 && pressureRaw.length < 20000) {
+        setTimeout(fetchOlderHistoryBatch, 800);
+      }
+
+      // Pre-set max date on date-filter-input so user knows available telemetry bounds
+      if (pressureRaw && pressureRaw.length > 0) {
+        const latestDt = pressureRaw[pressureRaw.length - 1].dt;
+        if (latestDt) {
+          const y = latestDt.getFullYear();
+          const m = String(latestDt.getMonth() + 1).padStart(2, '0');
+          const d = String(latestDt.getDate()).padStart(2, '0');
+          const maxDateStr = `${y}-${m}-${d}`;
+          const dateInput = document.getElementById("date-filter-input");
+          if (dateInput && !dateInput.value) {
+            dateInput.max = maxDateStr;
+          }
+        }
       }
 
       lastPressureSyncTimestamp = Date.now();
