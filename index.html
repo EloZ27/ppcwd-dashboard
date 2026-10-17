@@ -4459,37 +4459,233 @@
     }
   }
 
+  // ── CLIENT-SIDE INDEXEDDB TELEMETRY ENGINE ──
+  const PressureDB = {
+    dbName: 'ppcwd_dashboard_db',
+    storeName: 'pressure_readings',
+    version: 1,
+    _db: null,
+
+    async getDB() {
+      if (this._db) return this._db;
+      if (typeof indexedDB === 'undefined') return null;
+
+      return new Promise((resolve) => {
+        try {
+          const req = indexedDB.open(this.dbName, this.version);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(this.storeName)) {
+              const store = db.createObjectStore(this.storeName, { keyPath: 'id' });
+              store.createIndex('reading_time', 'reading_time', { unique: false });
+            }
+          };
+          req.onsuccess = (e) => {
+            this._db = e.target.result;
+            resolve(this._db);
+          };
+          req.onerror = (e) => {
+            console.warn('IndexedDB open error:', e);
+            resolve(null);
+          };
+        } catch (err) {
+          console.warn('IndexedDB initialization failed:', err);
+          resolve(null);
+        }
+      });
+    },
+
+    async getAll() {
+      try {
+        const db = await this.getDB();
+        if (!db) return [];
+        return new Promise((resolve) => {
+          const tx = db.transaction(this.storeName, 'readonly');
+          const store = tx.objectStore(this.storeName);
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        });
+      } catch (err) {
+        console.warn('PressureDB getAll error:', err);
+        return [];
+      }
+    },
+
+    async putBatch(rows) {
+      if (!Array.isArray(rows) || !rows.length) return;
+      try {
+        const db = await this.getDB();
+        if (!db) return;
+        return new Promise((resolve) => {
+          const tx = db.transaction(this.storeName, 'readwrite');
+          const store = tx.objectStore(this.storeName);
+          rows.forEach(r => {
+            if (r.reading_time && r.station_name) {
+              store.put({
+                id: `${r.reading_time}_${r.station_name}`,
+                reading_time: r.reading_time,
+                station_name: r.station_name,
+                psi: (r.psi !== null && r.psi !== undefined) ? Number(r.psi) : null
+              });
+            }
+          });
+          tx.oncomplete = () => resolve();
+          tx.onerror = (e) => {
+            console.warn('PressureDB putBatch error:', e);
+            resolve();
+          };
+        });
+      } catch (err) {
+        console.warn('PressureDB putBatch error:', err);
+      }
+    },
+
+    async pruneOlderThan(days = 60) {
+      try {
+        const db = await this.getDB();
+        if (!db) return;
+        const cutoff = new Date(Date.now() - (days * 86400000)).toISOString();
+        return new Promise((resolve) => {
+          const tx = db.transaction(this.storeName, 'readwrite');
+          const store = tx.objectStore(this.storeName);
+          const idx = store.index('reading_time');
+          const range = IDBKeyRange.upperBound(cutoff);
+          const req = idx.openKeyCursor(range);
+          req.onsuccess = (e) => {
+            const cursor = e.target.result;
+            if (cursor) {
+              store.delete(cursor.primaryKey);
+              cursor.continue();
+            } else {
+              resolve();
+            }
+          };
+          req.onerror = () => resolve();
+        });
+      } catch (err) {
+        console.warn('PressureDB prune error:', err);
+      }
+    }
+  };
+
+  // Helper to merge rows into in-memory pressureRaw array
+  function mergeRowsIntoMemory(rows) {
+    if (!Array.isArray(rows) || !rows.length) return;
+
+    const grouped = {};
+    if (pressureRaw && pressureRaw.length) {
+      pressureRaw.forEach(item => {
+        if (item.dt) {
+          const key = item.dt.getTime();
+          grouped[key] = item;
+        }
+      });
+    }
+
+    rows.forEach(row => {
+      if (!row.reading_time) return;
+      const dt = new Date(row.reading_time);
+      dt.setSeconds(0, 0);
+      const key = dt.getTime();
+
+      if (!grouped[key]) {
+        grouped[key] = { dt, vals: {} };
+        PRESSURE_STATIONS.forEach(s => grouped[key].vals[s.col] = null);
+      }
+
+      const st = PRESSURE_STATIONS.find(s => matchStation(row.station_name, s));
+      if (st) {
+        grouped[key].vals[st.col] = (row.psi !== null && row.psi !== undefined) ? Number(row.psi) : null;
+      }
+    });
+
+    pressureRaw = Object.values(grouped).sort((a, b) => a.dt - b.dt);
+  }
+
+  // Fetch on-demand custom historical date range from server
+  async function fetchPressureRange(startDt, endDt) {
+    try {
+      const startIso = startDt.toISOString();
+      const endIso = endDt.toISOString();
+      const res = await fetch(`/api/getPressure?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = await res.json();
+      if (!Array.isArray(rows) || !rows.length) return false;
+
+      // Save to IndexedDB so subsequent requests for this range are instant
+      await PressureDB.putBatch(rows);
+
+      // Merge into in-memory pressureRaw
+      mergeRowsIntoMemory(rows);
+      return true;
+    } catch (err) {
+      console.warn('fetchPressureRange error:', err);
+      return false;
+    }
+  }
+
   async function loadPressure(isAutoRefresh = false, bypassCache = false) {
     try {
-      const cacheBust = bypassCache ? `?t=${Date.now()}&nocache=1` : `?t=${Math.floor(Date.now() / 60000)}`;
-      const res = await fetch('/api/getPressure' + cacheBust, {
+      // 1. If in-memory pressureRaw is empty, load from IndexedDB first for instant 0ms UI render
+      if (!pressureRaw || pressureRaw.length === 0) {
+        const cachedRows = await PressureDB.getAll();
+        if (cachedRows && cachedRows.length > 0) {
+          mergeRowsIntoMemory(cachedRows);
+          if (typeof renderOverview === 'function') renderOverview();
+          if (typeof refreshPressureViewComponents === 'function' && document.getElementById("page-pressure")?.classList.contains("active")) {
+            refreshPressureViewComponents();
+          }
+        }
+      }
+
+      // 2. Determine newest reading_time available in local cache
+      let maxReadingTime = null;
+      if (pressureRaw && pressureRaw.length > 0) {
+        const lastRecord = pressureRaw[pressureRaw.length - 1];
+        if (lastRecord && lastRecord.dt) {
+          maxReadingTime = lastRecord.dt.toISOString();
+        }
+      }
+
+      // 3. Build query URL:
+      // If we have cached data, fetch only delta since maxReadingTime (typically ~20 rows = ~2 KB).
+      // If no cached data (first run), fetch initial window of up to 8,000 readings.
+      let queryUrl = '/api/getPressure?';
+      if (maxReadingTime) {
+        queryUrl += `since=${encodeURIComponent(maxReadingTime)}`;
+      } else {
+        queryUrl += 'limit=8000';
+      }
+
+      if (bypassCache) {
+        queryUrl += '&nocache=1';
+      }
+
+      const res = await fetch(queryUrl, {
         cache: bypassCache ? 'no-store' : 'default'
       });
       if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
-      const dbData = await res.json();
-      const grouped = {};
+      const newRows = await res.json();
 
-      dbData.forEach(row => {
-        const dt = new Date(row.reading_time);
-        dt.setSeconds(0, 0);
-        const key = dt.getTime();
+      if (Array.isArray(newRows) && newRows.length > 0) {
+        // Merge into in-memory array
+        mergeRowsIntoMemory(newRows);
+        // Persist new delta into IndexedDB
+        await PressureDB.putBatch(newRows);
+        // Prune older records > 60 days in background
+        PressureDB.pruneOlderThan(60);
+      }
 
-        if (!grouped[key]) {
-          grouped[key] = { dt, vals: {} };
-          PRESSURE_STATIONS.forEach(s => grouped[key].vals[s.col] = null);
-        }
-
-        const st = PRESSURE_STATIONS.find(s => matchStation(row.station_name, s));
-        if (st) grouped[key].vals[st.col] = row.psi;
-      });
-
-      pressureRaw = Object.values(grouped).sort((a, b) => a.dt - b.dt);
       lastPressureSyncTimestamp = Date.now();
       updatePressureSyncBadge(new Date());
 
       const note = document.getElementById("sidebar-status-note");
-      if(note) note.textContent = "Synced at " + new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+      if (note) note.textContent = "Synced at " + new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
 
+      if (document.getElementById("page-pressure")?.classList.contains("active")) {
+        if (typeof refreshPressureViewComponents === 'function') refreshPressureViewComponents();
+      }
       if (typeof renderOverview === 'function') renderOverview();
       return true;
     } catch(e) { 
@@ -4755,9 +4951,24 @@
       return;
     }
 
-    const filtered = pressureRaw.filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
+    let filtered = pressureRaw.filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
+
+    // If local memory doesn't contain this range (or is missing older data), fetch from server on-demand
+    const oldestInRaw = pressureRaw.length > 0 ? pressureRaw[0].dt : null;
+    const isRangeMissing = !filtered.length || (oldestInRaw && startDt < oldestInRaw);
+
+    if (isRangeMissing) {
+      statusEl.textContent = 'Fetching historical data from server...';
+      statusEl.style.color = 'var(--blue)';
+      const fetched = await fetchPressureRange(startDt, endDt);
+      if (fetched) {
+        filtered = pressureRaw.filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
+      }
+    }
+
     if(!filtered.length) {
       statusEl.textContent = 'No pressure readings found in that date range.';
+      statusEl.style.color = 'var(--red)';
       return;
     }
 
@@ -4990,8 +5201,8 @@
   setInterval(async () => {
     // Only auto-fetch if we haven't fetched fresh data within the last 4.5 minutes
     if (Date.now() - lastPressureSyncTimestamp >= 4.5 * 60 * 1000) {
-      console.log("Auto-refresh: fetching SCADA pressure readings...");
-      await loadPressure(true, true);
+      console.log("Auto-refresh: delta-syncing SCADA pressure readings...");
+      await loadPressure(true, false);
       if(document.getElementById("page-overview")?.classList.contains("active")) renderOverview();
       if(document.getElementById("page-pressure")?.classList.contains("active")) {
         refreshPressureViewComponents();
@@ -5005,8 +5216,8 @@
       if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
       const elapsed = Date.now() - lastPressureSyncTimestamp;
       if (lastPressureSyncTimestamp > 0 && elapsed >= 5 * 60 * 1000) {
-        console.log("Tab resumed and pressure data is stale (> 5 min). Auto-refreshing...");
-        await loadPressure(true, true);
+        console.log("Tab resumed and pressure data is stale (> 5 min). Auto delta-syncing...");
+        await loadPressure(true, false);
         if (document.getElementById("page-overview")?.classList.contains("active")) renderOverview();
         if (document.getElementById("page-pressure")?.classList.contains("active")) {
           refreshPressureViewComponents();
