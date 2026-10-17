@@ -4639,7 +4639,7 @@
       }
     },
 
-    async pruneOlderThan(days = 60) {
+    async pruneOlderThan(days = 120) {
       try {
         const db = await this.getDB();
         if (!db) return;
@@ -4797,8 +4797,8 @@
         mergeRowsIntoMemory(newRows);
         // Persist new delta into IndexedDB
         await PressureDB.putBatch(newRows);
-        // Prune older records > 60 days in background
-        PressureDB.pruneOlderThan(60);
+        // Prune older records > 120 days in background
+        PressureDB.pruneOlderThan(120);
       }
 
       // Background backfill: ensure full 30-60 days is populated into local cache
