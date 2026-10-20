@@ -1115,6 +1115,11 @@
         <button class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon">⚠️</span><span>Crisis Monitor</span></button>
         <button class="nav-btn" onclick="switchNavTab('riverflow')"><span class="nav-icon">🌊</span><span>River Hydrology</span></button>
         <button class="nav-btn" onclick="switchNavTab('complaints')"><span class="nav-icon">📋</span><span>Customer Reports</span></button>
+        <div style="height: 1px; background: rgba(255, 255, 255, 0.08); margin: 6px 4px;"></div>
+        <a href="genset-monitoring.html" class="nav-btn" style="text-decoration:none; color: #93C5FD;">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+          <span>Standby Genset Fleet</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
@@ -1161,10 +1166,10 @@
               <span id="header-auth-status-icon"></span>
               <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
             </button>
-            <button class="header-btn" onclick="openGensetModal()" style="color: var(--blue); font-weight: 700; border-color: var(--blue-border); background: var(--blue-light);">
+            <a href="genset-monitoring.html" class="header-btn" style="color: var(--blue); font-weight: 700; border-color: var(--blue-border); background: var(--blue-light); text-decoration:none;">
               <span class="desktop-text">Standby Generators</span>
               <span class="mobile-text" style="display:none;">Gensets</span>
-            </button>
+            </a>
           </div>
         </header>
 
@@ -1722,7 +1727,12 @@
           <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Standby Generator Fleet</h3>
           <p style="font-size:11px; color:var(--text-muted);">Active equipment deployment and maintenance log status</p>
         </div>
-        <button onclick="closeGensetModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted);">✕</button>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="genset-monitoring.html" class="header-btn primary" style="text-decoration:none; padding:6px 12px; font-size:11px; font-weight:700;">
+            Open Full Genset Portal &rarr;
+          </a>
+          <button onclick="closeGensetModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted);">✕</button>
+        </div>
       </div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:14px 24px; background:#F8FAFC; border-bottom:1px solid var(--card-border);">
         <div><div style="font-size:10px; color:var(--text-muted);">Total Fleet</div><div id="gs-total-count" style="font-size:20px; font-weight:800;">—</div></div>
