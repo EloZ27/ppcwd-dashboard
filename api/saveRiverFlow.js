@@ -72,11 +72,17 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'recorded_date is required (YYYY-MM-DD).' });
       }
 
-      // Build standard 21-element readings array
-      let finalReadings = Array.isArray(readings) && readings.length >= 21 ? [...readings] : null;
+      // Determine max column index dynamically (minimum 20 for standard 19 stations)
+      const colIndices = readings_map && typeof readings_map === 'object'
+        ? Object.keys(readings_map).map(Number).filter(n => !isNaN(n))
+        : [];
+      const maxCol = Math.max(20, ...colIndices);
+
+      // Build readings array (indices 0..maxCol)
+      let finalReadings = Array.isArray(readings) && readings.length >= maxCol + 1 ? [...readings] : null;
 
       if (!finalReadings) {
-        finalReadings = new Array(21).fill(null);
+        finalReadings = new Array(maxCol + 1).fill(null);
         finalReadings[0] = "Discharge (m3/day)";
 
         // Format Date string: e.g. "September 8, 2026"
@@ -85,9 +91,9 @@ export default async function handler(req, res) {
         const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         finalReadings[1] = `${months[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
 
-        // Populate readings_map indices 2..20
+        // Populate readings_map indices 2..maxCol
         if (readings_map && typeof readings_map === 'object') {
-          for (let col = 2; col <= 20; col++) {
+          for (let col = 2; col <= maxCol; col++) {
             const rawVal = readings_map[col];
             if (rawVal !== undefined && rawVal !== null && rawVal !== '') {
               const numVal = parseFloat(String(rawVal).replace(/,/g, ''));

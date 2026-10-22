@@ -2259,7 +2259,7 @@
     {name:"Villarosa Rd cor Manalo",  col:21,lat:9.7358717,  lng:118.7563164},
   ];
 
-  const RIVER_STATIONS = [
+  let RIVER_STATIONS = [
     {name: "Montible Teruvian", col: 2, group: "City / Primary Sources"},
     {name: "Montible Bridge 1", col: 3, group: "City / Primary Sources"},
     {name: "Upper Montible", col: 4, group: "City / Primary Sources"},
@@ -4840,15 +4840,37 @@
 
   async function loadRiverFlow() {
     try {
+      // 1. Fetch dynamic monitored river stations
+      try {
+        const stRes = await fetch('/api/getRiverStations');
+        if (stRes.ok) {
+          const stationsData = await stRes.json();
+          if (Array.isArray(stationsData) && stationsData.length > 0) {
+            RIVER_STATIONS = stationsData;
+          }
+        }
+      } catch (stErr) {
+        console.warn('Could not load dynamic river stations, using default stations', stErr);
+      }
+
+      // 2. Fetch river flow telemetry
       const res = await fetch('/api/getRiverFlow');
       const data = await res.json();
-      riverRaw = data.map(r => {
-        const raw = r.readings;
-        while(raw.length <= 20) raw.push(null);
+      const maxCol = Math.max(20, ...RIVER_STATIONS.map(s => s.col));
+
+      riverRaw = (Array.isArray(data) ? data : []).map(r => {
+        const raw = Array.isArray(r.readings) ? [...r.readings] : [];
+        while(raw.length <= maxCol) raw.push(null);
         return { dt: new Date(raw[1]), vals: raw, raw };
       }).sort((a, b) => a.dt - b.dt);
+
       if (typeof renderOverview === 'function') renderOverview();
-    } catch(e) { console.error("River err", e); }
+      if (typeof buildRiverLeaderboard === 'function') buildRiverLeaderboard();
+      if (typeof buildRiverSidebar === 'function') buildRiverSidebar();
+      if (typeof showRiverDetails === 'function' && RIVER_STATIONS.length > 0) {
+        showRiverDetails(selectedRiverCol || RIVER_STATIONS[0].col);
+      }
+    } catch(e) { console.error('River err', e); }
   }
 
   async function loadComplaints() {

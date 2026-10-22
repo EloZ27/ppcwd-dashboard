@@ -508,7 +508,7 @@
           <label class="form-lbl" style="margin-bottom:6px; display:block;">Authorization Passkey / PIN *</label>
           <div style="position:relative;">
             <input type="password" id="auth-passkey-input" class="form-input" placeholder="Enter Division Passkey..." style="padding-right:40px; font-size:13px; font-weight:600;" required autocomplete="current-password">
-            <button type="button" onclick="togglePasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;" title="Show/Hide passkey">👁️</button>
+            <button type="button" onclick="togglePasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;" title="Show/Hide passkey"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
           </div>
         </div>
 
@@ -521,7 +521,7 @@
         </div>
 
         <button type="submit" id="btn-auth-unlock" class="btn-submit" style="width:100%; justify-content:center; padding:11px; font-size:12px; font-weight:700;">
-          🔓 Authenticate &amp; Unlock Portal
+          Authenticate &amp; Unlock Portal
         </button>
       </form>
     </div>
@@ -542,29 +542,29 @@
 
       <nav class="sidebar-nav">
         <a href="index.html" class="nav-btn">
-          <span class="nav-icon">📊</span>
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
           <span>Back to Dashboard</span>
         </a>
 
         <div class="sidebar-divider"></div>
 
         <button class="nav-btn active" id="sidebar-btn-gensets" onclick="switchPortalSection('gensets')">
-          <span class="nav-icon">⚡</span>
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
           <span>Genset &amp; Asset Admin</span>
         </button>
 
         <button class="nav-btn" id="sidebar-btn-complaints" onclick="switchPortalSection('complaints')">
-          <span class="nav-icon">📋</span>
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
           <span>Customer Complaints</span>
         </button>
 
         <button class="nav-btn" id="sidebar-btn-riverflow" onclick="switchPortalSection('riverflow')">
-          <span class="nav-icon">🌊</span>
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c3-3 6-3 9 0s6 3 9 0M2 17c3-3 6-3 9 0s6 3 9 0"/></svg></span>
           <span>River Hydrology</span>
         </button>
 
         <button class="nav-btn" id="sidebar-btn-production" onclick="switchPortalSection('production')">
-          <span class="nav-icon">💧</span>
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
           <span>Weekly Production</span>
         </button>
       </nav>
@@ -579,7 +579,7 @@
             </div>
           </div>
           <button type="button" onclick="lockPortal()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#F1F5F9; font-size:10px; font-weight:700; padding:4px 8px; cursor:pointer;" title="Lock Portal & Sign Out">
-            🔒 Lock
+            Lock
           </button>
         </div>
       </div>
@@ -615,7 +615,7 @@
           <div class="card">
           <div class="card-header-bar">
             <div class="card-heading">
-              <h2>⚡ Standby Generator Asset Management</h2>
+              <h2>Standby Generator Asset Management</h2>
               <p>Assign stations, log preventive maintenance (PMS), record emergency repairs, and track relocations</p>
             </div>
             <div class="segment-pills">
@@ -658,10 +658,10 @@
               <div class="field-group">
                 <label class="form-lbl">Operating Status *</label>
                 <select id="gs-select-status" name="new_status" class="form-input">
-                  <option value="Operational">Operational 🟢</option>
-                  <option value="Under Maintenance">Under Maintenance 🟡</option>
-                  <option value="Standby">Standby 🟠</option>
-                  <option value="Offline">Offline / Defective 🔴</option>
+                  <option value="Operational">Operational</option>
+                  <option value="Under Maintenance">Under Maintenance</option>
+                  <option value="Standby">Standby</option>
+                  <option value="Offline">Offline / Defective</option>
                 </select>
               </div>
               <div class="field-group">
@@ -715,8 +715,8 @@
               <div class="field-group">
                 <label class="form-lbl">Commissioning Status</label>
                 <select name="new_status" class="form-input">
-                  <option value="Operational">Operational 🟢</option>
-                  <option value="Standby">Standby 🟠</option>
+                  <option value="Operational">Operational</option>
+                  <option value="Standby">Standby</option>
                 </select>
               </div>
             </div>
@@ -736,10 +736,10 @@
         <div class="table-container">
           <div class="table-head-bar">
             <div>
-              <div class="table-head-title">📋 Active Fleet Deployment &amp; Readiness</div>
+              <div class="table-head-title">Active Fleet Deployment &amp; Readiness</div>
               <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Station assignments and latest maintenance audit logs</div>
             </div>
-            <button onclick="fetchGensetFleet()" class="header-btn" style="color:var(--blue); font-size:10px;">↻ Refresh</button>
+            <button onclick="fetchGensetFleet()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
           </div>
 
           <div class="table-responsive">
@@ -769,12 +769,12 @@
           <div class="card">
             <div class="card-header-bar">
               <div class="card-heading">
-                <h2>📋 Customer Complaints &amp; Service Incidents</h2>
+                <h2>Customer Complaints &amp; Service Incidents</h2>
                 <p>Log verified customer reports, track affected stubouts, and bulk import daily incident telemetry into Supabase</p>
               </div>
               <div class="segment-pills">
                 <button type="button" class="seg-pill active" id="tab-btn-comp-single" onclick="switchComplaintView('single')">Single Incident Entry</button>
-                <button type="button" class="seg-pill" id="tab-btn-comp-bulk" onclick="switchComplaintView('bulk')">📄 Paste from Excel / CSV</button>
+                <button type="button" class="seg-pill" id="tab-btn-comp-bulk" onclick="switchComplaintView('bulk')">Paste from Excel / CSV</button>
               </div>
             </div>
 
@@ -890,7 +890,7 @@
             <!-- VIEW 2: BULK EXCEL / CSV IMPORT -->
             <div id="comp-bulk-panel" style="display:none;">
               <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:14px;">
-                <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">📋 How to Paste Data from Excel or Google Sheets:</div>
+                <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">How to Paste Data from Excel or Google Sheets:</div>
                 <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
                   Copy rows from your spreadsheet and paste directly into the box below. Columns are expected in this standard order:<br>
                   <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">Date | Stubout Number | Type of Complaint | Barangay | Account Number | Complaint Count</code><br>
@@ -903,7 +903,7 @@
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
                 <button type="button" class="header-btn" onclick="populateSamplePaste()">Fill Sample Template</button>
                 <button type="button" id="btn-parse-paste" class="btn-submit" onclick="parseBulkComplaints()">
-                  🔍 Parse &amp; Preview Rows
+                  Parse &amp; Preview Rows
                 </button>
               </div>
 
@@ -912,7 +912,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
                   <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Preview Parsed Records (<span id="comp-preview-count">0</span> valid rows)</h4>
                   <button type="button" id="btn-upload-bulk-complaints" onclick="uploadBulkComplaints()" class="btn-submit" style="background:var(--green); border-color:var(--green);">
-                    🚀 Upload All to Supabase
+                    Upload All to Supabase
                   </button>
                 </div>
                 <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
@@ -938,12 +938,12 @@
           <div class="table-container">
             <div class="table-head-bar">
               <div>
-                <div class="table-head-title">📋 Verified Complaints Ledger (Supabase Live Feed)</div>
+                <div class="table-head-title">Verified Complaints Ledger (Supabase Live Feed)</div>
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Live incoming telemetry from customer care triage</div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <input type="text" id="comp-search-input" placeholder="Filter by barangay, stubout, account..." class="form-input" style="width:230px; padding:6px 10px; font-size:11px;" oninput="filterComplaintsTable()">
-                <button onclick="fetchComplaintsList()" class="header-btn" style="color:var(--blue); font-size:10px;">↻ Refresh</button>
+                <button onclick="fetchComplaintsList()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
               </div>
             </div>
 
@@ -976,16 +976,19 @@
           <div class="card">
             <div class="card-header-bar">
               <div class="card-heading">
-                <h2>🌊 River Flow Measurement Weekly Entry</h2>
-                <p>Environment Water Resources Division &bull; Record streamflow discharge (m³/day) across 19 monitored stations</p>
+                <h2>River Flow Measurement Weekly Entry</h2>
+                <p>Environment Water Resources Division &bull; Record streamflow discharge (m³/day) across <span id="rf-header-count">19</span> monitored stations</p>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <button type="button" class="header-btn" onclick="clearRiverflowForm()">✕ Clear Form</button>
+                <button type="button" class="header-btn" onclick="openAddRiverModal()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
+                  + Add Monitored River
+                </button>
+                <button type="button" class="header-btn" onclick="clearRiverflowForm()">Clear Form</button>
                 <button type="button" class="header-btn" onclick="loadPreviousRiverReadings()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light);">
-                  ↻ Load Previous As Baseline
+                  Load Previous As Baseline
                 </button>
                 <button type="button" id="btn-save-riverflow" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
-                  💾 Save Readings to Supabase
+                  Save Readings to Supabase
                 </button>
               </div>
             </div>
@@ -1050,11 +1053,45 @@
 
             <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
               <span style="font-size:11px; color:var(--text-muted);">
-                💡 Tip: Press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd> to quickly jump directly to the next river's discharge input.
+                Tip: Press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd> to quickly jump directly to the next river's discharge input.
               </span>
               <button type="button" id="btn-save-riverflow-bottom" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
-                💾 Save Readings to Supabase
+                Save Readings to Supabase
               </button>
+            </div>
+          </div>
+
+          
+          <!-- Modal: Add Monitored River Station -->
+          <div id="modal-add-river" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+            <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:12px; width:440px; max-width:92vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Add Monitored River Station</h3>
+                <button type="button" onclick="closeAddRiverModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">&times;</button>
+              </div>
+              <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:16px; line-height:1.5;">
+                Register an additional streamflow monitoring source. It will automatically sync to Supabase and propagate to the live dashboard.
+              </p>
+              <div style="margin-bottom:14px;">
+                <label class="form-lbl" style="margin-bottom:4px;">River / Station Name *</label>
+                <input type="text" id="modal-river-name" class="form-input" placeholder="e.g. Inagawan River, Irawan Upper" style="width:100%; font-weight:600;">
+              </div>
+              <div style="margin-bottom:18px;">
+                <label class="form-lbl" style="margin-bottom:4px;">Watershed Zone *</label>
+                <select id="modal-river-group" class="form-input" style="width:100%;">
+                  <option value="City / Primary Sources">City / Primary Sources</option>
+                  <option value="Satellite North">Satellite North</option>
+                  <option value="Satellite South">Satellite South</option>
+                  <option value="Satellite Other">Satellite Other</option>
+                </select>
+              </div>
+              <div id="modal-river-error" style="display:none; font-size:11px; color:var(--red); margin-bottom:12px;"></div>
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" class="header-btn" onclick="closeAddRiverModal()">Cancel</button>
+                <button type="button" id="btn-submit-add-river" class="btn-submit" onclick="submitAddRiverModal()" style="background:var(--teal); border-color:var(--teal);">
+                  Add River
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1062,12 +1099,12 @@
           <div class="table-container">
             <div class="table-head-bar">
               <div>
-                <div class="table-head-title">📋 Weekly River Flow Records History (Supabase Live Feed)</div>
+                <div class="table-head-title">Weekly River Flow Records History (Supabase Live Feed)</div>
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly discharge benchmarks stored in cloud database</div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <input type="text" id="rf-search-input" placeholder="Search by date or keyword..." class="form-input" style="width:210px; padding:6px 10px; font-size:11px;" oninput="filterRiverflowHistory()">
-                <button onclick="fetchRiverflowHistory()" class="header-btn" style="color:var(--teal); font-size:10px;">↻ Refresh</button>
+                <button onclick="fetchRiverflowHistory()" class="header-btn" style="color:var(--teal); font-size:10px;">Refresh</button>
               </div>
             </div>
 
@@ -1098,16 +1135,16 @@
           <div class="card">
             <div class="card-header-bar">
               <div class="card-heading">
-                <h2>💧 Weekly Groundwater &amp; Surface Water Monitoring Entry</h2>
+                <h2>Weekly Groundwater &amp; Surface Water Monitoring Entry</h2>
                 <p>Production Division &bull; Weekly Update Status of Groundwater and Surface Water Monitoring (Direct Supabase Telemetry)</p>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <button type="button" class="header-btn" onclick="clearProductionForm()">✕ Clear Form</button>
+                <button type="button" class="header-btn" onclick="clearProductionForm()">Clear Form</button>
                 <button type="button" class="header-btn" onclick="loadPreviousProdReadings()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
-                  ↻ Load Previous As Baseline
+                  Load Previous As Baseline
                 </button>
                 <button type="button" id="btn-save-production" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
-                  💾 Save Production to Supabase
+                  Save Production to Supabase
                 </button>
               </div>
             </div>
@@ -1138,7 +1175,7 @@
               <!-- Quick Helper Button -->
               <div style="display:flex; align-items:center; gap:8px;">
                 <button type="button" onclick="autoSuggestNextWeek()" class="header-btn" style="font-size:11px;" title="Suggest next week label & date based on latest submission">
-                  ⚡ Auto-Next Cycle
+                  Auto-Next Cycle
                 </button>
               </div>
             </div>
@@ -1206,10 +1243,10 @@
 
             <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
               <span style="font-size:11px; color:var(--text-muted);">
-                💡 Tip: Type Previous &amp; Present flow meter readings and press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd>. Net Weekly Yield (m³) is automatically calculated (<b style="font-family:var(--font-mono);">Present - Previous</b>).
+                Tip: Type Previous &amp; Present flow meter readings and press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd>. Net Weekly Yield (m³) is automatically calculated (<b style="font-family:var(--font-mono);">Present - Previous</b>).
               </span>
               <button type="button" id="btn-save-production-bottom" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
-                💾 Save Production to Supabase
+                Save Production to Supabase
               </button>
             </div>
           </div>
@@ -1218,12 +1255,12 @@
           <div class="table-container">
             <div class="table-head-bar">
               <div>
-                <div class="table-head-title">📋 Weekly Production Status History (Supabase Live Feed)</div>
+                <div class="table-head-title">Weekly Production Status History (Supabase Live Feed)</div>
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly production audits stored in cloud database</div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <input type="text" id="prod-search-input" placeholder="Search by week or period..." class="form-input" style="width:220px; padding:6px 10px; font-size:11px;" oninput="filterProductionHistory()">
-                <button onclick="fetchProductionHistory()" class="header-btn" style="color:var(--blue); font-size:10px;">↻ Refresh</button>
+                <button onclick="fetchProductionHistory()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
               </div>
             </div>
 
@@ -1258,7 +1295,7 @@
   <div id="edit-genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
     <div style="background:#FFFFFF; border-radius:14px; width:580px; max-width:95vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--card-border);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--card-border); padding-bottom:12px;">
-        <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">✏️ Edit Generator Specifications</h3>
+        <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Edit Generator Specifications</h3>
         <button onclick="closeEditModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">✕</button>
       </div>
 
@@ -1295,10 +1332,10 @@
           <div class="field-group">
             <label class="form-lbl">Status</label>
             <select id="edit-gs-status" name="new_status" class="form-input">
-              <option value="Operational">Operational 🟢</option>
-              <option value="Under Maintenance">Under Maintenance 🟡</option>
-              <option value="Standby">Standby 🟠</option>
-              <option value="Offline">Offline / Defective 🔴</option>
+              <option value="Operational">Operational</option>
+              <option value="Under Maintenance">Under Maintenance</option>
+              <option value="Standby">Standby</option>
+              <option value="Offline">Offline / Defective</option>
             </select>
           </div>
         </div>
@@ -1324,7 +1361,7 @@
     }
 
     // ══════════════════════════════════════════════════════════════════
-    // ── 🔒 PORTAL PASSKEY SECURITY & ACCESS CONTROL ──
+    // ── PORTAL PASSKEY SECURITY & ACCESS CONTROL ──
     // ══════════════════════════════════════════════════════════════════
 
     function getStoredPasskey() {
@@ -1386,7 +1423,7 @@
           alertBox.style.display = 'block';
         }
       } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🔓 Authenticate & Unlock Portal'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Authenticate & Unlock Portal'; }
       }
     }
 
@@ -1510,9 +1547,9 @@
                 ${latestLog ? `${escapeHtml(latestLog.event_type)} <span style="font-family:var(--font-mono); font-size:9.5px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
               </td>
               <td style="text-align:right; white-space:nowrap;">
-                <button type="button" data-id="${escapeHtml(g.id)}" onclick="openEditModal(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">✏️ Edit</button>
-                <button type="button" data-id="${escapeHtml(g.id)}" onclick="selectGensetForEdit(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">⚡ Log Action</button>
-                <button type="button" data-id="${escapeHtml(g.id)}" data-no="${escapeHtml(g.genset_no)}" onclick="deleteGenset(this.dataset.id, this.dataset.no)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">🗑️</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="openEditModal(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">Edit</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="selectGensetForEdit(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">Log Action</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" data-no="${escapeHtml(g.genset_no)}" onclick="deleteGenset(this.dataset.id, this.dataset.no)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">Delete</button>
               </td>
             </tr>
           `;
@@ -1520,7 +1557,7 @@
 
       } catch (err) {
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red); font-family:var(--font-mono);">⚠️ ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red); font-family:var(--font-mono);">${err.message}</td></tr>`;
       }
     }
 
@@ -2150,7 +2187,7 @@
         notifyComp(err.message, true);
       } finally {
         btn.disabled = false;
-        btn.textContent = "🚀 Upload All to Supabase";
+        btn.textContent = "Upload All to Supabase";
       }
     }
 
@@ -2196,7 +2233,7 @@
             <td style="text-align:right; font-weight:700;" class="mono">${count}</td>
             <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(remarks)}">${escapeHtml(remarks)}</td>
             <td style="text-align:right;">
-              ${recordKey ? `<button type="button" data-key="${escapeHtml(recordKey)}" onclick="deleteComplaintRecord(this.dataset.key)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">🗑️ Delete</button>` : ''}
+              ${recordKey ? `<button type="button" data-key="${escapeHtml(recordKey)}" onclick="deleteComplaintRecord(this.dataset.key)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">Delete</button>` : ''}
             </td>
           </tr>
         `;
@@ -2241,7 +2278,7 @@
     }
 
     // ── RIVER HYDROLOGY MANAGEMENT ──
-    const RIVER_STATIONS = [
+    const DEFAULT_RIVER_STATIONS = [
       { name: "Montible Teruvian", col: 2, group: "City / Primary Sources" },
       { name: "Montible Bridge 1", col: 3, group: "City / Primary Sources" },
       { name: "Upper Montible", col: 4, group: "City / Primary Sources" },
@@ -2263,7 +2300,19 @@
       { name: "Maranat II", col: 20, group: "Satellite South" }
     ];
 
+    let RIVER_STATIONS = [...DEFAULT_RIVER_STATIONS];
     let riverflowHistory = [];
+
+    // Local cached river stations initialization
+    try {
+      const cached = localStorage.getItem('ppcwd_river_stations');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length >= DEFAULT_RIVER_STATIONS.length) {
+          RIVER_STATIONS = parsed;
+        }
+      }
+    } catch(e) {}
 
     function notifyRf(msg, isErr = false) {
       const box = document.getElementById("rf-alert-box");
@@ -2274,14 +2323,189 @@
       setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
     }
 
+    async function loadRiverStations() {
+      try {
+        const res = await fetch('/api/getRiverStations');
+        if (res.ok) {
+          const stations = await res.json();
+          if (Array.isArray(stations) && stations.length > 0) {
+            RIVER_STATIONS = stations;
+            localStorage.setItem('ppcwd_river_stations', JSON.stringify(stations));
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load dynamic river stations, using cached/default stations:", err);
+      }
+      const hCount = document.getElementById("rf-header-count");
+      if (hCount) hCount.textContent = RIVER_STATIONS.length;
+    }
+
     async function initRiverflowPortal() {
       const dateInput = document.getElementById("rf-date");
       if (dateInput && !dateInput.value) {
         dateInput.value = new Date().toISOString().split('T')[0];
       }
+      await loadRiverStations();
       await fetchRiverflowHistory();
       renderRiverEntryTable();
       if (dateInput) onRiverDateChange(dateInput.value);
+    }
+
+    // Modal controls for adding a new monitored river
+    function openAddRiverModal() {
+      const modal = document.getElementById('modal-add-river');
+      if (modal) {
+        modal.style.display = 'flex';
+        const nameInp = document.getElementById('modal-river-name');
+        if (nameInp) { nameInp.value = ''; nameInp.focus(); }
+        const errEl = document.getElementById('modal-river-error');
+        if (errEl) errEl.style.display = 'none';
+      }
+    }
+
+    function closeAddRiverModal() {
+      const modal = document.getElementById('modal-add-river');
+      if (modal) modal.style.display = 'none';
+    }
+
+    async function submitAddRiverModal() {
+      const nameInp = document.getElementById('modal-river-name');
+      const groupInp = document.getElementById('modal-river-group');
+      const errEl = document.getElementById('modal-river-error');
+      const btn = document.getElementById('btn-submit-add-river');
+
+      const name = nameInp ? nameInp.value.trim() : '';
+      const group = groupInp ? groupInp.value : 'Satellite Other';
+
+      if (!name) {
+        if (errEl) { errEl.textContent = 'Please enter a river station name.'; errEl.style.display = 'block'; }
+        return;
+      }
+
+      if (RIVER_STATIONS.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+        if (errEl) { errEl.textContent = `A monitored river named "${name}" already exists.`; errEl.style.display = 'block'; }
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving to Supabase...'; }
+
+      try {
+        const res = await fetch('/api/saveRiverStations', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'add', name, group })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save river station.');
+
+        if (Array.isArray(data.stations)) {
+          RIVER_STATIONS = data.stations;
+        } else if (data.newStation) {
+          RIVER_STATIONS.push(data.newStation);
+        }
+        localStorage.setItem('ppcwd_river_stations', JSON.stringify(RIVER_STATIONS));
+
+        const hCount = document.getElementById("rf-header-count");
+        if (hCount) hCount.textContent = RIVER_STATIONS.length;
+
+        closeAddRiverModal();
+        renderRiverEntryTable();
+        calculateRiverTotals();
+        notifyRf(`River "${name}" added to monitored rivers list and synced to Supabase!`);
+      } catch (err) {
+        if (errEl) { errEl.textContent = err.message; errEl.style.display = 'block'; }
+        notifyRf(err.message, true);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Add River'; }
+      }
+    }
+
+    async function deleteRiverStation(col, name) {
+      if (!confirm(`Are you sure you want to remove "${name}" from monitored rivers?\n\nThis will remove it from future weekly entries and dashboard telemetry.`)) return;
+
+      try {
+        const res = await fetch('/api/saveRiverStations', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete', col })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to remove river station.');
+
+        if (Array.isArray(data.stations)) {
+          RIVER_STATIONS = data.stations;
+        } else {
+          RIVER_STATIONS = RIVER_STATIONS.filter(s => s.col !== col);
+        }
+        localStorage.setItem('ppcwd_river_stations', JSON.stringify(RIVER_STATIONS));
+
+        const hCount = document.getElementById("rf-header-count");
+        if (hCount) hCount.textContent = RIVER_STATIONS.length;
+
+        renderRiverEntryTable();
+        calculateRiverTotals();
+        notifyRf(`Removed "${name}" from monitored rivers.`);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    // ── AUTOMATIC COMMA & NUMERIC FORMATTING HELPERS ──
+    function formatNumberWithCommas(val) {
+      if (val === undefined || val === null || val === '') return '';
+      const str = String(val).replace(/,/g, '').trim();
+      if (str === '' || isNaN(str)) return str;
+      const parts = str.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.slice(0, 2).join('.');
+    }
+
+    function onRiverNumberInput(input) {
+      const original = input.value;
+      const cursor = input.selectionStart || 0;
+      const rawBefore = original.slice(0, cursor).replace(/,/g, '');
+
+      // Allow digits and at most one decimal point
+      let clean = original.replace(/[^0-9.]/g, '');
+      const parts = clean.split('.');
+      if (parts.length > 2) {
+        clean = parts[0] + '.' + parts.slice(1).join('');
+      }
+
+      if (clean === '' || clean === '.') {
+        input.value = clean;
+        calculateRiverTotals();
+        return;
+      }
+
+      const segs = clean.split('.');
+      segs[0] = segs[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const formatted = segs.join('.');
+      input.value = formatted;
+
+      // Restore accurate cursor position without jumps
+      let newPos = 0;
+      let count = 0;
+      for (let i = 0; i < formatted.length; i++) {
+        if (formatted[i] !== ',') count++;
+        if (count === rawBefore.length) {
+          newPos = i + 1;
+          break;
+        }
+      }
+      input.setSelectionRange(newPos, newPos);
+      calculateRiverTotals();
+    }
+
+    function onRiverNumberBlur(input) {
+      if (!input.value.trim()) return;
+      const num = parseFloat(input.value.replace(/,/g, ''));
+      if (!isNaN(num)) {
+        input.value = num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        calculateRiverTotals();
+      }
     }
 
     async function fetchRiverflowHistory() {
@@ -2314,11 +2538,15 @@
         .sort((a, b) => new Date(b.recorded_date) - new Date(a.recorded_date));
       const priorRecord = priorRecords.length > 0 ? priorRecords[0] : (riverflowHistory[0] || null);
 
+      const hCount = document.getElementById("rf-header-count");
+      if (hCount) hCount.textContent = RIVER_STATIONS.length;
+
       tbody.innerHTML = RIVER_STATIONS.map((s, idx) => {
         // Group badge
         const isCity = s.group.includes("City");
         const isNorth = s.group.includes("North");
         const groupBadgeClass = isCity ? "pill-blue" : (isNorth ? "pill-teal" : "pill-amber");
+        const isCustom = s.isCustom || s.col > 20;
 
         // Previous reading reference
         let prevText = "—";
@@ -2335,14 +2563,18 @@
           <tr>
             <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${idx + 1}</td>
             <td>
-              <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${s.name}</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+                <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${escapeHtml(s.name)}</div>
+                ${isCustom ? `<button type="button" onclick="deleteRiverStation(${s.col}, '${escapeHtml(s.name)}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:4px; font-size:9.5px; padding:1px 6px; cursor:pointer;" title="Remove this river station">Remove</button>` : ''}
+              </div>
+              ${isCustom ? `<span style="font-size:9.5px; color:var(--teal); font-weight:700;">Newly Monitored River</span>` : ''}
             </td>
             <td>
-              <span class="kpi-badge-pill ${groupBadgeClass}" style="font-size:10px;">${s.group}</span>
+              <span class="kpi-badge-pill ${groupBadgeClass}" style="font-size:10px;">${escapeHtml(s.group)}</span>
             </td>
             <td>${prevText}</td>
             <td>
-              <input type="number" step="0.01" min="0" class="form-input rf-input-val" id="rf-val-${s.col}" data-col="${s.col}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="calculateRiverTotals()">
+              <input type="text" inputmode="decimal" class="form-input rf-input-val" id="rf-val-${s.col}" data-col="${s.col}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onRiverNumberInput(this)" onblur="onRiverNumberBlur(this)">
             </td>
             <td>
               <input type="text" class="form-input rf-input-rem" id="rf-rem-${s.col}" data-col="${s.col}" list="river-remarks-datalist" placeholder="Optional notes...">
@@ -2360,8 +2592,9 @@
       const inputs = document.querySelectorAll('.rf-input-val');
 
       inputs.forEach(inp => {
-        const val = parseFloat(inp.value);
-        if (!isNaN(val) && inp.value.trim() !== '') {
+        const raw = inp.value.replace(/,/g, '').trim();
+        const val = parseFloat(raw);
+        if (!isNaN(val) && raw !== '') {
           total += val;
           count++;
         }
@@ -2389,19 +2622,19 @@
 
       if (existing && Array.isArray(existing.readings)) {
         if (statusEl) {
-          statusEl.innerHTML = `<span style="color:var(--amber);">⚠️ Existing record loaded (${val}) &bull; Ready to update</span>`;
+          statusEl.innerHTML = `<span style="color:var(--amber); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Existing record loaded (${val}) &bull; Ready to update</span>`;
         }
-        // Fill values from existing record
+        // Fill values from existing record with proper comma formatting
         RIVER_STATIONS.forEach(s => {
           const inp = document.getElementById(`rf-val-${s.col}`);
           if (inp && existing.readings[s.col] !== null && existing.readings[s.col] !== undefined) {
-            inp.value = existing.readings[s.col];
+            inp.value = formatNumberWithCommas(existing.readings[s.col]);
           }
         });
         calculateRiverTotals();
       } else {
         if (statusEl) {
-          statusEl.innerHTML = `<span style="color:var(--teal);">🟢 Ready for new weekly entry (${val})</span>`;
+          statusEl.innerHTML = `<span style="color:var(--teal); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Ready for new weekly entry (${val})</span>`;
         }
       }
     }
@@ -2434,7 +2667,7 @@
         const prevVal = priorRecord.readings[s.col];
         const inp = document.getElementById(`rf-val-${s.col}`);
         if (inp && prevVal !== null && prevVal !== undefined && prevVal !== "") {
-          inp.value = prevVal;
+          inp.value = formatNumberWithCommas(prevVal);
           loadedCount++;
         }
       });
@@ -2465,8 +2698,9 @@
       RIVER_STATIONS.forEach(s => {
         const inp = document.getElementById(`rf-val-${s.col}`);
         if (inp && inp.value.trim() !== '') {
-          readings_map[s.col] = parseFloat(inp.value);
-          hasReadings = true;
+          const numVal = parseFloat(inp.value.replace(/,/g, ''));
+          readings_map[s.col] = isNaN(numVal) ? null : numVal;
+          if (!isNaN(numVal)) hasReadings = true;
         } else {
           readings_map[s.col] = null;
         }
@@ -2474,8 +2708,8 @@
 
       if (!hasReadings) {
         alert("Please enter at least one river discharge measurement.");
-        if (btn1) { btn1.disabled = false; btn1.textContent = "💾 Save Readings to Supabase"; }
-        if (btn2) { btn2.disabled = false; btn2.textContent = "💾 Save Readings to Supabase"; }
+        if (btn1) { btn1.disabled = false; btn1.textContent = "Save Readings to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "Save Readings to Supabase"; }
         return;
       }
 
@@ -2499,8 +2733,8 @@
       } catch (err) {
         notifyRf(err.message, true);
       } finally {
-        if (btn1) { btn1.disabled = false; btn1.textContent = "💾 Save Readings to Supabase"; }
-        if (btn2) { btn2.disabled = false; btn2.textContent = "💾 Save Readings to Supabase"; }
+        if (btn1) { btn1.disabled = false; btn1.textContent = "Save Readings to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "Save Readings to Supabase"; }
       }
     }
 
@@ -2537,18 +2771,18 @@
         }
 
         const sumStr = sum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const countBadge = count === 19 ? 'pill-green' : (count > 0 ? 'pill-teal' : 'pill-amber');
+        const countBadge = count === RIVER_STATIONS.length ? 'pill-green' : (count > 0 ? 'pill-teal' : 'pill-amber');
 
         return `
           <tr>
             <td class="mono" style="font-weight:700;">${escapeHtml(dateStr)}</td>
             <td>${escapeHtml(labelStr)}</td>
-            <td style="text-align:right;"><span class="kpi-badge-pill ${countBadge}">${count} / 19</span></td>
+            <td style="text-align:right;"><span class="kpi-badge-pill ${countBadge}">${count} / ${RIVER_STATIONS.length}</span></td>
             <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:var(--teal);">${escapeHtml(sumStr)}</td>
             <td style="font-size:11.5px; color:var(--text-main);">${escapeHtml(topRiver)}</td>
             <td style="text-align:right; white-space:nowrap;">
-              <button type="button" data-id="${escapeHtml(r.id)}" onclick="editRiverflowRecord(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);" title="Load into form for editing">✏️ Edit</button>
-              <button type="button" data-id="${escapeHtml(r.id)}" data-date="${escapeHtml(dateStr)}" onclick="deleteRiverflowRecord(this.dataset.id, this.dataset.date)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete record">🗑️ Delete</button>
+              <button type="button" data-id="${escapeHtml(r.id)}" onclick="editRiverflowRecord(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);" title="Load into form for editing">Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id)}" data-date="${escapeHtml(dateStr)}" onclick="deleteRiverflowRecord(this.dataset.id, this.dataset.date)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete record">Delete</button>
             </td>
           </tr>
         `;
@@ -2603,8 +2837,7 @@
       renderRiverflowLedger(filtered);
     }
 
-    // ══════════════════════════════════════════════════════════════════
-    // ── ⚡ WEEKLY PRODUCTION MONITORING LOGIC (DIRECT SUPABASE SYNC) ──
+    // ── WEEKLY PRODUCTION MONITORING LOGIC (DIRECT SUPABASE SYNC) ──
     // ══════════════════════════════════════════════════════════════════
 
     const PROD_CATEGORIES = [
@@ -3215,12 +3448,12 @@
       if (existing) {
         currentEditingProdId = existing.id;
         if (statusEl) {
-          statusEl.innerHTML = `<span style="color:var(--amber);">⚠️ Existing record loaded (${val}) &bull; Ready to update</span>`;
+          statusEl.innerHTML = `<span style="color:var(--amber); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Existing record loaded (${val}) &bull; Ready to update</span>`;
         }
       } else {
         currentEditingProdId = null;
         if (statusEl) {
-          statusEl.innerHTML = `<span style="color:var(--blue);">🟢 Ready for new weekly entry (${val})</span>`;
+          statusEl.innerHTML = `<span style="color:var(--blue); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Ready for new weekly entry (${val})</span>`;
         }
       }
     }
@@ -3399,8 +3632,8 @@
       } catch (err) {
         notifyProd(err.message, true);
       } finally {
-        if (btn1) { btn1.disabled = false; btn1.textContent = "💾 Save Production to Supabase"; }
-        if (btn2) { btn2.disabled = false; btn2.textContent = "💾 Save Production to Supabase"; }
+        if (btn1) { btn1.disabled = false; btn1.textContent = "Save Production to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "Save Production to Supabase"; }
       }
     }
 
@@ -3441,8 +3674,8 @@
             <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--green);">${mld.toFixed(2)}</td>
             <td style="text-align:right;"><span class="kpi-badge-pill ${targetBadgeClass}">${targetPct}%</span></td>
             <td style="text-align:right; white-space:nowrap;">
-              <button type="button" data-key="${escapeHtml(r.id || wk)}" onclick="editProductionRecord(this.dataset.key)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">✏️ Edit</button>
-              <button type="button" data-id="${escapeHtml(r.id || '')}" data-week="${escapeHtml(wk)}" onclick="deleteProductionRecord(this.dataset.id, this.dataset.week)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">🗑️ Delete</button>
+              <button type="button" data-key="${escapeHtml(r.id || wk)}" onclick="editProductionRecord(this.dataset.key)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id || '')}" data-week="${escapeHtml(wk)}" onclick="deleteProductionRecord(this.dataset.id, this.dataset.week)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">Delete</button>
             </td>
           </tr>
         `;
@@ -3549,6 +3782,7 @@
       populateStations();
       fetchGensetFleet();
       setupComplaintFormatters();
+      loadRiverStations();
       const dateInput = document.getElementById("gs-serviced-date");
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
 
