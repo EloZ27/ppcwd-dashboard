@@ -2325,7 +2325,7 @@
 
     async function loadRiverStations() {
       try {
-        const res = await fetch('/api/getRiverStations');
+        const res = await fetch('/api/getRiverFlow?type=stations');
         if (res.ok) {
           const stations = await res.json();
           if (Array.isArray(stations) && stations.length > 0) {
@@ -2390,10 +2390,10 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Saving to Supabase...'; }
 
       try {
-        const res = await fetch('/api/saveRiverStations', {
+        const res = await fetch('/api/saveRiverFlow', {
           method: 'POST',
           headers: getAuthHeaders(),
-          body: JSON.stringify({ action: 'add', name, group })
+          body: JSON.stringify({ action: 'add_station', name, group })
         });
         if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();
@@ -2425,10 +2425,10 @@
       if (!confirm(`Are you sure you want to remove "${name}" from monitored rivers?\n\nThis will remove it from future weekly entries and dashboard telemetry.`)) return;
 
       try {
-        const res = await fetch('/api/saveRiverStations', {
+        const res = await fetch('/api/saveRiverFlow', {
           method: 'POST',
           headers: getAuthHeaders(),
-          body: JSON.stringify({ action: 'delete', col })
+          body: JSON.stringify({ action: 'delete_station', col })
         });
         if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
         const data = await res.json();

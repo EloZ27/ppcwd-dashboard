@@ -11,6 +11,9 @@
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/api/getRiverStations", "destination": "/api/getRiverFlow?type=stations" },
+    { "source": "/api/saveRiverStations", "destination": "/api/saveRiverFlow" }
   ]
 }
-

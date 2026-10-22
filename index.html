@@ -4842,7 +4842,7 @@
     try {
       // 1. Fetch dynamic monitored river stations
       try {
-        const stRes = await fetch('/api/getRiverStations');
+        const stRes = await fetch('/api/getRiverFlow?type=stations');
         if (stRes.ok) {
           const stationsData = await stRes.json();
           if (Array.isArray(stationsData) && stationsData.length > 0) {

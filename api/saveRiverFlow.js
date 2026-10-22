@@ -1,5 +1,6 @@
 // api/saveRiverFlow.js
 import crypto from 'crypto';
+import { DEFAULT_RIVER_STATIONS } from './getRiverFlow.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -41,10 +42,128 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
   }
 
-  const { action, id, recorded_date, readings, readings_map } = req.body;
+  const { action, id, recorded_date, readings, readings_map, name, group, col, stations } = req.body;
 
   try {
-    // 1. DELETE RECORD
+    // ── 1. ADD / DELETE / SYNC MONITORED RIVER STATIONS ──
+    if (action === 'add_station' || action === 'delete_station' || action === 'sync_stations') {
+      let currentCustom = [];
+      let tableExists = false;
+
+      try {
+        const checkTable = await fetch(`${SUPABASE_URL}/rest/v1/river_stations?select=*&order=col.asc`, { headers });
+        if (checkTable.ok) {
+          tableExists = true;
+          const rows = await checkTable.json();
+          currentCustom = rows.filter(r => r.col > 20).map(r => ({
+            name: r.name,
+            col: Number(r.col),
+            group: r.group_name || r.group || "Satellite Other"
+          }));
+        }
+      } catch (e) {
+        tableExists = false;
+      }
+
+      if (!tableExists) {
+        const configRes = await fetch(`${SUPABASE_URL}/rest/v1/river_flow?recorded_date=eq.1970-01-01&select=id,readings`, { headers });
+        if (configRes.ok) {
+          const rows = await configRes.json();
+          if (rows.length > 0 && Array.isArray(rows[0].readings) && rows[0].readings[0] === '__RIVER_STATIONS_CONFIG__') {
+            try {
+              const parsed = typeof rows[0].readings[1] === 'string' ? JSON.parse(rows[0].readings[1]) : rows[0].readings[1];
+              if (Array.isArray(parsed)) currentCustom = parsed;
+            } catch (e) {}
+          }
+        }
+      }
+
+      let newStation = null;
+      if (action === 'add_station') {
+        if (!name || !name.trim()) {
+          return res.status(400).json({ error: 'River name is required.' });
+        }
+        const trimmedName = name.trim();
+        const stationGroup = (group && group.trim()) || 'Satellite Other';
+        const allCols = [...DEFAULT_RIVER_STATIONS.map(s => s.col), ...currentCustom.map(s => s.col)];
+        const nextCol = Math.max(20, ...allCols) + 1;
+
+        newStation = {
+          name: trimmedName,
+          col: nextCol,
+          group: stationGroup,
+          isCustom: true
+        };
+        currentCustom.push(newStation);
+      } else if (action === 'delete_station') {
+        const targetCol = Number(col);
+        if (isNaN(targetCol) || targetCol <= 20) {
+          return res.status(400).json({ error: 'Valid custom river col index (> 20) is required for deletion.' });
+        }
+        currentCustom = currentCustom.filter(s => Number(s.col) !== targetCol);
+      } else if (action === 'sync_stations') {
+        if (Array.isArray(stations)) {
+          currentCustom = stations.filter(s => Number(s.col) > 20);
+        }
+      }
+
+      // Persist to table if exists
+      if (tableExists) {
+        if (action === 'add_station' && newStation) {
+          await fetch(`${SUPABASE_URL}/rest/v1/river_stations`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              col: newStation.col,
+              name: newStation.name,
+              group_name: newStation.group
+            })
+          });
+        } else if (action === 'delete_station') {
+          await fetch(`${SUPABASE_URL}/rest/v1/river_stations?col=eq.${Number(col)}`, {
+            method: 'DELETE',
+            headers
+          });
+        }
+      }
+
+      // Always update config row in river_flow
+      const checkConfig = await fetch(`${SUPABASE_URL}/rest/v1/river_flow?recorded_date=eq.1970-01-01&select=id`, { headers });
+      const existingConfig = checkConfig.ok ? await checkConfig.json() : [];
+
+      const configPayload = {
+        recorded_date: '1970-01-01',
+        readings: ['__RIVER_STATIONS_CONFIG__', JSON.stringify(currentCustom)]
+      };
+
+      if (existingConfig.length > 0) {
+        await fetch(`${SUPABASE_URL}/rest/v1/river_flow?id=eq.${existingConfig[0].id}`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify(configPayload)
+        });
+      } else {
+        await fetch(`${SUPABASE_URL}/rest/v1/river_flow`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(configPayload)
+        });
+      }
+
+      const fullStationList = [
+        ...DEFAULT_RIVER_STATIONS.map(s => ({ ...s, isCustom: false })),
+        ...currentCustom.map(s => ({ ...s, isCustom: true }))
+      ].sort((a, b) => a.col - b.col);
+
+      return res.status(200).json({
+        success: true,
+        message: action === 'add_station' ? `Added "${newStation.name}" to monitored rivers list.` : 'Monitored rivers updated successfully.',
+        newStation,
+        stations: fullStationList
+      });
+    }
+
+    // ── 2. DELETE WEEKLY MEASUREMENT RECORD ──
     if (action === 'delete') {
       const targetId = id || req.body.recorded_date;
       if (!targetId) return res.status(400).json({ error: 'id or recorded_date is required for deletion.' });
@@ -66,32 +185,28 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, message: 'River flow record deleted successfully.' });
     }
 
-    // 2. SAVE / UPSERT RECORD
+    // ── 3. SAVE / UPSERT WEEKLY MEASUREMENT RECORD ──
     if (action === 'save' || recorded_date) {
       if (!recorded_date) {
         return res.status(400).json({ error: 'recorded_date is required (YYYY-MM-DD).' });
       }
 
-      // Determine max column index dynamically (minimum 20 for standard 19 stations)
       const colIndices = readings_map && typeof readings_map === 'object'
         ? Object.keys(readings_map).map(Number).filter(n => !isNaN(n))
         : [];
       const maxCol = Math.max(20, ...colIndices);
 
-      // Build readings array (indices 0..maxCol)
       let finalReadings = Array.isArray(readings) && readings.length >= maxCol + 1 ? [...readings] : null;
 
       if (!finalReadings) {
         finalReadings = new Array(maxCol + 1).fill(null);
         finalReadings[0] = "Discharge (m3/day)";
 
-        // Format Date string: e.g. "September 8, 2026"
         const [y, m, d] = recorded_date.split('-').map(Number);
         const dt = new Date(y, m - 1, d);
         const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         finalReadings[1] = `${months[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
 
-        // Populate readings_map indices 2..maxCol
         if (readings_map && typeof readings_map === 'object') {
           for (let col = 2; col <= maxCol; col++) {
             const rawVal = readings_map[col];
@@ -105,7 +220,6 @@ export default async function handler(req, res) {
         }
       }
 
-      // Check if record already exists for this recorded_date
       const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/river_flow?recorded_date=eq.${encodeURIComponent(recorded_date)}&select=id`, {
         headers
       });
@@ -113,7 +227,6 @@ export default async function handler(req, res) {
 
       let saveRes;
       if (existing.length > 0) {
-        // UPDATE existing row
         const existingId = existing[0].id;
         saveRes = await fetch(`${SUPABASE_URL}/rest/v1/river_flow?id=eq.${existingId}`, {
           method: 'PATCH',
@@ -124,7 +237,6 @@ export default async function handler(req, res) {
           })
         });
       } else {
-        // INSERT new row
         saveRes = await fetch(`${SUPABASE_URL}/rest/v1/river_flow`, {
           method: 'POST',
           headers,
@@ -144,10 +256,9 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(400).json({ error: 'Invalid action. Supported: save, delete' });
+    return res.status(400).json({ error: 'Invalid action. Supported: save, delete, add_station, delete_station' });
   } catch (err) {
     console.error('saveRiverFlow error:', err);
     return res.status(500).json({ error: err.message });
   }
 }
-
