@@ -7,3 +7,6 @@ node_modules
 Thumbs.db
 AppsScript*
 
+.agents/
+PROJECT.md
+DEAD_ENDS.md
