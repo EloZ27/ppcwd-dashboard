@@ -1,0 +1,166 @@
+<!-- STANDARD A4 1-PAGE-PER-TOPIC TEMPLATE (0.5-INCH MARGINS) -->
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0.5in;
+  }
+  .a4-report-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 0.5in; /* Exact 0.5-inch (12.7mm) margin on all sides */
+    margin: 0 auto 16px auto;
+    background: #FFFFFF;
+    color: #0F172A;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    page-break-after: always;
+    break-after: page;
+  }
+  /* Executive Report Header (Matches GM's Report 102826.pdf) */
+  .rep-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2.5px solid #1560BD;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .rep-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .rep-header-left img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+  .rep-title {
+    font-size: 16pt;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.3px;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+  .rep-subtitle {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #1560BD;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .rep-meta-right {
+    text-align: right;
+    font-size: 8.5pt;
+    color: #475569;
+    line-height: 1.4;
+  }
+  .rep-meta-right strong {
+    color: #0F172A;
+    font-size: 9.5pt;
+  }
+
+  /* Section Banner & Top KPI Cards */
+  .rep-section-title {
+    font-size: 10.5pt;
+    font-weight: 800;
+    color: #0F172A;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin: 10px 0 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 4px solid #1560BD;
+    padding-left: 8px;
+  }
+  .rep-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .rep-kpi-card {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-top: 3px solid #1560BD;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .rep-kpi-card .k-lbl {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748B;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .rep-kpi-card .k-val {
+    font-size: 15pt;
+    font-weight: 800;
+    color: #0F172A;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+
+  /* Full-Width Readable Executive Tables */
+  table.rep-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+    margin-bottom: 14px;
+  }
+  table.rep-table th {
+    background: #1E293B;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 7.8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 7px 8px;
+    border: 1px solid #1E293B;
+    text-align: left;
+  }
+  table.rep-table td {
+    padding: 6px 8px;
+    border: 1px solid #E2E8F0;
+    color: #0F172A;
+  }
+  table.rep-table tbody tr:nth-child(even) td {
+    background: #F8FAFC;
+  }
+  table.rep-table tr.rep-summary-row td {
+    background: #E2E8F0 !important;
+    font-weight: 800;
+    border-top: 2px solid #64748B;
+  }
+  .rep-num {
+    text-align: right !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .rep-ctr {
+    text-align: center !important;
+  }
+  .rep-findings-box {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-left: 4px solid #0D9488;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 8.5pt;
+    line-height: 1.45;
+    margin-top: 6px;
+  }
+  .rep-footer {
+    border-top: 1px solid #CBD5E1;
+    padding-top: 6px;
+    font-size: 7.5pt;
+    color: #64748B;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

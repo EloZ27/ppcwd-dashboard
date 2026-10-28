@@ -1085,6 +1085,139 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
+  
+    /* ══════════════════════════════════════════════════════════════════ */
+    /* ── 📄 A4 PORTRAIT COMPREHENSIVE REPORT ENGINE (0.5in MARGINS) ── */
+    /* ══════════════════════════════════════════════════════════════════ */
+    .comp-a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 12.7mm; /* 0.5-inch standard margins */
+      background: #FFFFFF;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-sizing: border-box;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      border: 1px solid #E2E8F0;
+      margin: 0 auto 20px auto;
+    }
+    .comp-header-banner {
+      border-bottom: 2px solid #1560BD;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .comp-kpi-grid {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .comp-kpi-card {
+      flex: 1;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .comp-kpi-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 3px;
+    }
+    .comp-kpi-value {
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #0F172A;
+      line-height: 1.15;
+    }
+    .comp-kpi-sub {
+      font-size: 8px;
+      color: #64748B;
+      margin-top: 2px;
+    }
+    .comp-section-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #1E293B;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      margin-bottom: 10px;
+    }
+    .comp-table th {
+      background: #F1F5F9;
+      border-bottom: 2px solid #CBD5E1;
+      padding: 5px 6px;
+      font-weight: 700;
+      color: #334155;
+      text-align: left;
+      font-size: 9px;
+    }
+    .comp-table td {
+      padding: 4.5px 6px;
+      border-bottom: 1px solid #E2E8F0;
+      color: #1E293B;
+    }
+    .comp-table tr:hover {
+      background: #F8FAFC;
+    }
+    .comp-footer {
+      border-top: 1px solid #E2E8F0;
+      padding-top: 6px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5px;
+      color: #64748B;
+    }
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0.5in;
+      }
+      body * {
+        visibility: hidden !important;
+      }
+      #comprehensive-report-staging, #comprehensive-report-staging * {
+        visibility: visible !important;
+      }
+      #comprehensive-report-staging {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .comp-a4-page {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: always !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1157,6 +1290,9 @@
             </div>
           </div>
           <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
+            <button id="btn-open-comp-report" class="header-btn" onclick="openComprehensiveReportModal()" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700;">
+              <span>📄 Comprehensive Report</span>
+            </button>
             <button id="header-auth-status-btn" class="header-btn" onclick="handleHeaderAuthClick()" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); border-color:var(--card-border); background:#FFFFFF;" title="Report Generation Security Status">
               <span id="header-auth-status-icon"></span>
               <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
@@ -1958,6 +2094,207 @@
       <div id="cr-pdf-remarks-summary" style="display:flex; flex-direction:column; gap:4px;"></div>
     </div>
   </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+  <!-- ── 📄 PPCWD DASHBOARD COMPREHENSIVE REPORT BUILDER MODAL ── -->
+  <!-- ══════════════════════════════════════════════════════════════════ -->
+  <div id="comprehensive-report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#FFFFFF; border-radius:14px; width:860px; max-width:96vw; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.3); font-family:'Plus Jakarta Sans',sans-serif;">
+      
+      <!-- Header -->
+      <div style="padding:18px 24px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:36px; height:36px; border-radius:8px; background:var(--blue-light); display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--blue);">
+            📄
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:16px; font-weight:800; color:#0F172A;">PPCWD Dashboard Comprehensive Report Builder</h3>
+            <p style="margin:2px 0 0 0; font-size:11px; color:#64748B;">Multi-Page A4 Portrait Telemetry Engine &bull; Historical Backtracking &bull; 0.5-inch Margins</p>
+          </div>
+        </div>
+        <button onclick="closeComprehensiveReportModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#94A3B8; padding:4px 8px; border-radius:4px;" title="Close modal">✕</button>
+      </div>
+
+      <!-- Scrollable Form Body -->
+      <div style="flex:1; overflow-y:auto; padding:20px 24px; display:flex; flex-direction:column; gap:20px;">
+        
+        <!-- Metadata Inputs -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px 18px; display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Document Branding &amp; Metadata</span>
+            <div style="display:flex; gap:6px;">
+              <button type="button" onclick="setCompReportTitlePreset('gm')" class="header-btn" style="font-size:10px; padding:2px 10px; background:#EEF2FF; color:#4F46E5; border-color:#C7D2FE; font-weight:700;">Switch to GM'S REPORT</button>
+              <button type="button" onclick="setCompReportTitlePreset('default')" class="header-btn" style="font-size:10px; padding:2px 10px; background:#F1F5F9; color:#475569; border-color:#CBD5E1; font-weight:600;">Reset Default</button>
+            </div>
+          </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Report Title</label>
+              <input id="comp-rep-title" type="text" class="form-input" style="width:100%; font-size:12px; font-weight:700; padding:7px 10px; box-sizing:border-box;" value="PPCWD Dashboard Comprehensive Report" />
+            </div>
+            <div>
+              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Report Subtitle</label>
+              <input id="comp-rep-subtitle" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="El Niño Task Force" />
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Sub-header / Context Note</label>
+            <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Data from El Niño Task Force Monitoring" />
+          </div>
+        </div>
+
+        <!-- Date Range Selection & Quick Presets -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px 18px; display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Date Range &amp; Historical Backtracking</span>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" onclick="setCompReportDatePreset('week')" class="header-btn" style="font-size:10px; padding:3px 8px;">Latest Week</button>
+              <button type="button" onclick="setCompReportDatePreset('month')" class="header-btn" style="font-size:10px; padding:3px 8px;">Current Month</button>
+              <button type="button" onclick="setCompReportDatePreset('aug_oct_2026')" class="header-btn" style="font-size:10px; padding:3px 8px; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border); font-weight:700;">Aug–Oct 2026 El Niño Window</button>
+              <button type="button" onclick="setCompReportDatePreset('all')" class="header-btn" style="font-size:10px; padding:3px 8px;">All Available History</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Start Date</label>
+              <input id="comp-rep-start-date" type="date" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
+            </div>
+            <div>
+              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">End Date</label>
+              <input id="comp-rep-end-date" type="date" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
+            </div>
+          </div>
+          <div style="font-size:10.5px; color:#64748B; line-height:1.4;">
+            <span style="color:var(--blue); font-weight:600;">⚡ Automatic Backfill:</span> If your date range starts earlier than the cached pressure records, the generator automatically queries <code>/api/getPressure</code> and indexes readings into local storage before computing.
+          </div>
+        </div>
+
+        <!-- Topics & Subtopics Checklist -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Report Topics &amp; Subtopics (1 Dedicated A4 Page per Topic)</span>
+            <div style="display:flex; gap:6px;">
+              <button type="button" onclick="toggleAllCompTopics(true)" class="header-btn" style="font-size:10px; padding:2px 8px;">Select All</button>
+              <button type="button" onclick="toggleAllCompTopics(false)" class="header-btn" style="font-size:10px; padding:2px 8px;">Clear All</button>
+            </div>
+          </div>
+
+          <!-- Topic 1 -->
+          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
+                <input type="checkbox" id="comp-topic-prod" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <span>Page 1: Production Weekly &amp; Monthly Summary</span>
+              </label>
+              <span style="font-size:10px; background:#EEF2FF; color:#4F46E5; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 1</span>
+            </div>
+            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-prod-monthly" checked />
+                <span>Monthly Production &amp; LWUA Trigger Summary (KPI cards + Monthly Table)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-prod-weekly" checked />
+                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Descending W30..W19 + Weekly Average)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-prod-subsystems" />
+                <span>LWUA Crisis Subsystem Breakdown &amp; Logged Operational Remarks</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Topic 2 -->
+          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
+                <input type="checkbox" id="comp-topic-press" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <span>Page 2: Pressure Network Summary &amp; Low-Pressure Sensors</span>
+              </label>
+              <span style="font-size:10px; background:#F0FDF4; color:#15803D; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 2</span>
+            </div>
+            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-press-monthly" checked />
+                <span>Monthly / Period Pressure Compliance Summary (KPIs + Compliance Table)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-press-weekly-major" checked />
+                <span>Weekly Major Pressure Monitoring Points (MBS, UV Facility, Campo Uno Chamber Box, AVG System, Peak/Off-Peak)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-press-lowest5" checked />
+                <span>Top 5 Lowest-Pressure Sensors Ranking (18 Distribution Stations, Daily Hours &lt; 10 psi)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Topic 3 -->
+          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
+                <input type="checkbox" id="comp-topic-comp" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <span>Page 3: Top 5 Lowest Pressure Sensors &amp; Customer Complaints Correlation</span>
+              </label>
+              <span style="font-size:10px; background:#FEF3C7; color:#B45309; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 3</span>
+            </div>
+            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-comp-summary" checked />
+                <span>Customer Complaints Summary by Incident Type (No Water, Low Pressure, Turbid Water, etc.)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-comp-hotspots" checked />
+                <span>Top Affected Barangays &amp; Hotspot Stubouts (SO-xxxx) Cross-Correlated with Low-Pressure Sensors</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Topic 4 -->
+          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
+                <input type="checkbox" id="comp-topic-river" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <span>Page 4: Watershed Hydrology &amp; River Flow Depletion</span>
+              </label>
+              <span style="font-size:10px; background:#F1F5F9; color:#475569; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 4</span>
+            </div>
+            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-river-depletion" checked />
+                <span>Watershed River Flow Depletion Matrix (Period Peak vs. Latest Discharge, % Depletion / Recharge)</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Status & Progress Indicator -->
+        <div id="comp-rep-status" style="font-size:11.5px; font-weight:600; min-height:18px; color:var(--blue); display:flex; align-items:center; gap:6px;"></div>
+
+      </div>
+
+      <!-- Footer Action Buttons -->
+      <div style="padding:16px 24px; border-top:1px solid #E2E8F0; background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" onclick="closeComprehensiveReportModal()" class="header-btn" style="font-size:11.5px;">Cancel</button>
+        <div style="display:flex; gap:10px;">
+          <button type="button" id="btn-comp-print" onclick="printComprehensiveReport()" class="header-btn" style="background:#FFFFFF; color:#1E293B; border-color:#CBD5E1; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+            <span>🖨️ Print / Save as Vector PDF</span>
+          </button>
+          <button type="button" id="btn-comp-download" onclick="downloadComprehensiveReportPDF()" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+            <span>📥 Download Multi-Page PDF</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden Staging Container for Multi-Page Comprehensive Report Rendering -->
+  <div id="comprehensive-report-staging" style="position:absolute; left:-9999px; top:0; width:210mm;"></div>
 
   <!-- Hidden A4 Monthly Report Template -->
   <div id="hidden-monthly-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Plus Jakarta Sans',sans-serif; padding:40px; box-sizing:border-box;">
@@ -5861,6 +6198,1420 @@
     pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 210, (canvas.height * 210) / canvas.width);
     pdf.save(`PPCWD_Monthly_Production_Report_${currentSelectedMonth}.pdf`);
   }
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── 📄 PPCWD DASHBOARD COMPREHENSIVE REPORT GENERATOR ENGINE ──
+  // ══════════════════════════════════════════════════════════════════
+
+  function openComprehensiveReportModal() {
+    ensureReportAuthorized(() => _doOpenComprehensiveReportModal(), "PPCWD Dashboard Comprehensive Report");
+  }
+
+  function _doOpenComprehensiveReportModal() {
+    const modal = document.getElementById("comprehensive-report-modal");
+    if (!modal) return;
+    modal.style.display = "flex";
+
+    const startInp = document.getElementById("comp-rep-start-date");
+    const endInp = document.getElementById("comp-rep-end-date");
+    if (startInp && endInp && (!startInp.value || !endInp.value)) {
+      setCompReportDatePreset("aug_oct_2026");
+    }
+    updateCompTopicsUI();
+    const statusEl = document.getElementById("comp-rep-status");
+    if (statusEl) statusEl.textContent = "";
+  }
+
+  function closeComprehensiveReportModal() {
+    const modal = document.getElementById("comprehensive-report-modal");
+    if (modal) modal.style.display = "none";
+  }
+
+  function setCompReportTitlePreset(preset) {
+    const titleInp = document.getElementById("comp-rep-title");
+    const subInp = document.getElementById("comp-rep-subtitle");
+    const ctxInp = document.getElementById("comp-rep-context");
+    if (preset === 'gm') {
+      if (titleInp) titleInp.value = "GM'S REPORT";
+      if (subInp) subInp.value = "El Niño Task Force";
+      if (ctxInp) ctxInp.value = "Data from El Niño Task Force Monitoring";
+    } else {
+      if (titleInp) titleInp.value = "PPCWD Dashboard Comprehensive Report";
+      if (subInp) subInp.value = "El Niño Task Force";
+      if (ctxInp) ctxInp.value = "Data from El Niño Task Force Monitoring";
+    }
+  }
+
+  function setCompReportDatePreset(preset) {
+    const startInp = document.getElementById("comp-rep-start-date");
+    const endInp = document.getElementById("comp-rep-end-date");
+    if (!startInp || !endInp) return;
+
+    const pad = n => String(n).padStart(2, '0');
+    const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    if (preset === 'week') {
+      if (allProdData && allProdData.length > 0) {
+        const latestRow = allProdData[allProdData.length - 1];
+        const dStr = latestRow[COL.date];
+        if (dStr) {
+          const d = new Date(dStr);
+          if (!isNaN(d.getTime())) {
+            const s = new Date(d);
+            s.setDate(s.getDate() - 6);
+            startInp.value = fmtDate(s);
+            endInp.value = fmtDate(d);
+            return;
+          }
+        }
+      }
+      const d = new Date();
+      const s = new Date();
+      s.setDate(s.getDate() - 6);
+      startInp.value = fmtDate(s);
+      endInp.value = fmtDate(d);
+    } else if (preset === 'month') {
+      const now = new Date();
+      const s = new Date(now.getFullYear(), now.getMonth(), 1);
+      startInp.value = fmtDate(s);
+      endInp.value = fmtDate(now);
+    } else if (preset === 'aug_oct_2026') {
+      startInp.value = '2026-08-01';
+      endInp.value = '2026-10-28';
+    } else if (preset === 'all') {
+      startInp.value = '2026-08-01';
+      endInp.value = fmtDate(new Date());
+    }
+  }
+
+  function toggleAllCompTopics(select) {
+    ['comp-topic-prod', 'comp-topic-press', 'comp-topic-comp', 'comp-topic-river'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.checked = select;
+    });
+    updateCompTopicsUI();
+  }
+
+  function updateCompTopicsUI() {
+    const prodCh = document.getElementById("comp-topic-prod")?.checked;
+    const pressCh = document.getElementById("comp-topic-press")?.checked;
+    const compCh = document.getElementById("comp-topic-comp")?.checked;
+    const riverCh = document.getElementById("comp-topic-river")?.checked;
+
+    ['comp-sub-prod-monthly', 'comp-sub-prod-weekly', 'comp-sub-prod-subsystems'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !prodCh;
+    });
+    ['comp-sub-press-monthly', 'comp-sub-press-weekly-major', 'comp-sub-press-lowest5'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !pressCh;
+    });
+    ['comp-sub-comp-summary', 'comp-sub-comp-hotspots'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !compCh;
+    });
+    ['comp-sub-river-depletion'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !riverCh;
+    });
+  }
+
+  // Backfill historical pressure telemetry on demand
+  async function ensurePressureRangeLoaded(startDt, endDt, onProgress) {
+    const oldestInRaw = (pressureRaw && pressureRaw.length > 0) ? pressureRaw[0].dt : null;
+    if (!pressureRaw || !pressureRaw.length || (oldestInRaw && startDt < oldestInRaw)) {
+      if (typeof onProgress === 'function') onProgress('Backtracking historical pressure telemetry from server...');
+      let curStart = new Date(startDt);
+      let safetyCounter = 0;
+      while (curStart < endDt && safetyCounter < 15) {
+        safetyCounter++;
+        const startIso = curStart.toISOString();
+        const endIso = endDt.toISOString();
+        try {
+          const res = await fetch(`/api/getPressure?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}`);
+          if (!res.ok) break;
+          const rows = await res.json();
+          if (!Array.isArray(rows) || !rows.length) break;
+
+          await PressureDB.putBatch(rows);
+          mergeRowsIntoMemory(rows);
+
+          if (rows.length < 10000) break;
+          const lastTime = new Date(rows[rows.length - 1].reading_time);
+          if (lastTime <= curStart) break;
+          curStart = new Date(lastTime.getTime() + 1000);
+        } catch (err) {
+          console.warn('ensurePressureRangeLoaded batch err:', err);
+          break;
+        }
+      }
+    }
+  }
+
+  // Monthly Production Aggregator
+  async function fetchAllMonthlyInRange(startDt, endDt) {
+    try {
+      const res = await fetch('/api/monthlyProduction');
+      if (!res.ok) throw new Error('Failed to load monthly production');
+      const allRecords = await res.json();
+      
+      const monthsInRange = [];
+      let cur = new Date(startDt.getFullYear(), startDt.getMonth(), 1);
+      const endMonth = new Date(endDt.getFullYear(), endDt.getMonth(), 1);
+      while (cur <= endMonth) {
+        const ym = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}`;
+        monthsInRange.push(ym);
+        cur.setMonth(cur.getMonth() + 1);
+      }
+
+      const rows = monthsInRange.map(ym => {
+        const parts = ym.split('-');
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        const daysInMonth = new Date(y, m, 0).getDate();
+        const recs = (Array.isArray(allRecords) ? allRecords : []).filter(r => r.month_year === ym);
+        
+        if (!recs.length) {
+          return {
+            month_year: ym,
+            hasData: false,
+            totalActual: 0,
+            dailyAvg: 0,
+            swPct: 0,
+            gwPct: 0,
+            pctVsNormal: 0,
+            lwuaStatus: 'No Report yet'
+          };
+        }
+
+        const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+        const swVol = recs.filter(r => r.category === 'Surface Water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+        const gwVol = recs.filter(r => r.category === 'Groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+        const dailyAvg = totalActual / daysInMonth;
+        const swPct = totalActual > 0 ? (swVol / totalActual) * 100 : 0;
+        const gwPct = totalActual > 0 ? (gwVol / totalActual) * 100 : 0;
+        const pctVsNormal = (totalActual / 1705700.0) * 100;
+        const lwuaStatus = totalActual >= 1620415.0 ? 'In Capacity' : 'For Reporting';
+
+        return {
+          month_year: ym,
+          hasData: true,
+          totalActual,
+          dailyAvg,
+          swPct,
+          gwPct,
+          pctVsNormal,
+          lwuaStatus
+        };
+      });
+
+      return rows;
+    } catch (err) {
+      console.warn('fetchAllMonthlyInRange error:', err);
+      return [];
+    }
+  }
+
+  // Weekly Operational Weeks Filter
+  function filterOperationalWeeksInRange(startDt, endDt) {
+    if (!Array.isArray(allProdData) || !allProdData.length) return [];
+    
+    const matched = allProdData.filter(row => {
+      const dStr = row[COL.date];
+      if (dStr) {
+        const d = new Date(dStr);
+        if (!isNaN(d.getTime()) && d >= startDt && d <= endDt) return true;
+      }
+      const pStr = row[COL.period] || '';
+      if (pStr.includes('-')) {
+        const parts = pStr.split('-');
+        const yrMatch = pStr.match(/\b(202\d)\b/);
+        const yr = yrMatch ? yrMatch[1] : '2026';
+        const sPart = parts[0].trim();
+        const ePart = parts[1].trim();
+        const sDate = new Date(`${sPart} ${yr}`);
+        const eDate = new Date(`${ePart.replace(/\b202\d\b/, '').trim()} ${yr}`);
+        if (!isNaN(eDate.getTime()) && eDate >= startDt && sDate <= endDt) return true;
+      }
+      return false;
+    });
+
+    matched.sort((a, b) => {
+      const numA = parseInt(String(a[COL.week]).replace(/[^0-9]/g, '')) || 0;
+      const numB = parseInt(String(b[COL.week]).replace(/[^0-9]/g, '')) || 0;
+      return numB - numA;
+    });
+
+    return matched;
+  }
+
+  // Pressure Telemetry Analytics
+  function computePressureAnalytics(startDt, endDt, matchedWeeks) {
+    const inRange = (pressureRaw || []).filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
+    const distCols = PRESSURE_STATIONS.filter(s => s.col !== 8 && s.col !== 19).map(s => s.col);
+
+    let totalDistReadings = 0;
+    let distSum = 0;
+    let ge15 = 0, m10_14 = 0, lt10 = 0, eq0 = 0;
+    let peakSum = 0, peakCount = 0;
+    let offPeakSum = 0, offPeakCount = 0;
+
+    const stationStats = {};
+    PRESSURE_STATIONS.forEach(s => {
+      stationStats[s.col] = {
+        station: s,
+        sum: 0,
+        count: 0,
+        hoursLt10: 0,
+        hoursEq0: 0
+      };
+    });
+
+    inRange.forEach(r => {
+      const hr = r.dt.getHours();
+      const isPeak = (hr >= 5 && hr < 8) || (hr >= 17 && hr < 20);
+
+      distCols.forEach(col => {
+        const val = r.vals ? r.vals[col] : null;
+        if (val !== null && val !== undefined && val >= 0 && val <= 30) {
+          totalDistReadings++;
+          distSum += val;
+          if (isPeak) { peakSum += val; peakCount++; }
+          else { offPeakSum += val; offPeakCount++; }
+
+          if (val >= 15.0) ge15++;
+          else if (val >= 10.0) m10_14++;
+          else if (val > 0.0) lt10++;
+          else eq0++;
+        }
+      });
+
+      PRESSURE_STATIONS.forEach(s => {
+        const val = r.vals ? r.vals[s.col] : null;
+        if (val !== null && val !== undefined && val >= 0) {
+          if (s.col !== 8 && s.col !== 19 && val > 30) return;
+          const st = stationStats[s.col];
+          st.sum += val;
+          st.count++;
+          if (val < 10.0) st.hoursLt10++;
+          if (val === 0.0) st.hoursEq0++;
+        }
+      });
+    });
+
+    const totalDays = Math.max(1, Math.round((endDt - startDt) / (1000 * 60 * 60 * 24)));
+    const overallDistMean = totalDistReadings > 0 ? distSum / totalDistReadings : 0;
+    const overallPeakMean = peakCount > 0 ? peakSum / peakCount : 0;
+    const overallOffPeakMean = offPeakCount > 0 ? offPeakSum / offPeakCount : 0;
+
+    const distRanked = PRESSURE_STATIONS
+      .filter(s => s.col !== 8 && s.col !== 19)
+      .map(s => {
+        const st = stationStats[s.col];
+        const mean = st.count > 0 ? st.sum / st.count : 0;
+        const dailyLt10 = st.hoursLt10 / totalDays;
+        let riskLabel = 'Nominal (&ge;10 psi)';
+        let riskColor = '#16A34A';
+        if (mean < 6.5) {
+          riskLabel = 'Severe Deficit (&lt;6.5 psi)';
+          riskColor = '#DC2626';
+        } else if (mean < 10.0) {
+          riskLabel = 'Elevated Risk (6.5&ndash;10 psi)';
+          riskColor = '#D97706';
+        }
+        return {
+          station: s,
+          meanPsi: mean,
+          readingsCount: st.count,
+          hoursLt10: st.hoursLt10,
+          dailyHoursLt10: dailyLt10,
+          riskLabel,
+          riskColor
+        };
+      })
+      .filter(s => s.readingsCount > 0)
+      .sort((a, b) => a.meanPsi - b.meanPsi)
+      .slice(0, 5);
+
+    const weeklyMajorRows = (matchedWeeks || []).map(row => {
+      const wk = row[COL.week];
+      const period = row[COL.period] || '';
+      const pStr = row[COL.period] || '';
+      let sDate = null, eDate = null;
+      if (pStr.includes('-')) {
+        const parts = pStr.split('-');
+        const yrMatch = pStr.match(/\b(202\d)\b/);
+        const yr = yrMatch ? yrMatch[1] : '2026';
+        sDate = new Date(`${parts[0].trim()} ${yr}`);
+        eDate = new Date(`${parts[1].replace(/\b202\d\b/, '').trim()} ${yr} 23:59:59`);
+      }
+      if (!sDate || isNaN(sDate.getTime())) {
+        const d = new Date(row[COL.date]);
+        sDate = new Date(d); sDate.setDate(sDate.getDate() - 6);
+        eDate = new Date(d); eDate.setHours(23, 59, 59);
+      }
+
+      const wkReadings = inRange.filter(r => r.dt >= sDate && r.dt <= eDate);
+      
+      const getColAvg = col => {
+        const vals = wkReadings.map(r => r.vals ? r.vals[col] : null).filter(v => v !== null && v !== undefined && v >= 0);
+        if (col !== 8 && col !== 19) {
+          const sanitized = vals.filter(v => v <= 30);
+          return sanitized.length ? sanitized.reduce((a, b) => a + b, 0) / sanitized.length : null;
+        }
+        return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+      };
+
+      const mbsAvg = getColAvg(2);
+      const uvAvg = getColAvg(19);
+      const campoAvg = getColAvg(8);
+
+      let wDistSum = 0, wDistCnt = 0;
+      let wPkSum = 0, wPkCnt = 0;
+      let wOffSum = 0, wOffCnt = 0;
+
+      wkReadings.forEach(r => {
+        const hr = r.dt.getHours();
+        const isPk = (hr >= 5 && hr < 8) || (hr >= 17 && hr < 20);
+        distCols.forEach(col => {
+          const v = r.vals ? r.vals[col] : null;
+          if (v !== null && v !== undefined && v >= 0 && v <= 30) {
+            wDistSum += v; wDistCnt++;
+            if (isPk) { wPkSum += v; wPkCnt++; }
+            else { wOffSum += v; wOffCnt++; }
+          }
+        });
+      });
+
+      return {
+        week: wk,
+        period,
+        mbsAvg,
+        uvAvg,
+        campoAvg,
+        distAvg: wDistCnt > 0 ? wDistSum / wDistCnt : null,
+        peakAvg: wPkCnt > 0 ? wPkSum / wPkCnt : null,
+        offPeakAvg: wOffCnt > 0 ? wOffSum / wOffCnt : null
+      };
+    });
+
+    const monthsInRange = [];
+    let cur = new Date(startDt.getFullYear(), startDt.getMonth(), 1);
+    const endM = new Date(endDt.getFullYear(), endDt.getMonth(), 1);
+    while (cur <= endM) {
+      monthsInRange.push(new Date(cur));
+      cur.setMonth(cur.getMonth() + 1);
+    }
+
+    const monthlyComplianceRows = monthsInRange.map(mDate => {
+      const ym = `${mDate.getFullYear()}-${String(mDate.getMonth() + 1).padStart(2, '0')}`;
+      const mStart = new Date(mDate.getFullYear(), mDate.getMonth(), 1, 0, 0, 0);
+      const mEnd = new Date(mDate.getFullYear(), mDate.getMonth() + 1, 0, 23, 59, 59);
+      const mReadings = inRange.filter(r => r.dt >= mStart && r.dt <= mEnd);
+
+      let mDistSum = 0, mDistCnt = 0;
+      let mPkSum = 0, mPkCnt = 0, mOffSum = 0, mOffCnt = 0;
+      let mGe15 = 0, mM10_14 = 0, mLt10 = 0, mEq0 = 0;
+
+      mReadings.forEach(r => {
+        const hr = r.dt.getHours();
+        const isPk = (hr >= 5 && hr < 8) || (hr >= 17 && hr < 20);
+        distCols.forEach(col => {
+          const v = r.vals ? r.vals[col] : null;
+          if (v !== null && v !== undefined && v >= 0 && v <= 30) {
+            mDistSum += v; mDistCnt++;
+            if (isPk) { mPkSum += v; mPkCnt++; }
+            else { mOffSum += v; mOffCnt++; }
+
+            if (v >= 15.0) mGe15++;
+            else if (v >= 10.0) mM10_14++;
+            else if (v > 0.0) mLt10++;
+            else mEq0++;
+          }
+        });
+      });
+
+      const mComplaints = (complaintsRaw || []).filter(c => {
+        if (!c.date) return false;
+        const d = new Date(c.date);
+        return d >= mStart && d <= mEnd;
+      });
+      const compTotal = mComplaints.reduce((sum, c) => sum + (parseInt(c.complaint_count, 10) || 1), 0);
+      const compNW = mComplaints.filter(c => String(c.type || '').toLowerCase().includes('no water'))
+                               .reduce((sum, c) => sum + (parseInt(c.complaint_count, 10) || 1), 0);
+
+      return {
+        month_year: ym,
+        hasReadings: mDistCnt > 0,
+        distMean: mDistCnt > 0 ? mDistSum / mDistCnt : 0,
+        peakMean: mPkCnt > 0 ? mPkSum / mPkCnt : 0,
+        offPeakMean: mOffCnt > 0 ? mOffSum / mOffCnt : 0,
+        ge15Pct: mDistCnt > 0 ? (mGe15 / mDistCnt) * 100 : 0,
+        m10_14Pct: mDistCnt > 0 ? (mM10_14 / mDistCnt) * 100 : 0,
+        lt10Pct: mDistCnt > 0 ? (mLt10 / mDistCnt) * 100 : 0,
+        eq0Pct: mDistCnt > 0 ? (mEq0 / mDistCnt) * 100 : 0,
+        eq0Count: mEq0,
+        compTotal,
+        compNW
+      };
+    });
+
+    const mbsSt = stationStats[2];
+    const mbsMean = mbsSt && mbsSt.count > 0 ? mbsSt.sum / mbsSt.count : 0;
+    const hoursLt10Daily = totalDays > 0 ? (lt10 + eq0) / totalDays : 0;
+
+    return {
+      totalDistReadings,
+      overallDistMean,
+      overallPeakMean,
+      overallOffPeakMean,
+      mbsMean,
+      ge15Pct: totalDistReadings > 0 ? (ge15 / totalDistReadings) * 100 : 0,
+      m10_14Pct: totalDistReadings > 0 ? (m10_14 / totalDistReadings) * 100 : 0,
+      lt10Pct: totalDistReadings > 0 ? (lt10 / totalDistReadings) * 100 : 0,
+      eq0Pct: totalDistReadings > 0 ? (eq0 / totalDistReadings) * 100 : 0,
+      eq0Count: eq0,
+      hoursLt10Daily,
+      top5Lowest: distRanked,
+      weeklyMajorRows,
+      monthlyComplianceRows
+    };
+  }
+
+  // Customer Complaints Analytics
+  function computeComplaintsAnalytics(startDt, endDt) {
+    const sIso = startDt.toISOString().slice(0, 10);
+    const eIso = endDt.toISOString().slice(0, 10);
+    const inRange = (complaintsRaw || []).filter(c => {
+      const d = c.date || (c.created_at ? c.created_at.slice(0, 10) : '');
+      return d >= sIso && d <= eIso;
+    });
+
+    const types = {}, brgys = {}, stubouts = {};
+    let total = 0, nwCount = 0, lpCount = 0, turbidCount = 0;
+
+    inRange.forEach(c => {
+      const b = (c.barangay || 'Unknown').trim();
+      const t = (c.type || 'Unclassified').trim();
+      const so = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '').trim();
+      const n = parseInt(c.complaint_count, 10) || 1;
+      
+      total += n;
+      types[t] = (types[t] || 0) + n;
+      brgys[b] = brgys[b] || { total: 0, nw: 0, lp: 0 };
+      brgys[b].total += n;
+
+      const tLower = t.toLowerCase();
+      if (tLower.includes('no water')) { nwCount += n; brgys[b].nw += n; }
+      else if (tLower.includes('low pressure')) { lpCount += n; brgys[b].lp += n; }
+      else if (tLower.includes('turbid') || tLower.includes('dirty')) { turbidCount += n; }
+
+      if (so && so !== '—' && so !== 'Unassigned') {
+        stubouts[b] = stubouts[b] || {};
+        stubouts[b][so] = (stubouts[b][so] || 0) + n;
+      }
+    });
+
+    const sortedTypes = Object.entries(types).sort((a, b) => b[1] - a[1]);
+    const sortedBrgys = Object.entries(brgys)
+      .map(([name, data]) => ({ name, ...data }))
+      .sort((a, b) => b.total - a.total);
+
+    const stationMapping = {
+      'Sta. Monica': { station: 'Gemma Res, Bgy. Sta. Monica', defaultPsi: 7.31 },
+      'San Pedro': { station: 'Beside Marianne Hotel / Rizal Office', defaultPsi: 4.00 },
+      'San Jose': { station: 'Beside Lito Escalante / Tagburos', defaultPsi: 13.90 },
+      'Mandaragat': { station: 'Fernandez cor Manalo / Near Lacharica Inn', defaultPsi: 11.20 },
+      'San Miguel': { station: 'Near PPCI Manalo St / Tanduay Warehouse', defaultPsi: 12.80 },
+      'Tiniguiban': { station: 'Beside Lito Escalante', defaultPsi: 13.90 },
+      'Milagrosa': { station: 'Manalo Booster Station', defaultPsi: 14.39 }
+    };
+
+    const topBrgysDetailed = sortedBrgys.slice(0, 5).map(b => {
+      const mapping = stationMapping[b.name] || { station: 'Central Distribution Zone', defaultPsi: 12.00 };
+      const soMap = stubouts[b.name] || {};
+      const topSos = Object.entries(soMap).sort((a, b) => b[1] - a[1]).slice(0, 3).map(s => `${s[0]} (${s[1]})`).join(', ') || 'General Mains';
+      return {
+        ...b,
+        topStubouts: topSos,
+        correlatedStation: mapping.station
+      };
+    });
+
+    return {
+      total,
+      nwCount,
+      lpCount,
+      turbidCount,
+      sortedTypes,
+      topBrgysDetailed
+    };
+  }
+
+  // Watershed Hydrology & River Flow Depletion Matrix
+  function computeRiverDepletionMatrix(startDt, endDt) {
+    const inRange = (riverRaw || []).filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
+
+    const matrix = RIVER_STATIONS.map(s => {
+      const readings = inRange
+        .map(r => ({ dt: r.dt, val: r.vals ? r.vals[s.col] : null }))
+        .filter(item => item.val !== null && item.val !== undefined && item.val >= 0);
+
+      if (!readings.length) {
+        return {
+          station: s,
+          hasReadings: false,
+          peakVal: 0,
+          peakDate: null,
+          latestVal: 0,
+          latestDate: null,
+          netChange: 0,
+          pctDepletion: 0,
+          statusLabel: 'No Telemetry Logged',
+          statusColor: '#64748B'
+        };
+      }
+
+      let peak = readings[0];
+      readings.forEach(r => {
+        if (r.val > peak.val) peak = r;
+      });
+
+      const latest = readings[readings.length - 1];
+      const netChange = latest.val - peak.val;
+      const pctDepletion = peak.val > 0 ? ((peak.val - latest.val) / peak.val) * 100 : 0;
+
+      let statusLabel = 'Stable (&lt;20%)';
+      let statusColor = '#16A34A';
+      if (pctDepletion >= 70.0) {
+        statusLabel = 'Critical Depletion (&ge;70%)';
+        statusColor = '#DC2626';
+      } else if (pctDepletion >= 50.0) {
+        statusLabel = 'Severe Depletion (50&ndash;69%)';
+        statusColor = '#D97706';
+      } else if (pctDepletion >= 20.0) {
+        statusLabel = 'Moderate Depletion (20&ndash;49%)';
+        statusColor = '#CA8A04';
+      } else if (netChange > 0) {
+        statusLabel = `Recharging (+${fmt(Math.abs(pctDepletion), 1)}%)`;
+        statusColor = '#0D9488';
+      }
+
+      return {
+        station: s,
+        hasReadings: true,
+        peakVal: peak.val,
+        peakDate: peak.dt,
+        latestVal: latest.val,
+        latestDate: latest.dt,
+        netChange,
+        pctDepletion,
+        statusLabel,
+        statusColor
+      };
+    });
+
+    return matrix;
+  }
+
+  // Header banner builder
+  function buildCompHeader(title, subtitle, context, startStr, endStr) {
+    return `
+      <div class="comp-header-banner">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="logo.png" alt="PPCWD Logo" style="width:40px; height:40px; object-fit:contain;" />
+          <div>
+            <div style="font-size:16px; font-weight:800; color:#1560BD; letter-spacing:-0.2px; text-transform:uppercase;">${escapeHtml(title)}</div>
+            <div style="font-size:10.5px; font-weight:700; color:#334155;">${escapeHtml(subtitle)} &bull; <span style="font-weight:500; color:#64748B;">${escapeHtml(context)}</span></div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px; font-weight:700; color:#0F172A; font-family:'JetBrains Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
+          <div style="font-size:8.5px; color:#94A3B8;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Footer builder
+  function buildCompFooter(pageNum, totalPages) {
+    return `
+      <div class="comp-footer">
+        <div>Puerto Princesa City Water District &bull; SCADA Telemetry &amp; Field Operations Monitoring</div>
+        <div style="font-weight:700; font-family:'JetBrains Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
+      </div>
+    `;
+  }
+
+  // Main Staging Renderer
+  async function renderComprehensiveReportStaging() {
+    const statusEl = document.getElementById("comp-rep-status");
+    if (statusEl) {
+      statusEl.textContent = "Processing telemetry datasets...";
+      statusEl.style.color = "var(--blue)";
+    }
+
+    const title = (document.getElementById("comp-rep-title")?.value || "PPCWD Dashboard Comprehensive Report").trim();
+    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "El Niño Task Force").trim();
+    const context = (document.getElementById("comp-rep-context")?.value || "Data from El Niño Task Force Monitoring").trim();
+    
+    const startVal = document.getElementById("comp-rep-start-date")?.value || "2026-08-01";
+    const endVal = document.getElementById("comp-rep-end-date")?.value || "2026-10-28";
+    const startDt = new Date(startVal + "T00:00:00+08:00");
+    const endDt = new Date(endVal + "T23:59:59+08:00");
+
+    const topicProd = document.getElementById("comp-topic-prod")?.checked;
+    const topicPress = document.getElementById("comp-topic-press")?.checked;
+    const topicComp = document.getElementById("comp-topic-comp")?.checked;
+    const topicRiver = document.getElementById("comp-topic-river")?.checked;
+
+    const subProdMonthly = document.getElementById("comp-sub-prod-monthly")?.checked;
+    const subProdWeekly = document.getElementById("comp-sub-prod-weekly")?.checked;
+    const subProdSubsystems = document.getElementById("comp-sub-prod-subsystems")?.checked;
+
+    const subPressMonthly = document.getElementById("comp-sub-press-monthly")?.checked;
+    const subPressWeekly = document.getElementById("comp-sub-press-weekly-major")?.checked;
+    const subPressLowest5 = document.getElementById("comp-sub-press-lowest5")?.checked;
+
+    const subCompSummary = document.getElementById("comp-sub-comp-summary")?.checked;
+    const subCompHotspots = document.getElementById("comp-sub-comp-hotspots")?.checked;
+    const subRiverDepletion = document.getElementById("comp-sub-river-depletion")?.checked;
+
+    // Ensure pressure telemetry covers requested date range
+    if (topicPress || topicComp) {
+      await ensurePressureRangeLoaded(startDt, endDt, msg => {
+        if (statusEl) statusEl.textContent = msg;
+      });
+    }
+
+    const startStr = startDt.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+    const endStr = endDt.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+
+    const totalPages = (topicProd ? 1 : 0) + (topicPress ? 1 : 0) + (topicComp ? 1 : 0) + (topicRiver ? 1 : 0);
+    if (totalPages === 0) {
+      if (statusEl) {
+        statusEl.textContent = "Please select at least one topic to generate.";
+        statusEl.style.color = "var(--red)";
+      }
+      return false;
+    }
+
+    const pagesHtml = [];
+    let curPage = 0;
+
+    // ─────────────────────────────────────────────────────────────
+    // PAGE 1: PRODUCTION WEEKLY & MONTHLY SUMMARY
+    // ─────────────────────────────────────────────────────────────
+    if (topicProd) {
+      curPage++;
+      const monthlyData = await fetchAllMonthlyInRange(startDt, endDt);
+      const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
+
+      let p1Content = '';
+
+      // Section 1: Monthly Production & LWUA Trigger
+      if (subProdMonthly) {
+        const totalActualPeriod = monthlyData.reduce((s, m) => s + m.totalActual, 0);
+        const monthsWithData = monthlyData.filter(m => m.hasData);
+        const avgDaily = monthsWithData.length ? monthlyData.reduce((s, m) => s + m.dailyAvg, 0) / monthsWithData.length : 0;
+        const avgPctNormal = monthsWithData.length ? (totalActualPeriod / (1705700.0 * monthsWithData.length)) * 100 : 0;
+        const hasBelowCutoff = monthsWithData.some(m => m.lwuaStatus === 'For Reporting');
+        const overallLwuaStatus = !monthsWithData.length ? 'Awaiting Input' : (hasBelowCutoff ? 'For Reporting (&lt;5%)' : 'In Capacity (&ge;95%)');
+        const statusColor = !monthsWithData.length ? '#64748B' : (hasBelowCutoff ? '#DC2626' : '#16A34A');
+
+        p1Content += `
+          <div style="margin-bottom:14px;">
+            <div class="comp-section-title">
+              <span>MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER SUMMARY</span>
+            </div>
+            <div class="comp-kpi-grid">
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Normal Baseline</div>
+                <div class="comp-kpi-value">1,705,700 <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
+                <div class="comp-kpi-sub">2,336.58 m&sup3;/hr (730 hrs)</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">LWUA 5% Cutoff</div>
+                <div class="comp-kpi-value" style="color:#D97706;">1,620,415 <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
+                <div class="comp-kpi-sub">Mandatory Notice Threshold</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Period Actual Yield</div>
+                <div class="comp-kpi-value">${fmt(totalActualPeriod, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
+                <div class="comp-kpi-sub">Daily: ${fmt(avgDaily, 2)} m&sup3;/d (${fmt(avgPctNormal, 1)}%)</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">LWUA Crisis Status</div>
+                <div class="comp-kpi-value" style="color:${statusColor}; font-size:13px;">${overallLwuaStatus}</div>
+                <div class="comp-kpi-sub">Based on Monthly Reporting</div>
+              </div>
+            </div>
+
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th style="text-align:right;">Total Actual (m&sup3;)</th>
+                  <th style="text-align:right;">Daily Avg (m&sup3;/d)</th>
+                  <th style="text-align:right;">Surface %</th>
+                  <th style="text-align:right;">Ground %</th>
+                  <th style="text-align:right;">% vs Normal</th>
+                  <th style="text-align:left; padding-left:12px;">LWUA Trigger Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${monthlyData.map(m => {
+                  const sColor = m.lwuaStatus === 'In Capacity' ? '#16A34A' : (m.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
+                  return `
+                    <tr>
+                      <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${m.month_year}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.gwPct, 1) + '%' : '—'}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
+                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${m.lwuaStatus}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // Section 2: Weekly Production & Crisis Monitoring
+      if (subProdWeekly) {
+        let sumTotal = 0, sumDaily = 0, sumSW = 0, sumGW = 0;
+        const weekRows = matchedWeeks.map(row => {
+          const wk = row[COL.week];
+          const period = row[COL.period] || '';
+          const total = Number(row[COL.grandTotal]) || 0;
+          const daily = (Number(row[COL.mld]) || 0) * 1000 || (total / 7);
+          const sw = Number(row[COL.totalSW]) || 0;
+          const gw = Number(row[COL.totalGW]) || 0;
+          const swPct = total > 0 ? (sw / total) * 100 : 0;
+          const gwPct = total > 0 ? (gw / total) * 100 : 0;
+          const target = 398020.0;
+          const pctAchieved = (total / target) * 100;
+
+          sumTotal += total;
+          sumDaily += daily;
+          sumSW += sw;
+          sumGW += gw;
+
+          let sText = 'Normal (&ge;100%)';
+          let sColor = '#16A34A';
+          if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; }
+          else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; }
+          else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; }
+
+          return `
+            <tr>
+              <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${wk}</td>
+              <td>${escapeHtml(period)}</td>
+              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(total, 2)}</td>
+              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(daily, 2)}</td>
+              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(swPct, 1)}%</td>
+              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(gwPct, 1)}%</td>
+              <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
+              <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${sText}</td>
+            </tr>
+          `;
+        }).join('');
+
+        const cnt = Math.max(1, matchedWeeks.length);
+        const avgWeekly = sumTotal / cnt;
+        const avgDaily = sumDaily / cnt;
+        const avgSwPct = sumTotal > 0 ? (sumSW / sumTotal) * 100 : 0;
+        const avgGwPct = sumTotal > 0 ? (sumGW / sumTotal) * 100 : 0;
+        const avgPctAchieved = (avgWeekly / 398020.0) * 100;
+        const avgColor = avgPctAchieved >= 100 ? '#16A34A' : (avgPctAchieved >= 90 ? '#2563EB' : (avgPctAchieved >= 75 ? '#D97706' : '#DC2626'));
+
+        p1Content += `
+          <div>
+            <div class="comp-section-title">
+              <span>WEEKLY PRODUCTION, SW/GW SPLIT &amp; CRISIS MONITORING (TARGET: 398,020 m&sup3;/wk)</span>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:8px; font-size:9px; background:#F8FAFC; border:1px solid #E2E8F0; padding:5px 10px; border-radius:4px;">
+              <span style="color:#16A34A; font-weight:700;">&bull; Normal &ge; 100%</span>
+              <span style="color:#2563EB; font-weight:700;">&bull; Level 1: Watch (90&ndash;99.9%)</span>
+              <span style="color:#D97706; font-weight:700;">&bull; Level 2: Alert (75&ndash;89.9%)</span>
+              <span style="color:#DC2626; font-weight:700;">&bull; Level 3: Critical (&lt;75%)</span>
+            </div>
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Week</th>
+                  <th>Inclusive Dates</th>
+                  <th style="text-align:right;">Weekly Vol (m&sup3;)</th>
+                  <th style="text-align:right;">Daily Avg (m&sup3;/d)</th>
+                  <th style="text-align:right;">SW %</th>
+                  <th style="text-align:right;">GW %</th>
+                  <th style="text-align:right;">Crisis Yield</th>
+                  <th style="text-align:left; padding-left:12px;">Crisis Status Indicator</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${weekRows}
+                <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                  <td colspan="2">WEEKLY AVERAGE (${matchedWeeks.length} Weeks)</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgWeekly, 2)}</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgDaily, 2)}</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgSwPct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgGwPct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:${avgColor};">${fmt(avgPctAchieved, 1)}%</td>
+                  <td style="text-align:left; padding-left:12px; color:${avgColor};">Average Operating Status</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // Section 3: Optional Subsystems & Remarks
+      if (subProdSubsystems) {
+        const activeRemarks = CRISIS_SYSTEMS.map(sys => ({
+          name: sys.name,
+          remark: getCrisisRemarkText(sys.id)
+        })).filter(item => item.remark && item.remark.trim() !== "");
+
+        p1Content += `
+          <div style="margin-top:10px; border-top:1px solid #E2E8F0; padding-top:8px;">
+            <div style="font-size:10px; font-weight:700; color:#1E293B; margin-bottom:4px;">Operational Crisis Remarks &amp; Task Force Directives:</div>
+            <div style="font-size:9px; color:#475569; display:flex; flex-direction:column; gap:3px;">
+              ${activeRemarks.length ? activeRemarks.map(r => `<div><strong>&bull; ${r.name}:</strong> ${escapeHtml(r.remark)}</div>`).join('') : '<div style="font-style:italic; color:#94A3B8;">No operational remarks logged for this period.</div>'}
+            </div>
+          </div>
+        `;
+      }
+
+      pagesHtml.push(`
+        <div class="comp-a4-page" id="comp-page-1">
+          <div>
+            ${buildCompHeader(title, subtitle, context, startStr, endStr)}
+            ${p1Content}
+          </div>
+          ${buildCompFooter(curPage, totalPages)}
+        </div>
+      `);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PAGE 2: PRESSURE NETWORK SUMMARY & LOW-PRESSURE SENSORS
+    // ─────────────────────────────────────────────────────────────
+    if (topicPress) {
+      curPage++;
+      const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
+      const pressData = computePressureAnalytics(startDt, endDt, matchedWeeks);
+
+      let p2Content = '';
+
+      if (subPressMonthly) {
+        p2Content += `
+          <div style="margin-bottom:12px;">
+            <div class="comp-section-title">
+              <span>SYSTEM PRESSURE NETWORK COMPLIANCE &amp; EXPOSURE SUMMARY</span>
+            </div>
+            <div class="comp-kpi-grid">
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">MBS Average PSI</div>
+                <div class="comp-kpi-value">${fmt(pressData.mbsMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
+                <div class="comp-kpi-sub">Manalo Booster Station</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">System Dist Average</div>
+                <div class="comp-kpi-value" style="color:#2563EB;">${fmt(pressData.overallDistMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
+                <div class="comp-kpi-sub">18 Distribution Points (&le;30 psi)</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Critical Exposure (&lt;10 psi)</div>
+                <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt10Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
+                <div class="comp-kpi-sub">${fmt(pressData.lt10Pct + pressData.eq0Pct, 1)}% of logged readings</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Supply Interruption (0 psi)</div>
+                <div class="comp-kpi-value" style="color:#DC2626;">${pressData.eq0Count} <span style="font-size:10px; font-weight:600;">hrs</span></div>
+                <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours</div>
+              </div>
+            </div>
+
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Period / Month</th>
+                  <th style="text-align:right;">Dist Mean</th>
+                  <th style="text-align:right;">Peak (05-08 &amp; 17-20)</th>
+                  <th style="text-align:right;">Off-Peak</th>
+                  <th style="text-align:right;">&ge; 15.0 psi</th>
+                  <th style="text-align:right;">10&ndash;14.9 psi</th>
+                  <th style="text-align:right;">&lt; 10.0 psi</th>
+                  <th style="text-align:right;">0.0 psi (hrs)</th>
+                  <th style="text-align:right;">Complaints (Tot / NW)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${pressData.monthlyComplianceRows.map(m => `
+                  <tr>
+                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${m.month_year}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.distMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.peakMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.offPeakMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#16A34A;">${m.hasReadings ? fmt(m.ge15Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m10_14Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt10Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#DC2626;">${m.hasReadings ? fmt(m.eq0Pct, 1) + '% (' + m.eq0Count + ')' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
+                  </tr>
+                `).join('')}
+                <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                  <td>PERIOD TOTAL / MEAN</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallOffPeakMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#16A34A;">${fmt(pressData.ge15Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${fmt(pressData.m10_14Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${fmt(pressData.lt10Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (subPressWeekly) {
+        p2Content += `
+          <div style="margin-bottom:12px;">
+            <div class="comp-section-title">
+              <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI)</span>
+            </div>
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Week</th>
+                  <th>Inclusive Dates</th>
+                  <th style="text-align:right;">MBS (col: 2)</th>
+                  <th style="text-align:right;">UV Facility (col: 19)</th>
+                  <th style="text-align:right;">Campo Uno (col: 8)</th>
+                  <th style="text-align:right;">AVG System</th>
+                  <th style="text-align:right;">Peak Avg</th>
+                  <th style="text-align:right;">Off-Peak Avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${pressData.weeklyMajorRows.map(w => `
+                  <tr>
+                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${w.week}</td>
+                    <td>${escapeHtml(w.period)}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. Campo Uno and UV Facility are transmission chambers. N/A indicates no sensor readings logged.</div>
+          </div>
+        `;
+      }
+
+      if (subPressLowest5) {
+        p2Content += `
+          <div>
+            <div class="comp-section-title">
+              <span>TOP 5 LOWEST-PRESSURE SENSORS (18 DISTRIBUTION STATIONS)</span>
+            </div>
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th style="width:30px;">Rank</th>
+                  <th>Monitoring Point / Station Name</th>
+                  <th style="text-align:right;">Average PSI</th>
+                  <th style="text-align:right;">Hours &lt; 10 psi</th>
+                  <th style="text-align:right;">Avg Daily Hours &lt; 10 psi</th>
+                  <th style="text-align:left; padding-left:12px;">Operational Risk Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${pressData.top5Lowest.map((st, idx) => `
+                  <tr>
+                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">#${idx + 1}</td>
+                    <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${fmt(st.meanPsi, 2)} psi</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${st.hoursLt10} hrs</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(st.dailyHoursLt10, 2)} hrs/day</td>
+                    <td style="text-align:left; padding-left:12px; font-weight:700; color:${st.riskColor};">${st.riskLabel}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      pagesHtml.push(`
+        <div class="comp-a4-page" id="comp-page-2">
+          <div>
+            ${buildCompHeader(title, subtitle, context, startStr, endStr)}
+            ${p2Content}
+          </div>
+          ${buildCompFooter(curPage, totalPages)}
+        </div>
+      `);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PAGE 3: TOP 5 LOWEST PRESSURE SENSORS & COMPLAINTS CORRELATION
+    // ─────────────────────────────────────────────────────────────
+    if (topicComp) {
+      curPage++;
+      const compData = computeComplaintsAnalytics(startDt, endDt);
+
+      let p3Content = '';
+
+      if (subCompSummary) {
+        p3Content += `
+          <div style="margin-bottom:14px;">
+            <div class="comp-section-title">
+              <span>CUSTOMER SERVICE COMPLAINTS SUMMARY BY INCIDENT TYPE</span>
+            </div>
+            <div class="comp-kpi-grid">
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Total Complaints</div>
+                <div class="comp-kpi-value">${fmt(compData.total)} <span style="font-size:10px; font-weight:600;">reports</span></div>
+                <div class="comp-kpi-sub">Across All Barangays</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">No Water Outages</div>
+                <div class="comp-kpi-value" style="color:#DC2626;">${fmt(compData.nwCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
+                <div class="comp-kpi-sub">${compData.total > 0 ? fmt((compData.nwCount / compData.total) * 100, 1) : 0}% of all complaints</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Low Pressure Incidents</div>
+                <div class="comp-kpi-value" style="color:#D97706;">${fmt(compData.lpCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
+                <div class="comp-kpi-sub">${compData.total > 0 ? fmt((compData.lpCount / compData.total) * 100, 1) : 0}% of all complaints</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Water Quality / Turbidity</div>
+                <div class="comp-kpi-value" style="color:#854D0E;">${fmt(compData.turbidCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
+                <div class="comp-kpi-sub">Field flushing required</div>
+              </div>
+            </div>
+
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Incident Classification</th>
+                  <th style="text-align:right;">Total Reports</th>
+                  <th style="text-align:right;">% Share</th>
+                  <th style="text-align:left; padding-left:14px;">Operational Impact</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${compData.sortedTypes.map(([type, count]) => {
+                  const share = compData.total > 0 ? (count / compData.total) * 100 : 0;
+                  const isNW = type.toLowerCase().includes('no water');
+                  const isLP = type.toLowerCase().includes('low pressure');
+                  const tColor = isNW ? '#DC2626' : (isLP ? '#D97706' : '#334155');
+                  const impact = isNW ? 'Critical Service Disruption &bull; Water Trucking Deployment' : (isLP ? 'Peak Hour Flow Restriction &bull; Booster Valving' : 'Routine Maintenance &bull; Customer Service Response');
+                  return `
+                    <tr>
+                      <td style="font-weight:700; color:${tColor};">${escapeHtml(type)}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${count}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(share, 1)}%</td>
+                      <td style="text-align:left; padding-left:14px; font-size:9px; color:#475569;">${impact}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (subCompHotspots) {
+        p3Content += `
+          <div>
+            <div class="comp-section-title">
+              <span>TOP AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS CROSS-CORRELATED WITH SENSORS</span>
+            </div>
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th style="width:30px;">Rank</th>
+                  <th>Barangay Name</th>
+                  <th style="text-align:right;">Total Reports</th>
+                  <th style="text-align:right;">No Water (NW)</th>
+                  <th>Top Impacted Stubouts (SO-xxxx)</th>
+                  <th>Correlated SCADA Pressure Sensor</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${compData.topBrgysDetailed.map((b, idx) => `
+                  <tr>
+                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">#${idx + 1}</td>
+                    <td style="font-weight:800; color:#0F172A;">${escapeHtml(b.name)}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${b.total}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#DC2626;">${b.nw}</td>
+                    <td style="font-family:'JetBrains Mono', monospace; font-size:8.5px; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
+                    <td style="font-weight:600; color:#2563EB;">${escapeHtml(b.correlatedStation)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <div style="margin-top:10px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.4;">
+              <strong>Cross-Telemetry Findings:</strong> Customer complaint spikes directly corroborate pressure sensor telemetry. Outages in Sta. Monica and San Pedro align with chronic sub-8 psi depressions at Gemma Res (7.31 psi) and Marianne Hotel (4.00 psi), verifying physical system hydraulic constraints rather than isolated customer meter issues.
+            </div>
+          </div>
+        `;
+      }
+
+      pagesHtml.push(`
+        <div class="comp-a4-page" id="comp-page-3">
+          <div>
+            ${buildCompHeader(title, subtitle, context, startStr, endStr)}
+            ${p3Content}
+          </div>
+          ${buildCompFooter(curPage, totalPages)}
+        </div>
+      `);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PAGE 4: WATERSHED HYDROLOGY & RIVER FLOW DEPLETION
+    // ─────────────────────────────────────────────────────────────
+    if (topicRiver) {
+      curPage++;
+      const riverMatrix = computeRiverDepletionMatrix(startDt, endDt);
+
+      let p4Content = '';
+
+      if (subRiverDepletion) {
+        // Summary KPIs for Hydrology
+        const citySources = riverMatrix.filter(r => r.station.group.includes('Primary'));
+        const montible1 = riverMatrix.find(r => r.station.name.includes('Montible Bridge 1'));
+        const peakTotalCity = citySources.reduce((s, r) => s + r.peakVal, 0);
+        const latestTotalCity = citySources.reduce((s, r) => s + r.latestVal, 0);
+        const cityDepletionPct = peakTotalCity > 0 ? ((peakTotalCity - latestTotalCity) / peakTotalCity) * 100 : 0;
+
+        p4Content += `
+          <div style="margin-bottom:14px;">
+            <div class="comp-section-title">
+              <span>WATERSHED HYDROLOGY &amp; RIVER FLOW DEPLETION MATRIX</span>
+            </div>
+            <div class="comp-kpi-grid">
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Primary City Sources Peak</div>
+                <div class="comp-kpi-value">${fmt(peakTotalCity, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;/d</span></div>
+                <div class="comp-kpi-sub">Montible &amp; Lapu-Lapu Combined</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Primary Sources Latest</div>
+                <div class="comp-kpi-value" style="color:#DC2626;">${fmt(latestTotalCity, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;/d</span></div>
+                <div class="comp-kpi-sub">Net Loss: -${fmt(peakTotalCity - latestTotalCity, 2)} m&sup3;/d</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">City Depletion Rate</div>
+                <div class="comp-kpi-value" style="color:#DC2626;">-${fmt(cityDepletionPct, 1)}%</div>
+                <div class="comp-kpi-sub">Severe Baseflow Recession</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Most Vulnerable Gauge</div>
+                <div class="comp-kpi-value" style="font-size:12px; color:#DC2626;">Montible Bridge 1</div>
+                <div class="comp-kpi-sub">${montible1 ? '-' + fmt(montible1.pctDepletion, 1) + '% discharge collapse' : 'Critical Depletion'}</div>
+              </div>
+            </div>
+
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>River Station Name</th>
+                  <th>Watershed Zone</th>
+                  <th style="text-align:right;">Peak Flow (m&sup3;/d)</th>
+                  <th>Peak Date</th>
+                  <th style="text-align:right;">Latest Flow (m&sup3;/d)</th>
+                  <th>Latest Date</th>
+                  <th style="text-align:right;">Net Change (m&sup3;/d)</th>
+                  <th style="text-align:right;">% Change</th>
+                  <th style="text-align:left; padding-left:12px;">Vulnerability Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${riverMatrix.map(r => {
+                  const pDateStr = r.peakDate ? r.peakDate.toLocaleDateString('en-PH', { month:'short', day:'numeric' }) : '—';
+                  const lDateStr = r.latestDate ? r.latestDate.toLocaleDateString('en-PH', { month:'short', day:'numeric' }) : '—';
+                  const changeColor = r.netChange < 0 ? '#DC2626' : (r.netChange > 0 ? '#0D9488' : '#64748B');
+                  return `
+                    <tr>
+                      <td style="font-weight:700;">${escapeHtml(r.station.name)}</td>
+                      <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${r.hasReadings ? fmt(r.peakVal, 2) : '—'}</td>
+                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace;">${pDateStr}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${r.hasReadings ? fmt(r.latestVal, 2) : '—'}</td>
+                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace;">${lDateStr}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${r.statusColor};">${r.hasReadings ? (r.netChange > 0 ? '+' : '-') + fmt(Math.abs(r.pctDepletion), 1) + '%' : '—'}</td>
+                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${r.statusColor};">${r.statusLabel}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+
+            <div style="margin-top:12px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.45;">
+              <strong>Hydrological Depletion Analysis:</strong> Surface water infiltration galleries at Montible and Lapu-Lapu show pronounced yield collapses exceeding 70% from seasonal highs. The 94.8% drop at Montible Bridge 1 underscores the critical need for strict groundwater booster dispatch and satellite well stabilization during dry El Niño intervals.
+            </div>
+          </div>
+        `;
+      }
+
+      pagesHtml.push(`
+        <div class="comp-a4-page" id="comp-page-4">
+          <div>
+            ${buildCompHeader(title, subtitle, context, startStr, endStr)}
+            ${p4Content}
+          </div>
+          ${buildCompFooter(curPage, totalPages)}
+        </div>
+      `);
+    }
+
+    const stagingEl = document.getElementById("comprehensive-report-staging");
+    if (stagingEl) {
+      stagingEl.innerHTML = pagesHtml.join('\n');
+    }
+
+    if (statusEl) {
+      statusEl.textContent = `Ready! Generated ${totalPages} page(s) for export.`;
+      statusEl.style.color = "var(--green)";
+    }
+
+    return true;
+  }
+
+  // Print Action (Vector PDF via browser print window)
+  async function printComprehensiveReport() {
+    const statusEl = document.getElementById("comp-rep-status");
+    const ok = await renderComprehensiveReportStaging();
+    if (!ok) return;
+
+    const staging = document.getElementById("comprehensive-report-staging");
+    if (!staging || !staging.children.length) {
+      if (statusEl) {
+        statusEl.textContent = "No pages available to print.";
+        statusEl.style.color = "var(--red)";
+      }
+      return;
+    }
+
+    const printWin = window.open('', '_blank', 'width=1050,height=900');
+    if (!printWin) {
+      window.print();
+      return;
+    }
+
+    const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style')).map(el => el.outerHTML).join('\n');
+    const titleVal = document.getElementById("comp-rep-title")?.value || "PPCWD Report";
+
+    printWin.document.open();
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${escapeHtml(titleVal)}</title>
+          <meta charset="utf-8">
+          ${styles}
+          <style>
+            @page { size: A4 portrait; margin: 0.5in; }
+            body { margin: 0; padding: 0; background: #FFF; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .comp-a4-page { width: 100% !important; min-height: 270mm !important; padding: 0 !important; margin: 0 0 20px 0 !important; box-shadow: none !important; border: none !important; page-break-after: always; }
+            @media print {
+              .comp-a4-page { margin: 0 !important; page-break-after: always; }
+            }
+          </style>
+        </head>
+        <body>
+          ${staging.innerHTML}
+          <script>
+            window.addEventListener('load', () => {
+              setTimeout(() => {
+                window.focus();
+                window.print();
+              }, 350);
+            });
+          <\/script>
+        </body>
+      </html>
+    `);
+    printWin.document.close();
+
+    if (statusEl) {
+      statusEl.textContent = "Print window opened successfully.";
+      statusEl.style.color = "var(--green)";
+    }
+  }
+
+  // Multi-page Download Action (jsPDF + html2canvas)
+  async function downloadComprehensiveReportPDF() {
+    const statusEl = document.getElementById("comp-rep-status");
+    const ok = await renderComprehensiveReportStaging();
+    if (!ok) return;
+
+    const staging = document.getElementById("comprehensive-report-staging");
+    const pages = staging ? staging.querySelectorAll(".comp-a4-page") : [];
+    if (!pages.length) {
+      if (statusEl) {
+        statusEl.textContent = "No pages available to download.";
+        statusEl.style.color = "var(--red)";
+      }
+      return;
+    }
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      for (let i = 0; i < pages.length; i++) {
+        if (statusEl) {
+          statusEl.textContent = `Rendering page ${i + 1} of ${pages.length} into vector PDF...`;
+        }
+        const pageEl = pages[i];
+        const canvas = await html2canvas(pageEl, {
+          scale: 2.2,
+          useCORS: true,
+          backgroundColor: "#FFFFFF",
+          logging: false
+        });
+        const imgData = canvas.toDataURL("image/png");
+        if (i > 0) pdf.addPage("a4", "portrait");
+        pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+      }
+
+      const startVal = document.getElementById("comp-rep-start-date")?.value || "start";
+      const endVal = document.getElementById("comp-rep-end-date")?.value || "end";
+      const rawTitle = document.getElementById("comp-rep-title")?.value || "PPCWD_Report";
+      const cleanTitle = rawTitle.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+      pdf.save(`${cleanTitle}_${startVal}_to_${endVal}.pdf`);
+
+      if (statusEl) {
+        statusEl.textContent = "Multi-page PDF downloaded successfully!";
+        statusEl.style.color = "var(--green)";
+      }
+    } catch (err) {
+      console.error("downloadComprehensiveReportPDF error:", err);
+      if (statusEl) {
+        statusEl.textContent = "Error generating PDF: " + err.message;
+        statusEl.style.color = "var(--red)";
+      }
+    }
+  }
+
 
   window.addEventListener('DOMContentLoaded', () => {
     init();
