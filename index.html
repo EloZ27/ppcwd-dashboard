@@ -6348,23 +6348,29 @@
     }
   }
 
-  // Monthly Production Aggregator
-  async function fetchAllMonthlyInRange(startDt, endDt) {
+  // Monthly Production Aggregator: Displays all available records descending (latest month first)
+  async function fetchAllMonthlyRecords(startDt, endDt) {
     try {
       const res = await fetch('/api/monthlyProduction');
       if (!res.ok) throw new Error('Failed to load monthly production');
       const allRecords = await res.json();
       
-      const monthsInRange = [];
-      let cur = new Date(startDt.getFullYear(), startDt.getMonth(), 1);
-      const endMonth = new Date(endDt.getFullYear(), endDt.getMonth(), 1);
-      while (cur <= endMonth) {
-        const ym = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}`;
-        monthsInRange.push(ym);
-        cur.setMonth(cur.getMonth() + 1);
+      const set = new Set((Array.isArray(allRecords) ? allRecords : []).map(r => r.month_year).filter(Boolean));
+      // Ensure any months within selected date range are accounted for
+      if (startDt && endDt) {
+        let cur = new Date(startDt.getFullYear(), startDt.getMonth(), 1);
+        const endMonth = new Date(endDt.getFullYear(), endDt.getMonth(), 1);
+        while (cur <= endMonth) {
+          const ym = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}`;
+          set.add(ym);
+          cur.setMonth(cur.getMonth() + 1);
+        }
       }
 
-      const rows = monthsInRange.map(ym => {
+      // Sort descending (latest month first, e.g. 2026-10, 2026-09, 2026-08)
+      const sortedMonths = Array.from(set).sort((a, b) => b.localeCompare(a));
+
+      const rows = sortedMonths.map(ym => {
         const parts = ym.split('-');
         const y = parseInt(parts[0], 10);
         const m = parseInt(parts[1], 10);
@@ -6387,7 +6393,7 @@
         const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
         const swVol = recs.filter(r => r.category === 'Surface Water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
         const gwVol = recs.filter(r => r.category === 'Groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-        const dailyAvg = totalActual / daysInMonth;
+        const dailyAvg = daysInMonth > 0 ? totalActual / daysInMonth : 0;
         const swPct = totalActual > 0 ? (swVol / totalActual) * 100 : 0;
         const gwPct = totalActual > 0 ? (gwVol / totalActual) * 100 : 0;
         const pctVsNormal = (totalActual / 1705700.0) * 100;
@@ -6407,9 +6413,41 @@
 
       return rows;
     } catch (err) {
-      console.warn('fetchAllMonthlyInRange error:', err);
+      console.warn('fetchAllMonthlyRecords error:', err);
       return [];
     }
+  }
+
+  // Robust Period Date Parser (Handles "October 9 - 16, 2026" without missing month in parts[1])
+  function parsePeriodDates(pStr, fallbackDateStr) {
+    if (pStr && pStr.includes('-')) {
+      const yrMatch = pStr.match(/\b(202\d)\b/);
+      const yr = yrMatch ? yrMatch[1] : '2026';
+      const parts = pStr.split('-');
+      const sPart = parts[0].trim();
+      let ePart = parts[1].replace(/\b202\d\b/, '').replace(/,/g, '').trim();
+      const hasMonth = /[a-zA-Z]/.test(ePart);
+      let monthName = '';
+      const mMatch = sPart.match(/^([a-zA-Z]+)/);
+      if (mMatch) monthName = mMatch[1];
+      
+      const sDate = new Date(`${sPart} ${yr} 00:00:00`);
+      const eDate = hasMonth 
+        ? new Date(`${ePart} ${yr} 23:59:59`) 
+        : new Date(`${monthName} ${ePart} ${yr} 23:59:59`);
+      if (!isNaN(sDate.getTime()) && !isNaN(eDate.getTime())) {
+        return { sDate, eDate };
+      }
+    }
+    if (fallbackDateStr) {
+      const d = new Date(fallbackDateStr);
+      if (!isNaN(d.getTime())) {
+        const s = new Date(d); s.setDate(s.getDate() - 6); s.setHours(0, 0, 0, 0);
+        const e = new Date(d); e.setHours(23, 59, 59, 999);
+        return { sDate: s, eDate: e };
+      }
+    }
+    return { sDate: null, eDate: null };
   }
 
   // Weekly Operational Weeks Filter
@@ -6417,21 +6455,14 @@
     if (!Array.isArray(allProdData) || !allProdData.length) return [];
     
     const matched = allProdData.filter(row => {
+      const { sDate, eDate } = parsePeriodDates(row[COL.period], row[COL.date]);
+      if (sDate && eDate) {
+        return eDate >= startDt && sDate <= endDt;
+      }
       const dStr = row[COL.date];
       if (dStr) {
         const d = new Date(dStr);
         if (!isNaN(d.getTime()) && d >= startDt && d <= endDt) return true;
-      }
-      const pStr = row[COL.period] || '';
-      if (pStr.includes('-')) {
-        const parts = pStr.split('-');
-        const yrMatch = pStr.match(/\b(202\d)\b/);
-        const yr = yrMatch ? yrMatch[1] : '2026';
-        const sPart = parts[0].trim();
-        const ePart = parts[1].trim();
-        const sDate = new Date(`${sPart} ${yr}`);
-        const eDate = new Date(`${ePart.replace(/\b202\d\b/, '').trim()} ${yr}`);
-        if (!isNaN(eDate.getTime()) && eDate >= startDt && sDate <= endDt) return true;
       }
       return false;
     });
@@ -6445,16 +6476,37 @@
     return matched;
   }
 
-  // Pressure Telemetry Analytics
+  // Pressure Telemetry Analytics with Hydraulic Network Classification
   function computePressureAnalytics(startDt, endDt, matchedWeeks) {
     const inRange = (pressureRaw || []).filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
-    const distCols = PRESSURE_STATIONS.filter(s => s.col !== 8 && s.col !== 19).map(s => s.col);
+
+    // Hydraulic Network Classification (per GM guidance):
+    // 1. Transmission Line Points (Excluded from System Average):
+    //    - Lapu Lapu Campo Uno Chamber Box (col: 8)
+    //    - UV Facility (col: 19)
+    //    - Beside Lito Escalante (col: 3)
+    //    - Tagburos Highway near Villa Grande (col: 5)
+    // 2. Sta. Monica Boosted Zone (Excluded from System Average, tracked separately):
+    //    - Gemma Res, Bgy. Sta. Monica (col: 10)
+    // 3. Urban Core & Consumer Distribution (Included in System Distribution Average):
+    //    - Manalo Booster Station (MBS, col: 2) - Urban Core monitoring point
+    //    - All other distribution points: cols 4, 6, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21 (15 stations total)
+    const transCols = [8, 19, 3, 5];
+    const boostedCols = [10];
+    const distCols = PRESSURE_STATIONS
+      .filter(s => !transCols.includes(s.col) && !boostedCols.includes(s.col))
+      .map(s => s.col);
 
     let totalDistReadings = 0;
     let distSum = 0;
-    let ge15 = 0, m10_14 = 0, lt10 = 0, eq0 = 0;
+    let ge15 = 0, m65_149 = 0, lt65 = 0, eq0 = 0;
     let peakSum = 0, peakCount = 0;
     let offPeakSum = 0, offPeakCount = 0;
+
+    let smSum = 0, smCount = 0;
+    let smPkSum = 0, smPkCount = 0;
+    let smOffSum = 0, smOffCount = 0;
+    let smLt65Hours = 0;
 
     const stationStats = {};
     PRESSURE_STATIONS.forEach(s => {
@@ -6462,7 +6514,7 @@
         station: s,
         sum: 0,
         count: 0,
-        hoursLt10: 0,
+        hoursLt65: 0,
         hoursEq0: 0
       };
     });
@@ -6471,6 +6523,7 @@
       const hr = r.dt.getHours();
       const isPeak = (hr >= 5 && hr < 8) || (hr >= 17 && hr < 20);
 
+      // Process 15 distribution stations (including MBS col 2)
       distCols.forEach(col => {
         const val = r.vals ? r.vals[col] : null;
         if (val !== null && val !== undefined && val >= 0 && val <= 30) {
@@ -6479,21 +6532,32 @@
           if (isPeak) { peakSum += val; peakCount++; }
           else { offPeakSum += val; offPeakCount++; }
 
+          // Updated PPCWD Compliance Bands
           if (val >= 15.0) ge15++;
-          else if (val >= 10.0) m10_14++;
-          else if (val > 0.0) lt10++;
+          else if (val >= 6.5) m65_149++;
+          else if (val > 0.0) lt65++;
           else eq0++;
         }
       });
 
+      // Process Sta. Monica (col: 10) separately
+      const smVal = r.vals ? r.vals[10] : null;
+      if (smVal !== null && smVal !== undefined && smVal >= 0 && smVal <= 30) {
+        smSum += smVal; smCount++;
+        if (isPeak) { smPkSum += smVal; smPkCount++; }
+        else { smOffSum += smVal; smOffCount++; }
+        if (smVal < 6.5) smLt65Hours++;
+      }
+
+      // Track individual station metrics
       PRESSURE_STATIONS.forEach(s => {
         const val = r.vals ? r.vals[s.col] : null;
         if (val !== null && val !== undefined && val >= 0) {
-          if (s.col !== 8 && s.col !== 19 && val > 30) return;
+          if (!transCols.includes(s.col) && val > 30) return;
           const st = stationStats[s.col];
           st.sum += val;
           st.count++;
-          if (val < 10.0) st.hoursLt10++;
+          if (val < 6.5) st.hoursLt65++;
           if (val === 0.0) st.hoursEq0++;
         }
       });
@@ -6504,67 +6568,54 @@
     const overallPeakMean = peakCount > 0 ? peakSum / peakCount : 0;
     const overallOffPeakMean = offPeakCount > 0 ? offPeakSum / offPeakCount : 0;
 
+    const staMonicaMean = smCount > 0 ? smSum / smCount : 0;
+    const staMonicaPeak = smPkCount > 0 ? smPkSum / smPkCount : 0;
+    const staMonicaOffPeak = smOffCount > 0 ? smOffSum / smOffCount : 0;
+
+    // Top 5 Lowest-Pressure Sensors (Distribution network, evaluated by hours < 6.5 psi)
     const distRanked = PRESSURE_STATIONS
-      .filter(s => s.col !== 8 && s.col !== 19)
+      .filter(s => distCols.includes(s.col))
       .map(s => {
         const st = stationStats[s.col];
         const mean = st.count > 0 ? st.sum / st.count : 0;
-        const dailyLt10 = st.hoursLt10 / totalDays;
-        let riskLabel = 'Nominal (&ge;10 psi)';
-        let riskColor = '#16A34A';
-        if (mean < 6.5) {
-          riskLabel = 'Severe Deficit (&lt;6.5 psi)';
-          riskColor = '#DC2626';
-        } else if (mean < 10.0) {
-          riskLabel = 'Elevated Risk (6.5&ndash;10 psi)';
-          riskColor = '#D97706';
-        }
+        const dailyLt65 = st.hoursLt65 / totalDays;
         return {
           station: s,
           meanPsi: mean,
           readingsCount: st.count,
-          hoursLt10: st.hoursLt10,
-          dailyHoursLt10: dailyLt10,
-          riskLabel,
-          riskColor
+          hoursLt65: st.hoursLt65,
+          dailyHoursLt65: dailyLt65
         };
       })
       .filter(s => s.readingsCount > 0)
       .sort((a, b) => a.meanPsi - b.meanPsi)
       .slice(0, 5);
 
+    // Weekly Major Pressure Monitoring Points
     const weeklyMajorRows = (matchedWeeks || []).map(row => {
       const wk = row[COL.week];
       const period = row[COL.period] || '';
-      const pStr = row[COL.period] || '';
-      let sDate = null, eDate = null;
-      if (pStr.includes('-')) {
-        const parts = pStr.split('-');
-        const yrMatch = pStr.match(/\b(202\d)\b/);
-        const yr = yrMatch ? yrMatch[1] : '2026';
-        sDate = new Date(`${parts[0].trim()} ${yr}`);
-        eDate = new Date(`${parts[1].replace(/\b202\d\b/, '').trim()} ${yr} 23:59:59`);
-      }
-      if (!sDate || isNaN(sDate.getTime())) {
-        const d = new Date(row[COL.date]);
-        sDate = new Date(d); sDate.setDate(sDate.getDate() - 6);
-        eDate = new Date(d); eDate.setHours(23, 59, 59);
-      }
+      const { sDate, eDate } = parsePeriodDates(period, row[COL.date]);
 
-      const wkReadings = inRange.filter(r => r.dt >= sDate && r.dt <= eDate);
-      
-      const getColAvg = col => {
+      const wkReadings = (sDate && eDate) 
+        ? (pressureRaw || []).filter(r => r.dt >= sDate && r.dt <= eDate)
+        : inRange;
+
+      const getColAvg = (col, isTransmission = false) => {
         const vals = wkReadings.map(r => r.vals ? r.vals[col] : null).filter(v => v !== null && v !== undefined && v >= 0);
-        if (col !== 8 && col !== 19) {
+        if (!isTransmission) {
           const sanitized = vals.filter(v => v <= 30);
           return sanitized.length ? sanitized.reduce((a, b) => a + b, 0) / sanitized.length : null;
         }
         return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
       };
 
-      const mbsAvg = getColAvg(2);
-      const uvAvg = getColAvg(19);
-      const campoAvg = getColAvg(8);
+      const mbsAvg = getColAvg(2); // MBS (Urban Core)
+      const staMonicaAvg = getColAvg(10); // Sta. Monica (Boosted)
+      const campoAvg = getColAvg(8, true); // Campo Uno (Transmission)
+      const uvAvg = getColAvg(19, true); // UV Facility (Transmission)
+      const escalanteAvg = getColAvg(3, true); // Escalante (Transmission)
+      const tagburosAvg = getColAvg(5, true); // Tagburos (Transmission)
 
       let wDistSum = 0, wDistCnt = 0;
       let wPkSum = 0, wPkCnt = 0;
@@ -6586,15 +6637,19 @@
       return {
         week: wk,
         period,
-        mbsAvg,
-        uvAvg,
-        campoAvg,
         distAvg: wDistCnt > 0 ? wDistSum / wDistCnt : null,
+        mbsAvg,
+        staMonicaAvg,
         peakAvg: wPkCnt > 0 ? wPkSum / wPkCnt : null,
-        offPeakAvg: wOffCnt > 0 ? wOffSum / wOffCnt : null
+        offPeakAvg: wOffCnt > 0 ? wOffSum / wOffCnt : null,
+        campoAvg,
+        uvAvg,
+        escalanteAvg,
+        tagburosAvg
       };
     });
 
+    // Monthly compliance rows
     const monthsInRange = [];
     let cur = new Date(startDt.getFullYear(), startDt.getMonth(), 1);
     const endM = new Date(endDt.getFullYear(), endDt.getMonth(), 1);
@@ -6611,7 +6666,8 @@
 
       let mDistSum = 0, mDistCnt = 0;
       let mPkSum = 0, mPkCnt = 0, mOffSum = 0, mOffCnt = 0;
-      let mGe15 = 0, mM10_14 = 0, mLt10 = 0, mEq0 = 0;
+      let mGe15 = 0, mM65_149 = 0, mLt65 = 0, mEq0 = 0;
+      let mSmSum = 0, mSmCnt = 0;
 
       mReadings.forEach(r => {
         const hr = r.dt.getHours();
@@ -6624,11 +6680,16 @@
             else { mOffSum += v; mOffCnt++; }
 
             if (v >= 15.0) mGe15++;
-            else if (v >= 10.0) mM10_14++;
-            else if (v > 0.0) mLt10++;
+            else if (v >= 6.5) mM65_149++;
+            else if (v > 0.0) mLt65++;
             else mEq0++;
           }
         });
+
+        const smV = r.vals ? r.vals[10] : null;
+        if (smV !== null && smV !== undefined && smV >= 0 && smV <= 30) {
+          mSmSum += smV; mSmCnt++;
+        }
       });
 
       const mComplaints = (complaintsRaw || []).filter(c => {
@@ -6646,9 +6707,10 @@
         distMean: mDistCnt > 0 ? mDistSum / mDistCnt : 0,
         peakMean: mPkCnt > 0 ? mPkSum / mPkCnt : 0,
         offPeakMean: mOffCnt > 0 ? mOffSum / mOffCnt : 0,
+        staMonicaMean: mSmCnt > 0 ? mSmSum / mSmCnt : 0,
         ge15Pct: mDistCnt > 0 ? (mGe15 / mDistCnt) * 100 : 0,
-        m10_14Pct: mDistCnt > 0 ? (mM10_14 / mDistCnt) * 100 : 0,
-        lt10Pct: mDistCnt > 0 ? (mLt10 / mDistCnt) * 100 : 0,
+        m65_149Pct: mDistCnt > 0 ? (mM65_149 / mDistCnt) * 100 : 0,
+        lt65Pct: mDistCnt > 0 ? (mLt65 / mDistCnt) * 100 : 0,
         eq0Pct: mDistCnt > 0 ? (mEq0 / mDistCnt) * 100 : 0,
         eq0Count: mEq0,
         compTotal,
@@ -6658,7 +6720,7 @@
 
     const mbsSt = stationStats[2];
     const mbsMean = mbsSt && mbsSt.count > 0 ? mbsSt.sum / mbsSt.count : 0;
-    const hoursLt10Daily = totalDays > 0 ? (lt10 + eq0) / totalDays : 0;
+    const hoursLt65Daily = totalDays > 0 ? (lt65 + eq0) / totalDays : 0;
 
     return {
       totalDistReadings,
@@ -6666,12 +6728,15 @@
       overallPeakMean,
       overallOffPeakMean,
       mbsMean,
+      staMonicaMean,
+      staMonicaPeak,
+      staMonicaOffPeak,
       ge15Pct: totalDistReadings > 0 ? (ge15 / totalDistReadings) * 100 : 0,
-      m10_14Pct: totalDistReadings > 0 ? (m10_14 / totalDistReadings) * 100 : 0,
-      lt10Pct: totalDistReadings > 0 ? (lt10 / totalDistReadings) * 100 : 0,
+      m65_149Pct: totalDistReadings > 0 ? (m65_149 / totalDistReadings) * 100 : 0,
+      lt65Pct: totalDistReadings > 0 ? (lt65 / totalDistReadings) * 100 : 0,
       eq0Pct: totalDistReadings > 0 ? (eq0 / totalDistReadings) * 100 : 0,
       eq0Count: eq0,
-      hoursLt10Daily,
+      hoursLt65Daily,
       top5Lowest: distRanked,
       weeklyMajorRows,
       monthlyComplianceRows
@@ -6717,24 +6782,12 @@
       .map(([name, data]) => ({ name, ...data }))
       .sort((a, b) => b.total - a.total);
 
-    const stationMapping = {
-      'Sta. Monica': { station: 'Gemma Res, Bgy. Sta. Monica', defaultPsi: 7.31 },
-      'San Pedro': { station: 'Beside Marianne Hotel / Rizal Office', defaultPsi: 4.00 },
-      'San Jose': { station: 'Beside Lito Escalante / Tagburos', defaultPsi: 13.90 },
-      'Mandaragat': { station: 'Fernandez cor Manalo / Near Lacharica Inn', defaultPsi: 11.20 },
-      'San Miguel': { station: 'Near PPCI Manalo St / Tanduay Warehouse', defaultPsi: 12.80 },
-      'Tiniguiban': { station: 'Beside Lito Escalante', defaultPsi: 13.90 },
-      'Milagrosa': { station: 'Manalo Booster Station', defaultPsi: 14.39 }
-    };
-
     const topBrgysDetailed = sortedBrgys.slice(0, 5).map(b => {
-      const mapping = stationMapping[b.name] || { station: 'Central Distribution Zone', defaultPsi: 12.00 };
       const soMap = stubouts[b.name] || {};
       const topSos = Object.entries(soMap).sort((a, b) => b[1] - a[1]).slice(0, 3).map(s => `${s[0]} (${s[1]})`).join(', ') || 'General Mains';
       return {
         ...b,
-        topStubouts: topSos,
-        correlatedStation: mapping.station
+        topStubouts: topSos
       };
     });
 
@@ -6748,66 +6801,44 @@
     };
   }
 
-  // Watershed Hydrology & River Flow Depletion Matrix
+  // Watershed Hydrology Telemetry Matrix (Comparative Latest vs. Previous Reading)
   function computeRiverDepletionMatrix(startDt, endDt) {
-    const inRange = (riverRaw || []).filter(r => r.dt && r.dt >= startDt && r.dt <= endDt);
-
     const matrix = RIVER_STATIONS.map(s => {
-      const readings = inRange
-        .map(r => ({ dt: r.dt, val: r.vals ? r.vals[s.col] : null }))
-        .filter(item => item.val !== null && item.val !== undefined && item.val >= 0);
+      const valid = (riverRaw || [])
+        .filter(r => r.dt <= endDt && r.vals && r.vals[s.col] !== null && r.vals[s.col] !== undefined && !isNaN(Number(r.vals[s.col])))
+        .map(r => ({ 
+          dt: r.dt, 
+          val: Number(r.vals[s.col]), 
+          dateStr: r.raw ? r.raw[1] : (r.dateStr || r.dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })) 
+        }));
 
-      if (!readings.length) {
+      if (!valid.length) {
         return {
           station: s,
           hasReadings: false,
-          peakVal: 0,
-          peakDate: null,
-          latestVal: 0,
+          prevVal: null,
+          prevDate: null,
+          latestVal: null,
           latestDate: null,
           netChange: 0,
-          pctDepletion: 0,
-          statusLabel: 'No Telemetry Logged',
-          statusColor: '#64748B'
+          pctChange: 0
         };
       }
 
-      let peak = readings[0];
-      readings.forEach(r => {
-        if (r.val > peak.val) peak = r;
-      });
-
-      const latest = readings[readings.length - 1];
-      const netChange = latest.val - peak.val;
-      const pctDepletion = peak.val > 0 ? ((peak.val - latest.val) / peak.val) * 100 : 0;
-
-      let statusLabel = 'Stable (&lt;20%)';
-      let statusColor = '#16A34A';
-      if (pctDepletion >= 70.0) {
-        statusLabel = 'Critical Depletion (&ge;70%)';
-        statusColor = '#DC2626';
-      } else if (pctDepletion >= 50.0) {
-        statusLabel = 'Severe Depletion (50&ndash;69%)';
-        statusColor = '#D97706';
-      } else if (pctDepletion >= 20.0) {
-        statusLabel = 'Moderate Depletion (20&ndash;49%)';
-        statusColor = '#CA8A04';
-      } else if (netChange > 0) {
-        statusLabel = `Recharging (+${fmt(Math.abs(pctDepletion), 1)}%)`;
-        statusColor = '#0D9488';
-      }
+      const latest = valid[valid.length - 1];
+      const prev = valid.length > 1 ? valid[valid.length - 2] : null;
+      const netChange = prev ? latest.val - prev.val : 0;
+      const pctChange = (prev && prev.val > 0) ? (netChange / prev.val) * 100 : 0;
 
       return {
         station: s,
         hasReadings: true,
-        peakVal: peak.val,
-        peakDate: peak.dt,
+        prevVal: prev ? prev.val : null,
+        prevDate: prev ? prev.dateStr : null,
         latestVal: latest.val,
-        latestDate: latest.dt,
+        latestDate: latest.dateStr,
         netChange,
-        pctDepletion,
-        statusLabel,
-        statusColor
+        pctChange
       };
     });
 
@@ -6826,8 +6857,9 @@
           </div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:11px; font-weight:700; color:#0F172A; font-family:'JetBrains Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
-          <div style="font-size:8.5px; color:#94A3B8;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
+          <div style="font-size:9px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px;">Reporting Period</div>
+          <div style="font-size:11.5px; font-weight:800; color:#0F172A; font-family:'JetBrains Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
+          <div style="font-size:8.5px; color:#94A3B8; margin-top:2px;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
         </div>
       </div>
     `;
@@ -6857,8 +6889,17 @@
     
     const startVal = document.getElementById("comp-rep-start-date")?.value || "2026-08-01";
     const endVal = document.getElementById("comp-rep-end-date")?.value || "2026-10-28";
-    const startDt = new Date(startVal + "T00:00:00+08:00");
-    const endDt = new Date(endVal + "T23:59:59+08:00");
+    
+    // Explicit YMD local date construction to avoid timezone day shifts
+    const parseYMD = str => {
+      const p = (str || '').split('-');
+      if (p.length === 3) return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+      return new Date(str);
+    };
+    const startDt = parseYMD(startVal);
+    startDt.setHours(0, 0, 0, 0);
+    const endDt = parseYMD(endVal);
+    endDt.setHours(23, 59, 59, 999);
 
     const topicProd = document.getElementById("comp-topic-prod")?.checked;
     const topicPress = document.getElementById("comp-topic-press")?.checked;
@@ -6884,8 +6925,8 @@
       });
     }
 
-    const startStr = startDt.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
-    const endStr = endDt.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+    const startStr = startDt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const endStr = endDt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 
     const totalPages = (topicProd ? 1 : 0) + (topicPress ? 1 : 0) + (topicComp ? 1 : 0) + (topicRiver ? 1 : 0);
     if (totalPages === 0) {
@@ -6904,25 +6945,22 @@
     // ─────────────────────────────────────────────────────────────
     if (topicProd) {
       curPage++;
-      const monthlyData = await fetchAllMonthlyInRange(startDt, endDt);
+      const monthlyData = await fetchAllMonthlyRecords(startDt, endDt);
       const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
 
       let p1Content = '';
 
-      // Section 1: Monthly Production & LWUA Trigger
+      // Section 1: Monthly Production & LWUA Trigger Status (All records descending)
       if (subProdMonthly) {
         const totalActualPeriod = monthlyData.reduce((s, m) => s + m.totalActual, 0);
-        const monthsWithData = monthlyData.filter(m => m.hasData);
-        const avgDaily = monthsWithData.length ? monthlyData.reduce((s, m) => s + m.dailyAvg, 0) / monthsWithData.length : 0;
-        const avgPctNormal = monthsWithData.length ? (totalActualPeriod / (1705700.0 * monthsWithData.length)) * 100 : 0;
-        const hasBelowCutoff = monthsWithData.some(m => m.lwuaStatus === 'For Reporting');
-        const overallLwuaStatus = !monthsWithData.length ? 'Awaiting Input' : (hasBelowCutoff ? 'For Reporting (&lt;5%)' : 'In Capacity (&ge;95%)');
-        const statusColor = !monthsWithData.length ? '#64748B' : (hasBelowCutoff ? '#DC2626' : '#16A34A');
+        // Identify most recent reported month for the card
+        const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report yet', pctVsNormal: 0 };
+        const recentStatusColor = recentMonth.lwuaStatus === 'In Capacity' ? '#16A34A' : (recentMonth.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
 
         p1Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
-              <span>MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER SUMMARY</span>
+              <span>MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER STATUS (ALL REPORTED MONTHS)</span>
             </div>
             <div class="comp-kpi-grid">
               <div class="comp-kpi-card">
@@ -6936,14 +6974,14 @@
                 <div class="comp-kpi-sub">Mandatory Notice Threshold</div>
               </div>
               <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Period Actual Yield</div>
+                <div class="comp-kpi-label">Cumulative Telemetry Volume</div>
                 <div class="comp-kpi-value">${fmt(totalActualPeriod, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
-                <div class="comp-kpi-sub">Daily: ${fmt(avgDaily, 2)} m&sup3;/d (${fmt(avgPctNormal, 1)}%)</div>
+                <div class="comp-kpi-sub">${monthlyData.filter(m => m.hasData).length} Reported Calendar Months</div>
               </div>
               <div class="comp-kpi-card">
-                <div class="comp-kpi-label">LWUA Crisis Status</div>
-                <div class="comp-kpi-value" style="color:${statusColor}; font-size:13px;">${overallLwuaStatus}</div>
-                <div class="comp-kpi-sub">Based on Monthly Reporting</div>
+                <div class="comp-kpi-label">Recent Month LWUA Status</div>
+                <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:13px;">${recentMonth.lwuaStatus}</div>
+                <div class="comp-kpi-sub">${recentMonth.month_year} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
               </div>
             </div>
 
@@ -7115,19 +7153,19 @@
             </div>
             <div class="comp-kpi-grid">
               <div class="comp-kpi-card">
-                <div class="comp-kpi-label">MBS Average PSI</div>
-                <div class="comp-kpi-value">${fmt(pressData.mbsMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
-                <div class="comp-kpi-sub">Manalo Booster Station</div>
-              </div>
-              <div class="comp-kpi-card">
                 <div class="comp-kpi-label">System Dist Average</div>
                 <div class="comp-kpi-value" style="color:#2563EB;">${fmt(pressData.overallDistMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
-                <div class="comp-kpi-sub">18 Distribution Points (&le;30 psi)</div>
+                <div class="comp-kpi-sub">15 Urban Core &amp; Dist Points (inc. MBS)</div>
               </div>
               <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Critical Exposure (&lt;10 psi)</div>
-                <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt10Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
-                <div class="comp-kpi-sub">${fmt(pressData.lt10Pct + pressData.eq0Pct, 1)}% of logged readings</div>
+                <div class="comp-kpi-label">Sta. Monica (Boosted Zone)</div>
+                <div class="comp-kpi-value" style="color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
+                <div class="comp-kpi-sub">Peak: ${fmt(pressData.staMonicaPeak, 2)} / Off-Pk: ${fmt(pressData.staMonicaOffPeak, 2)} psi</div>
+              </div>
+              <div class="comp-kpi-card">
+                <div class="comp-kpi-label">Critical Exposure (&lt;6.5 psi)</div>
+                <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt65Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
+                <div class="comp-kpi-sub">${fmt(pressData.lt65Pct + pressData.eq0Pct, 1)}% of distribution station-hours</div>
               </div>
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Supply Interruption (0 psi)</div>
@@ -7140,12 +7178,13 @@
               <thead>
                 <tr>
                   <th>Period / Month</th>
-                  <th style="text-align:right;">Dist Mean</th>
+                  <th style="text-align:right;">Dist Mean (inc. MBS)</th>
                   <th style="text-align:right;">Peak (05-08 &amp; 17-20)</th>
                   <th style="text-align:right;">Off-Peak</th>
+                  <th style="text-align:right;">Sta. Monica</th>
                   <th style="text-align:right;">&ge; 15.0 psi</th>
-                  <th style="text-align:right;">10&ndash;14.9 psi</th>
-                  <th style="text-align:right;">&lt; 10.0 psi</th>
+                  <th style="text-align:right;">6.5&ndash;14.9 psi</th>
+                  <th style="text-align:right;">&lt; 6.5 psi</th>
                   <th style="text-align:right;">0.0 psi (hrs)</th>
                   <th style="text-align:right;">Complaints (Tot / NW)</th>
                 </tr>
@@ -7157,9 +7196,10 @@
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.distMean, 2) + ' psi' : '—'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.peakMean, 2) + ' psi' : '—'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.offPeakMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:600; color:#0D9488;">${m.hasReadings ? fmt(m.staMonicaMean, 2) + ' psi' : '—'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#16A34A;">${m.hasReadings ? fmt(m.ge15Pct, 1) + '%' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m10_14Pct, 1) + '%' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt10Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m65_149Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt65Pct, 1) + '%' : '—'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#DC2626;">${m.hasReadings ? fmt(m.eq0Pct, 1) + '% (' + m.eq0Count + ')' : '—'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
                   </tr>
@@ -7169,9 +7209,10 @@
                   <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
                   <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
                   <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallOffPeakMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} psi</td>
                   <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#16A34A;">${fmt(pressData.ge15Pct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${fmt(pressData.m10_14Pct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${fmt(pressData.lt10Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
                   <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
                   <td style="text-align:right; font-family:'JetBrains Mono', monospace;">—</td>
                 </tr>
@@ -7192,12 +7233,15 @@
                 <tr>
                   <th>Week</th>
                   <th>Inclusive Dates</th>
-                  <th style="text-align:right;">MBS (col: 2)</th>
-                  <th style="text-align:right;">UV Facility (col: 19)</th>
-                  <th style="text-align:right;">Campo Uno (col: 8)</th>
-                  <th style="text-align:right;">AVG System</th>
+                  <th style="text-align:right;">AVG System (Dist)</th>
+                  <th style="text-align:right;">MBS (col 2)</th>
+                  <th style="text-align:right;">Sta. Monica</th>
                   <th style="text-align:right;">Peak Avg</th>
                   <th style="text-align:right;">Off-Peak Avg</th>
+                  <th style="text-align:right;">Campo Uno (col 8)</th>
+                  <th style="text-align:right;">UV Facility (col 19)</th>
+                  <th style="text-align:right;">Escalante (col 3)</th>
+                  <th style="text-align:right;">Tagburos (col 5)</th>
                 </tr>
               </thead>
               <tbody>
@@ -7205,17 +7249,20 @@
                   <tr>
                     <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${w.week}</td>
                     <td>${escapeHtml(w.period)}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-            <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. Campo Uno and UV Facility are transmission chambers. N/A indicates no sensor readings logged.</div>
+            <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages. N/A indicates no sensor readings logged.</div>
           </div>
         `;
       }
@@ -7224,7 +7271,7 @@
         p2Content += `
           <div>
             <div class="comp-section-title">
-              <span>TOP 5 LOWEST-PRESSURE SENSORS (18 DISTRIBUTION STATIONS)</span>
+              <span>TOP 5 LOWEST-PRESSURE SENSORS (DISTRIBUTION NETWORK)</span>
             </div>
             <table class="comp-table">
               <thead>
@@ -7232,9 +7279,8 @@
                   <th style="width:30px;">Rank</th>
                   <th>Monitoring Point / Station Name</th>
                   <th style="text-align:right;">Average PSI</th>
-                  <th style="text-align:right;">Hours &lt; 10 psi</th>
-                  <th style="text-align:right;">Avg Daily Hours &lt; 10 psi</th>
-                  <th style="text-align:left; padding-left:12px;">Operational Risk Status</th>
+                  <th style="text-align:right;">Hours &lt; 6.5 psi</th>
+                  <th style="text-align:right;">Avg Daily Hours &lt; 6.5 psi</th>
                 </tr>
               </thead>
               <tbody>
@@ -7242,10 +7288,9 @@
                   <tr>
                     <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">#${idx + 1}</td>
                     <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${fmt(st.meanPsi, 2)} psi</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${st.hoursLt10} hrs</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(st.dailyHoursLt10, 2)} hrs/day</td>
-                    <td style="text-align:left; padding-left:12px; font-weight:700; color:${st.riskColor};">${st.riskLabel}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${st.hoursLt65} hrs</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -7299,7 +7344,7 @@
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Water Quality / Turbidity</div>
                 <div class="comp-kpi-value" style="color:#854D0E;">${fmt(compData.turbidCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
-                <div class="comp-kpi-sub">Field flushing required</div>
+                <div class="comp-kpi-sub">Field flushing response</div>
               </div>
             </div>
 
@@ -7318,7 +7363,7 @@
                   const isNW = type.toLowerCase().includes('no water');
                   const isLP = type.toLowerCase().includes('low pressure');
                   const tColor = isNW ? '#DC2626' : (isLP ? '#D97706' : '#334155');
-                  const impact = isNW ? 'Critical Service Disruption &bull; Water Trucking Deployment' : (isLP ? 'Peak Hour Flow Restriction &bull; Booster Valving' : 'Routine Maintenance &bull; Customer Service Response');
+                  const impact = isNW ? 'Critical Service Disruption &bull; Water Trucking Deployment' : (isLP ? 'Peak Hour Flow Restriction &bull; Line Valving' : 'Routine Maintenance &bull; Customer Service Response');
                   return `
                     <tr>
                       <td style="font-weight:700; color:${tColor};">${escapeHtml(type)}</td>
@@ -7338,7 +7383,7 @@
         p3Content += `
           <div>
             <div class="comp-section-title">
-              <span>TOP AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS CROSS-CORRELATED WITH SENSORS</span>
+              <span>TOP AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
             </div>
             <table class="comp-table">
               <thead>
@@ -7346,9 +7391,9 @@
                   <th style="width:30px;">Rank</th>
                   <th>Barangay Name</th>
                   <th style="text-align:right;">Total Reports</th>
-                  <th style="text-align:right;">No Water (NW)</th>
+                  <th style="text-align:right;">No Water (NW) Outages</th>
+                  <th style="text-align:right;">Low Pressure (LP)</th>
                   <th>Top Impacted Stubouts (SO-xxxx)</th>
-                  <th>Correlated SCADA Pressure Sensor</th>
                 </tr>
               </thead>
               <tbody>
@@ -7358,14 +7403,14 @@
                     <td style="font-weight:800; color:#0F172A;">${escapeHtml(b.name)}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${b.total}</td>
                     <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#DC2626;">${b.nw}</td>
+                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#D97706;">${b.lp}</td>
                     <td style="font-family:'JetBrains Mono', monospace; font-size:8.5px; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
-                    <td style="font-weight:600; color:#2563EB;">${escapeHtml(b.correlatedStation)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
             <div style="margin-top:10px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.4;">
-              <strong>Cross-Telemetry Findings:</strong> Customer complaint spikes directly corroborate pressure sensor telemetry. Outages in Sta. Monica and San Pedro align with chronic sub-8 psi depressions at Gemma Res (7.31 psi) and Marianne Hotel (4.00 psi), verifying physical system hydraulic constraints rather than isolated customer meter issues.
+              <strong>Consumer Outage Observations:</strong> Persistent complaint clustering in San Miguel, San Pedro, and Sta. Monica reflects hydraulic stress across downstream spurs. Field operations prioritize mobile water tanker augmentation and localized gate valve throttling during peak usage periods.
             </div>
           </div>
         `;
@@ -7383,7 +7428,7 @@
     }
 
     // ─────────────────────────────────────────────────────────────
-    // PAGE 4: WATERSHED HYDROLOGY & RIVER FLOW DEPLETION
+    // PAGE 4: WATERSHED HYDROLOGY & RIVER FLOW TELEMETRY
     // ─────────────────────────────────────────────────────────────
     if (topicRiver) {
       curPage++;
@@ -7392,39 +7437,10 @@
       let p4Content = '';
 
       if (subRiverDepletion) {
-        // Summary KPIs for Hydrology
-        const citySources = riverMatrix.filter(r => r.station.group.includes('Primary'));
-        const montible1 = riverMatrix.find(r => r.station.name.includes('Montible Bridge 1'));
-        const peakTotalCity = citySources.reduce((s, r) => s + r.peakVal, 0);
-        const latestTotalCity = citySources.reduce((s, r) => s + r.latestVal, 0);
-        const cityDepletionPct = peakTotalCity > 0 ? ((peakTotalCity - latestTotalCity) / peakTotalCity) * 100 : 0;
-
         p4Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
-              <span>WATERSHED HYDROLOGY &amp; RIVER FLOW DEPLETION MATRIX</span>
-            </div>
-            <div class="comp-kpi-grid">
-              <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Primary City Sources Peak</div>
-                <div class="comp-kpi-value">${fmt(peakTotalCity, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;/d</span></div>
-                <div class="comp-kpi-sub">Montible &amp; Lapu-Lapu Combined</div>
-              </div>
-              <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Primary Sources Latest</div>
-                <div class="comp-kpi-value" style="color:#DC2626;">${fmt(latestTotalCity, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;/d</span></div>
-                <div class="comp-kpi-sub">Net Loss: -${fmt(peakTotalCity - latestTotalCity, 2)} m&sup3;/d</div>
-              </div>
-              <div class="comp-kpi-card">
-                <div class="comp-kpi-label">City Depletion Rate</div>
-                <div class="comp-kpi-value" style="color:#DC2626;">-${fmt(cityDepletionPct, 1)}%</div>
-                <div class="comp-kpi-sub">Severe Baseflow Recession</div>
-              </div>
-              <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Most Vulnerable Gauge</div>
-                <div class="comp-kpi-value" style="font-size:12px; color:#DC2626;">Montible Bridge 1</div>
-                <div class="comp-kpi-sub">${montible1 ? '-' + fmt(montible1.pctDepletion, 1) + '% discharge collapse' : 'Critical Depletion'}</div>
-              </div>
+              <span>WATERSHED RIVER FLOW TELEMETRY MATRIX (PREVIOUS VS. LATEST GAUGED DISCHARGE)</span>
             </div>
 
             <table class="comp-table">
@@ -7432,31 +7448,29 @@
                 <tr>
                   <th>River Station Name</th>
                   <th>Watershed Zone</th>
-                  <th style="text-align:right;">Peak Flow (m&sup3;/d)</th>
-                  <th>Peak Date</th>
+                  <th style="text-align:right;">Previous Flow (m&sup3;/d)</th>
+                  <th>Previous Date</th>
                   <th style="text-align:right;">Latest Flow (m&sup3;/d)</th>
                   <th>Latest Date</th>
                   <th style="text-align:right;">Net Change (m&sup3;/d)</th>
                   <th style="text-align:right;">% Change</th>
-                  <th style="text-align:left; padding-left:12px;">Vulnerability Status</th>
                 </tr>
               </thead>
               <tbody>
                 ${riverMatrix.map(r => {
-                  const pDateStr = r.peakDate ? r.peakDate.toLocaleDateString('en-PH', { month:'short', day:'numeric' }) : '—';
-                  const lDateStr = r.latestDate ? r.latestDate.toLocaleDateString('en-PH', { month:'short', day:'numeric' }) : '—';
+                  const pDateStr = r.prevDate || '—';
+                  const lDateStr = r.latestDate || '—';
                   const changeColor = r.netChange < 0 ? '#DC2626' : (r.netChange > 0 ? '#0D9488' : '#64748B');
                   return `
                     <tr>
                       <td style="font-weight:700;">${escapeHtml(r.station.name)}</td>
                       <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${r.hasReadings ? fmt(r.peakVal, 2) : '—'}</td>
-                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace;">${pDateStr}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${r.hasReadings ? fmt(r.latestVal, 2) : '—'}</td>
-                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace;">${lDateStr}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${r.statusColor};">${r.hasReadings ? (r.netChange > 0 ? '+' : '-') + fmt(Math.abs(r.pctDepletion), 1) + '%' : '—'}</td>
-                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${r.statusColor};">${r.statusLabel}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
+                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace; color:#64748B;">${pDateStr}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
+                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace; font-weight:600;">${lDateStr}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange > 0 ? '+' : '') + fmt(r.pctChange, 1) + '%' : '—'}</td>
                     </tr>
                   `;
                 }).join('')}
@@ -7464,7 +7478,7 @@
             </table>
 
             <div style="margin-top:12px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.45;">
-              <strong>Hydrological Depletion Analysis:</strong> Surface water infiltration galleries at Montible and Lapu-Lapu show pronounced yield collapses exceeding 70% from seasonal highs. The 94.8% drop at Montible Bridge 1 underscores the critical need for strict groundwater booster dispatch and satellite well stabilization during dry El Niño intervals.
+              <strong>Hydrological Telemetry Notes:</strong> Surface river discharge observations reflect raw intake gauging across primary infiltration galleries and northern satellite catchments. Comparative metrics monitor seasonal recession rates against preceding gauge dates to assess aquifer recharge and river baseflow stability.
             </div>
           </div>
         `;
@@ -7611,7 +7625,6 @@
       }
     }
   }
-
 
   window.addEventListener('DOMContentLoaded', () => {
     init();
