@@ -567,6 +567,11 @@
           <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
           <span>Weekly Production</span>
         </button>
+
+        <button class="nav-btn" id="sidebar-btn-monthly" data-section="monthly" onclick="switchPortalSection('monthly')">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span>Monthly Production</span>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -1287,6 +1292,92 @@
           </div>
         </div> <!-- end #section-production -->
 
+        <!-- ── MONTHLY PRODUCTION INGESTION SECTION ── -->
+        <div class="portal-section" id="section-monthly" style="display:none;">
+
+          <!-- Card 1: Monthly Production Volumetric Ingestion -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>Monthly Production Volumetric Ingestion (34 Stations)</h2>
+                <p>Production Division &bull; Monthly Capacity &amp; Utilization Telemetry (Direct Supabase Cloud Sync)</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="header-btn" onclick="clearMonthlyForm()">Clear Form</button>
+                <button type="button" class="header-btn" onclick="reloadMonthlyPortalData()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                  Reload Saved
+                </button>
+                <button type="button" id="btn-save-monthly" class="btn-submit" onclick="submitMonthlyProduction(event)" style="background:var(--blue); border-color:var(--blue);">
+                  Save Monthly Production to Supabase
+                </button>
+              </div>
+            </div>
+
+            <div id="monthly-alert-box" class="alert-box"></div>
+
+            <!-- Configuration & HUD KPI Bar -->
+            <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Target Month *</label>
+                  <input type="month" id="monthly-portal-picker" class="form-input" style="width:160px; font-weight:700; font-family:var(--font-mono);" onchange="onMonthlyPickerChange(this.value)" required>
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <span style="font-size:11px; color:var(--text-muted);">Sync Status:</span>
+                  <span id="monthly-portal-sync-status" style="font-size:12px; font-weight:700; color:var(--blue);">Ready</span>
+                </div>
+              </div>
+
+              <!-- HUD KPI Summary Cards -->
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Total Volume</div>
+                  <div id="monthly-hud-total" style="font-size:15px; font-weight:800; color:var(--text-main); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span></div>
+                </div>
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Target</div>
+                  <div style="font-size:15px; font-weight:800; color:var(--text-main); font-family:var(--font-mono);">1,705,700 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span></div>
+                </div>
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Achieved</div>
+                  <div id="monthly-hud-achieved" style="font-size:15px; font-weight:800; color:var(--blue); font-family:var(--font-mono);">0.0%</div>
+                </div>
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Hourly Rate</div>
+                  <div id="monthly-hud-hourly" style="font-size:15px; font-weight:800; color:var(--teal); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³/h</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form with 34 Stations -->
+            <form id="monthly-portal-form" onsubmit="submitMonthlyProduction(event)">
+              <div style="margin-bottom:24px;">
+                <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--teal); font-family:var(--font-mono); margin-bottom:12px; border-bottom:2px solid var(--teal-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                  <span>Surface Water Stations (15)</span>
+                  <span id="monthly-sw-subtotal" style="font-size:11px; font-weight:700; color:var(--teal);">0.00 m³</span>
+                </h4>
+                <div id="monthly-sw-inputs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;"></div>
+              </div>
+
+              <div style="margin-bottom:24px;">
+                <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--blue); font-family:var(--font-mono); margin-bottom:12px; border-bottom:2px solid var(--blue-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                  <span>Groundwater Stations (19)</span>
+                  <span id="monthly-gw-subtotal" style="font-size:11px; font-weight:700; color:var(--blue);">0.00 m³</span>
+                </h4>
+                <div id="monthly-gw-inputs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;"></div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; gap:10px; padding-top:16px; border-top:1px solid var(--card-border);">
+                <button type="button" class="header-btn" onclick="clearMonthlyForm()">Reset Form</button>
+                <button type="submit" id="btn-save-monthly-bottom" class="btn-submit" style="background:var(--blue); border-color:var(--blue); padding:10px 24px; font-size:13px;">
+                  Save Monthly Production to Supabase
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div> <!-- end #section-monthly -->
+
       </div>
     </div>
   </div>
@@ -1745,10 +1836,12 @@
       const complaintsSec = document.getElementById('section-complaints');
       const riverflowSec = document.getElementById('section-riverflow');
       const productionSec = document.getElementById('section-production');
+      const monthlySec = document.getElementById('section-monthly');
       const btnGensets = document.getElementById('sidebar-btn-gensets');
       const btnComplaints = document.getElementById('sidebar-btn-complaints');
       const btnRiverflow = document.getElementById('sidebar-btn-riverflow');
       const btnProduction = document.getElementById('sidebar-btn-production');
+      const btnMonthly = document.getElementById('sidebar-btn-monthly');
       const pTitle = document.getElementById('portal-title');
       const pSub = document.getElementById('portal-subtitle');
 
@@ -1757,12 +1850,21 @@
       complaintsSec.style.display = 'none';
       if (riverflowSec) riverflowSec.style.display = 'none';
       if (productionSec) productionSec.style.display = 'none';
+      if (monthlySec) monthlySec.style.display = 'none';
       btnGensets.classList.remove('active');
       btnComplaints.classList.remove('active');
       if (btnRiverflow) btnRiverflow.classList.remove('active');
       if (btnProduction) btnProduction.classList.remove('active');
+      if (btnMonthly) btnMonthly.classList.remove('active');
 
-      if (sec === 'production') {
+      if (sec === 'monthly') {
+        if (monthlySec) monthlySec.style.display = 'block';
+        if (btnMonthly) btnMonthly.classList.add('active');
+        if (pTitle) pTitle.textContent = "Monthly Production Volumetric Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Production Division &bull; 34-Station Monthly Utilization Telemetry`;
+        window.location.hash = 'monthly';
+        initMonthlyPortal();
+      } else if (sec === 'production') {
         if (productionSec) productionSec.style.display = 'block';
         if (btnProduction) btnProduction.classList.add('active');
         if (pTitle) pTitle.textContent = "Weekly Production Monitoring Portal";
@@ -3777,6 +3879,268 @@
       renderProductionLedger(filtered);
     }
 
+    // ══════════════════════════════════════════════════════════════════
+    // ── MONTHLY PRODUCTION PORTAL LOGIC (34 STATIONS) ──
+    // ══════════════════════════════════════════════════════════════════
+    const MONTHLY_TARGET = 1705700.00;
+    const MONTHLY_LWUA_CUTOFF = 1620415.00;
+
+    const MONTHLY_STATIONS_MASTER = [
+      // Surface Water (15)
+      { name: "Campo Uno (Line #1 & #2)", category: "Surface Water" },
+      { name: "Infiltration Well Pump #1", category: "Surface Water" },
+      { name: "Infiltration Well Pump #2", category: "Surface Water" },
+      { name: "Lapu-Lapu Source", category: "Surface Water" },
+      { name: "Montible Source", category: "Surface Water" },
+      { name: "Bahile PS", category: "Surface Water" },
+      { name: "Sabang (SW)", category: "Surface Water" },
+      { name: "Binduyan (SW)", category: "Surface Water" },
+      { name: "Napsan (SW)", category: "Surface Water" },
+      { name: "San Rafael (SW)", category: "Surface Water" },
+      { name: "Sta. Lucia Station - 1 (Genset)", category: "Surface Water" },
+      { name: "Sta. Lucia Station - 2 (Solar)", category: "Surface Water" },
+      { name: "Bacungan Station", category: "Surface Water" },
+      { name: "Maoyon Station - Gravity", category: "Surface Water" },
+      { name: "Maoyon Station - Well Pump", category: "Surface Water" },
+
+      // Groundwater (19)
+      { name: "DA 1", category: "Groundwater" },
+      { name: "Pump Center #5", category: "Groundwater" },
+      { name: "Pump Center #6", category: "Groundwater" },
+      { name: "Kaakbayan PS", category: "Groundwater" },
+      { name: "New Public Market PS", category: "Groundwater" },
+      { name: "Esteban PS", category: "Groundwater" },
+      { name: "BOS II PS", category: "Groundwater" },
+      { name: "San Jose (Pump 13)", category: "Groundwater" },
+      { name: "Princeville PS", category: "Groundwater" },
+      { name: "NHA Villa PS", category: "Groundwater" },
+      { name: "Macasaet PS", category: "Groundwater" },
+      { name: "Inagawan Satellite Station", category: "Groundwater" },
+      { name: "Pablico PS", category: "Groundwater" },
+      { name: "Villa Princesa PS", category: "Groundwater" },
+      { name: "Sabang PS (GW)", category: "Groundwater" },
+      { name: "Villa Ello PS", category: "Groundwater" },
+      { name: "Baldosano PS", category: "Groundwater" },
+      { name: "Sta. Monica PS", category: "Groundwater" },
+      { name: "Macarascas PS", category: "Groundwater" }
+    ];
+
+    let monthlyLoadedRecords = [];
+
+    function initMonthlyPortal() {
+      const picker = document.getElementById('monthly-portal-picker');
+      if (picker && !picker.value) {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        picker.value = `${y}-${m}`;
+      }
+      renderMonthlyInputs();
+      reloadMonthlyPortalData();
+    }
+
+    function renderMonthlyInputs() {
+      const swContainer = document.getElementById('monthly-sw-inputs-grid');
+      const gwContainer = document.getElementById('monthly-gw-inputs-grid');
+      if (!swContainer || !gwContainer) return;
+
+      const makeField = (st, idx) => {
+        const fid = 'minp-' + st.name.replace(/[^a-zA-Z0-9]/g, '');
+        return `
+          <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; gap:10px; box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+            <div style="flex:1; min-width:0;">
+              <label for="${fid}" style="font-size:12px; font-weight:700; color:var(--text-main); display:block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" title="${st.name}">
+                <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted); margin-right:4px;">#${String(idx+1).padStart(2, '0')}</span>${st.name}
+              </label>
+              <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">${st.category}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" step="0.01" min="0" placeholder="0.00" id="${fid}" data-station="${st.name}" data-cat="${st.category}"
+                     class="form-input monthly-station-input" oninput="updateMonthlyHUD()"
+                     style="width:130px; text-align:right; font-family:var(--font-mono); font-weight:600; padding:6px 10px; font-size:12px;">
+              <span style="font-size:11px; font-weight:600; color:var(--text-muted);">m³</span>
+            </div>
+          </div>
+        `;
+      };
+
+      swContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === 'Surface Water').map(makeField).join('');
+      gwContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === 'Groundwater').map(makeField).join('');
+    }
+
+    async function onMonthlyPickerChange(month) {
+      if (!month) return;
+      await reloadMonthlyPortalData();
+    }
+
+    async function reloadMonthlyPortalData() {
+      const picker = document.getElementById('monthly-portal-picker');
+      const month = picker ? picker.value : '';
+      const syncStatus = document.getElementById('monthly-portal-sync-status');
+      if (!month) return;
+
+      if (syncStatus) {
+        syncStatus.textContent = `Fetching ${month}...`;
+        syncStatus.style.color = 'var(--blue)';
+      }
+
+      try {
+        const res = await fetch(`/api/monthlyProduction?month=${encodeURIComponent(month)}`);
+        monthlyLoadedRecords = [];
+        if (res.ok) {
+          monthlyLoadedRecords = await res.json();
+        }
+
+        // Fill all 34 inputs (preserving empty if not logged)
+        MONTHLY_STATIONS_MASTER.forEach(st => {
+          const fid = 'minp-' + st.name.replace(/[^a-zA-Z0-9]/g, '');
+          const inp = document.getElementById(fid);
+          if (inp) {
+            const rec = Array.isArray(monthlyLoadedRecords) ? monthlyLoadedRecords.find(r => r.station_name && r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase()) : null;
+            inp.value = (rec && rec.monthly_volume !== null && rec.monthly_volume !== undefined) ? rec.monthly_volume : '';
+          }
+        });
+
+        updateMonthlyHUD();
+        if (syncStatus) {
+          const recCount = Array.isArray(monthlyLoadedRecords) ? monthlyLoadedRecords.length : 0;
+          syncStatus.textContent = `Loaded (${recCount} records saved)`;
+          syncStatus.style.color = 'var(--green)';
+        }
+      } catch (err) {
+        if (syncStatus) {
+          syncStatus.textContent = 'Error: ' + err.message;
+          syncStatus.style.color = 'var(--red)';
+        }
+      }
+    }
+
+    function updateMonthlyHUD() {
+      const inputs = document.querySelectorAll('.monthly-station-input');
+      let totalActual = 0;
+      let swTotal = 0;
+      let gwTotal = 0;
+
+      inputs.forEach(inp => {
+        let val = parseFloat(inp.value);
+        if (!isNaN(val)) {
+          if (val < 0) {
+            val = 0;
+            inp.value = "0";
+          }
+          totalActual += val;
+          if (inp.dataset.cat === 'Surface Water') swTotal += val;
+          else gwTotal += val;
+        }
+      });
+
+      const pctAchieved = MONTHLY_TARGET > 0 ? (totalActual / MONTHLY_TARGET) * 100 : 0;
+      const hourlyRate = totalActual / 730;
+
+      const totalEl = document.getElementById('monthly-hud-total');
+      const achievedEl = document.getElementById('monthly-hud-achieved');
+      const hourlyEl = document.getElementById('monthly-hud-hourly');
+      const swSubEl = document.getElementById('monthly-sw-subtotal');
+      const gwSubEl = document.getElementById('monthly-gw-subtotal');
+
+      const fmtNum = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      if (totalEl) totalEl.innerHTML = `${fmtNum(totalActual)} <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span>`;
+      if (achievedEl) {
+        achievedEl.textContent = `${pctAchieved.toFixed(1)}%`;
+        if (totalActual === 0) achievedEl.style.color = 'var(--text-muted)';
+        else if (totalActual < MONTHLY_LWUA_CUTOFF) achievedEl.style.color = 'var(--red)';
+        else achievedEl.style.color = 'var(--green)';
+      }
+      if (hourlyEl) hourlyEl.innerHTML = `${fmtNum(hourlyRate)} <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³/h</span>`;
+      if (swSubEl) swSubEl.textContent = `${fmtNum(swTotal)} m³`;
+      if (gwSubEl) gwSubEl.textContent = `${fmtNum(gwTotal)} m³`;
+    }
+
+    function clearMonthlyForm() {
+      const inputs = document.querySelectorAll('.monthly-station-input');
+      inputs.forEach(inp => { inp.value = ''; });
+      updateMonthlyHUD();
+    }
+
+    async function submitMonthlyProduction(e) {
+      if (e) e.preventDefault();
+      const picker = document.getElementById('monthly-portal-picker');
+      const targetMonth = picker ? picker.value : '';
+      const alertBox = document.getElementById('monthly-alert-box');
+      const btnTop = document.getElementById('btn-save-monthly');
+      const btnBottom = document.getElementById('btn-save-monthly-bottom');
+
+      if (!targetMonth) {
+        if (alertBox) {
+          alertBox.className = 'alert-box alert-error';
+          alertBox.style.display = 'block';
+          alertBox.textContent = 'Please select a valid target month (YYYY-MM).';
+        }
+        return;
+      }
+
+      const inputs = document.querySelectorAll('.monthly-station-input');
+      const payload = [];
+
+      inputs.forEach(inp => {
+        const raw = inp.value;
+        const val = parseFloat(raw);
+        if (!isNaN(val) && val >= 0) {
+          payload.push({
+            month_year: targetMonth,
+            station_name: inp.dataset.station,
+            category: inp.dataset.cat,
+            monthly_volume: val
+          });
+        }
+      });
+
+      if (btnTop) { btnTop.disabled = true; btnTop.textContent = 'Saving...'; }
+      if (btnBottom) { btnBottom.disabled = true; btnBottom.textContent = 'Saving to Supabase...'; }
+
+      if (alertBox) {
+        alertBox.className = 'alert-box';
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--blue-light)';
+        alertBox.style.borderColor = 'var(--blue-border)';
+        alertBox.style.color = 'var(--blue)';
+        alertBox.textContent = `Transmitting ${payload.length} station volume records to Supabase...`;
+      }
+
+      try {
+        const res = await fetch('/api/monthlyProduction', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ records: payload })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 401) {
+            lockPortal();
+            throw new Error('Unauthorized: Admin passkey invalid or expired. Please sign in again.');
+          }
+          throw new Error(data.error || 'Failed to save monthly records.');
+        }
+
+        if (alertBox) {
+          alertBox.className = 'alert-box alert-success';
+          alertBox.style.display = 'block';
+          alertBox.textContent = `Success! Saved ${data.count || payload.length} station records for ${targetMonth} to Supabase.`;
+        }
+        await reloadMonthlyPortalData();
+      } catch (err) {
+        if (alertBox) {
+          alertBox.className = 'alert-box alert-error';
+          alertBox.style.display = 'block';
+          alertBox.textContent = 'Error: ' + err.message;
+        }
+      } finally {
+        if (btnTop) { btnTop.disabled = false; btnTop.textContent = 'Save Monthly Production to Supabase'; }
+        if (btnBottom) { btnBottom.disabled = false; btnBottom.textContent = 'Save Monthly Production to Supabase'; }
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", async () => {
       await checkPortalAuth();
       populateStations();
@@ -3795,7 +4159,18 @@
         switchPortalSection('riverflow');
       } else if (window.location.hash === '#production') {
         switchPortalSection('production');
+      } else if (window.location.hash === '#monthly') {
+        switchPortalSection('monthly');
       }
+
+      window.addEventListener('hashchange', () => {
+        const h = window.location.hash;
+        if (h === '#monthly') switchPortalSection('monthly');
+        else if (h === '#production') switchPortalSection('production');
+        else if (h === '#riverflow') switchPortalSection('riverflow');
+        else if (h === '#complaints') switchPortalSection('complaints');
+        else if (h === '#gensets') switchPortalSection('gensets');
+      });
 
       // Restore collapsed sidebar preference on desktop
       try {

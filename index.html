@@ -227,7 +227,7 @@
       justify-content: space-between;
     }
     .header-titles h1 {
-      font-size: 17px;
+      font-size: clamp(13px, 3.2vw, 17px);
       font-weight: 700;
       color: var(--text-main);
       letter-spacing: -0.3px;
@@ -240,7 +240,21 @@
       align-items: center;
       gap: 6px;
     }
-    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .desktop-text { display: inline; }
+    .reports-btn-full { display: inline; }
+    .reports-btn-short { display: none; }
+    .cycle-status-pill,
+    #global-monthly-pill {
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+    }
+    #global-monthly-text {
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+    }
     /* ── CONSOLIDATED REPORTS & EXPORTS MENU ── */
     .reports-dropdown-wrap { position: relative; }
     .reports-dropdown-menu {
@@ -525,6 +539,27 @@
       position: sticky; left: 0; background: #FFFFFF; z-index: 11; border-right: 1px solid var(--card-border);
     }
     .press-table-wrap thead th:first-child { z-index: 12; background: #F1F5F9; }
+
+    /* ── TABLE DRAG SCROLLING AFFORDANCES & TYPOGRAPHY ── */
+    .table-responsive, #priority-cards-row, .press-table-wrap {
+      cursor: grab;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive.is-dragging,
+    #priority-cards-row.is-dragging,
+    .press-table-wrap.is-dragging {
+      cursor: grabbing !important;
+      user-select: none !important;
+    }
+    .press-table-wrap th, .press-table-wrap td,
+    table.data-table th, table.data-table td {
+      min-width: 72px;
+      white-space: nowrap;
+    }
+    .press-table-wrap th:first-child,
+    .press-table-wrap td:first-child {
+      min-width: 140px;
+    }
 
     /* ── MAP & 46PX CIRCLE MARKERS ── */
     .map-frame-box {
@@ -912,6 +947,66 @@
       pointer-events: auto;
     }
 
+    .crisis-legend-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px 12px;
+      flex-wrap: wrap;
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 6px 14px;
+      margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
+    }
+    .crisis-legend-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-mono);
+      margin-right: 4px;
+    }
+    .crisis-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      transition: background 0.15s ease;
+    }
+    .crisis-legend-item:hover {
+      background: #F1F5F9;
+    }
+    .crisis-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .crisis-legend-normal {
+      border-color: rgba(11, 79, 108, 0.25);
+      background: rgba(11, 79, 108, 0.05);
+    }
+    .crisis-legend-watch {
+      border-color: var(--green-border);
+      background: var(--green-light);
+    }
+    .crisis-legend-alert {
+      border-color: var(--amber-border);
+      background: var(--amber-light);
+    }
+    .crisis-legend-critical {
+      border-color: var(--red-border);
+      background: var(--red-light);
+    }
+
     /* ── BREAKPOINTS & RESPONSIVE POLISH ── */
     @media (max-width: 1180px) {
       .grid-complaints-charts { grid-template-columns: 1fr; }
@@ -984,6 +1079,20 @@
       .app-header { padding: 12px 16px; }
       .header-titles h1 { font-size: 15px; }
       .header-titles p { display: none; }
+      .desktop-text { display: none !important; }
+      #header-auth-status-btn {
+        padding: 6px 9px;
+        min-width: 32px;
+        justify-content: center;
+      }
+      #header-auth-status-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .header-actions {
+        gap: 6px;
+      }
 
       .page-content { padding: 14px 12px; width: 100%; max-width: 100%; box-sizing: border-box; overflow-x: hidden; }
       .period-bar-wrap { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 14px; }
@@ -1023,25 +1132,39 @@
         font-size: 11px;
       }
       .map-outlier-chips {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 6px;
+        display: flex !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        gap: 8px;
+        padding-bottom: 4px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-        overflow-x: visible !important;
       }
       .outlier-chip {
-        width: 100%;
-        max-width: 100%;
+        flex-shrink: 0 !important;
+        font-size: 11px !important;
+        padding: 6px 10px !important;
+        min-height: 36px !important;
         box-sizing: border-box;
-        justify-content: center;
-        text-align: center;
-        padding: 6px 4px;
-        font-size: 10.5px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .desktop-text { display: none !important; }
+    }
+
+    @media (max-width: 820px) {
+      .map-outlier-chips {
+        display: flex !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        padding-bottom: 4px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
       }
     }
 
@@ -1064,12 +1187,53 @@
         align-items: flex-start !important;
         gap: 10px;
       }
+      .reports-btn-full { display: none !important; }
+      .reports-btn-short { display: inline !important; }
+      #btn-reports-menu {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+      .crisis-legend-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        padding: 8px 10px !important;
+      }
+      .crisis-legend-title {
+        grid-column: 1 / -1;
+        margin-bottom: 2px;
+      }
+      .crisis-legend-item {
+        justify-content: flex-start;
+        padding: 4px 6px;
+        font-size: 10px;
+        white-space: normal !important;
+        min-width: 0 !important;
+        line-height: 1.2;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #btn-reports-menu {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
+    @media (max-width: 640px) {
+      .crisis-legend-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        padding: 8px 10px !important;
+      }
     }
 
     @media (max-width: 440px) {
       .outlier-chip {
-        font-size: 9.5px;
-        padding: 5px 2px;
+        flex-shrink: 0 !important;
+        font-size: 11px !important;
+        padding: 6px 10px !important;
+        min-height: 36px !important;
       }
       .kpi-row-layout { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .kpi-card-white { padding: 10px 10px; }
@@ -1078,6 +1242,22 @@
       .grid-stations { grid-template-columns: repeat(2, 1fr); gap: 6px; }
       .grid-stations .kpi-card-white { padding: 8px 10px; }
       .header-btn { padding: 6px 10px; font-size: 10.5px; }
+      .app-header { padding: 10px 12px; }
+      .header-actions { gap: 5px; }
+      #btn-reports-menu { padding: 5px 8px; font-size: 10.5px; }
+      #header-auth-status-btn { padding: 5px 7px; min-width: 28px; }
+      .reports-dropdown-menu {
+        width: min(290px, calc(100vw - 24px));
+        right: -40px;
+      }
+      .crisis-legend-item {
+        font-size: 9.5px;
+        padding: 3px 5px;
+        gap: 4px;
+        min-width: 0 !important;
+        white-space: normal !important;
+        line-height: 1.2;
+      }
     }
 
     .loading-overlay {
@@ -1130,33 +1310,6 @@
       0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
       70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
       100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-
-    .crisis-legend-bar {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      background: #FFFFFF;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 10px 16px;
-      margin-bottom: 20px;
-      box-shadow: var(--card-shadow);
-    }
-    .crisis-legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .crisis-legend-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      flex-shrink: 0;
     }
   
     /* ══════════════════════════════════════════════════════════════════ */
@@ -1354,10 +1507,10 @@
       <!-- ── TOP STICKY CONTAINER (HEADER + PERIOD CONTROLLERS) ── -->
       <div class="app-top-sticky-container">
         <header class="app-header">
-          <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto;">
             <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
             <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px; flex-shrink:0;">
-            <div class="header-titles" style="min-width: 0;">
+            <div class="header-titles" style="min-width: 0; flex: 1 1 auto;">
               <h1 id="top-bar-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitoring Dashboard</h1>
               <p><span class="telemetry-beacon"></span> Live telemetry &bull; Updated continuously from Supabase</p>
             </div>
@@ -1365,8 +1518,9 @@
           <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
             <!-- Consolidated Reports & Exports Hub -->
             <div class="reports-dropdown-wrap">
-              <button id="btn-reports-menu" class="header-btn" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-                <span>Reports &amp; Exports</span>
+              <button id="btn-reports-menu" class="header-btn" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Consolidated Reports &amp; Exports Hub">
+                <span class="reports-btn-full">Reports &amp; Exports</span>
+                <span class="reports-btn-short">Reports</span>
                 <span style="font-size:8px; opacity:0.8;">▼</span>
               </button>
               
@@ -1419,7 +1573,7 @@
             </div>
 
             <button id="header-auth-status-btn" class="header-btn" onclick="handleHeaderAuthClick()" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); border-color:var(--card-border); background:#FFFFFF;" title="Report Generation Security Status">
-              <span id="header-auth-status-icon"></span>
+              <span id="header-auth-status-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; display:inline-block;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
               <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
             </button>
           </div>
@@ -1435,15 +1589,15 @@
             <select id="week-select" class="week-dropdown" onchange="renderWeek(this.value)"></select>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue);">Target: 56.86 MLD</span>
+            <span class="cycle-status-pill" style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue); white-space:nowrap; flex-shrink:0;">Target: 56.86 MLD</span>
             
-            <a href="uploader.html#production" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Input or manage weekly production records">
+            <a href="uploader.html#production" class="header-btn cycle-status-pill" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none; white-space:nowrap; flex-shrink:0;" title="Input or manage weekly production records">
               <span>Log Weekly Production ↗</span>
             </a>
 
             <!-- Global Monthly Production Status Pill -->
-            <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
-              <span id="global-monthly-text">Loading Monthly...</span>
+            <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn cycle-status-pill" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; flex-shrink:0;" title="View Production Monthly Report">
+              <span id="global-monthly-text" style="white-space:nowrap;">Loading Monthly...</span>
             </button>
           </div>
         </div>
@@ -1459,23 +1613,21 @@
             </div>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">
-              Input / Edit Volumes
-            </button>
+            <a href="uploader.html#monthly" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Open Monthly Production Uploader"><span>Log Monthly Volumes ↗</span></a>
           </div>
         </div>
 
         <!-- 3. Network Pressure Sticky Bar -->
         <div id="bar-period-pressure" class="period-bar-wrap" style="display:none;">
-          <div style="display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:11px; flex-wrap:wrap;">
+          <div class="pressure-meta-cluster" style="display:flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:11px; flex-wrap:wrap;">
             <div style="margin-right:6px;">
               <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Telemetry Window</div>
               <div style="font-size:12px; font-weight:700; color:var(--text-main);">Historical &amp; Live</div>
             </div>
-            <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);"></span> Normal (&gt; 6.5 PSI)</span>
-            <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);"></span> Alert (&le; 6.5 PSI)</span>
+            <span class="pressure-status-pill" style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);"></span> Normal (&gt; 6.5 PSI)</span>
+            <span class="pressure-status-pill" style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);"></span> Alert (&le; 6.5 PSI)</span>
           </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div class="pressure-controls-cluster" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <button id="btn-refresh-pressure" onclick="triggerManualPressureRefresh()" class="header-btn" style="color:var(--blue); font-weight:700; border-color:var(--blue-border); background:#F8FAFC;" title="Pull latest SCADA telemetry from Supabase">
               <span id="refresh-pressure-icon" style="display:inline-block; font-size:12px; line-height:1;">↻</span>
               <span id="refresh-pressure-text">Refresh Live</span>
@@ -1750,23 +1902,23 @@
 
         <!-- Crisis Alert Levels Executive Legend -->
         <div class="crisis-legend-bar">
-          <span style="font-size:11px; font-weight:800; color:var(--text-main); margin-right:4px;">Thresholds:</span>
-          <div class="crisis-legend-item">
+          <span class="crisis-legend-title">Thresholds:</span>
+          <span class="crisis-legend-item crisis-legend-normal">
             <span class="crisis-legend-dot" style="background:#0b4f6c;"></span>
             <span>Normal &ge; 100%</span>
-          </div>
-          <div class="crisis-legend-item">
+          </span>
+          <span class="crisis-legend-item crisis-legend-watch">
             <span class="crisis-legend-dot" style="background:var(--green);"></span>
             <span>Level 1: Watch (90% &ndash; 99.9%)</span>
-          </div>
-          <div class="crisis-legend-item">
+          </span>
+          <span class="crisis-legend-item crisis-legend-alert">
             <span class="crisis-legend-dot" style="background:var(--amber);"></span>
             <span>Level 2: Alert (75% &ndash; 89.9%)</span>
-          </div>
-          <div class="crisis-legend-item">
+          </span>
+          <span class="crisis-legend-item crisis-legend-critical">
             <span class="crisis-legend-dot" style="background:var(--red);"></span>
             <span>Level 3: Critical (&lt; 75%)</span>
-          </div>
+          </span>
         </div>
 
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:10px;">Consolidated District Level</div>
@@ -1905,7 +2057,7 @@
                 </tr>
               </thead>
               <tbody id="monthly-station-tbody">
-                <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No records found for this month. Click "Input / Edit Volumes" to enter data.</td></tr>
+                <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No records found for this month.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1917,44 +2069,7 @@
   </div>
 
   <!-- ── MODALS ── -->
-  <!-- Monthly Input Modal -->
-  <div id="monthly-input-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:#FFFFFF; border-radius:14px; width:940px; max-width:96vw; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.25);">
-      
-      <div style="padding:18px 24px; border-bottom:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <h3 style="font-size:16px; font-weight:800; color:var(--text-main);">Input Monthly Production Capacity (34 Stations)</h3>
-          <p style="font-size:11px; color:var(--text-muted);">Direct cloud sync to Supabase &bull; Auto-computes hourly rate (÷ 730 hrs)</p>
-        </div>
-        <button onclick="closeMonthlyInputModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">✕</button>
-      </div>
 
-      <form id="monthly-data-form" onsubmit="submitMonthlyData(event)" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
-        
-        <div style="padding:12px 24px; background:#F8FAFC; border-bottom:1px solid var(--card-border); display:flex; align-items:center; gap:12px;">
-          <label style="font-weight:700; font-size:12px;">Target Month:</label>
-          <input type="month" id="modal-month-picker" class="header-btn" onchange="onModalMonthChange(this.value)" required>
-        </div>
-
-        <div style="flex:1; overflow-y:auto; padding:20px 24px;">
-          <h4 style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--teal); font-family:var(--font-mono); margin-bottom:10px; border-bottom:1px solid var(--teal-border); padding-bottom:4px;">Surface Water Stations (15)</h4>
-          <div id="modal-sw-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px;"></div>
-
-          <h4 style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--blue); font-family:var(--font-mono); margin-bottom:10px; border-bottom:1px solid var(--blue-border); padding-bottom:4px;">Groundwater Stations (19)</h4>
-          <div id="modal-gw-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-        </div>
-
-        <div style="padding:14px 24px; border-top:1px solid var(--card-border); background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
-          <span id="modal-submit-status" style="font-size:11px; font-weight:600; color:var(--text-muted);"></span>
-          <div style="display:flex; gap:8px;">
-            <button type="button" onclick="closeMonthlyInputModal()" class="header-btn">Cancel</button>
-            <button type="submit" id="btn-save-monthly" class="header-btn" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">Save to Supabase</button>
-          </div>
-        </div>
-      </form>
-
-    </div>
-  </div>
 
   <!-- Genset Fleet Modal -->
   <div id="genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:2000; align-items:center; justify-content:center; padding:20px;">
@@ -2535,14 +2650,14 @@
 
     if (hBtn && hIcon && hText) {
       if (isReportPasskeyVerified) {
-        hIcon.textContent = '';
-        hText.textContent = 'Reports Authorized';
+        hIcon.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; display:inline-block;"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        hText.textContent = 'Reports Unlocked';
         hBtn.style.color = 'var(--green)';
         hBtn.style.borderColor = 'var(--green-border)';
         hBtn.style.background = 'var(--green-light)';
         hBtn.title = 'Report security verified with Division Passkey. Click to lock session.';
       } else {
-        hIcon.textContent = '';
+        hIcon.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; display:inline-block;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
         hText.textContent = 'Reports Protected';
         hBtn.style.color = 'var(--text-muted)';
         hBtn.style.borderColor = 'var(--card-border)';
@@ -6004,7 +6119,7 @@
     if (!hasData) {
       statusEl.textContent = "Awaiting Input";
       statusEl.style.color = "var(--text-muted)";
-      statusSubEl.textContent = "Click 'Input / Edit Volumes'";
+      statusSubEl.textContent = "No records found for this month.";
     } else if (isBelowCutoff) {
       statusEl.innerHTML = `For Reporting <span style="font-size:12px; font-weight:700;">(${fmt(pctAchieved, 1)}%)</span>`;
       statusEl.style.color = "var(--red)";
@@ -6093,138 +6208,6 @@
         scales: { x: { grid: { color: "#F1F5F9" } }, y: { ticks: { font: { size: 9 } } } }
       }
     });
-  }
-
-  // Reloads inputs and resets unlogged stations to blank when month changes in modal
-  async function onModalMonthChange(selectedMonth) {
-    if (!selectedMonth) return;
-    const status = document.getElementById("modal-submit-status");
-    status.textContent = `Loading ${formatMonthYear(selectedMonth)}...`;
-    status.style.color = "var(--blue)";
-
-    try {
-      const res = await fetch(`/api/monthlyProduction?month=${selectedMonth}`);
-      let monthRecords = [];
-      if (res.ok) {
-        monthRecords = await res.json();
-      }
-
-      // Reset all 34 inputs: fill if present, blank if empty
-      MONTHLY_STATIONS_MASTER.forEach(st => {
-        const fieldId = "inp-" + st.name.replace(/[^a-zA-Z0-9]/g, "");
-        const inp = document.getElementById(fieldId);
-        if (inp) {
-          const rec = monthRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
-          inp.value = (rec && rec.monthly_volume !== null && rec.monthly_volume !== undefined) ? rec.monthly_volume : "";
-        }
-      });
-
-      status.textContent = `Loaded ${monthRecords.length} saved stations for ${formatMonthYear(selectedMonth)}`;
-      status.style.color = "var(--text-muted)";
-    } catch (e) {
-      status.textContent = "Error loading month records: " + e.message;
-      status.style.color = "var(--red)";
-    }
-  }
-
-  function openMonthlyInputModal() {
-    ensureReportAuthorized(() => {
-      _doOpenMonthlyInputModal();
-    }, "Monthly Volumetric Ingestion");
-  }
-
-  function _doOpenMonthlyInputModal() {
-    const swContainer = document.getElementById("modal-sw-grid");
-    const gwContainer = document.getElementById("modal-gw-grid");
-    const currentMonthVal = document.getElementById("monthly-picker").value || currentSelectedMonth;
-    
-    const picker = document.getElementById("modal-month-picker");
-    picker.value = currentMonthVal;
-    picker.setAttribute("onchange", "onModalMonthChange(this.value)");
-    document.getElementById("modal-submit-status").textContent = "";
-
-    const generateField = st => {
-      const existing = currentMonthlyRecords.find(r => r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase());
-      const val = (existing && existing.monthly_volume !== null && existing.monthly_volume !== undefined) ? existing.monthly_volume : "";
-      const fieldId = "inp-" + st.name.replace(/[^a-zA-Z0-9]/g, "");
-      return `
-        <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
-          <label style="font-size:11px; font-weight:600; color:var(--text-main); flex:1; padding-right:8px;" for="${fieldId}">${st.name}</label>
-          <input type="number" step="0.01" min="0" placeholder="0.00" id="${fieldId}" data-station="${st.name}" data-cat="${st.category}" value="${val}"
-                 style="width:130px; padding:6px 8px; border:1px solid var(--card-border); border-radius:6px; font-family:var(--font-mono); font-size:12px; text-align:right; outline:none;">
-        </div>
-      `;
-    };
-
-    swContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === "Surface Water").map(generateField).join("");
-    gwContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === "Groundwater").map(generateField).join("");
-    document.getElementById("monthly-input-modal").style.display = "flex";
-  }
-
-  function closeMonthlyInputModal() {
-    document.getElementById("monthly-input-modal").style.display = "none";
-  }
-
-  async function submitMonthlyData(e) {
-    e.preventDefault();
-    const btn = document.getElementById("btn-save-monthly");
-    const status = document.getElementById("modal-submit-status");
-    const targetMonth = document.getElementById("modal-month-picker").value;
-
-    if (!targetMonth) {
-      status.textContent = "Please select a target month.";
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Syncing to Cloud...";
-    status.textContent = "Transmitting to Supabase...";
-    status.style.color = "var(--blue)";
-
-    const inputs = document.querySelectorAll("#monthly-input-modal input[data-station]");
-    const payload = [];
-
-    inputs.forEach(inp => {
-      const val = parseFloat(inp.value);
-      if (!isNaN(val) && val >= 0) {
-        payload.push({
-          month_year: targetMonth,
-          station_name: inp.dataset.station,
-          category: inp.dataset.cat,
-          monthly_volume: val
-        });
-      }
-    });
-
-    try {
-      const res = await fetch("/api/monthlyProduction", {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ records: payload })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        if (res.status === 401) {
-          lockReportSecurity();
-          openReportAuthModal(() => submitMonthlyData(e), "Monthly Volume Save");
-          throw new Error("Unauthorized: Passkey invalid or expired.");
-        }
-        throw new Error(data.error || "Save failed.");
-      }
-
-      status.textContent = `Success! Saved ${data.count || payload.length} stations.`;
-      status.style.color = "var(--green)";
-      setTimeout(() => {
-        closeMonthlyInputModal();
-        loadMonthlyData(targetMonth);
-      }, 1000);
-    } catch (err) {
-      status.textContent = "Error: " + err.message;
-      status.style.color = "var(--red)";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Save to Supabase";
-    }
   }
 
   // ── EXPORT XLS (EXCEL COMPATIBLE CSV) ──
@@ -7852,8 +7835,107 @@
     }
   }
 
+  // ── REUSABLE DRAG & SWIPE TABLE SCROLL CONTROLLER ──
+  function makeScrollableDrag(containerEl, options = {}) {
+    if (!containerEl) return;
+    const horizontal = options.horizontal !== false;
+    const vertical = options.vertical === true;
+
+    let isDown = false;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let scrollLeft = 0;
+    let scrollTop = 0;
+
+    const onMouseDown = (e) => {
+      if (e.button !== 0) return; // Primary mouse button only
+      isDown = true;
+      isDragging = false;
+      startX = e.pageX - containerEl.offsetLeft;
+      startY = e.pageY - containerEl.offsetTop;
+      scrollLeft = containerEl.scrollLeft;
+      scrollTop = containerEl.scrollTop;
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      const x = e.pageX - containerEl.offsetLeft;
+      const y = e.pageY - containerEl.offsetTop;
+      const deltaX = x - startX;
+      const deltaY = y - startY;
+
+      if (!isDragging && (Math.abs(deltaX) >= 5 || Math.abs(deltaY) >= 5)) {
+        isDragging = true;
+        containerEl.classList.add('is-dragging');
+        document.body.style.userSelect = 'none';
+      }
+
+      if (isDragging) {
+        if (horizontal) {
+          containerEl.scrollLeft = scrollLeft - deltaX;
+        }
+        if (vertical) {
+          containerEl.scrollTop = scrollTop - deltaY;
+        }
+      }
+    };
+
+    const stopDragging = () => {
+      if (!isDown) return;
+      isDown = false;
+      if (isDragging) {
+        containerEl.classList.remove('is-dragging');
+        document.body.style.userSelect = '';
+        const captureClick = (clickEvent) => {
+          clickEvent.preventDefault();
+          clickEvent.stopPropagation();
+          window.removeEventListener('click', captureClick, true);
+        };
+        window.addEventListener('click', captureClick, true);
+        setTimeout(() => {
+          isDragging = false;
+          window.removeEventListener('click', captureClick, true);
+        }, 50);
+      }
+    };
+
+    containerEl.addEventListener('mousedown', onMouseDown);
+    containerEl.addEventListener('mousemove', onMouseMove);
+    containerEl.addEventListener('mouseup', stopDragging);
+    containerEl.addEventListener('mouseleave', stopDragging);
+
+    // Window release recovery
+    window.addEventListener('mouseup', stopDragging);
+    window.addEventListener('pointercancel', stopDragging);
+  }
+
+  function initDashboardTableDragScrolling() {
+    // 1. Station Capacity & Monthly Utilization table
+    document.querySelectorAll('#page-monthly .table-responsive').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: false });
+    });
+
+    // 2. Weekly Production tables
+    document.querySelectorAll('#page-production .table-responsive').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: false });
+    });
+
+    // 3. Primary & Outlying Monitoring Points (#priority-cards-row)
+    const priorityCards = document.getElementById('priority-cards-row');
+    if (priorityCards) {
+      makeScrollableDrag(priorityCards, { horizontal: true, vertical: false });
+    }
+
+    // 4. Recent Readings • All Stations table (Dual-axis)
+    document.querySelectorAll('.press-table-wrap').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: true });
+    });
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     init();
+    initDashboardTableDragScrolling();
 
     // Restore collapsed sidebar preference on desktop
     try {
