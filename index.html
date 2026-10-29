@@ -241,6 +241,79 @@
       gap: 6px;
     }
     .header-actions { display: flex; align-items: center; gap: 10px; }
+    /* ── CONSOLIDATED REPORTS & EXPORTS MENU ── */
+    .reports-dropdown-wrap { position: relative; }
+    .reports-dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
+      width: 320px;
+      z-index: 3000;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+    .reports-dropdown-menu.show { display: block; }
+    .reports-dropdown-header {
+      padding: 8px 12px 6px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border-bottom: 1px solid #F1F5F9;
+      margin-bottom: 4px;
+    }
+    .report-menu-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .report-menu-item:hover { background: #F8FAFC; }
+    .report-menu-item:focus { outline: none; background: #EFF6FF; }
+    .report-menu-item-primary {
+      background: #EFF6FF;
+      border: 1px solid #DBEAFE;
+      margin-bottom: 4px;
+    }
+    .report-menu-item-primary:hover { background: #DBEAFE; }
+    .report-menu-item-title {
+      font-weight: 700;
+      font-size: 12px;
+      color: #0F172A;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .report-menu-item-desc {
+      font-size: 10.5px;
+      color: #64748B;
+      line-height: 1.3;
+    }
+    .report-menu-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .report-menu-badge-blue { background: #EEF2FF; color: #4F46E5; }
+    .report-menu-badge-green { background: #DCFCE7; color: #16A34A; }
     .header-btn {
       background: #FFFFFF;
       border: 1px solid var(--card-border);
@@ -1087,7 +1160,7 @@
     }
   
     /* ══════════════════════════════════════════════════════════════════ */
-    /* ── 📄 A4 PORTRAIT COMPREHENSIVE REPORT ENGINE (0.5in MARGINS) ── */
+    /* ── A4 PORTRAIT COMPREHENSIVE REPORT ENGINE (0.5in MARGINS) ── */
     /* ══════════════════════════════════════════════════════════════════ */
     .comp-a4-page {
       width: 210mm;
@@ -1290,9 +1363,61 @@
             </div>
           </div>
           <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
-            <button id="btn-open-comp-report" class="header-btn" onclick="openComprehensiveReportModal()" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700;">
-              <span>📄 Comprehensive Report</span>
-            </button>
+            <!-- Consolidated Reports & Exports Hub -->
+            <div class="reports-dropdown-wrap">
+              <button id="btn-reports-menu" class="header-btn" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+                <span>Reports &amp; Exports</span>
+                <span style="font-size:8px; opacity:0.8;">▼</span>
+              </button>
+              
+              <div id="reports-dropdown-menu" class="reports-dropdown-menu">
+                <div class="reports-dropdown-header">Consolidated Reports &amp; Exports</div>
+                
+                <button type="button" class="report-menu-item report-menu-item-primary" onclick="closeReportsDropdown(); openComprehensiveReportModal();">
+                  <div class="report-menu-item-title">
+                    <span>Comprehensive Telemetry Report</span>
+                    <span class="report-menu-badge report-menu-badge-blue">Full A4 PDF</span>
+                  </div>
+                  <div class="report-menu-item-desc">Multi-Page A4 Portrait &bull; Production, Pressure, River &amp; Complaints</div>
+                </button>
+
+                <div style="height:1px; background:#F1F5F9; margin:4px 0;"></div>
+                <div style="padding:4px 12px 2px; font-size:9.5px; font-weight:700; color:#94A3B8; text-transform:uppercase;">Quick Domain Exports</div>
+
+                <button type="button" class="report-menu-item" onclick="closeReportsDropdown(); generateMonthlyPDF();">
+                  <div class="report-menu-item-title">
+                    <span>Monthly Production Report</span>
+                    <span class="report-menu-badge" style="background:#FEE2E2; color:#DC2626;">PDF</span>
+                  </div>
+                  <div class="report-menu-item-desc">Official Monthly Volume &amp; LWUA 5% Capacity Status</div>
+                </button>
+
+                <button type="button" class="report-menu-item" onclick="closeReportsDropdown(); exportMonthlyXLS();">
+                  <div class="report-menu-item-title">
+                    <span>Monthly Station Volumes</span>
+                    <span class="report-menu-badge report-menu-badge-green">CSV / Excel</span>
+                  </div>
+                  <div class="report-menu-item-desc">Station Monthly Yields &amp; Targets Spreadsheet</div>
+                </button>
+
+                <button type="button" class="report-menu-item" onclick="closeReportsDropdown(); openCrisisReportModal();">
+                  <div class="report-menu-item-title">
+                    <span>Crisis Monitoring Report</span>
+                    <span class="report-menu-badge" style="background:#FEF3C7; color:#D97706;">PDF</span>
+                  </div>
+                  <div class="report-menu-item-desc">A4 Drought &amp; System Deficit Risk Assessment</div>
+                </button>
+
+                <button type="button" class="report-menu-item" onclick="closeReportsDropdown(); openReportModal();">
+                  <div class="report-menu-item-title">
+                    <span>Network Pressure Report</span>
+                    <span class="report-menu-badge report-menu-badge-blue">PDF / PNG</span>
+                  </div>
+                  <div class="report-menu-item-desc">Multi-Station SCADA Pressure Sensor Chart Export</div>
+                </button>
+              </div>
+            </div>
+
             <button id="header-auth-status-btn" class="header-btn" onclick="handleHeaderAuthClick()" style="font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); border-color:var(--card-border); background:#FFFFFF;" title="Report Generation Security Status">
               <span id="header-auth-status-icon"></span>
               <span id="header-auth-status-text" class="desktop-text">Reports Protected</span>
@@ -1320,11 +1445,6 @@
             <button id="global-monthly-pill" onclick="switchNavTab('monthly')" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="View Production Monthly Report">
               <span id="global-monthly-text">Loading Monthly...</span>
             </button>
-
-            <!-- Crisis Report PDF Button (visible when in crisis tab) -->
-            <button id="crisis-pdf-top-btn" class="header-btn" onclick="openCrisisReportModal()" style="display:none; background:var(--blue); color:white; border:none; font-weight:700; border-radius:20px; padding:4px 14px; font-size:11px;" title="Export Crisis Monitoring Report to PDF">
-              Crisis PDF ↗
-            </button>
           </div>
         </div>
 
@@ -1341,12 +1461,6 @@
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <button class="header-btn" onclick="openMonthlyInputModal()" style="background:var(--blue); color:#FFF; border-color:var(--blue); font-weight:700;">
               Input / Edit Volumes
-            </button>
-            <button class="header-btn" onclick="exportMonthlyXLS()" style="color:var(--green); border-color:var(--green-border); font-weight:700;">
-              Export Excel (XLS)
-            </button>
-            <button class="header-btn" onclick="generateMonthlyPDF()" style="color:var(--red); border-color:var(--red-border); font-weight:700;">
-              Export PDF Report
             </button>
           </div>
         </div>
@@ -1609,8 +1723,7 @@
               <button class="header-btn" id="btn-range-7d" onclick="setRange(this,'7d')">7 Days</button>
               <button class="header-btn" onclick="resetChartZoom()" style="color:var(--text-muted);">Reset Zoom</button>
               <button class="header-btn" id="btn-clear-compare-graph" onclick="clearCompare()" style="color:var(--red);">Clear All</button>
-              <button class="header-btn" onclick="openReportModal()" style="color:var(--blue);">Export Report</button>
-          </div>
+            </div>
           </div>
           <div style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
           <div id="latest-strip" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;"></div>
@@ -1630,12 +1743,9 @@
 
       <!-- ── TAB 4: CRISIS MONITOR ── -->
       <div class="page-content" id="page-crisis">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-          <div>
-            <h2 style="font-size:16px; font-weight:800; color:var(--text-main);">LWUA Crisis &amp; Drought Monitoring</h2>
-            <div style="font-size:11px; color:var(--text-muted);" id="crisis-header-subtitle">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
-          </div>
-          <button class="header-btn" onclick="openCrisisReportModal()" style="background:var(--blue); color:white; border:none;">Generate Crisis Report (PDF)</button>
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:16px; font-weight:800; color:var(--text-main);">LWUA Crisis &amp; Drought Monitoring</h2>
+          <div style="font-size:11px; color:var(--text-muted);" id="crisis-header-subtitle">Consolidated District Benchmark: 397,681.32 m³/wk | City Proper: 391,233.00 m³/wk</div>
         </div>
 
         <!-- Crisis Alert Levels Executive Legend -->
@@ -2096,7 +2206,7 @@
   </div>
 
     <!-- ══════════════════════════════════════════════════════════════════ -->
-  <!-- ── 📄 PPCWD DASHBOARD COMPREHENSIVE REPORT BUILDER MODAL ── -->
+  <!-- ── PPCWD DASHBOARD COMPREHENSIVE REPORT BUILDER MODAL ── -->
   <!-- ══════════════════════════════════════════════════════════════════ -->
   <div id="comprehensive-report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
     <div style="background:#FFFFFF; border-radius:14px; width:860px; max-width:96vw; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.3); font-family:'Plus Jakarta Sans',sans-serif;">
@@ -2104,8 +2214,8 @@
       <!-- Header -->
       <div style="padding:18px 24px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:36px; height:36px; border-radius:8px; background:var(--blue-light); display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--blue);">
-            📄
+          <div style="padding:4px 8px; border-radius:6px; background:var(--blue-light); border:1px solid var(--blue-border); font-size:10px; font-weight:800; font-family:var(--font-mono); color:var(--blue); letter-spacing:0.5px;">
+            REPORT
           </div>
           <div>
             <h3 style="margin:0; font-size:16px; font-weight:800; color:#0F172A;">PPCWD Dashboard Comprehensive Report Builder</h3>
@@ -2179,7 +2289,7 @@
           </div>
 
           <div style="font-size:10.5px; color:#64748B; line-height:1.4;">
-            <span style="color:var(--blue); font-weight:600;">⚡ Automatic Backfill &amp; Dynamic Prorating:</span> If your date range starts earlier than cached telemetry, missing records are automatically queried from Supabase. Any in-progress month (such as partial MTD) is dynamically prorated so regulatory LWUA evaluations remain mathematically accurate.
+            <span style="color:var(--blue); font-weight:600;">Automatic Backfill &amp; Dynamic Prorating:</span> If your date range starts earlier than cached telemetry, missing records are automatically queried from Supabase. Any in-progress month (such as partial MTD) is dynamically prorated so regulatory LWUA evaluations remain mathematically accurate.
           </div>
         </div>
 
@@ -2293,10 +2403,10 @@
         <button type="button" onclick="closeComprehensiveReportModal()" class="header-btn" style="font-size:11.5px;">Cancel</button>
         <div style="display:flex; gap:10px;">
           <button type="button" id="btn-comp-print" onclick="printComprehensiveReport()" class="header-btn" style="background:#FFFFFF; color:#1E293B; border-color:#CBD5E1; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-            <span>🖨️ Print / Save as Vector PDF</span>
+            <span>Print / Save Vector PDF</span>
           </button>
           <button type="button" id="btn-comp-download" onclick="downloadComprehensiveReportPDF()" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-            <span>📥 Download Multi-Page PDF</span>
+            <span>Download Multi-Page PDF</span>
           </button>
         </div>
       </div>
@@ -2375,7 +2485,7 @@
   }
 
   // ══════════════════════════════════════════════════════════════════
-  // ── 🔒 REPORT GENERATION SECURITY & PASSKEY ACCESS CONTROL ──
+  // ── REPORT GENERATION SECURITY & PASSKEY ACCESS CONTROL ──
   // ══════════════════════════════════════════════════════════════════
   let isReportPasskeyVerified = false;
   let pendingReportAction = null;
@@ -3046,13 +3156,9 @@
     const monthlyBar = document.getElementById("bar-period-monthly");
     const pressureBar = document.getElementById("bar-period-pressure");
     const complaintsBar = document.getElementById("bar-period-complaints");
-    const crisisPdfBtn = document.getElementById("crisis-pdf-top-btn");
 
     if (globalPeriodBar) {
       globalPeriodBar.style.display = (tab === 'overview' || tab === 'production' || tab === 'crisis') ? 'flex' : 'none';
-    }
-    if (crisisPdfBtn) {
-      crisisPdfBtn.style.display = (tab === 'crisis') ? 'inline-flex' : 'none';
     }
     if (monthlyBar) {
       monthlyBar.style.display = (tab === 'monthly') ? 'flex' : 'none';
@@ -6211,7 +6317,37 @@
   }
 
   // ══════════════════════════════════════════════════════════════════
-  // ── 📄 PPCWD DASHBOARD COMPREHENSIVE REPORT GENERATOR ENGINE ──
+  // ── CONSOLIDATED REPORTS & EXPORTS CONTROLLER ──
+  // ══════════════════════════════════════════════════════════════════
+
+  function toggleReportsDropdown(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const menu = document.getElementById("reports-dropdown-menu");
+    if (!menu) return;
+    menu.classList.toggle("show");
+  }
+
+  function closeReportsDropdown() {
+    const menu = document.getElementById("reports-dropdown-menu");
+    if (menu) menu.classList.remove("show");
+  }
+
+  document.addEventListener("click", (e) => {
+    const wrap = document.querySelector(".reports-dropdown-wrap");
+    if (wrap && !wrap.contains(e.target)) {
+      closeReportsDropdown();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeReportsDropdown();
+  });
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── PPCWD DASHBOARD COMPREHENSIVE REPORT GENERATOR ENGINE ──
   // ══════════════════════════════════════════════════════════════════
 
   function openComprehensiveReportModal() {
