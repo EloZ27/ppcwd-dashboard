@@ -2147,13 +2147,16 @@
 
         <!-- Date Range Selection & Quick Presets -->
         <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px 18px; display:flex; flex-direction:column; gap:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Date Range &amp; Historical Backtracking</span>
-            <div style="display:flex; gap:6px; flex-wrap:wrap;">
-              <button type="button" onclick="setCompReportDatePreset('week')" class="header-btn" style="font-size:10px; padding:3px 8px;">Latest Week</button>
-              <button type="button" onclick="setCompReportDatePreset('month')" class="header-btn" style="font-size:10px; padding:3px 8px;">Current Month</button>
-              <button type="button" onclick="setCompReportDatePreset('aug_oct_2026')" class="header-btn" style="font-size:10px; padding:3px 8px; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border); font-weight:700;">Aug–Oct 2026 El Niño Window</button>
-              <button type="button" onclick="setCompReportDatePreset('all')" class="header-btn" style="font-size:10px; padding:3px 8px;">All Available History</button>
+            <div style="display:flex; gap:5px; flex-wrap:wrap;">
+              <button type="button" onclick="setCompReportDatePreset('2weeks')" class="header-btn" style="font-size:10px; padding:3px 9px;">2 Weeks</button>
+              <button type="button" onclick="setCompReportDatePreset('4weeks')" class="header-btn" style="font-size:10px; padding:3px 9px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);">4 Weeks</button>
+              <button type="button" onclick="setCompReportDatePreset('month')" class="header-btn" style="font-size:10px; padding:3px 9px;">Current Month</button>
+              <button type="button" onclick="setCompReportDatePreset('3months')" class="header-btn" style="font-size:10px; padding:3px 9px;">3 Months</button>
+              <button type="button" onclick="setCompReportDatePreset('6months')" class="header-btn" style="font-size:10px; padding:3px 9px;">6 Months</button>
+              <button type="button" onclick="setCompReportDatePreset('aug_oct_2026')" class="header-btn" style="font-size:10px; padding:3px 9px; color:#475569;">Aug–Oct '26 (El Niño)</button>
+              <button type="button" onclick="setCompReportDatePreset('all')" class="header-btn" style="font-size:10px; padding:3px 9px; color:#475569;">All History</button>
             </div>
           </div>
 
@@ -2167,8 +2170,16 @@
               <input id="comp-rep-end-date" type="date" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
             </div>
           </div>
+
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Or Select Specific Operational Week</label>
+            <select id="comp-rep-quick-week" onchange="selectCompReportOperationalWeek(this.value)" class="form-input" style="width:100%; font-size:11px; font-weight:600; padding:6px 10px; box-sizing:border-box; color:#1E293B;">
+              <option value="">-- Jump to Specific Operational Week --</option>
+            </select>
+          </div>
+
           <div style="font-size:10.5px; color:#64748B; line-height:1.4;">
-            <span style="color:var(--blue); font-weight:600;">⚡ Automatic Backfill:</span> If your date range starts earlier than the cached pressure records, the generator automatically queries <code>/api/getPressure</code> and indexes readings into local storage before computing.
+            <span style="color:var(--blue); font-weight:600;">⚡ Automatic Backfill &amp; Dynamic Prorating:</span> If your date range starts earlier than cached telemetry, missing records are automatically queried from Supabase. Any in-progress month (such as partial MTD) is dynamically prorated so regulatory LWUA evaluations remain mathematically accurate.
           </div>
         </div>
 
@@ -6212,10 +6223,12 @@
     if (!modal) return;
     modal.style.display = "flex";
 
+    populateCompReportWeekDropdown();
+
     const startInp = document.getElementById("comp-rep-start-date");
     const endInp = document.getElementById("comp-rep-end-date");
     if (startInp && endInp && (!startInp.value || !endInp.value)) {
-      setCompReportDatePreset("aug_oct_2026");
+      setCompReportDatePreset("4weeks");
     }
     updateCompTopicsUI();
     const statusEl = document.getElementById("comp-rep-status");
@@ -6242,7 +6255,45 @@
     }
   }
 
-  function setCompReportDatePreset(preset) {
+  function getCompReportAnchorDate() {
+    if (Array.isArray(allProdData) && allProdData.length > 0) {
+      for (let i = allProdData.length - 1; i >= 0; i--) {
+        const row = allProdData[i];
+        const { eDate } = parsePeriodDates(row[COL.period], row[COL.date]);
+        if (eDate && !isNaN(eDate.getTime())) return eDate;
+        if (row[COL.date]) {
+          const d = new Date(row[COL.date]);
+          if (!isNaN(d.getTime())) return d;
+        }
+      }
+    }
+    if (Array.isArray(pressureRaw) && pressureRaw.length > 0) {
+      for (let i = pressureRaw.length - 1; i >= 0; i--) {
+        if (pressureRaw[i].dt && !isNaN(pressureRaw[i].dt.getTime())) return pressureRaw[i].dt;
+      }
+    }
+    return new Date();
+  }
+
+  function populateCompReportWeekDropdown() {
+    const sel = document.getElementById("comp-rep-quick-week");
+    if (!sel) return;
+    if (!Array.isArray(allProdData) || !allProdData.length) {
+      sel.innerHTML = '<option value="">-- No weekly records available --</option>';
+      return;
+    }
+    const reversed = [...allProdData].reverse();
+    let opts = '<option value="">-- Jump to Specific Operational Week --</option>';
+    reversed.forEach(row => {
+      const wk = row[COL.week] || 'Week';
+      const period = row[COL.period] || row[COL.date] || '';
+      opts += `<option value="${escapeHtml(period)}">${escapeHtml(wk)}: ${escapeHtml(period)}</option>`;
+    });
+    sel.innerHTML = opts;
+  }
+
+  function selectCompReportOperationalWeek(periodStr) {
+    if (!periodStr) return;
     const startInp = document.getElementById("comp-rep-start-date");
     const endInp = document.getElementById("comp-rep-end-date");
     if (!startInp || !endInp) return;
@@ -6250,37 +6301,53 @@
     const pad = n => String(n).padStart(2, '0');
     const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-    if (preset === 'week') {
-      if (allProdData && allProdData.length > 0) {
-        const latestRow = allProdData[allProdData.length - 1];
-        const dStr = latestRow[COL.date];
-        if (dStr) {
-          const d = new Date(dStr);
-          if (!isNaN(d.getTime())) {
-            const s = new Date(d);
-            s.setDate(s.getDate() - 6);
-            startInp.value = fmtDate(s);
-            endInp.value = fmtDate(d);
-            return;
-          }
-        }
-      }
-      const d = new Date();
-      const s = new Date();
-      s.setDate(s.getDate() - 6);
+    const { sDate, eDate } = parsePeriodDates(periodStr, null);
+    if (sDate && eDate) {
+      startInp.value = fmtDate(sDate);
+      endInp.value = fmtDate(eDate);
+    }
+  }
+
+  function setCompReportDatePreset(preset) {
+    const startInp = document.getElementById("comp-rep-start-date");
+    const endInp = document.getElementById("comp-rep-end-date");
+    const weekSelect = document.getElementById("comp-rep-quick-week");
+    if (weekSelect) weekSelect.value = "";
+    if (!startInp || !endInp) return;
+
+    const pad = n => String(n).padStart(2, '0');
+    const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    const anchor = getCompReportAnchorDate();
+
+    if (preset === '2weeks') {
+      const s = new Date(anchor);
+      s.setDate(s.getDate() - 13);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(d);
+      endInp.value = fmtDate(anchor);
+    } else if (preset === '4weeks' || preset === 'week') {
+      const s = new Date(anchor);
+      s.setDate(s.getDate() - 27);
+      startInp.value = fmtDate(s);
+      endInp.value = fmtDate(anchor);
     } else if (preset === 'month') {
-      const now = new Date();
-      const s = new Date(now.getFullYear(), now.getMonth(), 1);
+      const s = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(now);
+      endInp.value = fmtDate(anchor);
+    } else if (preset === '3months') {
+      const s = new Date(anchor.getFullYear(), anchor.getMonth() - 2, 1);
+      startInp.value = fmtDate(s);
+      endInp.value = fmtDate(anchor);
+    } else if (preset === '6months') {
+      const s = new Date(anchor.getFullYear(), anchor.getMonth() - 5, 1);
+      startInp.value = fmtDate(s);
+      endInp.value = fmtDate(anchor);
     } else if (preset === 'aug_oct_2026') {
       startInp.value = '2026-08-01';
       endInp.value = '2026-10-28';
     } else if (preset === 'all') {
       startInp.value = '2026-08-01';
-      endInp.value = fmtDate(new Date());
+      endInp.value = fmtDate(anchor);
     }
   }
 
@@ -6377,10 +6444,29 @@
         const daysInMonth = new Date(y, m, 0).getDate();
         const recs = (Array.isArray(allRecords) ? allRecords : []).filter(r => r.month_year === ym);
         
+        // Dynamic MTD Prorating: Check if reporting end date falls within this month and is partial
+        let elapsedDays = daysInMonth;
+        let isProrated = false;
+        if (endDt && endDt.getFullYear() === y && (endDt.getMonth() + 1) === m) {
+          if (endDt.getDate() < daysInMonth) {
+            elapsedDays = Math.max(1, endDt.getDate());
+            isProrated = true;
+          }
+        }
+
+        const prorationFactor = elapsedDays / daysInMonth;
+        const baselineM3 = 1705700.0 * prorationFactor;
+        const lwuaCutoffM3 = 1620415.0 * prorationFactor;
+
         if (!recs.length) {
           return {
             month_year: ym,
             hasData: false,
+            isProrated,
+            elapsedDays,
+            daysInMonth,
+            baselineM3,
+            lwuaCutoffM3,
             totalActual: 0,
             dailyAvg: 0,
             swPct: 0,
@@ -6393,15 +6479,20 @@
         const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
         const swVol = recs.filter(r => r.category === 'Surface Water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
         const gwVol = recs.filter(r => r.category === 'Groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-        const dailyAvg = daysInMonth > 0 ? totalActual / daysInMonth : 0;
+        const dailyAvg = elapsedDays > 0 ? totalActual / elapsedDays : 0;
         const swPct = totalActual > 0 ? (swVol / totalActual) * 100 : 0;
         const gwPct = totalActual > 0 ? (gwVol / totalActual) * 100 : 0;
-        const pctVsNormal = (totalActual / 1705700.0) * 100;
-        const lwuaStatus = totalActual >= 1620415.0 ? 'In Capacity' : 'For Reporting';
+        const pctVsNormal = (totalActual / baselineM3) * 100;
+        const lwuaStatus = totalActual >= lwuaCutoffM3 ? 'In Capacity' : 'For Reporting';
 
         return {
           month_year: ym,
           hasData: true,
+          isProrated,
+          elapsedDays,
+          daysInMonth,
+          baselineM3,
+          lwuaCutoffM3,
           totalActual,
           dailyAvg,
           swPct,
@@ -6981,7 +7072,7 @@
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Recent Month LWUA Status</div>
                 <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:13px;">${recentMonth.lwuaStatus}</div>
-                <div class="comp-kpi-sub">${recentMonth.month_year} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
+                <div class="comp-kpi-sub">${recentMonth.month_year}${recentMonth.isProrated ? ` (${recentMonth.elapsedDays}d Prorated)` : ''} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
               </div>
             </div>
 
@@ -7000,9 +7091,10 @@
               <tbody>
                 ${monthlyData.map(m => {
                   const sColor = m.lwuaStatus === 'In Capacity' ? '#16A34A' : (m.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
+                  const proratedBadge = m.isProrated ? ` <span style="font-size:9px; font-weight:700; color:#4F46E5; background:#EEF2FF; padding:1px 5px; border-radius:3px; vertical-align:middle;">Prorated (${m.elapsedDays}/${m.daysInMonth}d)</span>` : '';
                   return `
                     <tr>
-                      <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${m.month_year}</td>
+                      <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${m.month_year}${proratedBadge}</td>
                       <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
