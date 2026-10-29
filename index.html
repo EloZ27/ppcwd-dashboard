@@ -16,10 +16,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   
-  <!-- Modern Typography -->
+  <!-- Modern Typography: Inter & IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ── EXECUTIVE DESIGN SYSTEM ── */
@@ -61,8 +61,8 @@
       --red-light: #FEF2F2;
       --red-border: #FECACA;
 
-      --font-sans: "Plus Jakarta Sans", sans-serif;
-      --font-mono: "JetBrains Mono", monospace;
+      --font-sans: "Inter", -apple-system, sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -177,7 +177,7 @@
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
-    .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+    .nav-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; text-align: center; }
     .sidebar-divider { height: 1px; background: var(--sidebar-border); margin: 12px 6px; }
     .sidebar-footer { padding: 16px 14px; border-top: 1px solid var(--sidebar-border); }
     .status-pill-box {
@@ -1168,7 +1168,7 @@
       padding: 12.7mm; /* 0.5-inch standard margins */
       background: #FFFFFF;
       color: #0F172A;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       box-sizing: border-box;
       page-break-after: always;
       display: flex;
@@ -1209,7 +1209,7 @@
     .comp-kpi-value {
       font-size: 15px;
       font-weight: 800;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'IBM Plex Mono', monospace;
       color: #0F172A;
       line-height: 1.15;
     }
@@ -1314,13 +1314,13 @@
       </div>
 
       <nav class="sidebar-nav">
-        <button class="nav-btn active" onclick="switchNavTab('overview')"><span class="nav-icon">📊</span><span>Dashboard</span></button>
-        <button class="nav-btn" onclick="switchNavTab('monthly')"><span class="nav-icon">📅</span><span>Production MONTHLY Report</span></button>
-        <button class="nav-btn" onclick="switchNavTab('production')"><span class="nav-icon">📈</span><span>Production WEEKLY Report</span></button>
-        <button class="nav-btn" onclick="switchNavTab('pressure')"><span class="nav-icon">🧭</span><span>Network Pressure</span></button>
-        <button class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon">⚠️</span><span>Crisis Monitor</span></button>
-        <button class="nav-btn" onclick="switchNavTab('riverflow')"><span class="nav-icon">🌊</span><span>River Hydrology</span></button>
-        <button class="nav-btn" onclick="switchNavTab('complaints')"><span class="nav-icon">📋</span><span>Customer Reports</span></button>
+        <button class="nav-btn active" onclick="switchNavTab('overview')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span><span>Dashboard</span></button>
+        <button class="nav-btn" onclick="switchNavTab('monthly')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span><span>Production MONTHLY Report</span></button>
+        <button class="nav-btn" onclick="switchNavTab('production')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><span>Production WEEKLY Report</span></button>
+        <button class="nav-btn" onclick="switchNavTab('pressure')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span><span>Network Pressure</span></button>
+        <button class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span><span>Crisis Monitor</span></button>
+        <button class="nav-btn" onclick="switchNavTab('riverflow')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg></span><span>River Hydrology</span></button>
+        <button class="nav-btn" onclick="switchNavTab('complaints')"><span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span><span>Customer Reports</span></button>
       </nav>
 
       <div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
@@ -1659,13 +1659,13 @@
         <div class="map-header-toolbar">
           <div class="map-view-toggles">
             <button id="btn-map-core" class="map-mode-btn active" onclick="setPressureMapMode('core')">
-              <span>🏙️</span> <span>Urban Core</span>
+              <span>Urban Core</span>
             </button>
             <button id="btn-map-all" class="map-mode-btn" onclick="setPressureMapMode('all')">
-              <span>🗺️</span> <span>Full Network</span>
+              <span>Full Network</span>
             </button>
             <button id="btn-map-lock" class="map-mode-btn" onclick="togglePressureMapLock()" title="Toggle map movement lock">
-              <span id="map-lock-icon">🔓</span> <span id="map-lock-label">Free Pan</span>
+              <span id="map-lock-label">Free Pan</span>
             </button>
             <button class="map-mode-btn" onclick="resetPressureMapFraming()" title="Reset to Urban Core">
               <span>↺</span>
@@ -2157,7 +2157,7 @@
   </div>
 
   <!-- Hidden A4 Crisis Template -->
-  <div id="hidden-crisis-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Plus Jakarta Sans',sans-serif; padding:40px; box-sizing:border-box;">
+  <div id="hidden-crisis-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Inter',sans-serif; padding:40px; box-sizing:border-box;">
     <div style="border-bottom: 2px solid #1560BD; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:flex-end;">
       <div>
         <h1 style="margin:0; font-size:22px; color:#1560BD; font-weight:800;">INTERNAL CRISIS MONITORING REPORT</h1>
@@ -2209,7 +2209,7 @@
   <!-- ── PPCWD DASHBOARD COMPREHENSIVE REPORT BUILDER MODAL ── -->
   <!-- ══════════════════════════════════════════════════════════════════ -->
   <div id="comprehensive-report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:#FFFFFF; border-radius:14px; width:860px; max-width:96vw; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.3); font-family:'Plus Jakarta Sans',sans-serif;">
+    <div style="background:#FFFFFF; border-radius:14px; width:860px; max-width:96vw; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.3); font-family:'Inter',sans-serif;">
       
       <!-- Header -->
       <div style="padding:18px 24px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
@@ -2418,7 +2418,7 @@
   <div id="comprehensive-report-staging" style="position:absolute; left:-9999px; top:0; width:210mm;"></div>
 
   <!-- Hidden A4 Monthly Report Template -->
-  <div id="hidden-monthly-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Plus Jakarta Sans',sans-serif; padding:40px; box-sizing:border-box;">
+  <div id="hidden-monthly-report" style="position:absolute; left:-9999px; top:0; width:794px; min-height:1123px; background:#FFFFFF; color:#1E293B; font-family:'Inter',sans-serif; padding:40px; box-sizing:border-box;">
     <div style="border-bottom: 2px solid #1560BD; padding-bottom: 8px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:flex-end;">
       <div>
         <h1 style="margin:0; font-size:20px; color:#1560BD; font-weight:800;">MONTHLY PRODUCTION CAPACITY &amp; UTILIZATION REPORT</h1>
@@ -3284,7 +3284,7 @@
       },
       options: {
         responsive: true, maintainAspectRatio: false, cutout: '72%',
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: 'Plus Jakarta Sans', size: 11 } } } }
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: 'Inter', size: 11 } } } }
       }
     });
 
@@ -3714,8 +3714,7 @@
       leafletMap.scrollWheelZoom.disable();
       leafletMap.doubleClickZoom.disable();
       leafletMap.touchZoom.disable();
-      if(iconEl) iconEl.textContent = "🔒";
-      if(lblEl) lblEl.textContent = "Fixed View (Locked)";
+      if(lblEl) lblEl.textContent = "Locked View";
       if(btn) {
         btn.classList.add("active");
         btn.style.background = "var(--blue-light)";
@@ -3727,7 +3726,6 @@
       leafletMap.scrollWheelZoom.enable();
       leafletMap.doubleClickZoom.enable();
       leafletMap.touchZoom.enable();
-      if(iconEl) iconEl.textContent = "🔓";
       if(lblEl) lblEl.textContent = "Free Pan";
       if(btn) {
         btn.classList.remove("active");
@@ -3825,14 +3823,14 @@
         recent.dt.toLocaleDateString("en-PH") + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "No recent data";
 
       const popupHtml = `
-        <div style="padding:14px; font-family:'Plus Jakarta Sans',sans-serif;">
+        <div style="padding:14px; font-family:'Inter',sans-serif;">
           <div style="font-size:12px; font-weight:700; color:#0F172A; margin-bottom:2px;">${s.name}</div>
           <div style="font-size:9.5px; color:#64748B; font-family:var(--font-mono); margin-bottom:8px;">${timeStr} ${isFallback ? '(Last logged)' : ''}</div>
           <div style="font-size:26px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? '#EF4444' : '#10B981'}; margin-bottom:4px;">
             ${val !== null ? fmt(val, 2) + " PSI" : "No data"}
           </div>
           <div style="font-size:10px; font-weight:600; color:${isAlert ? '#EF4444' : '#10B981'}; margin-bottom:12px;">
-            ${isAlert ? '⚠️ Pressure below threshold' : '✓ Normal operating pressure'}
+            ${isAlert ? 'Pressure below threshold' : 'Normal operating pressure'}
           </div>
           <div style="display:flex; gap:6px;">
             <button onclick="viewHistoryFromPopup(${s.col})" style="flex:1; padding:6px 0; border-radius:6px; background:#0D9488; color:white; border:none; font-family:var(--font-mono); font-size:10px; font-weight:600; cursor:pointer;">View</button>
@@ -3900,7 +3898,7 @@
                   ${s.name}
                 </div>
                 <span style="font-size:9px; font-weight:700; font-family:var(--font-mono); padding:1px 5px; border-radius:4px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
-                  ${isAlert ? '⚠️ Alert' : '✓ OK'}
+                  ${isAlert ? 'Alert' : 'Normal'}
                 </span>
               </div>
 
@@ -3915,7 +3913,7 @@
               </div>
 
               <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:6px;">
-                🕒 ${timeStr} ${isFallback ? '(Last)' : ''}
+                ${timeStr} ${isFallback ? '(Last)' : ''}
               </div>
             </div>
 
@@ -4019,11 +4017,11 @@
                   ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted); margin-left:2px;">PSI</span>
                 </div>
                 <span style="font-size:8.5px; font-weight:700; font-family:var(--font-mono); padding:1px 4px; border-radius:3px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
-                  ${isAlert ? '⚠️ Alert' : '✓ OK'}
+                  ${isAlert ? 'Alert' : 'Normal'}
                 </span>
               </div>
               <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
-                🕒 ${timeStr} ${isFallback ? '(Last)' : ''}
+                ${timeStr} ${isFallback ? '(Last)' : ''}
               </div>
             </div>
           </div>
@@ -4119,7 +4117,7 @@
 
       ctx.save();
       ctx.textAlign = 'center';
-      ctx.font = '600 10px "JetBrains Mono", monospace';
+      ctx.font = '600 10px "IBM Plex Mono", monospace';
 
       for (let idx = xMin; idx <= xMax; idx += step) {
         // Collect points at this x-step
@@ -4334,7 +4332,7 @@
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         plugins: {
-          legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Plus Jakarta Sans', size: 11 } } },
+          legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } },
           tooltip: {
             backgroundColor: '#0F172A',
             callbacks: {
@@ -4356,7 +4354,7 @@
             min: initialMin,
             max: initialMax,
             grid: { color: "#F1F5F9" },
-            ticks: { font: { family: 'JetBrains Mono', size: 9 }, maxTicksLimit: 12, maxRotation: 45 }
+            ticks: { font: { family: 'IBM Plex Mono', size: 9 }, maxTicksLimit: 12, maxRotation: 45 }
           },
           y: {
             title: { display: true, text: "PSI" },
@@ -4707,7 +4705,7 @@
             labels: {
               boxWidth: 12,
               padding: 12,
-              font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '600' },
+              font: { family: "'Inter', sans-serif", size: 11, weight: '600' },
               color: '#334155'
             }
           },
@@ -4757,13 +4755,13 @@
             ticks: {
               autoSkip: false,
               color: '#0F172A',
-              font: { family: "'Plus Jakarta Sans', sans-serif", size: 10.5, weight: '600' }
+              font: { family: "'Inter', sans-serif", size: 10.5, weight: '600' }
             },
             grid: { display: false }
           },
           x: {
             beginAtZero: true,
-            ticks: { precision: 0, font: { family: "'JetBrains Mono', monospace", size: 10 }, color: '#64748B' },
+            ticks: { precision: 0, font: { family: "'IBM Plex Mono', monospace", size: 10 }, color: '#64748B' },
             grid: { color: 'rgba(226, 232, 240, 0.7)' }
           }
         }
@@ -4808,13 +4806,13 @@
               ticks: {
                 autoSkip: false,
                 color: '#0F172A',
-                font: { family: "'JetBrains Mono', monospace", size: 10.5, weight: '600' }
+                font: { family: "'IBM Plex Mono', monospace", size: 10.5, weight: '600' }
               },
               grid: { display: false }
             },
             x: {
               beginAtZero: true,
-              ticks: { precision: 0, font: { family: "'JetBrains Mono', monospace", size: 10 }, color: '#64748B' },
+              ticks: { precision: 0, font: { family: "'IBM Plex Mono', monospace", size: 10 }, color: '#64748B' },
               grid: { color: 'rgba(226, 232, 240, 0.7)' }
             }
           }
@@ -5759,10 +5757,10 @@
       octx.font = 'bold 11px Arial, sans-serif';
       if (st.alertCount > 0) {
         octx.fillStyle = '#DC2626';
-        octx.fillText(`⚠️ Low Pressure (${st.alertCount} logs ≤ ${st.thresh} PSI)`, pad + 1100, curRowY + 19);
+        octx.fillText(`Low Pressure (${st.alertCount} logs ≤ ${st.thresh} PSI)`, pad + 1100, curRowY + 19);
       } else {
         octx.fillStyle = '#059669';
-        octx.fillText(`✓ Normal Operation (> ${st.thresh} PSI)`, pad + 1100, curRowY + 19);
+        octx.fillText(`Normal Operation (> ${st.thresh} PSI)`, pad + 1100, curRowY + 19);
       }
       curRowY += 30;
     });
@@ -5846,14 +5844,14 @@
   async function init() {
     try {
       if (window.Chart) {
-        Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+        Chart.defaults.font.family = '"Inter", sans-serif';
         Chart.defaults.color = '#64748B';
         if (Chart.defaults.plugins && Chart.defaults.plugins.tooltip) {
           Chart.defaults.plugins.tooltip.backgroundColor = '#0F172A';
           Chart.defaults.plugins.tooltip.padding = 10;
           Chart.defaults.plugins.tooltip.cornerRadius = 8;
-          Chart.defaults.plugins.tooltip.titleFont = { family: '"Plus Jakarta Sans", sans-serif', weight: '700', size: 12 };
-          Chart.defaults.plugins.tooltip.bodyFont = { family: '"JetBrains Mono", monospace', size: 12 };
+          Chart.defaults.plugins.tooltip.titleFont = { family: '"Inter", sans-serif', weight: '700', size: 12 };
+          Chart.defaults.plugins.tooltip.bodyFont = { family: '"IBM Plex Mono", monospace', size: 12 };
           Chart.defaults.plugins.tooltip.boxPadding = 5;
         }
       }
@@ -7085,7 +7083,7 @@
         </div>
         <div style="text-align:right;">
           <div style="font-size:9px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px;">Reporting Period</div>
-          <div style="font-size:11.5px; font-weight:800; color:#0F172A; font-family:'JetBrains Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
+          <div style="font-size:11.5px; font-weight:800; color:#0F172A; font-family:'IBM Plex Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
           <div style="font-size:8.5px; color:#94A3B8; margin-top:2px;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
         </div>
       </div>
@@ -7097,7 +7095,7 @@
     return `
       <div class="comp-footer">
         <div>Puerto Princesa City Water District &bull; SCADA Telemetry &amp; Field Operations Monitoring</div>
-        <div style="font-weight:700; font-family:'JetBrains Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
+        <div style="font-weight:700; font-family:'IBM Plex Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
       </div>
     `;
   }
@@ -7230,12 +7228,12 @@
                   const proratedBadge = m.isProrated ? ` <span style="font-size:9px; font-weight:700; color:#4F46E5; background:#EEF2FF; padding:1px 5px; border-radius:3px; vertical-align:middle;">Prorated (${m.elapsedDays}/${m.daysInMonth}d)</span>` : '';
                   return `
                     <tr>
-                      <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${m.month_year}${proratedBadge}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasData ? fmt(m.gwPct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
+                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}${proratedBadge}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.gwPct, 1) + '%' : '—'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
                       <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${m.lwuaStatus}</td>
                     </tr>
                   `;
@@ -7274,13 +7272,13 @@
 
           return `
             <tr>
-              <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${wk}</td>
+              <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${wk}</td>
               <td>${escapeHtml(period)}</td>
-              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(total, 2)}</td>
-              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(daily, 2)}</td>
-              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(swPct, 1)}%</td>
-              <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(gwPct, 1)}%</td>
-              <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(total, 2)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(daily, 2)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(swPct, 1)}%</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(gwPct, 1)}%</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
               <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${sText}</td>
             </tr>
           `;
@@ -7322,11 +7320,11 @@
                 ${weekRows}
                 <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
                   <td colspan="2">WEEKLY AVERAGE (${matchedWeeks.length} Weeks)</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgWeekly, 2)}</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgDaily, 2)}</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgSwPct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(avgGwPct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:${avgColor};">${fmt(avgPctAchieved, 1)}%</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(avgWeekly, 2)}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(avgDaily, 2)}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(avgSwPct, 1)}%</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(avgGwPct, 1)}%</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:${avgColor};">${fmt(avgPctAchieved, 1)}%</td>
                   <td style="text-align:left; padding-left:12px; color:${avgColor};">Average Operating Status</td>
                 </tr>
               </tbody>
@@ -7420,29 +7418,29 @@
               <tbody>
                 ${pressData.monthlyComplianceRows.map(m => `
                   <tr>
-                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${m.month_year}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.distMean, 2) + ' psi' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.peakMean, 2) + ' psi' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.hasReadings ? fmt(m.offPeakMean, 2) + ' psi' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:600; color:#0D9488;">${m.hasReadings ? fmt(m.staMonicaMean, 2) + ' psi' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#16A34A;">${m.hasReadings ? fmt(m.ge15Pct, 1) + '%' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m65_149Pct, 1) + '%' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt65Pct, 1) + '%' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#DC2626;">${m.hasReadings ? fmt(m.eq0Pct, 1) + '% (' + m.eq0Count + ')' : '—'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
+                    <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.distMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.peakMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.offPeakMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600; color:#0D9488;">${m.hasReadings ? fmt(m.staMonicaMean, 2) + ' psi' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${m.hasReadings ? fmt(m.ge15Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m65_149Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt65Pct, 1) + '%' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${m.hasReadings ? fmt(m.eq0Pct, 1) + '% (' + m.eq0Count + ')' : '—'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
                   </tr>
                 `).join('')}
                 <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
                   <td>PERIOD TOTAL / MEAN</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(pressData.overallOffPeakMean, 2)} psi</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} psi</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#16A34A;">${fmt(pressData.ge15Pct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
-                  <td style="text-align:right; font-family:'JetBrains Mono', monospace;">—</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallOffPeakMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} psi</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${fmt(pressData.ge15Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">—</td>
                 </tr>
               </tbody>
             </table>
@@ -7475,17 +7473,17 @@
               <tbody>
                 ${pressData.weeklyMajorRows.map(w => `
                   <tr>
-                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${w.week}</td>
+                    <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${w.week}</td>
                     <td>${escapeHtml(w.period)}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -7514,11 +7512,11 @@
               <tbody>
                 ${pressData.top5Lowest.map((st, idx) => `
                   <tr>
-                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">#${idx + 1}</td>
+                    <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
                     <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${st.hoursLt65} hrs</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${st.hoursLt65} hrs</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -7595,8 +7593,8 @@
                   return `
                     <tr>
                       <td style="font-weight:700; color:${tColor};">${escapeHtml(type)}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${count}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${fmt(share, 1)}%</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${count}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(share, 1)}%</td>
                       <td style="text-align:left; padding-left:14px; font-size:9px; color:#475569;">${impact}</td>
                     </tr>
                   `;
@@ -7627,12 +7625,12 @@
               <tbody>
                 ${compData.topBrgysDetailed.map((b, idx) => `
                   <tr>
-                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">#${idx + 1}</td>
+                    <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
                     <td style="font-weight:800; color:#0F172A;">${escapeHtml(b.name)}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${b.total}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#DC2626;">${b.nw}</td>
-                    <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:#D97706;">${b.lp}</td>
-                    <td style="font-family:'JetBrains Mono', monospace; font-size:8.5px; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${b.total}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#DC2626;">${b.nw}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#D97706;">${b.lp}</td>
+                    <td style="font-family:'IBM Plex Mono', monospace; font-size:8.5px; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -7693,12 +7691,12 @@
                     <tr>
                       <td style="font-weight:700;">${escapeHtml(r.station.name)}</td>
                       <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
-                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace; color:#64748B;">${pDateStr}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
-                      <td style="font-size:8.5px; font-family:'JetBrains Mono', monospace; font-weight:600;">${lDateStr}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
-                      <td style="text-align:right; font-family:'JetBrains Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange > 0 ? '+' : '') + fmt(r.pctChange, 1) + '%' : '—'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
+                      <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
+                      <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; font-weight:600;">${lDateStr}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange > 0 ? '+' : '') + fmt(r.pctChange, 1) + '%' : '—'}</td>
                     </tr>
                   `;
                 }).join('')}
