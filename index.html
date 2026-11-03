@@ -2366,7 +2366,7 @@
 
           <div>
             <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Sub-header / Context Note</label>
-            <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Data from El Niño Task Force Monitoring" />
+            <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Operational &amp; Hydrological Telemetry Report" />
           </div>
         </div>
 
@@ -6386,11 +6386,11 @@
     if (preset === 'gm') {
       if (titleInp) titleInp.value = "GM'S REPORT";
       if (subInp) subInp.value = "El Niño Task Force";
-      if (ctxInp) ctxInp.value = "Data from El Niño Task Force Monitoring";
+      if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     } else {
       if (titleInp) titleInp.value = "PPCWD Dashboard Comprehensive Report";
       if (subInp) subInp.value = "El Niño Task Force";
-      if (ctxInp) ctxInp.value = "Data from El Niño Task Force Monitoring";
+      if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     }
   }
 
@@ -6531,12 +6531,87 @@
     }
   }
 
+  // ── DATA VALIDATION & REPORT UTILITY HELPERS ──
+  
+  // Safe Percentage Delta Calculator with Zero-Baseline Guard
+  function safePctChange(prev, curr) {
+    if (prev === null || prev === undefined || curr === null || curr === undefined) {
+      return { value: null, label: '—' };
+    }
+    const p = Number(prev);
+    const c = Number(curr);
+    if (isNaN(p) || isNaN(c)) return { value: null, label: '—' };
+    if (p === 0) {
+      if (c > 0) return { value: null, label: 'Recovery (from 0)' };
+      if (c === 0) return { value: 0, label: '0.0%' };
+      return { value: null, label: '—' };
+    }
+    const delta = c - p;
+    const pct = (delta / p) * 100;
+    return {
+      value: pct,
+      label: (pct > 0 ? '+' : '') + fmt(pct, 1) + '%'
+    };
+  }
+
+  // Consistent Date-Range Formatter (prevents "October 2-9, 2026" from collapsing into "October 29, 2026")
+  function formatDateRange(start, end) {
+    if (!start && !end) return '';
+    if (!start) return end instanceof Date ? end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : String(end);
+    if (!end) return start instanceof Date ? start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : String(start);
+
+    const s = start instanceof Date ? start : new Date(start);
+    const e = end instanceof Date ? end : new Date(end);
+    if (isNaN(s.getTime()) || isNaN(e.getTime())) {
+      return String(start).replace(/(\d+)\s*[-–—]\s*(\d+)/, '$1 – $2');
+    }
+
+    const sMonth = s.toLocaleDateString('en-US', { month: 'short' });
+    const eMonth = e.toLocaleDateString('en-US', { month: 'short' });
+    const sDay = s.getDate();
+    const eDay = e.getDate();
+    const sYear = s.getFullYear();
+    const eYear = e.getFullYear();
+
+    if (sYear === eYear) {
+      if (sMonth === eMonth) {
+        if (sDay === eDay) return `${sMonth} ${sDay}, ${sYear}`;
+        return `${sMonth} ${sDay} – ${eDay}, ${sYear}`;
+      }
+      return `${sMonth} ${sDay} – ${eMonth} ${eDay}, ${sYear}`;
+    }
+    return `${sMonth} ${sDay}, ${sYear} – ${eMonth} ${eDay}, ${eYear}`;
+  }
+
+  // Telemetry Staleness Detector (>14 days considered non-current / historical baseline)
+  function isStaleReading(readingDate, reportEndDate, thresholdDays = 14) {
+    if (!readingDate || !reportEndDate) return false;
+    const rDt = readingDate instanceof Date ? readingDate : new Date(readingDate);
+    const eDt = reportEndDate instanceof Date ? reportEndDate : new Date(reportEndDate);
+    if (isNaN(rDt.getTime()) || isNaN(eDt.getTime())) return false;
+    const diffMs = eDt.getTime() - rDt.getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+    return diffDays > thresholdDays;
+  }
+
+  // Stubout ID Sanitizer (enforces standard SO-xxxx / S1-xxx / S2-xxx / S3-xxx / S4-xxx)
+  function sanitizeStubout(str) {
+    if (!str) return 'General Mains';
+    let s = String(str).trim();
+    if (!s || s === '—' || s.toLowerCase() === 'unassigned') return 'General Mains';
+    return s.replace(/^(S[0-9]|SO)\s*[-_]?\s*(\d+)$/i, (m, p, n) => `${p.toUpperCase()}-${n}`);
+  }
+
   // Monthly Production Aggregator: Displays all available records descending (latest month first)
   async function fetchAllMonthlyRecords(startDt, endDt) {
     try {
-      const res = await fetch('/api/monthlyProduction');
-      if (!res.ok) throw new Error('Failed to load monthly production');
-      const allRecords = await res.json();
+      let allRecords = [];
+      try {
+        const res = await fetch('/api/monthlyProduction');
+        if (res.ok) allRecords = await res.json();
+      } catch (e) {
+        console.warn('monthlyProduction fetch warning:', e);
+      }
       
       const set = new Set((Array.isArray(allRecords) ? allRecords : []).map(r => r.month_year).filter(Boolean));
       // Ensure any months within selected date range are accounted for
@@ -6574,47 +6649,102 @@
         const baselineM3 = 1705700.0 * prorationFactor;
         const lwuaCutoffM3 = 1620415.0 * prorationFactor;
 
-        if (!recs.length) {
+        // If direct monthly records exist, use them
+        if (recs.length > 0) {
+          const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+          const swVol = recs.filter(r => r.category === 'Surface Water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+          const gwVol = recs.filter(r => r.category === 'Groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+          const dailyAvg = elapsedDays > 0 ? totalActual / elapsedDays : 0;
+          const swPct = totalActual > 0 ? (swVol / totalActual) * 100 : 0;
+          const gwPct = totalActual > 0 ? (gwVol / totalActual) * 100 : 0;
+          const pctVsNormal = (totalActual / baselineM3) * 100;
+          const lwuaStatus = totalActual >= lwuaCutoffM3 ? 'In Capacity' : 'For Reporting';
+
           return {
             month_year: ym,
-            hasData: false,
+            hasData: true,
             isProrated,
             elapsedDays,
             daysInMonth,
             baselineM3,
             lwuaCutoffM3,
-            totalActual: 0,
-            dailyAvg: 0,
-            swPct: 0,
-            gwPct: 0,
-            pctVsNormal: 0,
-            lwuaStatus: 'No Report yet'
+            totalActual,
+            dailyAvg,
+            swPct,
+            gwPct,
+            pctVsNormal,
+            lwuaStatus
           };
         }
 
-        const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-        const swVol = recs.filter(r => r.category === 'Surface Water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-        const gwVol = recs.filter(r => r.category === 'Groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-        const dailyAvg = elapsedDays > 0 ? totalActual / elapsedDays : 0;
-        const swPct = totalActual > 0 ? (swVol / totalActual) * 100 : 0;
-        const gwPct = totalActual > 0 ? (gwVol / totalActual) * 100 : 0;
-        const pctVsNormal = (totalActual / baselineM3) * 100;
-        const lwuaStatus = totalActual >= lwuaCutoffM3 ? 'In Capacity' : 'For Reporting';
+        // If no direct monthly records, aggregate from available operational weeks in allProdData
+        if (Array.isArray(allProdData) && allProdData.length > 0) {
+          let synthTotal = 0;
+          let synthSW = 0;
+          let synthGW = 0;
+          let daysCounted = 0;
+
+          for (let day = 1; day <= elapsedDays; day++) {
+            const currentDay = new Date(y, m - 1, day, 12, 0, 0);
+            const coveringWeek = allProdData.find(row => {
+              const { sDate, eDate } = parsePeriodDates(row[COL.period], row[COL.date]);
+              if (sDate && eDate) {
+                return currentDay >= sDate && currentDay <= eDate;
+              }
+              return false;
+            });
+
+            if (coveringWeek) {
+              const wTotal = Number(coveringWeek[COL.grandTotal]) || 0;
+              const wSW = Number(coveringWeek[COL.totalSW]) || 0;
+              const wGW = Number(coveringWeek[COL.totalGW]) || 0;
+              synthTotal += (wTotal / 7);
+              synthSW += (wSW / 7);
+              synthGW += (wGW / 7);
+              daysCounted++;
+            }
+          }
+
+          if (daysCounted > 0) {
+            const totalActual = synthTotal;
+            const dailyAvg = totalActual / elapsedDays;
+            const swPct = totalActual > 0 ? (synthSW / totalActual) * 100 : 0;
+            const gwPct = totalActual > 0 ? (synthGW / totalActual) * 100 : 0;
+            const pctVsNormal = (totalActual / baselineM3) * 100;
+            const lwuaStatus = totalActual >= lwuaCutoffM3 ? 'In Capacity' : 'For Reporting';
+
+            return {
+              month_year: ym,
+              hasData: true,
+              isProrated: true,
+              elapsedDays,
+              daysInMonth,
+              baselineM3,
+              lwuaCutoffM3,
+              totalActual,
+              dailyAvg,
+              swPct,
+              gwPct,
+              pctVsNormal,
+              lwuaStatus
+            };
+          }
+        }
 
         return {
           month_year: ym,
-          hasData: true,
+          hasData: false,
           isProrated,
           elapsedDays,
           daysInMonth,
           baselineM3,
           lwuaCutoffM3,
-          totalActual,
-          dailyAvg,
-          swPct,
-          gwPct,
-          pctVsNormal,
-          lwuaStatus
+          totalActual: 0,
+          dailyAvg: 0,
+          swPct: 0,
+          gwPct: 0,
+          pctVsNormal: 0,
+          lwuaStatus: 'No Report yet'
         };
       });
 
@@ -6625,12 +6755,12 @@
     }
   }
 
-  // Robust Period Date Parser (Handles "October 9 - 16, 2026" without missing month in parts[1])
+  // Robust Period Date Parser (Handles hyphens, en-dashes, em-dashes, and Week 28 edge cases)
   function parsePeriodDates(pStr, fallbackDateStr) {
-    if (pStr && pStr.includes('-')) {
+    if (pStr && /[-–—]/.test(pStr)) {
       const yrMatch = pStr.match(/\b(202\d)\b/);
       const yr = yrMatch ? yrMatch[1] : '2026';
-      const parts = pStr.split('-');
+      const parts = pStr.split(/[-–—]/);
       const sPart = parts[0].trim();
       let ePart = parts[1].replace(/\b202\d\b/, '').replace(/,/g, '').trim();
       const hasMonth = /[a-zA-Z]/.test(ePart);
@@ -6645,6 +6775,12 @@
       if (!isNaN(sDate.getTime()) && !isNaN(eDate.getTime())) {
         return { sDate, eDate };
       }
+    }
+    // Specific guard for Week 28 collapsed string "October 29, 2026"
+    if (pStr && pStr.includes('October 29') && fallbackDateStr && fallbackDateStr.includes('10-09')) {
+      const s = new Date(2026, 9, 2, 0, 0, 0);
+      const e = new Date(2026, 9, 9, 23, 59, 59);
+      return { sDate: s, eDate: e };
     }
     if (fallbackDateStr) {
       const d = new Date(fallbackDateStr);
@@ -6826,8 +6962,9 @@
     // Weekly Major Pressure Monitoring Points
     const weeklyMajorRows = (matchedWeeks || []).map(row => {
       const wk = row[COL.week];
-      const period = row[COL.period] || '';
-      const { sDate, eDate } = parsePeriodDates(period, row[COL.date]);
+      const periodRaw = row[COL.period] || '';
+      const { sDate, eDate } = parsePeriodDates(periodRaw, row[COL.date]);
+      const period = (sDate && eDate) ? formatDateRange(sDate, eDate) : periodRaw.replace(/(\d+)\s*[-–—]\s*(\d+)/, '$1 – $2');
 
       const wkReadings = (sDate && eDate) 
         ? (pressureRaw || []).filter(r => r.dt >= sDate && r.dt <= eDate)
@@ -7065,7 +7202,8 @@
     inRange.forEach(c => {
       const b = (c.barangay || 'Unknown').trim();
       const t = (c.type || 'Unclassified').trim();
-      const so = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '').trim();
+      const rawSo = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '').trim();
+      const so = sanitizeStubout(rawSo);
       const n = parseInt(c.complaint_count, 10) || 1;
       
       total += n;
@@ -7078,7 +7216,7 @@
       else if (tLower.includes('low pressure')) { lpCount += n; brgys[b].lp += n; }
       else if (tLower.includes('turbid') || tLower.includes('dirty')) { turbidCount += n; }
 
-      if (so && so !== '—' && so !== 'Unassigned') {
+      if (so && so !== '—' && so !== 'Unassigned' && so !== 'General Mains') {
         stubouts[b] = stubouts[b] || {};
         stubouts[b][so] = (stubouts[b][so] || 0) + n;
       }
@@ -7128,14 +7266,17 @@
           latestVal: null,
           latestDate: null,
           netChange: 0,
-          pctChange: 0
+          pctChange: null,
+          pctLabel: '—',
+          isStale: false
         };
       }
 
       const latest = valid[valid.length - 1];
       const prev = valid.length > 1 ? valid[valid.length - 2] : null;
       const netChange = prev ? latest.val - prev.val : 0;
-      const pctChange = (prev && prev.val > 0) ? (netChange / prev.val) * 100 : 0;
+      const pctInfo = prev ? safePctChange(prev.val, latest.val) : { value: null, label: '—' };
+      const isStale = isStaleReading(latest.dt, endDt, 14);
 
       return {
         station: s,
@@ -7144,21 +7285,24 @@
         prevDate: prev ? prev.dateStr : null,
         latestVal: latest.val,
         latestDate: latest.dateStr,
+        latestDt: latest.dt,
         netChange,
-        pctChange
+        pctChange: pctInfo.value,
+        pctLabel: pctInfo.label,
+        isStale
       };
     });
 
     return matrix;
   }
 
-  // Diurnal Vector SVG Graph Builder for A4 Print and PDF Export (Official 5-8 AM/PM Peak & 8AM-5PM/8PM-5AM Off-Peak)
+  // Pressure Vector SVG Graph Builder for A4 Print and PDF Export (Official 5-8 AM/PM Peak & 8AM-5PM/8PM-5AM Off-Peak)
   function generateDiurnalPressureSVG(hourlyProfiles, timeAreaSummaries) {
     const width = 740;
     const height = 150;
     const padLeft = 38;
     const padRight = 16;
-    const padTop = 18;
+    const padTop = 20;
     const padBottom = 22;
     const plotW = width - padLeft - padRight;
     const plotH = height - padTop - padBottom;
@@ -7254,22 +7398,23 @@
         <!-- Dist Avg Point Circles -->
         ${distDots}
 
-        <!-- Compact Legend -->
-        <g transform="translate(${padLeft + 4}, ${padTop + 3})">
-          <rect x="0" y="0" width="7" height="2.5" fill="#2563EB" />
-          <text x="10" y="3" font-size="7" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">System Dist Avg</text>
+        <!-- Repositioned Clean Legend: Centered over daytime off-peak valley to avoid blocking 8 PM - 5 AM recharge zone -->
+        <g transform="translate(260, ${padTop + 4})">
+          <rect x="-6" y="-3" width="230" height="13" fill="#FFFFFF" fill-opacity="0.92" rx="3" stroke="#CBD5E1" stroke-width="0.6" />
+          <rect x="0" y="2.5" width="8" height="2.5" fill="#2563EB" />
+          <text x="12" y="5.5" font-size="6.8" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">System Dist Avg</text>
 
-          <rect x="85" y="0" width="7" height="2.5" fill="#7C3AED" />
-          <text x="95" y="3" font-size="7" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">MBS (col 2)</text>
+          <rect x="75" y="2.5" width="8" height="2.5" fill="#7C3AED" />
+          <text x="87" y="5.5" font-size="6.8" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">MBS (Urban Core)</text>
 
-          <rect x="155" y="0" width="7" height="2.5" fill="#0D9488" />
-          <text x="165" y="3" font-size="7" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">Sta. Monica (col 10)</text>
+          <rect x="150" y="2.5" width="8" height="2.5" fill="#0D9488" />
+          <text x="162" y="5.5" font-size="6.8" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">Sta. Monica (Boosted)</text>
         </g>
       </svg>
     `;
   }
 
-  // Summary Table Builder for Diurnal Time Areas (Official PPCWD Standards)
+  // Summary Table Builder for Pressure Distribution & Operational Time Areas (Official PPCWD Standards)
   function generateTimeAreaSummaryTableHtml(timeAreaSummaries, fmt) {
     const list = timeAreaSummaries || [];
     const peakAreas = list.filter(a => a.type.includes('Peak'));
@@ -7281,7 +7426,7 @@
         if (a.hasReadings) {
           dSum += a.distMean * a.hours.length; dCnt += a.hours.length;
           mSum += a.mbsMean * a.hours.length; mCnt += a.hours.length;
-          sSum += a.smMean * a.hours.length; sCnt += a.hours.length;
+          sSum += (a.smMean || 0) * a.hours.length; sCnt += a.hours.length;
           ge15 += a.ge15Pct * a.hours.length;
           lt65 += a.lt65Pct * a.hours.length;
         }
@@ -7295,8 +7440,7 @@
         mbsMean: mCnt > 0 ? mSum / mCnt : 0,
         smMean: sCnt > 0 ? sSum / sCnt : 0,
         ge15Pct: dCnt > 0 ? ge15 / dCnt : 0,
-        lt65Pct: dCnt > 0 ? lt65 / dCnt : 0,
-        diagnostic: type.includes('Peak') ? 'Combined 6-hour official peak withdrawal window (acute line friction).' : 'Combined 18-hour official off-peak operational window (daytime baseline + night recharge).'
+        lt65Pct: dCnt > 0 ? lt65 / dCnt : 0
       };
     };
 
@@ -7310,11 +7454,10 @@
             <th>Official PPCWD Time Area / Window</th>
             <th>Zone Classification</th>
             <th style="text-align:right;">Dist Avg</th>
-            <th style="text-align:right;">MBS (col 2)</th>
-            <th style="text-align:right;">Sta. Monica</th>
+            <th style="text-align:right;">MBS (Urban Core)</th>
+            <th style="text-align:right;">Sta. Monica (Boosted)</th>
             <th style="text-align:right;">&ge; 15.0 psi</th>
             <th style="text-align:right;">&lt; 6.5 psi</th>
-            <th>Hydraulic Diagnostic &amp; Operational Dynamics</th>
           </tr>
         </thead>
         <tbody>
@@ -7340,16 +7483,13 @@
                 ${a.hasReadings ? fmt(a.mbsMean, 2) + ' psi' : '—'}
               </td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:600;">
-                ${a.hasReadings ? fmt(a.smMean, 2) + ' psi' : '—'}
+                ${a.hasReadings && a.smMean > 0 ? fmt(a.smMean, 2) + ' psi' : '—'}
               </td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">
                 ${a.hasReadings ? fmt(a.ge15Pct, 1) + '%' : '—'}
               </td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:${a.lt65Pct > 20 ? '#DC2626' : '#D97706'};">
                 ${a.hasReadings ? fmt(a.lt65Pct, 1) + '%' : '—'}
-              </td>
-              <td style="font-size:8px; color:#334155; line-height:1.25;">
-                ${escapeHtml(a.diagnostic)}
               </td>
             </tr>
           `).join('')}
@@ -7361,10 +7501,9 @@
             <td><span style="font-size:7.5px; font-weight:800; color:#DC2626;">OFFICIAL PEAK (6h)</span></td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${peakRollup.hasReadings ? fmt(peakRollup.distMean, 2) + ' psi' : '—'}</td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${peakRollup.hasReadings ? fmt(peakRollup.mbsMean, 2) + ' psi' : '—'}</td>
-            <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${peakRollup.hasReadings ? fmt(peakRollup.smMean, 2) + ' psi' : '—'}</td>
+            <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${peakRollup.hasReadings && peakRollup.smMean > 0 ? fmt(peakRollup.smMean, 2) + ' psi' : '—'}</td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${peakRollup.hasReadings ? fmt(peakRollup.ge15Pct, 1) + '%' : '—'}</td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${peakRollup.hasReadings ? fmt(peakRollup.lt65Pct, 1) + '%' : '—'}</td>
-            <td style="font-size:8px; color:#991B1B;">${escapeHtml(peakRollup.diagnostic)}</td>
           </tr>
           <tr style="background:#EFF6FF; font-weight:800; border-top:1px solid #BFDBFE;">
             <td>
@@ -7374,10 +7513,9 @@
             <td><span style="font-size:7.5px; font-weight:800; color:#2563EB;">OFFICIAL OFF-PEAK (18h)</span></td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${offPeakRollup.hasReadings ? fmt(offPeakRollup.distMean, 2) + ' psi' : '—'}</td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${offPeakRollup.hasReadings ? fmt(offPeakRollup.mbsMean, 2) + ' psi' : '—'}</td>
-            <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${offPeakRollup.hasReadings ? fmt(offPeakRollup.smMean, 2) + ' psi' : '—'}</td>
+            <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${offPeakRollup.hasReadings && offPeakRollup.smMean > 0 ? fmt(offPeakRollup.smMean, 2) + ' psi' : '—'}</td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${offPeakRollup.hasReadings ? fmt(offPeakRollup.ge15Pct, 1) + '%' : '—'}</td>
             <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${offPeakRollup.hasReadings ? fmt(offPeakRollup.lt65Pct, 1) + '%' : '—'}</td>
-            <td style="font-size:8px; color:#1E40AF;">${escapeHtml(offPeakRollup.diagnostic)}</td>
           </tr>
         </tbody>
       </table>
@@ -7427,7 +7565,7 @@
 
     const title = (document.getElementById("comp-rep-title")?.value || "PPCWD Dashboard Comprehensive Report").trim();
     const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "El Niño Task Force").trim();
-    const context = (document.getElementById("comp-rep-context")?.value || "Data from El Niño Task Force Monitoring").trim();
+    const context = (document.getElementById("comp-rep-context")?.value || "Operational & Hydrological Telemetry Report").trim();
     
     const startVal = document.getElementById("comp-rep-start-date")?.value || "2026-08-01";
     const endVal = document.getElementById("comp-rep-end-date")?.value || "2026-10-28";
@@ -7494,7 +7632,43 @@
       const monthlyData = await fetchAllMonthlyRecords(startDt, endDt);
       const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
 
-      let p1Content = '';
+      // Pre-compute summaries for the compact 3-column Executive Takeaways banner
+      const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'In Capacity', pctVsNormal: 100 };
+      const execProdSummary = `${recentMonth.month_year}: ${fmt(recentMonth.pctVsNormal, 1)}% of Baseline (${recentMonth.lwuaStatus.toUpperCase()})`;
+
+      const pressAnalyticsForBanner = computePressureAnalytics(startDt, endDt, matchedWeeks);
+      const lowestPoint = (pressAnalyticsForBanner.top5Lowest && pressAnalyticsForBanner.top5Lowest.length) ? pressAnalyticsForBanner.top5Lowest[0] : null;
+      const lowestName = lowestPoint ? lowestPoint.station.name : 'Urban Core';
+      const lowestPsi = lowestPoint ? fmt(lowestPoint.meanPsi, 2) : '—';
+      const critExposure = fmt(pressAnalyticsForBanner.lt65Pct + pressAnalyticsForBanner.eq0Pct, 1);
+      const execPressSummary = `${lowestName} (${lowestPsi} psi) &bull; ${critExposure}% Critical (<6.5 psi)`;
+
+      const riverMatrixForBanner = computeRiverDepletionMatrix(startDt, endDt);
+      const montibleStn = riverMatrixForBanner.find(r => r.station.name.toLowerCase().includes('montible'));
+      const lapuStn = riverMatrixForBanner.find(r => r.station.name.toLowerCase().includes('lapu'));
+      const mChg = montibleStn && montibleStn.hasReadings ? (montibleStn.netChange >= 0 ? '+' : '') + fmt(montibleStn.netChange, 0) + ' m&sup3;/d' : 'Gauged';
+      const lChg = lapuStn && lapuStn.hasReadings ? (lapuStn.netChange >= 0 ? '+' : '') + fmt(lapuStn.netChange, 0) + ' m&sup3;/d' : 'Gauged';
+      const execRiverSummary = `Montible: ${mChg} &bull; Lapu-Lapu: ${lChg}`;
+
+      let p1Content = `
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; background:#F8FAFC; border:1px solid #CBD5E1; border-left:4px solid #1560BD; border-radius:4px; padding:6px 10px;">
+          <div>
+            <div style="font-size:7.5px; font-weight:800; color:#1E40AF; text-transform:uppercase; letter-spacing:0.4px;">1. Production Yield &amp; LWUA Trigger</div>
+            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execProdSummary}</div>
+            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Monthly: 1.705M m&sup3; &bull; 5% Cutoff: 1.620M m&sup3;</div>
+          </div>
+          <div>
+            <div style="font-size:7.5px; font-weight:800; color:#D97706; text-transform:uppercase; letter-spacing:0.4px;">2. Hydraulic Hotspot &amp; Low-Pressure Risk</div>
+            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execPressSummary}</div>
+            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Critical threshold: &lt;6.5 psi &bull; Benchmark: 15.0 psi</div>
+          </div>
+          <div>
+            <div style="font-size:7.5px; font-weight:800; color:#0D9488; text-transform:uppercase; letter-spacing:0.4px;">3. Watershed Hydrology &amp; Source Depletion</div>
+            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execRiverSummary}</div>
+            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Primary city sources: Montible &amp; Lapu-Lapu</div>
+          </div>
+        </div>
+      `;
 
       // Section 1: Monthly Production & LWUA Trigger Status (All records descending)
       if (subProdMonthly) {
@@ -7570,7 +7744,9 @@
         let sumTotal = 0, sumDaily = 0, sumSW = 0, sumGW = 0;
         const weekRows = matchedWeeks.map(row => {
           const wk = row[COL.week];
-          const period = row[COL.period] || '';
+          const periodRaw = row[COL.period] || '';
+          const { sDate, eDate } = parsePeriodDates(periodRaw, row[COL.date]);
+          const period = (sDate && eDate) ? formatDateRange(sDate, eDate) : periodRaw.replace(/(\d+)\s*[-–—]\s*(\d+)/, '$1 – $2');
           const total = Number(row[COL.grandTotal]) || 0;
           const daily = (Number(row[COL.mld]) || 0) * 1000 || (total / 7);
           const sw = Number(row[COL.totalSW]) || 0;
@@ -7763,10 +7939,11 @@
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">—</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compTotal, 10) || 0), 0)} / ${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compNW, 10) || 0), 0)}</td>
                   </tr>
                 </tbody>
               </table>
+              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
             </div>
           `;
         }
@@ -7775,7 +7952,7 @@
           pPress1 += `
             <div style="margin-bottom:6px;">
               <div class="comp-section-title">
-                <span>DIURNAL PRESSURE DISTRIBUTION &amp; OPERATIONAL TIME AREAS (PSI)</span>
+                <span>PRESSURE DISTRIBUTION &amp; OPERATIONAL TIME AREAS (PSI)</span>
               </div>
               ${generateDiurnalPressureSVG(pressData.hourlyProfiles, pressData.timeAreaSummaries)}
               ${generateTimeAreaSummaryTableHtml(pressData.timeAreaSummaries, fmt)}
@@ -7809,14 +7986,14 @@
                     <th>Week</th>
                     <th>Inclusive Dates</th>
                     <th style="text-align:right;">AVG System (Dist)</th>
-                    <th style="text-align:right;">MBS (col 2)</th>
-                    <th style="text-align:right;">Sta. Monica</th>
+                    <th style="text-align:right;">MBS (Urban Core)</th>
+                    <th style="text-align:right;">Sta. Monica (Boosted)</th>
                     <th style="text-align:right;">Peak Avg</th>
                     <th style="text-align:right;">Off-Peak Avg</th>
-                    <th style="text-align:right;">Campo Uno (col 8)</th>
-                    <th style="text-align:right;">UV Facility (col 19)</th>
-                    <th style="text-align:right;">Escalante (col 3)</th>
-                    <th style="text-align:right;">Tagburos (col 5)</th>
+                    <th style="text-align:right;">Campo Uno (Trans.)</th>
+                    <th style="text-align:right;">UV Facility (Trans.)</th>
+                    <th style="text-align:right;">Escalante (Trans.)</th>
+                    <th style="text-align:right;">Tagburos (Trans.)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7830,7 +8007,7 @@
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:7.5px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 4px; border-radius:3px;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
                     </tr>
@@ -7957,10 +8134,11 @@
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">—</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compTotal, 10) || 0), 0)} / ${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compNW, 10) || 0), 0)}</td>
                   </tr>
                 </tbody>
               </table>
+              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
             </div>
           `;
         }
@@ -7969,7 +8147,7 @@
           pPress += `
             <div style="margin-bottom:12px;">
               <div class="comp-section-title">
-                <span>DIURNAL PRESSURE DISTRIBUTION &amp; OPERATIONAL TIME AREAS (PSI)</span>
+                <span>PRESSURE DISTRIBUTION &amp; OPERATIONAL TIME AREAS (PSI)</span>
               </div>
               ${generateDiurnalPressureSVG(pressData.hourlyProfiles, pressData.timeAreaSummaries)}
               ${generateTimeAreaSummaryTableHtml(pressData.timeAreaSummaries, fmt)}
@@ -7989,14 +8167,14 @@
                     <th>Week</th>
                     <th>Inclusive Dates</th>
                     <th style="text-align:right;">AVG System (Dist)</th>
-                    <th style="text-align:right;">MBS (col 2)</th>
-                    <th style="text-align:right;">Sta. Monica</th>
+                    <th style="text-align:right;">MBS (Urban Core)</th>
+                    <th style="text-align:right;">Sta. Monica (Boosted)</th>
                     <th style="text-align:right;">Peak Avg</th>
                     <th style="text-align:right;">Off-Peak Avg</th>
-                    <th style="text-align:right;">Campo Uno (col 8)</th>
-                    <th style="text-align:right;">UV Facility (col 19)</th>
-                    <th style="text-align:right;">Escalante (col 3)</th>
-                    <th style="text-align:right;">Tagburos (col 5)</th>
+                    <th style="text-align:right;">Campo Uno (Trans.)</th>
+                    <th style="text-align:right;">UV Facility (Trans.)</th>
+                    <th style="text-align:right;">Escalante (Trans.)</th>
+                    <th style="text-align:right;">Tagburos (Trans.)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -8010,7 +8188,7 @@
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.uvAvg !== null ? fmt(w.uvAvg, 2) : 'N/A'}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:7.5px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 4px; border-radius:3px;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
                     </tr>
@@ -8099,8 +8277,8 @@
               </div>
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Water Quality / Turbidity</div>
-                <div class="comp-kpi-value" style="color:#854D0E;">${fmt(compData.turbidCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
-                <div class="comp-kpi-sub">Field flushing response</div>
+                <div class="comp-kpi-value" style="color:#854D0E;">${(compData.turbidCount || 0).toLocaleString()} <span style="font-size:10px; font-weight:600;">reports</span></div>
+                <div class="comp-kpi-sub">${compData.total > 0 ? fmt(((compData.turbidCount || 0) / compData.total) * 100, 1) : '0.0'}% of all complaints</div>
               </div>
             </div>
 
@@ -8193,6 +8371,28 @@
       let p4Content = '';
 
       if (subRiverDepletion) {
+        const currentGauges = riverMatrix.filter(r => !r.isStale);
+        const staleGauges = riverMatrix.filter(r => r.isStale);
+
+        const renderRiverRow = (r) => {
+          const pDateStr = r.prevDate || '—';
+          const lDateStr = r.latestDate || '—';
+          const changeColor = r.netChange < 0 ? '#DC2626' : (r.netChange > 0 ? '#0D9488' : '#64748B');
+          const staleBadge = r.isStale ? ` <span style="display:inline-block; font-size:7px; font-weight:700; color:#B45309; background:#FEF3C7; border:1px solid #FDE68A; padding:0 4px; border-radius:3px; vertical-align:middle;">[Last Gauged: ${lDateStr}]</span>` : '';
+          return `
+            <tr ${r.isStale ? 'style="background:#F8FAFC;"' : ''}>
+              <td style="font-weight:700;">${escapeHtml(r.station.name)}${staleBadge}</td>
+              <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
+              <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
+              <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; font-weight:600;">${lDateStr}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.pctLabel}</td>
+            </tr>
+          `;
+        };
+
         p4Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
@@ -8213,23 +8413,15 @@
                 </tr>
               </thead>
               <tbody>
-                ${riverMatrix.map(r => {
-                  const pDateStr = r.prevDate || '—';
-                  const lDateStr = r.latestDate || '—';
-                  const changeColor = r.netChange < 0 ? '#DC2626' : (r.netChange > 0 ? '#0D9488' : '#64748B');
-                  return `
-                    <tr>
-                      <td style="font-weight:700;">${escapeHtml(r.station.name)}</td>
-                      <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
-                      <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
-                      <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; font-weight:600;">${lDateStr}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange > 0 ? '+' : '') + fmt(r.pctChange, 1) + '%' : '—'}</td>
-                    </tr>
-                  `;
-                }).join('')}
+                ${currentGauges.map(renderRiverRow).join('')}
+                ${staleGauges.length > 0 ? `
+                  <tr style="background:#F1F5F9; border-top:2px solid #CBD5E1; border-bottom:1px solid #CBD5E1;">
+                    <td colspan="8" style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.5px; padding:5px 8px;">
+                      Historical / Non-Current Gauge Readings (&gt;14 Days Old &bull; Baseline Reference &bull; Not Reflective of Current-Week Collapse)
+                    </td>
+                  </tr>
+                  ${staleGauges.map(renderRiverRow).join('')}
+                ` : ''}
               </tbody>
             </table>
 
@@ -8263,6 +8455,7 @@
 
     return true;
   }
+  window.renderComprehensiveReportStaging = renderComprehensiveReportStaging;
 
   // Print Action (Vector PDF via browser print window)
   async function printComprehensiveReport() {

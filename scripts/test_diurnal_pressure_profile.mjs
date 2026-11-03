@@ -93,11 +93,11 @@ const checks = [
   },
   {
     category: "Comprehensive Report",
-    name: "generateTimeAreaSummaryTableHtml summarizes official operational time areas and combined rows",
+    name: "generateTimeAreaSummaryTableHtml summarizes official operational time areas and combined rows with Hydraulic Diagnostic removed for breathing room",
     pass: htmlContent.includes('function generateTimeAreaSummaryTableHtml(timeAreaSummaries, fmt)') &&
-          htmlContent.includes('COMBINED PEAK DEMAND') &&
-          htmlContent.includes('COMBINED OFF-PEAK HOURS') &&
-          htmlContent.includes('Hydraulic Diagnostic &amp; Operational Dynamics')
+          htmlContent.includes('OFFICIAL PEAK (6h)') &&
+          htmlContent.includes('OFFICIAL OFF-PEAK (18h)') &&
+          !htmlContent.includes('Hydraulic Diagnostic &amp; Operational Dynamics')
   },
   {
     category: "Comprehensive Report",
