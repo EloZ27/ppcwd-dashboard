@@ -19,20 +19,31 @@ export default async function handler(req, res) {
   const end = req.query.end;
   const before = req.query.before || (!start && end ? end : null);
 
+  // Pagination parameters with safe upper clamp to protect edge memory
+  const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10000, 1), 10000);
+  const offset = Math.max(parseInt(req.query.offset, 10) || 0, 0);
+  const orderParam = req.query.order ? (req.query.order.toLowerCase() === 'desc' ? 'desc' : 'asc') : null;
+
   if (since) {
     // Delta sync: fetch newer readings since the newest cached timestamp (gte to avoid boundary omissions)
-    queryParams += `&reading_time=gte.${encodeURIComponent(since)}&order=reading_time.asc&limit=10000`;
+    const order = orderParam || 'asc';
+    queryParams += `&reading_time=gte.${encodeURIComponent(since)}&order=reading_time.${order}&limit=${limit}`;
+    if (offset > 0) queryParams += `&offset=${offset}`;
   } else if (start && end) {
     // Range query: fetch specific window for reports or deep historical view
-    queryParams += `&reading_time=gte.${encodeURIComponent(start)}&reading_time=lte.${encodeURIComponent(end)}&order=reading_time.asc&limit=10000`;
+    const order = orderParam || 'asc';
+    queryParams += `&reading_time=gte.${encodeURIComponent(start)}&reading_time=lte.${encodeURIComponent(end)}&order=reading_time.${order}&limit=${limit}`;
+    if (offset > 0) queryParams += `&offset=${offset}`;
   } else if (before) {
     // Historical pagination: fetch readings prior to given timestamp
-    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10000, 100), 10000);
-    queryParams += `&reading_time=lt.${encodeURIComponent(before)}&order=reading_time.desc&limit=${limit}`;
+    const order = orderParam || 'desc';
+    queryParams += `&reading_time=lt.${encodeURIComponent(before)}&order=reading_time.${order}&limit=${limit}`;
+    if (offset > 0) queryParams += `&offset=${offset}`;
   } else {
     // Default initial load: fetch the most recent batch of up to 10,000 readings
-    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10000, 100), 10000);
-    queryParams += `&order=reading_time.desc&limit=${limit}`;
+    const order = orderParam || 'desc';
+    queryParams += `&order=reading_time.${order}&limit=${limit}`;
+    if (offset > 0) queryParams += `&offset=${offset}`;
   }
 
   const url = `${SUPABASE_URL}/rest/v1/pressure_readings?${queryParams}`;
@@ -40,7 +51,8 @@ export default async function handler(req, res) {
   try {
     const headers = { 
       'apikey': SUPABASE_KEY,
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'Prefer': 'count=exact'
     };
     if (SUPABASE_KEY.startsWith('ey')) {
       headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
@@ -54,6 +66,19 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+
+    // Propagate PostgREST total count and pagination metadata
+    const contentRange = response.headers.get('content-range');
+    if (contentRange) {
+      res.setHeader('Content-Range', contentRange);
+      const parts = contentRange.split('/');
+      if (parts.length === 2 && parts[1] !== '*') {
+        res.setHeader('x-total-count', parts[1]);
+      }
+    }
+    res.setHeader('x-page-size', String(data.length));
+    res.setHeader('x-has-more', data.length === limit ? 'true' : 'false');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Range, x-total-count, x-page-size, x-has-more');
 
     // Cache-Control optimization for Vercel Edge CDN
     if (req.query && (req.query.nocache === '1' || req.query.bypass === '1')) {

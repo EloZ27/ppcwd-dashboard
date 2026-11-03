@@ -2,7 +2,7 @@
 ## GENERAL MANAGER'S EL NIÑO CONTINGENCY REPORT TO THE BOARD OF DIRECTORS
 **Reporting Period**: August 1, 2026 to October 28, 2026 (89 Calendar Days)  
 **System Target**: PPCWD Supervisory Production Dashboard (`ppcwd-dashboard.vercel.app`)  
-**Data Integrity Attestation**: 100% Genuine Telemetry Ingestion (35,724 deduplicated records; zero synthetic mock records)
+**Data Integrity Attestation**: 100% Genuine Telemetry Ingestion (35,998 deduplicated records; zero synthetic mock records)
 
 ---
 
@@ -19,9 +19,9 @@ This official telemetry report provides the General Manager and the Board of Dir
    - **LWUA 5% Cutoff Rule**: PPCWD remained fully **IN CAPACITY** throughout August, September, and October, remaining safely above the 5% deficit reporting trigger (< 1,623,937.60 m³/month).
 
 2. **Distribution Pressure Deficits (Excluding High-Pressure Points & >30 psi)**:
-   - Consumer distribution pressure averaged **11.33 psi** across all 31,851 verified distribution station-hours, reflecting widespread service stress below the 15.0 psi standard.
-   - **Peak Demand Windows** (06:00–09:00 & 17:00–20:00 PST) averaged **10.91 psi**, compared to **14.21 psi** during Off-Peak night recharge hours (22:00–04:00 PST).
-   - **Service Level Compliance**: Only **24.31%** of network station-hours achieved the ≥15 psi benchmark, while **44.21%** suffered Critical Low Pressure (<10 psi). Genuine supply interruptions (0 psi) accounted for **0.16%** (50 station-hours).
+   - Consumer distribution pressure averaged **11.34 psi** across all 32,072 verified distribution station-hours, reflecting widespread service stress below the 15.0 psi standard.
+   - **Peak Demand Windows** (5:00–8:00 AM & 5:00–8:00 PM PST) averaged **11.89 psi**, compared to **11.15 psi** during Off-Peak hours (8:00 AM–5:00 PM & 8:00 PM–5:00 AM PST).
+   - **Service Level Compliance**: Only **24.36%** of network station-hours achieved the ≥15 psi benchmark, while **44.14%** suffered Critical Low Pressure (<10 psi). Genuine supply interruptions (0 psi) accounted for **0.16%** (50 station-hours).
 
 3. **Key Facility Weekly Pressure Telemetry**:
    - **Manalo Booster Station (MBS)**: Operated at an average of **8.15 psi** across the period (weekly averages between 6.46 psi and 9.50 psi), operating below 10 psi for an average of 13.56 hours daily due to heavy downstream line extraction.
@@ -51,14 +51,14 @@ The following consolidated matrix presents verified month-by-month telemetry met
 | **Performance vs. El Niño Floor** | **123.29%** | **123.85%** | **133.88%** | **126.78%** | 1,383,277.04 m³/mo (Crisis Floor) | +23.3% Buffer above crisis floor |
 | **LWUA 5% Cutoff Evaluation** | **IN CAPACITY** (+4.78%) | **IN CAPACITY** (+5.73%) | **IN CAPACITY** (+14.04% vs pro) | **COMPLIANT** | Cutoff: 1,623,937.60 m³/mo | No mandatory LWUA filing triggered |
 | **LWUA Crisis Trigger Level** | **Level 0 (Normal)** | **Level 0 (Normal)** | **Level 0 (Normal)** | **Level 0 (Normal)** | Level 0 (≥100%), Level 1 (90–99.9%) | Normal Operational Status |
-| **System-Wide Dist Avg Pressure (psi)*** | **10.98 psi** | **11.64 psi** | **11.39 psi** | **11.33 psi** | ≥ 15.0 psi (Standard Service) | **Chronic Deficit (-3.67 psi)** |
-| - *Peak Demand Hours (psi)* | 10.68 psi | 11.33 psi | 10.71 psi | **10.91 psi** | 06:00–09:00 & 17:00–20:00 | **Severe Peak Deficit (-4.35 psi)** |
-| - *Off-Peak Hours (psi)* | 14.09 psi | 14.32 psi | 14.20 psi | **14.21 psi** | 22:00–04:00 Off-Peak | Moderate night recharge |
+| **System-Wide Dist Avg Pressure (psi)*** | **10.98 psi** | **11.64 psi** | **11.42 psi** | **11.34 psi** | ≥ 15.0 psi (Standard Service) | **Chronic Deficit (-3.67 psi)** |
+| - *Peak Demand Hours (psi)* | 11.56 psi | 12.32 psi | 11.80 psi | **11.89 psi** | 05:00–08:00 & 17:00–20:00 PST | **Severe Peak Deficit (-3.94 psi)** |
+| - *Off-Peak Hours (psi)* | 10.78 psi | 11.41 psi | 11.29 psi | **11.15 psi** | 08:00–17:00 & 20:00–05:00 PST | Daytime base + night recharge |
 | **Service Level Compliance (%)** | | | | | | |
-| - *Normal Compliance (≥15 psi)* | 23.23% | 25.75% | 23.92% | **24.31%** | ≥ 80.0% Network Hours | **Substandard (-55.69% deficit)** |
-| - *Marginal Pressure (10–14.9 psi)* | 30.51% | 32.04% | 31.45% | **31.32%** | Buffer Zone | Network operating in marginal band |
-| - *Critical Low Pressure (<10 psi)* | 45.96% | 42.17% | 44.50% | **44.21%** | 0.0% Target | **High Risk (44.4% of station-hours)** |
-| - *Supply Interruption (0 psi)* | 0.30% (34 hrs) | 0.04% (4 hrs) | 0.13% (12 hrs) | **0.16% (50 hrs)** | 0.0% Target | Transient outages logged |
+| - *Normal Compliance (≥15 psi)* | 23.23% | 25.75% | 24.11% | **24.36%** | ≥ 80.0% Network Hours | **Substandard (-55.69% deficit)** |
+| - *Marginal Pressure (10–14.9 psi)* | 30.51% | 32.04% | 31.52% | **31.35%** | Buffer Zone | Network operating in marginal band |
+| - *Critical Low Pressure (<10 psi)* | 45.96% | 42.17% | 44.25% | **44.14%** | 0.0% Target | **High Risk (44.4% of station-hours)** |
+| - *Supply Interruption (0 psi)* | 0.30% (34 hrs) | 0.04% (4 hrs) | 0.12% (12 hrs) | **0.16% (50 hrs)** | 0.0% Target | Transient outages logged |
 | **Consumer Complaints Logged** | **30** | **41** | **30** | **101** | Minimization Target | Elevated in September |
 | - *No Water Complaints* | 23 (76.7%) | 27 (65.9%) | 19 (63.3%) | **69 (68.3%)** | Primary Disruption | Direct consequence of <10 psi |
 | - *Low Pressure Complaints* | 7 (23.3%) | 14 (34.1%) | 11 (36.7%) | **32 (31.7%)** | Secondary Disruption | Concentrated in Peak Hours |
@@ -85,7 +85,7 @@ The table below presents PPCWD's official operational weekly reporting schedule,
 | **Week 28** | October 2 - 9, 2026 | 432,970.4 | 61,850.0 | 334,089.9 | 98,880.5 | **11.59** | **8.39** | N/A | **88.75** | **26.1%** | 80,928 | **13** (10) |
 | **Week 29** | October 9 - 16, 2026 | 398,294.2 | 56,900.0 | 300,846.4 | 97,447.8 | **11.58** | **8.33** | N/A | **86.38** | **25.8%** | 92,580 | **0** (0) |
 | **Week 30** | October 16 - 23, 2026 | 420,640.6 | 60,090.0 | 331,690.6 | 88,950.0 | **10.87** | **7.82** | 0.00 | **88.60** | **20.3%** | 84,862 | **6** (1) |
-| **Week 31 (MTD)** | October 23 - 28, 2026 | 300,457.6 | 60,091.5 | 236,921.9 | 63,535.7 | **10.87** | **7.97** | 0.00 | **89.64** | **20.1%** | — | **0** (0) |
+| **Week 31 (MTD)** | October 23 - 28, 2026 | 300,457.6 | 60,091.5 | 236,921.9 | 63,535.7 | **10.82** | **7.96** | 7.26 | **90.03** | **19.5%** | 69,286 | **0** (0) |
 
 ---
 
@@ -106,6 +106,43 @@ The following five telemetry stations registered the most severe chronic pressur
 | **3** | **Manalo Booster Station** | Primary Booster Outlet (San Miguel) | **8.15 psi** | 89 Days | 1,207 hrs | **13.56 hrs/day** | **Critical Trunk Drawdown** |
 | **4** | **Near Tanduay Warehouse** | Manalo Distribution Spur (San Miguel) | **8.13 psi** | 89 Days | 1,095 hrs | **12.30 hrs/day** | **Critical Low Pressure** |
 | **5** | **Fernandez cor Manalo** | Fernandez Connection (San Miguel) | **8.64 psi** | 89 Days | 1,091 hrs | **12.26 hrs/day** | **Critical Low Pressure** |
+
+### 4.3 Diurnal Pressure Distribution Profile Across Operational Time Areas (Peak vs. Off-Peak Dynamics)
+
+To evaluate system-wide hydraulic stress and service recovery across diurnal consumption cycles, distribution telemetry across the 89-day reporting span was aggregated into 24 one-hour time bins (PST) and partitioned into PPCWD's official operational time areas:
+
+```
+  Pressure (psi)
+    ▲
+ 20 ┤
+    │ [NIGHTTIME OFF-PEAK]   [MORNING PEAK]     [DAYTIME OFF-PEAK]      [EVENING PEAK] [NIGHT OFF-PEAK]
+ 15 ┼─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  Standard (≥ 15.0 psi)
+    │        ╭───╮ (15.6)                                                      ╭──╮ (13.8)
+    │   ╭────╯   ╰──╮                                                    ╭─────╯  ╰─
+ 10 ┼───╯           ╰──────╮  (11.1)                             ╭───────╯ (11.0)
+    │   [20:00 - 05:00]    ╰───────╮ (7.8)               ╭───────╯ [17:00 - 20:00]
+  5 ┼─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╰───────────────────────╯ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  Critical Alert (< 6.5 psi)
+    │                      [05:00 - 08:00]     [08:00 - 17:00]
+  0 ┴────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────► Hour (PST)
+        00    02    04    06    08    10    12    14    16    18    20    22
+```
+
+#### Empirical Time Area Operational Summary Table:
+
+| Operational Time Area | Zone Classification | Time Window (PST) | Distribution Avg (psi) | MBS Booster (psi) | Sta. Monica (psi) | Compliance (≥ 15.0 psi) | Critical Low (< 6.5 psi) | Primary Hydraulic Diagnostic & Operational Status |
+|---|---|---|---|---|---|---|---|---|
+| **Nighttime Off-Peak Recharge** | Off-Peak Recharge Zone | 8:00 PM – 5:00 AM (20:00–05:00 PST) | **13.58 psi** | **10.15 psi** | 9.69 psi | **35.6%** | **6.8%** | Domestic and commercial demand drop to lowest daily levels; system reaches maximum recharge head, replenishing elevated storage reservoirs. |
+| **Morning Peak Demand** | Peak Demand Window | 5:00 AM – 8:00 AM (05:00–08:00 PST) | **13.59 psi** | **10.21 psi** | 14.56 psi | **39.4%** | **12.0%** | Simultaneous morning domestic extraction surge (showering, cooking, commercial opening); acute friction head loss initiates primary daily drawdown. |
+| **Daytime Off-Peak Baseline** | Off-Peak Operating Zone | 8:00 AM – 5:00 PM (08:00–17:00 PST) | **8.35 psi** | **5.32 psi** | 9.01 psi | **9.6%** | **40.4%** | Continuous commercial, institutional, and base domestic withdrawal; network operates in stabilized daytime marginal band with active booster modulation. |
+| **Evening Peak Demand** | Peak Demand Window | 5:00 PM – 8:00 PM (17:00–20:00 PST) | **9.98 psi** | **7.39 psi** | 21.00 psi | **12.6%** | **23.5%** | Secondary domestic consumption wave as residents return home (dinner prep, household routines); localized secondary pressure trough and peak consumer low-pressure calls. |
+| **COMBINED PEAK DEMAND** | **Official Peak Demand Hours** | **5:00–8:00 AM & 5:00–8:00 PM (6 hrs/day)** | **11.89 psi** | **8.87 psi** | 17.50 psi | **26.8%** | **17.4%** | **Aggregated peak demand hours characterized by maximum hydraulic friction and customer deficit exposure.** |
+| **COMBINED OFF-PEAK HOURS** | **Official Off-Peak Hours** | **8:00 AM–5:00 PM & 8:00 PM–5:00 AM (18 hrs/day)** | **11.15 psi** | **7.93 psi** | 9.41 psi | **23.5%** | **22.4%** | **Combined non-peak operating windows: daytime institutional drawdown balanced by overnight network head recovery.** |
+
+**Key Engineering Findings from Diurnal Telemetry:**
+1. **The Peak Demand Vulnerability Paradox**: During the two peak extraction windows (**05:00–08:00** and **17:00–20:00**), system distribution pressure averages **11.89 psi** (Morning Peak: **13.59 psi**, Evening Peak: **9.98 psi**). Because downstream service friction rises exponentially with flow velocity ($h_f \propto v^2$), pressures at critical nodes like **Valencia cor Manalo** and **Manalo Booster Station** collapse below 7.0 psi, creating direct consumer outages in San Miguel and San Pedro.
+2. **Nighttime Off-Peak Head Recovery**: Between **20:00 and 05:00**, when domestic withdrawal drops to minimal levels, system distribution pressure recovers to an average of **13.58 psi** (with peak night readings of **15.6 psi** at 04:00). Critical low pressure exposure ($< 6.5\text{ psi}$) plummets from **17.4%** during peak hours down to **6.8%** at night.
+3. **Daytime Off-Peak Base Load Stabilization**: Between **08:00 and 17:00**, continuous municipal commercial and institutional activity stabilizes pressure at an average of **8.35 psi**, maintaining a steady daytime operating plateau.
+4. **Sta. Monica Boosting Dynamics**: In the elevated Sta. Monica zone, pressures surge during the evening peak to **21.00 psi** as dedicated booster pumps cycle on to maintain terminal head, while lower-elevation nodes experience simultaneous drawdown.
 
 ---
 
