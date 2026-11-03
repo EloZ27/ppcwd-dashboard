@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="logo-sm.png" alt="PPCWD Logo" width="100" />
+</div>
+
 # PUERTO PRINCESA CITY WATER DISTRICT (PPCWD)
 ## GENERAL MANAGER'S EL NIÑO CONTINGENCY REPORT TO THE BOARD OF DIRECTORS
 **Reporting Period**: August 1, 2026 to October 28, 2026 (89 Calendar Days)  

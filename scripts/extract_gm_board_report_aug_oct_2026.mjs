@@ -894,7 +894,11 @@ function generateExecutiveMarkdownReport(data) {
   const combPeak = calcZone([5, 6, 7, 17, 18, 19]);
   const combOffPeak = calcZone([8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 0, 1, 2, 3, 4]);
 
-  return `# PUERTO PRINCESA CITY WATER DISTRICT (PPCWD)
+  return `<div align="center">
+  <img src="logo-sm.png" alt="PPCWD Logo" width="100" />
+</div>
+
+# PUERTO PRINCESA CITY WATER DISTRICT (PPCWD)
 ## GENERAL MANAGER'S EL NIÑO CONTINGENCY REPORT TO THE BOARD OF DIRECTORS
 **Reporting Period**: August 1, 2026 to October 28, 2026 (89 Calendar Days)  
 **System Target**: PPCWD Supervisory Production Dashboard (\`ppcwd-dashboard.vercel.app\`)  
