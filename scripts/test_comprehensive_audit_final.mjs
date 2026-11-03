@@ -48,10 +48,11 @@ const tests = [
     pass: !html.includes("<th>Hydraulic Diagnostic &amp; Operational Dynamics</th>")
   },
   {
-    name: "2.4 Pressure SVG legend repositioned centered over daytime off-peak valley clear of 8 PM-5 AM recharge zone",
-    pass: html.includes('<g transform="translate(260, ${padTop + 4})">') &&
+    name: "2.4 Pressure graph legend moved completely OUTSIDE the graph plot area with clean executive header strip",
+    pass: html.includes('Clean Executive Legend: Positioned Completely OUTSIDE the Graph Plot Area') &&
           html.includes('System Dist Avg') &&
-          html.includes('Sta. Monica (Boosted)')
+          html.includes('Sta. Monica (Boosted)') &&
+          !html.includes('<g transform="translate(260')
   },
   {
     name: "2.5 The word 'Diurnal' removed from section header and titles",

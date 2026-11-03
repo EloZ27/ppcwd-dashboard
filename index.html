@@ -2518,15 +2518,20 @@
       </div>
 
       <!-- Footer Action Buttons -->
-      <div style="padding:16px 24px; border-top:1px solid #E2E8F0; background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
-        <button type="button" onclick="closeComprehensiveReportModal()" class="header-btn" style="font-size:11.5px;">Cancel</button>
-        <div style="display:flex; gap:10px;">
-          <button type="button" id="btn-comp-print" onclick="printComprehensiveReport()" class="header-btn" style="background:#FFFFFF; color:#1E293B; border-color:#CBD5E1; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-            <span>Print / Save Vector PDF</span>
-          </button>
-          <button type="button" id="btn-comp-download" onclick="downloadComprehensiveReportPDF()" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-            <span>Download Multi-Page PDF</span>
-          </button>
+      <div style="padding:14px 24px; border-top:1px solid #E2E8F0; background:#F8FAFC; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" onclick="closeComprehensiveReportModal()" class="header-btn" style="font-size:11.5px;">Cancel</button>
+          <div style="display:flex; gap:10px;">
+            <button type="button" id="btn-comp-print" onclick="printComprehensiveReport()" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px; box-shadow:0 1px 3px rgba(37,99,235,0.3);">
+              <span>🖨️ Save as Vector PDF (Recommended)</span>
+            </button>
+            <button type="button" id="btn-comp-download" onclick="downloadComprehensiveReportPDF()" class="header-btn" style="background:#FFFFFF; color:#334155; border-color:#CBD5E1; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              <span>📥 Direct PDF Download</span>
+            </button>
+          </div>
+        </div>
+        <div style="font-size:9px; color:#64748B; line-height:1.35; text-align:right;">
+          <strong style="color:var(--blue);">Vector PDF vs. Image PDF:</strong> Click <strong>"Save as Vector PDF"</strong> and select <em>"Save as PDF"</em> in your browser dialog for 100% searchable text, selectable tables, and pure vector graphics at any zoom level. <strong>"Direct PDF Download"</strong> outputs a pre-rendered high-res canvas file.
         </div>
       </div>
 
@@ -7299,11 +7304,11 @@
   // Pressure Vector SVG Graph Builder for A4 Print and PDF Export (Official 5-8 AM/PM Peak & 8AM-5PM/8PM-5AM Off-Peak)
   function generateDiurnalPressureSVG(hourlyProfiles, timeAreaSummaries) {
     const width = 740;
-    const height = 150;
+    const height = 136;
     const padLeft = 38;
     const padRight = 16;
-    const padTop = 20;
-    const padBottom = 22;
+    const padTop = 16;
+    const padBottom = 20;
     const plotW = width - padLeft - padRight;
     const plotH = height - padTop - padBottom;
     const maxPsi = 20.0;
@@ -7349,7 +7354,7 @@
       const label = String(h).padStart(2, '0') + ':00';
       return `
         <line x1="${x}" y1="${padTop}" x2="${x}" y2="${height - padBottom}" stroke="#F1F5F9" stroke-width="0.8" />
-        <text x="${x}" y="${height - padBottom + 12}" font-size="7" fill="#64748B" font-family="'IBM Plex Mono', monospace" text-anchor="middle">${label}</text>
+        <text x="${x}" y="${height - padBottom + 11}" font-size="7" fill="#64748B" font-family="'IBM Plex Mono', monospace" text-anchor="middle">${label}</text>
       `;
     }).join('');
 
@@ -7359,58 +7364,74 @@
       .join('');
 
     return `
-      <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:auto; background:#FFFFFF; border:1px solid #CBD5E1; border-radius:4px; margin-bottom:6px;" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background Shaded Zones -->
-        <!-- Nighttime Off-Peak (00:00 - 05:00 Part A) -->
-        <rect x="${x0}" y="${padTop}" width="${x5 - x0}" height="${plotH}" fill="#EFF6FF" fill-opacity="0.85" />
-        <!-- Morning Peak (05:00 - 08:00) -->
-        <rect x="${x5}" y="${padTop}" width="${x8 - x5}" height="${plotH}" fill="#FEF2F2" fill-opacity="0.85" />
-        <!-- Daytime Off-Peak (08:00 - 17:00) -->
-        <rect x="${x8}" y="${padTop}" width="${x17 - x8}" height="${plotH}" fill="#F8FAFC" fill-opacity="0.75" />
-        <!-- Evening Peak (17:00 - 20:00) -->
-        <rect x="${x17}" y="${padTop}" width="${x20 - x17}" height="${plotH}" fill="#FEF2F2" fill-opacity="0.85" />
-        <!-- Nighttime Off-Peak (20:00 - 23:59 Part B) -->
-        <rect x="${x20}" y="${padTop}" width="${x23 - x20 + (plotW / 23)}" height="${plotH}" fill="#EFF6FF" fill-opacity="0.85" />
+      <div style="margin-bottom:6px;">
+        <!-- Clean Executive Legend: Positioned Completely OUTSIDE the Graph Plot Area -->
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; border:1px solid #CBD5E1; border-bottom:none; border-radius:4px 4px 0 0; padding:4px 12px; font-size:7.5px;">
+          <!-- Telemetry Series -->
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="display:inline-block; width:12px; height:3px; background:#2563EB; border-radius:1px;"></span>
+              <span style="font-weight:700; color:#1E293B;">System Dist Avg</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="display:inline-block; width:12px; height:2px; background:#7C3AED; border-radius:1px;"></span>
+              <span style="font-weight:700; color:#1E293B;">MBS (Urban Core)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="display:inline-block; width:12px; height:2px; background:#0D9488; border-radius:1px;"></span>
+              <span style="font-weight:700; color:#1E293B;">Sta. Monica (Boosted)</span>
+            </div>
+          </div>
+          <!-- Regulatory Benchmarks -->
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="display:inline-block; width:14px; height:0; border-top:1.5px dashed #16A34A;"></span>
+              <span style="font-weight:700; color:#16A34A;">15.0 PSI Benchmark (Standard)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="display:inline-block; width:14px; height:0; border-top:1.5px dashed #DC2626;"></span>
+              <span style="font-weight:700; color:#DC2626;">6.5 PSI Alert Level (Critical)</span>
+            </div>
+          </div>
+        </div>
 
-        <!-- Zone Header Labels -->
-        <text x="${(x0 + x5) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#2563EB" text-anchor="middle" font-family="'Inter', sans-serif">OFF-PEAK (8PM-5AM)</text>
-        <text x="${(x5 + x8) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#DC2626" text-anchor="middle" font-family="'Inter', sans-serif">PEAK (5-8 AM)</text>
-        <text x="${(x8 + x17) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#64748B" text-anchor="middle" font-family="'Inter', sans-serif">OFF-PEAK (8 AM - 5 PM)</text>
-        <text x="${(x17 + x20) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#DC2626" text-anchor="middle" font-family="'Inter', sans-serif">PEAK (5-8 PM)</text>
-        <text x="${x20 + (plotW / 46)}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#2563EB" text-anchor="middle" font-family="'Inter', sans-serif">OFF-PK</text>
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:auto; background:#FFFFFF; border:1px solid #CBD5E1; border-top:1px solid #E2E8F0; border-radius:0 0 4px 4px; display:block;" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background Shaded Zones -->
+          <!-- Nighttime Off-Peak (00:00 - 05:00 Part A) -->
+          <rect x="${x0}" y="${padTop}" width="${x5 - x0}" height="${plotH}" fill="#EFF6FF" fill-opacity="0.85" />
+          <!-- Morning Peak (05:00 - 08:00) -->
+          <rect x="${x5}" y="${padTop}" width="${x8 - x5}" height="${plotH}" fill="#FEF2F2" fill-opacity="0.85" />
+          <!-- Daytime Off-Peak (08:00 - 17:00) -->
+          <rect x="${x8}" y="${padTop}" width="${x17 - x8}" height="${plotH}" fill="#F8FAFC" fill-opacity="0.75" />
+          <!-- Evening Peak (17:00 - 20:00) -->
+          <rect x="${x17}" y="${padTop}" width="${x20 - x17}" height="${plotH}" fill="#FEF2F2" fill-opacity="0.85" />
+          <!-- Nighttime Off-Peak (20:00 - 23:59 Part B) -->
+          <rect x="${x20}" y="${padTop}" width="${x23 - x20 + (plotW / 23)}" height="${plotH}" fill="#EFF6FF" fill-opacity="0.85" />
 
-        <!-- Grids and Ticks -->
-        ${yTicks}
-        ${xTicks}
+          <!-- Zone Header Labels -->
+          <text x="${(x0 + x5) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#2563EB" text-anchor="middle" font-family="'Inter', sans-serif">OFF-PEAK (8PM-5AM)</text>
+          <text x="${(x5 + x8) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#DC2626" text-anchor="middle" font-family="'Inter', sans-serif">PEAK (5-8 AM)</text>
+          <text x="${(x8 + x17) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#64748B" text-anchor="middle" font-family="'Inter', sans-serif">OFF-PEAK (8 AM - 5 PM)</text>
+          <text x="${(x17 + x20) / 2}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#DC2626" text-anchor="middle" font-family="'Inter', sans-serif">PEAK (5-8 PM)</text>
+          <text x="${x20 + (plotW / 46)}" y="${padTop + 8}" font-size="7" font-weight="700" fill="#2563EB" text-anchor="middle" font-family="'Inter', sans-serif">OFF-PK</text>
 
-        <!-- Regulatory Guidelines -->
-        <line x1="${padLeft}" y1="${y15}" x2="${width - padRight}" y2="${y15}" stroke="#16A34A" stroke-width="1.1" stroke-dasharray="4,3" />
-        <text x="${width - padRight - 3}" y="${y15 - 2.5}" font-size="7" font-weight="700" fill="#16A34A" text-anchor="end" font-family="'Inter', sans-serif">15.0 PSI Benchmark (Standard)</text>
+          <!-- Grids and Ticks -->
+          ${yTicks}
+          ${xTicks}
 
-        <line x1="${padLeft}" y1="${y65}" x2="${width - padRight}" y2="${y65}" stroke="#DC2626" stroke-width="1.1" stroke-dasharray="4,3" />
-        <text x="${width - padRight - 3}" y="${y65 - 2.5}" font-size="7" font-weight="700" fill="#DC2626" text-anchor="end" font-family="'Inter', sans-serif">6.5 PSI Alert Level (Critical)</text>
+          <!-- Regulatory Guidelines (Dashed Reference Lines Across Network) -->
+          <line x1="${padLeft}" y1="${y15}" x2="${width - padRight}" y2="${y15}" stroke="#16A34A" stroke-width="1.1" stroke-dasharray="4,3" />
+          <line x1="${padLeft}" y1="${y65}" x2="${width - padRight}" y2="${y65}" stroke="#DC2626" stroke-width="1.1" stroke-dasharray="4,3" />
 
-        <!-- Polylines -->
-        ${smPts ? `<polyline fill="none" stroke="#0D9488" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" points="${smPts}" />` : ''}
-        ${mbsPts ? `<polyline fill="none" stroke="#7C3AED" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" points="${mbsPts}" />` : ''}
-        ${distPts ? `<polyline fill="none" stroke="#2563EB" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" points="${distPts}" />` : ''}
+          <!-- Polylines -->
+          ${smPts ? `<polyline fill="none" stroke="#0D9488" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" points="${smPts}" />` : ''}
+          ${mbsPts ? `<polyline fill="none" stroke="#7C3AED" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" points="${mbsPts}" />` : ''}
+          ${distPts ? `<polyline fill="none" stroke="#2563EB" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" points="${distPts}" />` : ''}
 
-        <!-- Dist Avg Point Circles -->
-        ${distDots}
-
-        <!-- Repositioned Clean Legend: Centered over daytime off-peak valley to avoid blocking 8 PM - 5 AM recharge zone -->
-        <g transform="translate(260, ${padTop + 4})">
-          <rect x="-6" y="-3" width="230" height="13" fill="#FFFFFF" fill-opacity="0.92" rx="3" stroke="#CBD5E1" stroke-width="0.6" />
-          <rect x="0" y="2.5" width="8" height="2.5" fill="#2563EB" />
-          <text x="12" y="5.5" font-size="6.8" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">System Dist Avg</text>
-
-          <rect x="75" y="2.5" width="8" height="2.5" fill="#7C3AED" />
-          <text x="87" y="5.5" font-size="6.8" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">MBS (Urban Core)</text>
-
-          <rect x="150" y="2.5" width="8" height="2.5" fill="#0D9488" />
-          <text x="162" y="5.5" font-size="6.8" font-weight="700" fill="#1E293B" font-family="'Inter', sans-serif">Sta. Monica (Boosted)</text>
-        </g>
-      </svg>
+          <!-- Dist Avg Point Circles -->
+          ${distDots}
+        </svg>
+      </div>
     `;
   }
 
@@ -8541,11 +8562,11 @@
 
       for (let i = 0; i < pages.length; i++) {
         if (statusEl) {
-          statusEl.textContent = `Rendering page ${i + 1} of ${pages.length} into vector PDF...`;
+          statusEl.textContent = `Rendering high-definition page ${i + 1} of ${pages.length}...`;
         }
         const pageEl = pages[i];
         const canvas = await html2canvas(pageEl, {
-          scale: 2.2,
+          scale: 2.6,
           useCORS: true,
           backgroundColor: "#FFFFFF",
           logging: false
