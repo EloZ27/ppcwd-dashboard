@@ -13,6 +13,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/uploader", "destination": "/uploader.html" },
     { "source": "/api/getRiverStations", "destination": "/api/getRiverFlow?type=stations" },
     { "source": "/api/saveRiverStations", "destination": "/api/saveRiverFlow" }
   ]

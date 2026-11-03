@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   server: {
@@ -10,6 +11,14 @@ export default defineConfig({
         target: 'https://ppcwd-dashboard.vercel.app',
         changeOrigin: true,
         secure: true,
+      },
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('index.html', import.meta.url)),
+        uploader: fileURLToPath(new URL('uploader.html', import.meta.url)),
       },
     },
   },

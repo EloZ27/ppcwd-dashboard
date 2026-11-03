@@ -1,0 +1,3720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPCWD — Generator Asset Management Portal</title>
+  <link rel="icon" type="image/png" href="/assets/logo-mINGB56k.png">
+
+  <!-- Modern Typography: Inter & IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff0f;--sidebar-active:#2563eb;--sidebar-text:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f4f6f9;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 4px 16px #0f172a0a;--card-shadow-hover:0 8px 24px #0f172a12;--text-main:#0f172a;--text-muted:#64748b;--text-subtle:#94a3b8;--teal:#0d9488;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-light:#fef2f2;--red-border:#fecaca;--font-sans:"Inter", -apple-system, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);min-height:100vh;font-size:13px;line-height:1.5;overflow-x:hidden}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:150;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:margin-left .25s cubic-bezier(.4,0,.2,1),transform .3s;display:flex;position:sticky;top:0;overflow-x:hidden}.app-sidebar.collapsed{margin-left:-250px}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:4px;padding:12px 14px;display:flex;overflow-y:auto}.nav-btn{color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:9px;align-items:center;gap:10px;width:100%;padding:10px 14px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{background:var(--sidebar-active);color:var(--sidebar-text-active);font-weight:600;box-shadow:0 4px 12px #2563eb4d}.nav-icon{text-align:center;width:20px;font-size:15px}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;display:flex}.app-header{border-bottom:1px solid var(--card-border);z-index:100;background:#fff;justify-content:space-between;align-items:center;padding:16px 28px;display:flex;position:sticky;top:0}.header-titles h1{color:var(--text-main);letter-spacing:-.3px;font-size:18px;font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11px;display:flex}.header-btn{border:1px solid var(--card-border);font-family:var(--font-mono);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 13px;font-size:11px;font-weight:600;text-decoration:none;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:20px;padding:20px 24px}.card-header-bar{border-bottom:1px solid var(--card-border);flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;display:flex}.card-heading h2{color:var(--text-main);align-items:center;gap:8px;font-size:15px;font-weight:800;display:flex}.card-heading p{color:var(--text-muted);margin-top:2px;font-size:11px}.segment-pills{border:1px solid var(--card-border);background:#f1f5f9;border-radius:8px;gap:4px;padding:4px;display:flex}.seg-pill{font-family:var(--font-mono);color:var(--text-muted);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:6px 14px;font-size:11px;font-weight:600;transition:all .15s}.seg-pill.active{color:var(--blue);background:#fff;box-shadow:0 1px 3px #0000001a}.form-grid{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;display:grid}@media (width<=900px){.form-grid{grid-template-columns:1fr}}.field-group{flex-direction:column;gap:5px;display:flex}.form-lbl{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);font-size:10px;font-weight:700}.form-input{border:1px solid var(--card-border);color:var(--text-main);font-family:var(--font-sans);background:#f8fafc;border-radius:8px;outline:none;width:100%;padding:9px 12px;font-size:12px;transition:border-color .2s,background .2s}.form-input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px #2563eb14}select.form-input{cursor:pointer}.btn-submit{background:var(--blue);border:1px solid var(--blue);color:#fff;font-family:var(--font-mono);cursor:pointer;border-radius:8px;align-items:center;gap:6px;padding:9px 18px;font-size:11px;font-weight:700;transition:background .15s;display:inline-flex}.btn-submit:hover{background:#1d4ed8}.btn-submit:disabled{opacity:.6;cursor:not-allowed}.alert-box{font-family:var(--font-mono);border-radius:8px;margin-bottom:16px;padding:12px 16px;font-size:11px;font-weight:600;display:none}.alert-box.show{display:block}.alert-box.alert-error{background:var(--red-light);border:1px solid var(--red-border);color:var(--red)}.alert-box.alert-success{background:var(--green-light);border:1px solid var(--green-border);color:var(--green)}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 20px;display:flex}.table-head-title{color:var(--text-main);font-size:13px;font-weight:800}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 16px;font-size:9.5px;font-weight:700}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:11px 16px}.kpi-badge-pill{font-size:10px;font-weight:700;font-family:var(--font-mono);border-radius:6px;align-items:center;gap:4px;padding:2px 7px;display:inline-flex}.pill-green{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}.pill-amber{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)}.pill-red{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:34px;height:34px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:28px;height:28px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:149;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}@media (width<=820px){.app-sidebar{z-index:160;position:fixed;top:0;bottom:0;left:-270px;margin-left:0!important}.app-sidebar.open{transform:translate(270px);box-shadow:10px 0 30px #0000004d}.app-header{padding:12px 16px}.page-content{padding:14px 12px}}</style>
+</head>
+<body>
+
+  <!-- ── SECURITY AUTHENTICATION GATE OVERLAY ── -->
+  <div id="portal-auth-gate" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#FFFFFF; border-radius:18px; width:440px; max-width:95vw; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); border:1px solid rgba(226,232,240,0.8); text-align:center;">
+      <div style="width:68px; height:68px; border-radius:50%; background:#EFF6FF; border:2px solid #BFDBFE; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+        <img src="/assets/logo-mINGB56k.png" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;">
+      </div>
+      <h2 style="font-size:17px; font-weight:800; color:var(--text-main); margin-bottom:4px;">PPCWD Operations Portal</h2>
+      <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">
+        Restricted Access &bull; Production, Hydrology, Customer Incidents &amp; Generator Fleet Ingestion
+      </p>
+
+      <div id="auth-gate-alert" class="alert-box alert-error" style="display:none; text-align:left; margin-bottom:16px;"></div>
+
+      <form onsubmit="submitPortalAuth(event)">
+        <div style="margin-bottom:14px; text-align:left;">
+          <label class="form-lbl" style="margin-bottom:6px; display:block;">Authorization Passkey / PIN *</label>
+          <div style="position:relative;">
+            <input type="password" id="auth-passkey-input" class="form-input" placeholder="Enter Division Passkey..." style="padding-right:40px; font-size:13px; font-weight:600;" required autocomplete="current-password">
+            <button type="button" onclick="togglePasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;" title="Show/Hide passkey"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; font-size:11.5px; color:var(--text-muted);">
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="auth-remember-chk">
+            Remember on this workstation
+          </label>
+          <a href="index.html" style="color:var(--blue); text-decoration:none; font-weight:600;">← Public View</a>
+        </div>
+
+        <button type="submit" id="btn-auth-unlock" class="btn-submit" style="width:100%; justify-content:center; padding:11px; font-size:12px; font-weight:700;">
+          Authenticate &amp; Unlock Portal
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-layout">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Collapse sidebar" title="Hide Sidebar (Collapse)">✕</button>
+      <div class="sidebar-brand">
+        <img src="/assets/logo-mINGB56k.png" alt="PPCWD Logo" class="brand-logo-img">
+        <div>
+          <span class="brand-title">PUERTO PRINCESA</span>
+          <span class="brand-sub">City Water District</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-btn">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
+          <span>Back to Dashboard</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <button class="nav-btn active" id="sidebar-btn-gensets" onclick="switchPortalSection('gensets')">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+          <span>Genset &amp; Asset Admin</span>
+        </button>
+
+        <button class="nav-btn" id="sidebar-btn-complaints" onclick="switchPortalSection('complaints')">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
+          <span>Customer Complaints</span>
+        </button>
+
+        <button class="nav-btn" id="sidebar-btn-riverflow" onclick="switchPortalSection('riverflow')">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c3-3 6-3 9 0s6 3 9 0M2 17c3-3 6-3 9 0s6 3 9 0"/></svg></span>
+          <span>River Hydrology</span>
+        </button>
+
+        <button class="nav-btn" id="sidebar-btn-production" onclick="switchPortalSection('production')">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
+          <span>Weekly Production</span>
+        </button>
+
+        <button class="nav-btn" id="sidebar-btn-monthly" data-section="monthly" onclick="switchPortalSection('monthly')">
+          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span>Monthly Production</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-pill-box" style="justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="status-dot-pulse"></div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #FFFFFF;">Portal Protected</div>
+              <div style="font-size: 9.5px; color: #94A3B8;">Passkey Verified</div>
+            </div>
+          </div>
+          <button type="button" onclick="lockPortal()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#F1F5F9; font-size:10px; font-weight:700; padding:4px 8px; cursor:pointer;" title="Lock Portal & Sign Out">
+            Lock
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Sidebar backdrop for mobile drawer -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ── MAIN CONTENT ── -->
+    <div class="app-main">
+      <header class="app-header">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
+          <img src="/assets/logo-mINGB56k.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 32px; height: 32px;">
+          <div class="header-titles">
+            <h1 id="portal-title">Operations &amp; Asset Portal</h1>
+            <p id="portal-subtitle"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <a href="index.html" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+            &larr; Exit to Dashboard
+          </a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        
+        <!-- ── GENSETS SECTION ── -->
+        <div id="section-gensets">
+          <!-- Form Panel -->
+          <div class="card">
+          <div class="card-header-bar">
+            <div class="card-heading">
+              <h2>Standby Generator Asset Management</h2>
+              <p>Assign stations, log preventive maintenance (PMS), record emergency repairs, and track relocations</p>
+            </div>
+            <div class="segment-pills">
+              <button type="button" class="seg-pill active" id="tab-btn-log" onclick="switchGensetView('log')">Log Action / Service</button>
+              <button type="button" class="seg-pill" id="tab-btn-create" onclick="switchGensetView('create')">+ Register New Unit</button>
+            </div>
+          </div>
+
+          <div id="gs-alert-box" class="alert-box"></div>
+
+          <!-- FORM 1: LOG ACTION / SERVICE -->
+          <form id="form-genset-log" onsubmit="submitGensetAction(event)">
+            <input type="hidden" name="action" value="update_log">
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Select Generator Unit *</label>
+                <select id="gs-select-unit" name="genset_id" required class="form-input" onchange="onGensetUnitSelected(this.value)">
+                  <option value="">Loading fleet units...</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Action / Event Type *</label>
+                <select name="event_type" required class="form-input">
+                  <option value="Preventive Maintenance (PMS)">Preventive Maintenance (PMS)</option>
+                  <option value="Transfer / Relocation">Transfer / Relocation</option>
+                  <option value="Emergency Repair">Emergency Repair</option>
+                  <option value="Battery Replacement">Battery Replacement</option>
+                  <option value="Fuel Refill & Testing">Fuel Refill &amp; Testing</option>
+                  <option value="Status Adjustment">Status Adjustment</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Station Deployed *</label>
+                <select id="gs-select-station" name="new_station" required class="form-input"></select>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Operating Status *</label>
+                <select id="gs-select-status" name="new_status" class="form-input">
+                  <option value="Operational">Operational</option>
+                  <option value="Under Maintenance">Under Maintenance</option>
+                  <option value="Standby">Standby</option>
+                  <option value="Offline">Offline / Defective</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Service / Transfer Date</label>
+                <input type="date" name="serviced_date" id="gs-serviced-date" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Personnel / In-Charge</label>
+                <input type="text" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 18px;">
+              <label class="form-lbl">Work Done / Action Remarks</label>
+              <textarea name="remarks" rows="3" placeholder="Specify parts replaced, reason for relocation, or run test results..." class="form-input"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn-submit" id="btn-submit-log">Save &amp; Log Generator Action</button>
+            </div>
+          </form>
+
+          <!-- FORM 2: REGISTER NEW GENSET -->
+          <form id="form-genset-create" onsubmit="submitNewGenset(event)" style="display:none;">
+            <input type="hidden" name="action" value="create_genset">
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Genset Identification Number *</label>
+                <input type="text" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Brand &amp; Engine Model</label>
+                <input type="text" name="brand_model" placeholder="e.g. Cummins 6BT5.9 / Perkins" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Capacity Rating (kVA)</label>
+                <input type="number" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="form-lbl">Initial Station Assignment *</label>
+                <select id="gs-create-station" name="new_station" required class="form-input"></select>
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
+                <input type="number" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
+              </div>
+              <div class="field-group">
+                <label class="form-lbl">Commissioning Status</label>
+                <select name="new_status" class="form-input">
+                  <option value="Operational">Operational</option>
+                  <option value="Standby">Standby</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 18px;">
+              <label class="form-lbl">Initial Notes / Asset Tagging</label>
+              <textarea name="remarks" rows="2" placeholder="Acquisition details or initial deployment condition..." class="form-input"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn-submit" id="btn-submit-create">+ Register Unit into Fleet</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Inventory Table -->
+        <div class="table-container">
+          <div class="table-head-bar">
+            <div>
+              <div class="table-head-title">Active Fleet Deployment &amp; Readiness</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Station assignments and latest maintenance audit logs</div>
+            </div>
+            <button onclick="fetchGensetFleet()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Genset ID</th>
+                  <th>Deployed Station</th>
+                  <th>Rating</th>
+                  <th>Status</th>
+                  <th>Latest Maintenance / Movement</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="gs-inventory-tbody">
+                <tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPLAINTS INGESTION SECTION ── -->
+      <div id="section-complaints" style="display:none;">
+          
+          <!-- Card 1: Form Panel -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>Customer Complaints &amp; Service Incidents</h2>
+                <p>Log verified customer reports, track affected stubouts, and bulk import daily incident telemetry into Supabase</p>
+              </div>
+              <div class="segment-pills">
+                <button type="button" class="seg-pill active" id="tab-btn-comp-single" onclick="switchComplaintView('single')">Single Incident Entry</button>
+                <button type="button" class="seg-pill" id="tab-btn-comp-bulk" onclick="switchComplaintView('bulk')">Paste from Excel / CSV</button>
+              </div>
+            </div>
+
+            <div id="comp-alert-box" class="alert-box"></div>
+
+            <!-- VIEW 1: SINGLE INCIDENT ENTRY -->
+            <form id="form-complaint-single" onsubmit="submitSingleComplaint(event)">
+              <div class="form-grid">
+                <div class="field-group">
+                  <label class="form-lbl">Date of Incident *</label>
+                  <input type="date" id="comp-date" name="date" required class="form-input">
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Barangay *</label>
+                  <input type="text" id="comp-barangay" name="barangay" list="barangay-datalist" required placeholder="e.g. SAN PEDRO" class="form-input" style="text-transform:uppercase;" autocapitalize="characters" autocomplete="off" spellcheck="false">
+                  <datalist id="barangay-datalist">
+                    <option value="BABUYAN">
+                    <option value="BACUNGAN">
+                    <option value="BAGONG PAG-ASA">
+                    <option value="BAGONG SIKAT">
+                    <option value="BAGONG SILANG">
+                    <option value="BAHILE">
+                    <option value="BANCAO BANCAO">
+                    <option value="BANCAO-BANCAO">
+                    <option value="BINDUYAN">
+                    <option value="CABAYUGAN">
+                    <option value="INAGAWAN">
+                    <option value="INAGAWAN SUB COLONY">
+                    <option value="IRAWAN">
+                    <option value="IWAHIG">
+                    <option value="KALIPAY">
+                    <option value="LIWANAG">
+                    <option value="LUCBUAN">
+                    <option value="LUZVIMINDA">
+                    <option value="MABUHAY">
+                    <option value="MACARASCAS">
+                    <option value="MAGKAKAIBIGAN">
+                    <option value="MALIGAYA">
+                    <option value="MANDARAGAT">
+                    <option value="MANGGAHAN">
+                    <option value="MANGINGISDA">
+                    <option value="MANINGNING">
+                    <option value="MAOYON">
+                    <option value="MARUYOGON">
+                    <option value="MASIGLA">
+                    <option value="MASIKAP">
+                    <option value="MASIPAG">
+                    <option value="MATAHIMIK">
+                    <option value="MATIYAGA">
+                    <option value="MAUNLAD">
+                    <option value="MILAGROSA">
+                    <option value="MODEL">
+                    <option value="MONTIBLE">
+                    <option value="NAPSAN">
+                    <option value="PAGKAKAISA">
+                    <option value="PRINCESA">
+                    <option value="SALVACION">
+                    <option value="SAN JOSE">
+                    <option value="SAN MANUEL">
+                    <option value="SAN MIGUEL">
+                    <option value="SAN PEDRO">
+                    <option value="SAN RAFAEL">
+                    <option value="SEASIDE">
+                    <option value="SICSICAN">
+                    <option value="STA LOURDES">
+                    <option value="STA. LOURDES">
+                    <option value="STA MONICA">
+                    <option value="STA. MONICA">
+                    <option value="TAGBUROS">
+                    <option value="TAGUMPAY">
+                    <option value="TANGLAW">
+                    <option value="TINIGUIBAN">
+                  </datalist>
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Complaint Type *</label>
+                  <select id="comp-type" name="type" required class="form-input">
+                    <option value="No Water">No Water (Interruption)</option>
+                    <option value="Low Pressure">Low Pressure</option>
+                    <option value="Turbid Water">Turbid / Discolored Water</option>
+                    <option value="Leakage / Line Break">Pipe Leakage / Line Break</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <label class="form-lbl">Stubout Number</label>
+                  <input type="text" id="comp-stubout" name="stubout_number" placeholder="e.g. S1-1234" class="form-input" maxlength="7" autocapitalize="characters" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Account Number</label>
+                  <input type="text" id="comp-account" name="account_number" placeholder="e.g. 123-4567" class="form-input" maxlength="8" inputmode="numeric" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="field-group">
+                  <label class="form-lbl">Incident Count (Reports) *</label>
+                  <input type="number" id="comp-count" name="complaint_count" value="1" min="1" required class="form-input">
+                </div>
+              </div>
+
+              <div class="field-group" style="margin-bottom: 18px;">
+                <label class="form-lbl">Consumer Remarks / Details (Optional)</label>
+                <input type="text" id="comp-remarks" name="consumer_remarks" placeholder="Optional notes from customer care..." class="form-input">
+              </div>
+
+              <div style="display:flex; justify-content:flex-end;">
+                <button type="submit" id="btn-save-complaint" class="btn-submit">
+                  <span>+ Save Incident to Supabase</span>
+                </button>
+              </div>
+            </form>
+
+            <!-- VIEW 2: BULK EXCEL / CSV IMPORT -->
+            <div id="comp-bulk-panel" style="display:none;">
+              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:14px;">
+                <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">How to Paste Data from Excel or Google Sheets:</div>
+                <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
+                  Copy rows from your spreadsheet and paste directly into the box below. Columns are expected in this standard order:<br>
+                  <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">Date | Stubout Number | Type of Complaint | Barangay | Account Number | Complaint Count</code><br>
+                  <span style="font-size:10px; color:var(--teal); font-weight:600;">✓ Supports Tab-separated (direct copy-paste from Excel) and Comma-separated (CSV).</span>
+                </div>
+              </div>
+
+              <textarea id="comp-bulk-input" class="form-input" style="font-family:var(--font-mono); font-size:11.5px; min-height:140px; resize:vertical; margin-bottom:12px;" placeholder="2026-09-22&#9;S1-0014&#9;No Water&#9;SAN PEDRO&#9;123-4567&#9;1&#10;2026-09-22&#9;S2-0022&#9;Low Pressure&#9;STA MONICA&#9;234-5678&#9;2"></textarea>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+                <button type="button" class="header-btn" onclick="populateSamplePaste()">Fill Sample Template</button>
+                <button type="button" id="btn-parse-paste" class="btn-submit" onclick="parseBulkComplaints()">
+                  Parse &amp; Preview Rows
+                </button>
+              </div>
+
+              <!-- Preview Area -->
+              <div id="comp-preview-container" style="display:none; border-top:1px solid var(--card-border); padding-top:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                  <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Preview Parsed Records (<span id="comp-preview-count">0</span> valid rows)</h4>
+                  <button type="button" id="btn-upload-bulk-complaints" onclick="uploadBulkComplaints()" class="btn-submit" style="background:var(--green); border-color:var(--green);">
+                    Upload All to Supabase
+                  </button>
+                </div>
+                <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Barangay</th>
+                        <th>Stubout #</th>
+                        <th>Type</th>
+                        <th>Account #</th>
+                        <th style="text-align:right;">Reports</th>
+                      </tr>
+                    </thead>
+                    <tbody id="comp-preview-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Live Ledger Table -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">Verified Complaints Ledger (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Live incoming telemetry from customer care triage</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="comp-search-input" placeholder="Filter by barangay, stubout, account..." class="form-input" style="width:230px; padding:6px 10px; font-size:11px;" oninput="filterComplaintsTable()">
+                <button onclick="fetchComplaintsList()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Barangay</th>
+                    <th>Stubout #</th>
+                    <th>Account #</th>
+                    <th>Type</th>
+                    <th style="text-align:right;">Reports</th>
+                    <th>Remarks</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="comp-ledger-tbody">
+                  <tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RIVER HYDROLOGY SECTION ── -->
+        <div id="section-riverflow" style="display:none;">
+
+          <!-- Card 1: River Flow Weekly Entry Panel -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>River Flow Measurement Weekly Entry</h2>
+                <p>Environment Water Resources Division &bull; Record streamflow discharge (m³/day) across <span id="rf-header-count">19</span> monitored stations</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="header-btn" onclick="openAddRiverModal()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
+                  + Add Monitored River
+                </button>
+                <button type="button" class="header-btn" onclick="clearRiverflowForm()">Clear Form</button>
+                <button type="button" class="header-btn" onclick="loadPreviousRiverReadings()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light);">
+                  Load Previous As Baseline
+                </button>
+                <button type="button" id="btn-save-riverflow" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
+                  Save Readings to Supabase
+                </button>
+              </div>
+            </div>
+
+            <div id="rf-alert-box" class="alert-box"></div>
+
+            <!-- Date Picker and Summary Strip -->
+            <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Measurement Date *</label>
+                  <input type="date" id="rf-date" class="form-input" style="width:190px; font-weight:700;" onchange="onRiverDateChange(this.value)">
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <span style="font-size:11px; color:var(--text-muted);">Current Cycle Status:</span>
+                  <span id="rf-cycle-status" style="font-size:12px; font-weight:700; color:var(--teal);">Ready for weekly submission</span>
+                </div>
+              </div>
+
+              <!-- Live KPI strip -->
+              <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div style="text-align:right;">
+                  <div style="font-size:10px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Monitored Rivers</div>
+                  <div id="rf-kpi-count" style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:var(--text-main);">0 / 19</div>
+                </div>
+                <div style="height:32px; width:1px; background:var(--card-border);"></div>
+                <div style="text-align:right;">
+                  <div style="font-size:10px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Total Watershed Discharge</div>
+                  <div id="rf-kpi-total" style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:var(--teal);">0.00 m³/day</div>
+                </div>
+              </div>
+            </div>
+
+            <datalist id="river-remarks-datalist">
+              <option value="Normal flow">
+              <option value="Low flow / Dry season">
+              <option value="High flow / Heavy rain">
+              <option value="Turbid / Siltation observed">
+              <option value="Station dry / Nil flow">
+              <option value="Inaccessible / Bad weather">
+              <option value="Estimated / Float method">
+            </datalist>
+
+            <!-- River Flow Measurement Rapid-Entry Table -->
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+              <table class="data-table" id="rf-entry-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px; text-align:center;">#</th>
+                    <th style="min-width:200px;">Location / River Station</th>
+                    <th style="width:140px;">Watershed Zone</th>
+                    <th style="min-width:180px;">Previous (Date &amp; Discharge)</th>
+                    <th style="min-width:180px;">Discharge (m³/day) *</th>
+                    <th style="min-width:220px;">Remarks / Field Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="rf-entry-tbody">
+                  <!-- Populated dynamically with 19 rivers -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <span style="font-size:11px; color:var(--text-muted);">
+                Tip: Press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd> to quickly jump directly to the next river's discharge input.
+              </span>
+              <button type="button" id="btn-save-riverflow-bottom" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
+                Save Readings to Supabase
+              </button>
+            </div>
+          </div>
+
+          
+          <!-- Modal: Add Monitored River Station -->
+          <div id="modal-add-river" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+            <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:12px; width:440px; max-width:92vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Add Monitored River Station</h3>
+                <button type="button" onclick="closeAddRiverModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">&times;</button>
+              </div>
+              <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:16px; line-height:1.5;">
+                Register an additional streamflow monitoring source. It will automatically sync to Supabase and propagate to the live dashboard.
+              </p>
+              <div style="margin-bottom:14px;">
+                <label class="form-lbl" style="margin-bottom:4px;">River / Station Name *</label>
+                <input type="text" id="modal-river-name" class="form-input" placeholder="e.g. Inagawan River, Irawan Upper" style="width:100%; font-weight:600;">
+              </div>
+              <div style="margin-bottom:18px;">
+                <label class="form-lbl" style="margin-bottom:4px;">Watershed Zone *</label>
+                <select id="modal-river-group" class="form-input" style="width:100%;">
+                  <option value="City / Primary Sources">City / Primary Sources</option>
+                  <option value="Satellite North">Satellite North</option>
+                  <option value="Satellite South">Satellite South</option>
+                  <option value="Satellite Other">Satellite Other</option>
+                </select>
+              </div>
+              <div id="modal-river-error" style="display:none; font-size:11px; color:var(--red); margin-bottom:12px;"></div>
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" class="header-btn" onclick="closeAddRiverModal()">Cancel</button>
+                <button type="button" id="btn-submit-add-river" class="btn-submit" onclick="submitAddRiverModal()" style="background:var(--teal); border-color:var(--teal);">
+                  Add River
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Historical River Flow Ledger -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">Weekly River Flow Records History (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly discharge benchmarks stored in cloud database</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="rf-search-input" placeholder="Search by date or keyword..." class="form-input" style="width:210px; padding:6px 10px; font-size:11px;" oninput="filterRiverflowHistory()">
+                <button onclick="fetchRiverflowHistory()" class="header-btn" style="color:var(--teal); font-size:10px;">Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Recorded Date</th>
+                    <th>Date Label</th>
+                    <th style="text-align:right;">Monitored Rivers</th>
+                    <th style="text-align:right;">Total Discharge (m³/day)</th>
+                    <th>Highest Contributing River</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="rf-ledger-tbody">
+                  <tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> <!-- end #section-riverflow -->
+
+        <!-- ── WEEKLY PRODUCTION MONITORING SECTION ── -->
+        <div id="section-production" style="display:none;">
+
+          <!-- Card 1: Weekly Production Monitoring Entry Panel -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>Weekly Groundwater &amp; Surface Water Monitoring Entry</h2>
+                <p>Production Division &bull; Weekly Update Status of Groundwater and Surface Water Monitoring (Direct Supabase Telemetry)</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="header-btn" onclick="clearProductionForm()">Clear Form</button>
+                <button type="button" class="header-btn" onclick="loadPreviousProdReadings()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                  Load Previous As Baseline
+                </button>
+                <button type="button" id="btn-save-production" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
+                  Save Production to Supabase
+                </button>
+              </div>
+            </div>
+
+            <div id="prod-alert-box" class="alert-box"></div>
+
+            <!-- Cycle & Period Configuration Bar -->
+            <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Week Label *</label>
+                  <input type="text" id="prod-week-label" class="form-input" placeholder="e.g. Week 25" style="width:130px; font-weight:700;" onchange="onProdWeekChange(this.value)">
+                </div>
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Recorded Date *</label>
+                  <input type="date" id="prod-date" class="form-input" style="width:160px; font-weight:700;" onchange="onProdDateChange(this.value)">
+                </div>
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Period Label *</label>
+                  <input type="text" id="prod-period-label" class="form-input" placeholder="e.g. September 11 - 18, 2026" style="width:230px; font-weight:600;">
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <span style="font-size:11px; color:var(--text-muted);">Audit Cycle Status:</span>
+                  <span id="prod-cycle-status" style="font-size:12px; font-weight:700; color:var(--blue);">Ready for weekly submission</span>
+                </div>
+              </div>
+
+              <!-- Quick Helper Button -->
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" onclick="autoSuggestNextWeek()" class="header-btn" style="font-size:11px;" title="Suggest next week label & date based on latest submission">
+                  Auto-Next Cycle
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Executive KPI HUD Bar -->
+            <div style="background:linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius:12px; padding:18px 24px; color:#FFFFFF; margin-bottom:22px; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:18px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+              <div>
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Grand Total Production</div>
+                <div id="prod-hud-total" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#38BDF8; margin-top:2px;">0.00 <span style="font-size:12px; color:#94A3B8;">m³</span></div>
+                <div style="font-size:10px; color:#CBD5E1; margin-top:2px;" id="prod-hud-stations">0 stations encoded</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Weekly Yield (MLD)</div>
+                <div id="prod-hud-mld" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#4ADE80; margin-top:2px;">0.00 <span style="font-size:12px; color:#94A3B8;">MLD</span></div>
+                <div style="font-size:10px; color:#CBD5E1; margin-top:2px;" id="prod-hud-target">0.0% of 56.86 MLD Target</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Surface Water Yield</div>
+                <div id="prod-hud-sw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#2DD4BF; margin-top:2px;">0.00 <span style="font-size:11px; color:#94A3B8;">m³</span></div>
+                <div style="font-size:10px; color:#2DD4BF; margin-top:2px;" id="prod-hud-sw-pct">0.0% Share</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
+                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Ground Water Yield</div>
+                <div id="prod-hud-gw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#818CF8; margin-top:2px;">0.00 <span style="font-size:11px; color:#94A3B8;">m³</span></div>
+                <div style="font-size:10px; color:#818CF8; margin-top:2px;" id="prod-hud-gw-pct">0.0% Share</div>
+              </div>
+            </div>
+
+            <!-- View / Filter Mode Segmented Bar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+              <div class="segment-pills" id="prod-cat-pills">
+                <button class="seg-pill active" onclick="switchProdCatView('all')">All Monitored Sources</button>
+                <button class="seg-pill" onclick="switchProdCatView('swCity')">1. SW City Proper</button>
+                <button class="seg-pill" onclick="switchProdCatView('swSat')">2. SW Satellite</button>
+                <button class="seg-pill" onclick="switchProdCatView('gwCity')">3. GW City Proper</button>
+                <button class="seg-pill" onclick="switchProdCatView('aug')">4. Augmented PS</button>
+                <button class="seg-pill" onclick="switchProdCatView('gwSat')">5. GW Satellite</button>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:8px;">
+                <label style="font-size:11px; font-weight:600; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="prod-chk-lapu-combine" onchange="toggleLapuLapuMode(this.checked)">
+                  Combine Lapu-Lapu as Single Reading
+                </label>
+              </div>
+            </div>
+
+            <datalist id="prod-remarks-datalist">
+              <option value="Normal operational status">
+              <option value="Operational - Normal yield">
+              <option value="Operational - High demand cycle">
+              <option value="Backup standby - Ready">
+              <option value="Under preventive maintenance">
+              <option value="Under repair / Electrical fault">
+              <option value="Low water level / Drought throttled">
+              <option value="Turbid / River intake throttled">
+              <option value="Power interruption / Genset run">
+              <option value="No production / Offline">
+            </datalist>
+
+            <!-- Dynamic Category Tables Container -->
+            <div id="prod-tables-container">
+              <!-- Rendered via renderProductionTables() -->
+            </div>
+
+            <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <span style="font-size:11px; color:var(--text-muted);">
+                Tip: Type Previous &amp; Present flow meter readings and press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd>. Net Weekly Yield (m³) is automatically calculated (<b style="font-family:var(--font-mono);">Present - Previous</b>).
+              </span>
+              <button type="button" id="btn-save-production-bottom" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
+                Save Production to Supabase
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Historical Production Records Ledger -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">Weekly Production Status History (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly production audits stored in cloud database</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="prod-search-input" placeholder="Search by week or period..." class="form-input" style="width:220px; padding:6px 10px; font-size:11px;" oninput="filterProductionHistory()">
+                <button onclick="fetchProductionHistory()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Week</th>
+                    <th>Period Covered</th>
+                    <th>Recorded Date</th>
+                    <th style="text-align:right;">SW Production (m³)</th>
+                    <th style="text-align:right;">GW Production (m³)</th>
+                    <th style="text-align:right;">Total Production (m³)</th>
+                    <th style="text-align:right;">MLD</th>
+                    <th style="text-align:right;">Target %</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="prod-ledger-tbody">
+                  <tr><td colspan="9" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase production telemetry...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> <!-- end #section-production -->
+
+        <!-- ── MONTHLY PRODUCTION INGESTION SECTION ── -->
+        <div class="portal-section" id="section-monthly" style="display:none;">
+
+          <!-- Card 1: Monthly Production Volumetric Ingestion -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>Monthly Production Volumetric Ingestion (34 Stations)</h2>
+                <p>Production Division &bull; Monthly Capacity &amp; Utilization Telemetry (Direct Supabase Cloud Sync)</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="header-btn" onclick="clearMonthlyForm()">Clear Form</button>
+                <button type="button" class="header-btn" onclick="reloadMonthlyPortalData()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                  Reload Saved
+                </button>
+                <button type="button" id="btn-save-monthly" class="btn-submit" onclick="submitMonthlyProduction(event)" style="background:var(--blue); border-color:var(--blue);">
+                  Save Monthly Production to Supabase
+                </button>
+              </div>
+            </div>
+
+            <div id="monthly-alert-box" class="alert-box"></div>
+
+            <!-- Configuration & HUD KPI Bar -->
+            <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                <div>
+                  <label class="form-lbl" style="margin-bottom:4px;">Target Month *</label>
+                  <input type="month" id="monthly-portal-picker" class="form-input" style="width:160px; font-weight:700; font-family:var(--font-mono);" onchange="onMonthlyPickerChange(this.value)" required>
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <span style="font-size:11px; color:var(--text-muted);">Sync Status:</span>
+                  <span id="monthly-portal-sync-status" style="font-size:12px; font-weight:700; color:var(--blue);">Ready</span>
+                </div>
+              </div>
+
+              <!-- HUD KPI Summary Cards -->
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Total Volume</div>
+                  <div id="monthly-hud-total" style="font-size:15px; font-weight:800; color:var(--text-main); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span></div>
+                </div>
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Target</div>
+                  <div style="font-size:15px; font-weight:800; color:var(--text-main); font-family:var(--font-mono);">1,705,700 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span></div>
+                </div>
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Achieved</div>
+                  <div id="monthly-hud-achieved" style="font-size:15px; font-weight:800; color:var(--blue); font-family:var(--font-mono);">0.0%</div>
+                </div>
+                <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Hourly Rate</div>
+                  <div id="monthly-hud-hourly" style="font-size:15px; font-weight:800; color:var(--teal); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³/h</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form with 34 Stations -->
+            <form id="monthly-portal-form" onsubmit="submitMonthlyProduction(event)">
+              <div style="margin-bottom:24px;">
+                <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--teal); font-family:var(--font-mono); margin-bottom:12px; border-bottom:2px solid var(--teal-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                  <span>Surface Water Stations (15)</span>
+                  <span id="monthly-sw-subtotal" style="font-size:11px; font-weight:700; color:var(--teal);">0.00 m³</span>
+                </h4>
+                <div id="monthly-sw-inputs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;"></div>
+              </div>
+
+              <div style="margin-bottom:24px;">
+                <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--blue); font-family:var(--font-mono); margin-bottom:12px; border-bottom:2px solid var(--blue-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                  <span>Groundwater Stations (19)</span>
+                  <span id="monthly-gw-subtotal" style="font-size:11px; font-weight:700; color:var(--blue);">0.00 m³</span>
+                </h4>
+                <div id="monthly-gw-inputs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;"></div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; gap:10px; padding-top:16px; border-top:1px solid var(--card-border);">
+                <button type="button" class="header-btn" onclick="clearMonthlyForm()">Reset Form</button>
+                <button type="submit" id="btn-save-monthly-bottom" class="btn-submit" style="background:var(--blue); border-color:var(--blue); padding:10px 24px; font-size:13px;">
+                  Save Monthly Production to Supabase
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div> <!-- end #section-monthly -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: EDIT GENSET DETAILS ── -->
+  <div id="edit-genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#FFFFFF; border-radius:14px; width:580px; max-width:95vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--card-border);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--card-border); padding-bottom:12px;">
+        <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Edit Generator Specifications</h3>
+        <button onclick="closeEditModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">✕</button>
+      </div>
+
+      <form onsubmit="submitEditGenset(event)">
+        <input type="hidden" id="edit-gs-id" name="genset_id">
+
+        <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
+          <div class="field-group">
+            <label class="form-lbl">Genset ID *</label>
+            <input type="text" id="edit-gs-no" name="genset_no" required class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Brand &amp; Engine Model</label>
+            <input type="text" id="edit-gs-model" name="brand_model" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
+          <div class="field-group">
+            <label class="form-lbl">Capacity Rating (kVA)</label>
+            <input type="number" step="0.01" id="edit-gs-kva" name="capacity_kva" class="form-input">
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
+            <input type="number" step="0.1" id="edit-gs-fuel" name="fuel_capacity_liters" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:18px;">
+          <div class="field-group">
+            <label class="form-lbl">Assigned Station</label>
+            <select id="edit-gs-station" name="new_station" required class="form-input"></select>
+          </div>
+          <div class="field-group">
+            <label class="form-lbl">Status</label>
+            <select id="edit-gs-status" name="new_status" class="form-input">
+              <option value="Operational">Operational</option>
+              <option value="Under Maintenance">Under Maintenance</option>
+              <option value="Standby">Standby</option>
+              <option value="Offline">Offline / Defective</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" onclick="closeEditModal()" class="header-btn">Cancel</button>
+          <button type="submit" class="btn-submit" id="btn-save-edit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ── HTML SANITIZER (XSS MITIGATION) ──
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ── PORTAL PASSKEY SECURITY & ACCESS CONTROL ──
+    // ══════════════════════════════════════════════════════════════════
+
+    function getStoredPasskey() {
+      return sessionStorage.getItem('ppcwd_admin_passkey') || localStorage.getItem('ppcwd_admin_passkey') || '';
+    }
+
+    function getAuthHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'x-admin-passkey': getStoredPasskey()
+      };
+    }
+
+    function togglePasskeyVisibility() {
+      const inp = document.getElementById('auth-passkey-input');
+      if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+
+    async function submitPortalAuth(e) {
+      if (e) e.preventDefault();
+      const inp = document.getElementById('auth-passkey-input');
+      const passkey = inp?.value.trim();
+      const remember = document.getElementById('auth-remember-chk')?.checked;
+      const alertBox = document.getElementById('auth-gate-alert');
+      const btn = document.getElementById('btn-auth-unlock');
+
+      if (!passkey) {
+        if (alertBox) {
+          alertBox.textContent = 'Please enter the authorization passkey.';
+          alertBox.style.display = 'block';
+        }
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Verifying Passkey...'; }
+      if (alertBox) alertBox.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/verifyPasskey', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passkey })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Invalid authorization passkey.');
+
+        if (remember) {
+          localStorage.setItem('ppcwd_admin_passkey', passkey);
+          sessionStorage.removeItem('ppcwd_admin_passkey');
+        } else {
+          sessionStorage.setItem('ppcwd_admin_passkey', passkey);
+          localStorage.removeItem('ppcwd_admin_passkey');
+        }
+
+        unlockPortal();
+      } catch (err) {
+        if (alertBox) {
+          alertBox.textContent = err.message || 'Invalid authorization passkey.';
+          alertBox.style.display = 'block';
+        }
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Authenticate & Unlock Portal'; }
+      }
+    }
+
+    function unlockPortal() {
+      const gate = document.getElementById('portal-auth-gate');
+      if (gate) gate.style.display = 'none';
+    }
+
+    function lockPortal() {
+      sessionStorage.removeItem('ppcwd_admin_passkey');
+      localStorage.removeItem('ppcwd_admin_passkey');
+      const gate = document.getElementById('portal-auth-gate');
+      if (gate) gate.style.display = 'flex';
+      const inp = document.getElementById('auth-passkey-input');
+      if (inp) { inp.value = ''; inp.focus(); }
+      const alertBox = document.getElementById('auth-gate-alert');
+      if (alertBox) alertBox.style.display = 'none';
+    }
+
+    async function checkPortalAuth() {
+      const stored = getStoredPasskey();
+      if (!stored) {
+        const gate = document.getElementById('portal-auth-gate');
+        if (gate) gate.style.display = 'flex';
+        return false;
+      }
+
+      try {
+        const res = await fetch('/api/verifyPasskey', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-passkey': stored }
+        });
+        if (res.ok) {
+          unlockPortal();
+          return true;
+        } else {
+          lockPortal();
+          return false;
+        }
+      } catch (err) {
+        unlockPortal();
+        return true;
+      }
+    }
+
+    const PPCWD_STATIONS = [
+      "Baldosano PS", "Sta. Monica PS", "Pump Center #5", "Pump Center #6",
+      "DA", "Sicsican", "Villa Ello", "NHA", "Princeville", "Villa Princesa",
+      "San Jose", "BOS", "Esteban", "Kaakbayan", "New Market", "Pablico",
+      "Visapa PS", "Acacia", "Citywoods", "Virginia", "Lucbuan", "Sabang GW",
+      "Inagawan", "Macarascas", "Irawan WTP-1", "Irawan WTP-2", "Lapu-Lapu Source",
+      "Montible (Teruvian)", "Manalo Booster Station", "UV Facility", "Central Warehouse / Storage",
+      "Campo Uno"
+    ];
+
+    let fleet = [];
+
+    function toggleSidebar() {
+      const sb = document.getElementById('app-sidebar');
+      const bd = document.getElementById('sidebar-backdrop');
+      const isMobile = window.innerWidth <= 820;
+
+      if (isMobile) {
+        sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active', sb.classList.contains('open'));
+      } else {
+        sb.classList.toggle('collapsed');
+        const isCollapsed = sb.classList.contains('collapsed');
+        try { localStorage.setItem('ppcwd_portal_sidebar_collapsed', isCollapsed ? '1' : '0'); } catch(e){}
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 260);
+      }
+    }
+
+    function populateStations() {
+      const opts = PPCWD_STATIONS.map(st => `<option value="${st}">${st}</option>`).join("");
+      document.getElementById("gs-select-station").innerHTML = opts;
+      document.getElementById("gs-create-station").innerHTML = opts;
+      const editSt = document.getElementById("edit-gs-station");
+      if (editSt) editSt.innerHTML = opts;
+    }
+
+    async function fetchGensetFleet() {
+      const tbody = document.getElementById("gs-inventory-tbody");
+      try {
+        const res = await fetch('/api/getGensets');
+        const text = await res.text();
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          throw new Error(`Server returned status ${res.status}: ${text.slice(0, 100)}`);
+        }
+
+        if (!res.ok) throw new Error(data.error || "Failed to load gensets.");
+        fleet = data;
+
+        const unitSel = document.getElementById("gs-select-unit");
+        if (fleet.length === 0) {
+          unitSel.innerHTML = '<option value="">No units registered yet</option>';
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No generator units in database. Register one using the form above.</td></tr>`;
+          return;
+        }
+
+        unitSel.innerHTML = '<option value="">-- Choose Generator --</option>' + 
+          fleet.map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.genset_no)} — ${escapeHtml(g.current_station)}</option>`).join("");
+
+        tbody.innerHTML = fleet.map(g => {
+          const isOp = g.status === 'Operational';
+          const isMaint = g.status === 'Under Maintenance' || g.status === 'Standby';
+          const badgeCls = isOp ? 'pill-green' : (isMaint ? 'pill-amber' : 'pill-red');
+          const latestLog = g.genset_logs && g.genset_logs[0] ? g.genset_logs[0] : null;
+
+          return `
+            <tr>
+              <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">${escapeHtml(g.genset_no)}</td>
+              <td style="font-weight:600;">${escapeHtml(g.current_station)}</td>
+              <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11px;">${g.capacity_kva ? escapeHtml(g.capacity_kva) + ' kVA' : '—'}</td>
+              <td><span class="kpi-badge-pill ${badgeCls}">● ${escapeHtml(g.status)}</span></td>
+              <td style="font-size:11px; color:var(--text-muted);">
+                ${latestLog ? `${escapeHtml(latestLog.event_type)} <span style="font-family:var(--font-mono); font-size:9.5px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
+              </td>
+              <td style="text-align:right; white-space:nowrap;">
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="openEditModal(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">Edit</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="selectGensetForEdit(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">Log Action</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" data-no="${escapeHtml(g.genset_no)}" onclick="deleteGenset(this.dataset.id, this.dataset.no)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">Delete</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red); font-family:var(--font-mono);">${err.message}</td></tr>`;
+      }
+    }
+
+    function selectGensetForEdit(id) {
+      switchGensetView('log');
+      const unitSel = document.getElementById("gs-select-unit");
+      unitSel.value = id;
+      onGensetUnitSelected(id);
+      document.getElementById("form-genset-log").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function onGensetUnitSelected(id) {
+      const g = fleet.find(item => item.id === id);
+      if (!g) return;
+      document.getElementById("gs-select-station").value = g.current_station;
+      document.getElementById("gs-select-status").value = g.status;
+    }
+
+    function switchGensetView(view) {
+      const formLog = document.getElementById("form-genset-log");
+      const formCreate = document.getElementById("form-genset-create");
+      const btnLog = document.getElementById("tab-btn-log");
+      const btnCreate = document.getElementById("tab-btn-create");
+
+      if (view === 'log') {
+        formLog.style.display = "block";
+        formCreate.style.display = "none";
+        btnLog.classList.add("active");
+        btnCreate.classList.remove("active");
+      } else {
+        formLog.style.display = "none";
+        formCreate.style.display = "block";
+        btnCreate.classList.add("active");
+        btnLog.classList.remove("active");
+      }
+    }
+
+    function notify(text, isError = false) {
+      const box = document.getElementById("gs-alert-box");
+      box.style.display = "block";
+      box.style.background = isError ? "var(--red-light)" : "var(--green-light)";
+      box.style.border = isError ? "1px solid var(--red-border)" : "1px solid var(--green-border)";
+      box.style.color = isError ? "var(--red)" : "var(--green)";
+      box.textContent = text;
+      setTimeout(() => { box.style.display = "none"; }, 4500);
+    }
+
+    async function submitGensetAction(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-submit-log");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Update failed.");
+
+        notify(data.message || "Genset action saved!");
+        e.target.reset();
+        document.getElementById("gs-serviced-date").value = new Date().toISOString().split('T')[0];
+        await fetchGensetFleet();
+      } catch (err) {
+        notify(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save & Log Generator Action";
+      }
+    }
+
+    async function submitNewGenset(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-submit-create");
+      btn.disabled = true;
+      btn.textContent = "Registering...";
+
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const text = await res.text();
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (errParse) {
+          throw new Error(`Server returned status ${res.status}: ${text.slice(0, 100)}`);
+        }
+
+        if (!res.ok) throw new Error(data.error || "Registration failed.");
+
+        notify(data.message || "Generator unit added!");
+        e.target.reset();
+        switchGensetView('log');
+        await fetchGensetFleet();
+      } catch (err) {
+        notify(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "+ Register Unit into Fleet";
+      }
+    }
+
+    function openEditModal(id) {
+      const g = fleet.find(item => item.id === id);
+      if (!g) return;
+      document.getElementById("edit-gs-id").value = g.id;
+      document.getElementById("edit-gs-no").value = g.genset_no;
+      document.getElementById("edit-gs-model").value = g.brand_model || "";
+      document.getElementById("edit-gs-kva").value = g.capacity_kva || "";
+      document.getElementById("edit-gs-fuel").value = g.fuel_capacity_liters || "";
+      document.getElementById("edit-gs-station").value = g.current_station;
+      document.getElementById("edit-gs-status").value = g.status;
+      document.getElementById("edit-genset-modal").style.display = "flex";
+    }
+
+    function closeEditModal() {
+      document.getElementById("edit-genset-modal").style.display = "none";
+    }
+
+    async function submitEditGenset(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-save-edit");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+      payload.action = "edit_details";
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to update specs.");
+
+        notify(data.message || "Generator updated!");
+        closeEditModal();
+        await fetchGensetFleet();
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save Changes";
+      }
+    }
+
+    async function deleteGenset(id, no) {
+      if (!confirm(`Are you sure you want to permanently delete generator "${no}"? This will remove all associated service logs.`)) return;
+
+      try {
+        const res = await fetch('/api/updateGenset', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete_genset', genset_id: id })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Delete failed.");
+        notify(`Generator ${no} deleted.`);
+        await fetchGensetFleet();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
+    // ── PORTAL SECTION SWITCHER ──
+    function switchPortalSection(sec) {
+      const gensetsSec = document.getElementById('section-gensets');
+      const complaintsSec = document.getElementById('section-complaints');
+      const riverflowSec = document.getElementById('section-riverflow');
+      const productionSec = document.getElementById('section-production');
+      const monthlySec = document.getElementById('section-monthly');
+      const btnGensets = document.getElementById('sidebar-btn-gensets');
+      const btnComplaints = document.getElementById('sidebar-btn-complaints');
+      const btnRiverflow = document.getElementById('sidebar-btn-riverflow');
+      const btnProduction = document.getElementById('sidebar-btn-production');
+      const btnMonthly = document.getElementById('sidebar-btn-monthly');
+      const pTitle = document.getElementById('portal-title');
+      const pSub = document.getElementById('portal-subtitle');
+
+      // Hide all sections first
+      gensetsSec.style.display = 'none';
+      complaintsSec.style.display = 'none';
+      if (riverflowSec) riverflowSec.style.display = 'none';
+      if (productionSec) productionSec.style.display = 'none';
+      if (monthlySec) monthlySec.style.display = 'none';
+      btnGensets.classList.remove('active');
+      btnComplaints.classList.remove('active');
+      if (btnRiverflow) btnRiverflow.classList.remove('active');
+      if (btnProduction) btnProduction.classList.remove('active');
+      if (btnMonthly) btnMonthly.classList.remove('active');
+
+      if (sec === 'monthly') {
+        if (monthlySec) monthlySec.style.display = 'block';
+        if (btnMonthly) btnMonthly.classList.add('active');
+        if (pTitle) pTitle.textContent = "Monthly Production Volumetric Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Production Division &bull; 34-Station Monthly Utilization Telemetry`;
+        window.location.hash = 'monthly';
+        initMonthlyPortal();
+      } else if (sec === 'production') {
+        if (productionSec) productionSec.style.display = 'block';
+        if (btnProduction) btnProduction.classList.add('active');
+        if (pTitle) pTitle.textContent = "Weekly Production Monitoring Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Production Division &bull; Groundwater &amp; Surface Water Telemetry`;
+        window.location.hash = 'production';
+        initProductionPortal();
+      } else if (sec === 'complaints') {
+        complaintsSec.style.display = 'block';
+        btnComplaints.classList.add('active');
+        if (pTitle) pTitle.textContent = "Customer Complaints Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block;"></span> Service Incidents Ingestion &bull; Direct Supabase Telemetry`;
+        window.location.hash = 'complaints';
+        fetchComplaintsList();
+        setupComplaintFormatters();
+      } else if (sec === 'riverflow') {
+        if (riverflowSec) riverflowSec.style.display = 'block';
+        if (btnRiverflow) btnRiverflow.classList.add('active');
+        if (pTitle) pTitle.textContent = "River Hydrology Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Environment & Water Resources &bull; Weekly Streamflow (m³/day)`;
+        window.location.hash = 'riverflow';
+        initRiverflowPortal();
+      } else {
+        gensetsSec.style.display = 'block';
+        btnGensets.classList.add('active');
+        if (pTitle) pTitle.textContent = "Operations & Asset Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit`;
+        window.location.hash = 'gensets';
+      }
+
+      if (window.innerWidth <= 820) {
+        document.getElementById('app-sidebar').classList.remove('open');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (bd) bd.classList.remove('active');
+      }
+    }
+
+    // ── COMPLAINTS MANAGEMENT ──
+    let complaintsList = [];
+    let parsedBulkRows = [];
+
+    function switchComplaintView(view) {
+      const singleForm = document.getElementById('form-complaint-single');
+      const bulkPanel = document.getElementById('comp-bulk-panel');
+      const btnSingle = document.getElementById('tab-btn-comp-single');
+      const btnBulk = document.getElementById('tab-btn-comp-bulk');
+
+      if (view === 'bulk') {
+        singleForm.style.display = 'none';
+        bulkPanel.style.display = 'block';
+        btnSingle.classList.remove('active');
+        btnBulk.classList.add('active');
+      } else {
+        singleForm.style.display = 'block';
+        bulkPanel.style.display = 'none';
+        btnSingle.classList.add('active');
+        btnBulk.classList.remove('active');
+      }
+    }
+
+    function notifyComp(msg, isErr = false) {
+      const box = document.getElementById("comp-alert-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.style.display = "block";
+      box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
+      setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
+    }
+
+    // ── OFFICIAL BARANGAYS LOOKUP ──
+    function getOfficialBarangaysSet() {
+      const opts = document.querySelectorAll('#barangay-datalist option');
+      const set = new Set();
+      opts.forEach(o => {
+        if (o.value) set.add(o.value.trim());
+      });
+      return set;
+    }
+
+    // ── AUTOMATIC FORMATTERS FOR COMPLAINTS (Stubout: S#-####, Account: ###-####) ──
+    function setupComplaintFormatters() {
+      const stubInput = document.getElementById('comp-stubout');
+      const acctInput = document.getElementById('comp-account');
+
+      if (stubInput && !stubInput.dataset.formatterBound) {
+        stubInput.dataset.formatterBound = 'true';
+
+        // Keyboard handler for Backspace past the auto-dash
+        stubInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            const pos = stubInput.selectionStart;
+            const end = stubInput.selectionEnd;
+            // When cursor is right after the dash (e.g. "S1-"), 1 backspace drops back to "S"
+            if (pos === end && pos === 3 && /^S\d-$/.test(stubInput.value)) {
+              e.preventDefault();
+              stubInput.value = 'S';
+              stubInput.setSelectionRange(1, 1);
+            }
+          }
+        });
+
+        stubInput.addEventListener('input', (e) => {
+          const isDelete = e.inputType === 'deleteContentBackward';
+          let val = stubInput.value.toUpperCase();
+
+          if (!val) {
+            stubInput.value = '';
+            return;
+          }
+
+          // Handle mobile Backspace where browser left "S1" after deleting "-"
+          if (isDelete && /^S\d$/.test(val)) {
+            stubInput.value = 'S';
+            stubInput.setSelectionRange(1, 1);
+            return;
+          }
+
+          // Just 'S'
+          if (val === 'S') {
+            stubInput.value = 'S';
+            return;
+          }
+
+          // Strip non-digits to get the zone and stubout numbers
+          const digits = val.replace(/\D/g, '');
+          if (!digits) {
+            stubInput.value = val.startsWith('S') ? 'S' : '';
+            return;
+          }
+
+          const zone = digits[0];
+          const rest = digits.slice(1, 5); // 1 to 4 numbers after the dash
+
+          let formatted = '';
+          if (rest.length > 0) {
+            formatted = `S${zone}-${rest}`;
+          } else {
+            // User entered the first number after S
+            if (isDelete && !val.includes('-')) {
+              formatted = `S${zone}`;
+            } else {
+              formatted = `S${zone}-`;
+            }
+          }
+
+          stubInput.value = formatted;
+        });
+
+        stubInput.addEventListener('blur', () => {
+          // Clean stray "S" or trailing dash when user leaves field
+          if (stubInput.value === 'S') {
+            stubInput.value = '';
+          } else if (stubInput.value.endsWith('-')) {
+            stubInput.value = stubInput.value.slice(0, -1);
+          }
+        });
+      }
+
+      if (acctInput && !acctInput.dataset.formatterBound) {
+        acctInput.dataset.formatterBound = 'true';
+
+        // Keyboard handler for Backspace past the auto-dash
+        acctInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            const pos = acctInput.selectionStart;
+            const end = acctInput.selectionEnd;
+            // When cursor is right after the dash (e.g. "123-"), 1 backspace removes 3rd digit and dash
+            if (pos === end && pos === 4 && /^\d{3}-$/.test(acctInput.value)) {
+              e.preventDefault();
+              acctInput.value = acctInput.value.slice(0, 2);
+              acctInput.setSelectionRange(2, 2);
+            }
+          }
+        });
+
+        acctInput.addEventListener('input', (e) => {
+          const isDelete = e.inputType === 'deleteContentBackward';
+          let val = acctInput.value;
+
+          if (!val) {
+            acctInput.value = '';
+            return;
+          }
+
+          // Handle mobile Backspace where browser left "123" after deleting "-"
+          if (isDelete && /^\d{3}$/.test(val)) {
+            acctInput.value = val.slice(0, 2);
+            return;
+          }
+
+          // Strip non-digits, max 7 digits (3 before dash, 4 after dash)
+          const digits = val.replace(/\D/g, '').slice(0, 7);
+          if (!digits) {
+            acctInput.value = '';
+            return;
+          }
+
+          let formatted = '';
+          if (digits.length > 3) {
+            formatted = digits.slice(0, 3) + '-' + digits.slice(3);
+          } else if (digits.length === 3) {
+            if (isDelete && !val.endsWith('-')) {
+              formatted = digits;
+            } else {
+              formatted = digits + '-';
+            }
+          } else {
+            formatted = digits;
+          }
+
+          acctInput.value = formatted;
+        });
+
+        acctInput.addEventListener('blur', () => {
+          if (acctInput.value.endsWith('-')) {
+            acctInput.value = acctInput.value.slice(0, -1);
+          }
+        });
+      }
+
+      const brgyInput = document.getElementById('comp-barangay');
+      if (brgyInput && !brgyInput.dataset.formatterBound) {
+        brgyInput.dataset.formatterBound = 'true';
+        brgyInput.addEventListener('input', () => {
+          brgyInput.style.borderColor = '';
+          const start = brgyInput.selectionStart;
+          const end = brgyInput.selectionEnd;
+          brgyInput.value = brgyInput.value.toUpperCase();
+          if (start !== null && end !== null) {
+            brgyInput.setSelectionRange(start, end);
+          }
+        });
+
+        brgyInput.addEventListener('change', () => {
+          const val = brgyInput.value.trim();
+          const validSet = getOfficialBarangaysSet();
+          if (val && !validSet.has(val)) {
+            brgyInput.style.borderColor = 'var(--red, #EF4444)';
+          } else {
+            brgyInput.style.borderColor = '';
+          }
+        });
+      }
+    }
+
+    async function submitSingleComplaint(e) {
+      e.preventDefault();
+      const form = e.target;
+      const fd = new FormData(form);
+      const rawStubout = (fd.get('stubout_number') || fd.get('stub_out_no') || '').trim();
+      const rawAccount = (fd.get('account_number') || '').trim();
+      const cleanBrgy = (fd.get('barangay') || '').trim();
+      const brgyInput = document.getElementById('comp-barangay');
+
+      // Case-sensitive validation against official barangay listing
+      const validSet = getOfficialBarangaysSet();
+      if (!cleanBrgy) {
+        notifyComp("Please enter a Barangay.", true);
+        if (brgyInput) { brgyInput.focus(); brgyInput.style.borderColor = 'var(--red, #EF4444)'; }
+        return;
+      }
+
+      if (!validSet.has(cleanBrgy)) {
+        notifyComp(`Error: "${cleanBrgy}" is not recognized in the official Barangay listings. Submission rejected.`, true);
+        if (brgyInput) {
+          brgyInput.focus();
+          brgyInput.style.borderColor = 'var(--red, #EF4444)';
+        }
+        return;
+      }
+
+      const btn = document.getElementById("btn-save-complaint");
+      btn.disabled = true;
+      btn.textContent = "Saving to Supabase...";
+
+      const cleanStubout = rawStubout === 'S' ? '' : rawStubout.replace(/-$/, '');
+      const cleanAccount = rawAccount.replace(/-$/, '');
+
+      const payload = {
+        action: 'create',
+        record: {
+          date: fd.get('date'),
+          barangay: cleanBrgy,
+          stub_out_no: cleanStubout,
+          account_number: cleanAccount,
+          type: fd.get('type'),
+          complaint_count: fd.get('complaint_count'),
+          consumer_remarks: fd.get('consumer_remarks')
+        }
+      };
+
+      try {
+        const res = await fetch('/api/saveComplaints', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save complaint.');
+
+        notifyComp(`Complaint recorded for ${payload.record.barangay}!`);
+        form.reset();
+        document.getElementById("comp-date").value = new Date().toISOString().split('T')[0];
+        document.getElementById("comp-count").value = 1;
+        await fetchComplaintsList();
+      } catch (err) {
+        notifyComp(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "+ Save Incident to Supabase";
+      }
+    }
+
+    function populateSamplePaste() {
+      const today = new Date().toISOString().split('T')[0];
+      const sample = `${today}\tS1-0014\tNo Water\tSAN PEDRO\t123-4567\t1\n${today}\tS2-0022\tLow Pressure\tSTA MONICA\t234-5678\t2\n${today}\tS1-0008\tNo Water\tSAN JOSE\t345-6789\t1`;
+      document.getElementById('comp-bulk-input').value = sample;
+    }
+
+    function parseBulkComplaints() {
+      const text = document.getElementById('comp-bulk-input').value.trim();
+      if (!text) {
+        alert("Please paste data rows into the box first.");
+        return;
+      }
+
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      parsedBulkRows = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (i === 0 && (line.toLowerCase().includes('date') || line.toLowerCase().includes('stubout'))) {
+          continue;
+        }
+
+        let parts = line.includes('\t') ? line.split('\t') : line.split(',');
+        parts = parts.map(p => p.trim().replace(/^["']|["']$/g, ''));
+
+        if (parts.length >= 2) {
+          // Expected: Date | Stubout | Type | Barangay | Account | Count
+          const date = parts[0] || new Date().toISOString().split('T')[0];
+          const stubout = parts[1] || '';
+          const type = parts[2] || 'No Water';
+          const barangay = parts[3] || 'UNKNOWN';
+          const account = parts[4] || '';
+          const count = parseInt(parts[5], 10) || 1;
+
+          parsedBulkRows.push({
+            date,
+            stub_out_no: stubout,
+            type,
+            barangay: barangay.toUpperCase(),
+            account_number: account,
+            complaint_count: count
+          });
+        }
+      }
+
+      if (parsedBulkRows.length === 0) {
+        alert("Could not parse any valid rows. Please check format.");
+        return;
+      }
+
+      document.getElementById('comp-preview-count').textContent = parsedBulkRows.length;
+      const validSet = getOfficialBarangaysSet();
+      let hasUnlisted = false;
+      document.getElementById('comp-preview-tbody').innerHTML = parsedBulkRows.map(r => {
+        const isListed = validSet.has(r.barangay);
+        if (!isListed) hasUnlisted = true;
+        return `
+        <tr>
+          <td class="mono">${escapeHtml(r.date)}</td>
+          <td><b style="${isListed ? '' : 'color:var(--red); font-weight:700;'}">${escapeHtml(r.barangay)}</b> ${isListed ? '' : '<span style="font-size:10px; color:var(--red); font-weight:700;">[UNLISTED]</span>'}</td>
+          <td class="mono">${escapeHtml(r.stub_out_no || r.stubout_number || '—')}</td>
+          <td class="mono">${escapeHtml(r.account_number || '—')}</td>
+          <td><span class="kpi-badge-pill ${r.type === 'No Water' ? 'pill-red' : 'pill-amber'}">${escapeHtml(r.type)}</span></td>
+          <td style="text-align:right;" class="mono">${parseInt(r.complaint_count, 10) || 1}</td>
+        </tr>
+      `;
+      }).join('');
+
+      if (hasUnlisted) {
+        notifyComp("Warning: One or more rows contain an unlisted Barangay name. Please check highlighted rows.", true);
+      }
+
+      document.getElementById('comp-preview-container').style.display = 'block';
+    }
+
+    async function uploadBulkComplaints() {
+      if (!parsedBulkRows.length) return;
+      const validSet = getOfficialBarangaysSet();
+      const invalidRows = parsedBulkRows.filter(r => !validSet.has(r.barangay));
+      if (invalidRows.length > 0) {
+        const samples = invalidRows.slice(0, 3).map(r => `"${r.barangay}"`).join(', ');
+        notifyComp(`Cannot upload: Found unlisted Barangay(s) (${samples}). All rows must match the official Barangay listing.`, true);
+        return;
+      }
+
+      const btn = document.getElementById('btn-upload-bulk-complaints');
+      btn.disabled = true;
+      btn.textContent = `Uploading ${parsedBulkRows.length} Rows...`;
+
+      try {
+        const res = await fetch('/api/saveComplaints', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            action: 'bulk',
+            records: parsedBulkRows
+          })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Bulk upload failed.');
+
+        notifyComp(`Successfully uploaded ${data.count || parsedBulkRows.length} complaints!`);
+        document.getElementById('comp-bulk-input').value = '';
+        document.getElementById('comp-preview-container').style.display = 'none';
+        parsedBulkRows = [];
+        await fetchComplaintsList();
+      } catch (err) {
+        notifyComp(err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Upload All to Supabase";
+      }
+    }
+
+    async function fetchComplaintsList() {
+      const tbody = document.getElementById('comp-ledger-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = `<tr><td colspan="8" style="padding:20px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Refreshing records from Supabase...</td></tr>`;
+
+      try {
+        const res = await fetch('/api/getComplaints');
+        if (!res.ok) throw new Error('Could not load complaints.');
+        complaintsList = await res.json();
+        renderComplaintsTable(complaintsList);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="padding:20px; text-align:center; color:var(--red); font-family:var(--font-mono);">Error: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderComplaintsTable(list) {
+      const tbody = document.getElementById('comp-ledger-tbody');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No complaint records found in database.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.slice(0, 100).map(c => {
+        const typeClass = c.type === 'No Water' ? 'pill-red' : (c.type === 'Low Pressure' ? 'pill-amber' : 'pill-green');
+        const stubout = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '—';
+        const account = c.account_number || c.account_no || '—';
+        const count = parseInt(c.complaint_count, 10) || 1;
+        const remarks = c.consumer_remarks || c.remarks || '—';
+        const recordKey = c.jo_number || c.id;
+
+        return `
+          <tr>
+            <td class="mono" style="white-space:nowrap;">${escapeHtml(c.date || '—')}</td>
+            <td><strong>${escapeHtml(c.barangay || 'UNKNOWN')}</strong></td>
+            <td class="mono">${escapeHtml(stubout)}</td>
+            <td class="mono">${escapeHtml(account)}</td>
+            <td><span class="kpi-badge-pill ${typeClass}">${escapeHtml(c.type || 'Unclassified')}</span></td>
+            <td style="text-align:right; font-weight:700;" class="mono">${count}</td>
+            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(remarks)}">${escapeHtml(remarks)}</td>
+            <td style="text-align:right;">
+              ${recordKey ? `<button type="button" data-key="${escapeHtml(recordKey)}" onclick="deleteComplaintRecord(this.dataset.key)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer;" title="Delete this entry">Delete</button>` : ''}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterComplaintsTable() {
+      const q = (document.getElementById('comp-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderComplaintsTable(complaintsList);
+        return;
+      }
+      const filtered = complaintsList.filter(c => {
+        const b = (c.barangay || '').toLowerCase();
+        const s = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '').toLowerCase();
+        const a = (c.account_number || c.account_no || '').toLowerCase();
+        const t = (c.type || '').toLowerCase();
+        const jo = (c.jo_number || '').toLowerCase();
+        return b.includes(q) || s.includes(q) || a.includes(q) || t.includes(q) || jo.includes(q);
+      });
+      renderComplaintsTable(filtered);
+    }
+
+    async function deleteComplaintRecord(id) {
+      if (!confirm("Are you sure you want to permanently delete this complaint record from Supabase?")) return;
+
+      try {
+        const res = await fetch('/api/saveComplaints', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete', id })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+
+        notifyComp("Record deleted successfully.");
+        await fetchComplaintsList();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
+    // ── RIVER HYDROLOGY MANAGEMENT ──
+    const DEFAULT_RIVER_STATIONS = [
+      { name: "Montible Teruvian", col: 2, group: "City / Primary Sources" },
+      { name: "Montible Bridge 1", col: 3, group: "City / Primary Sources" },
+      { name: "Upper Montible", col: 4, group: "City / Primary Sources" },
+      { name: "Lapu Lapu Upstream", col: 5, group: "City / Primary Sources" },
+      { name: "Lapu Lapu Downstream", col: 6, group: "City / Primary Sources" },
+      { name: "Sta. Lucia", col: 7, group: "Satellite South" },
+      { name: "Santiago", col: 8, group: "Satellite South" },
+      { name: "Campo Uno", col: 9, group: "City / Primary Sources" },
+      { name: "Binuan", col: 10, group: "Satellite South" },
+      { name: "Napsan", col: 11, group: "Satellite South" },
+      { name: "San Rafael", col: 12, group: "Satellite North" },
+      { name: "Binduyan", col: 13, group: "Satellite North" },
+      { name: "Bacungan", col: 14, group: "Satellite North" },
+      { name: "Langogan Downstream", col: 15, group: "Satellite North" },
+      { name: "San Rafael Downstream", col: 16, group: "Satellite North" },
+      { name: "Maoyon", col: 17, group: "Satellite North" },
+      { name: "Tanabag Downstream", col: 18, group: "Satellite North" },
+      { name: "Olangoan Downstream", col: 19, group: "Satellite North" },
+      { name: "Maranat II", col: 20, group: "Satellite South" }
+    ];
+
+    let RIVER_STATIONS = [...DEFAULT_RIVER_STATIONS];
+    let riverflowHistory = [];
+
+    // Local cached river stations initialization
+    try {
+      const cached = localStorage.getItem('ppcwd_river_stations');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length >= DEFAULT_RIVER_STATIONS.length) {
+          RIVER_STATIONS = parsed;
+        }
+      }
+    } catch(e) {}
+
+    function notifyRf(msg, isErr = false) {
+      const box = document.getElementById("rf-alert-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.style.display = "block";
+      box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
+      setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
+    }
+
+    async function loadRiverStations() {
+      try {
+        const res = await fetch('/api/getRiverFlow?type=stations');
+        if (res.ok) {
+          const stations = await res.json();
+          if (Array.isArray(stations) && stations.length > 0) {
+            RIVER_STATIONS = stations;
+            localStorage.setItem('ppcwd_river_stations', JSON.stringify(stations));
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load dynamic river stations, using cached/default stations:", err);
+      }
+      const hCount = document.getElementById("rf-header-count");
+      if (hCount) hCount.textContent = RIVER_STATIONS.length;
+    }
+
+    async function initRiverflowPortal() {
+      const dateInput = document.getElementById("rf-date");
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+      await loadRiverStations();
+      await fetchRiverflowHistory();
+      renderRiverEntryTable();
+      if (dateInput) onRiverDateChange(dateInput.value);
+    }
+
+    // Modal controls for adding a new monitored river
+    function openAddRiverModal() {
+      const modal = document.getElementById('modal-add-river');
+      if (modal) {
+        modal.style.display = 'flex';
+        const nameInp = document.getElementById('modal-river-name');
+        if (nameInp) { nameInp.value = ''; nameInp.focus(); }
+        const errEl = document.getElementById('modal-river-error');
+        if (errEl) errEl.style.display = 'none';
+      }
+    }
+
+    function closeAddRiverModal() {
+      const modal = document.getElementById('modal-add-river');
+      if (modal) modal.style.display = 'none';
+    }
+
+    async function submitAddRiverModal() {
+      const nameInp = document.getElementById('modal-river-name');
+      const groupInp = document.getElementById('modal-river-group');
+      const errEl = document.getElementById('modal-river-error');
+      const btn = document.getElementById('btn-submit-add-river');
+
+      const name = nameInp ? nameInp.value.trim() : '';
+      const group = groupInp ? groupInp.value : 'Satellite Other';
+
+      if (!name) {
+        if (errEl) { errEl.textContent = 'Please enter a river station name.'; errEl.style.display = 'block'; }
+        return;
+      }
+
+      if (RIVER_STATIONS.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+        if (errEl) { errEl.textContent = `A monitored river named "${name}" already exists.`; errEl.style.display = 'block'; }
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving to Supabase...'; }
+
+      try {
+        const res = await fetch('/api/saveRiverFlow', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'add_station', name, group })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save river station.');
+
+        if (Array.isArray(data.stations)) {
+          RIVER_STATIONS = data.stations;
+        } else if (data.newStation) {
+          RIVER_STATIONS.push(data.newStation);
+        }
+        localStorage.setItem('ppcwd_river_stations', JSON.stringify(RIVER_STATIONS));
+
+        const hCount = document.getElementById("rf-header-count");
+        if (hCount) hCount.textContent = RIVER_STATIONS.length;
+
+        closeAddRiverModal();
+        renderRiverEntryTable();
+        calculateRiverTotals();
+        notifyRf(`River "${name}" added to monitored rivers list and synced to Supabase!`);
+      } catch (err) {
+        if (errEl) { errEl.textContent = err.message; errEl.style.display = 'block'; }
+        notifyRf(err.message, true);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Add River'; }
+      }
+    }
+
+    async function deleteRiverStation(col, name) {
+      if (!confirm(`Are you sure you want to remove "${name}" from monitored rivers?\n\nThis will remove it from future weekly entries and dashboard telemetry.`)) return;
+
+      try {
+        const res = await fetch('/api/saveRiverFlow', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete_station', col })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to remove river station.');
+
+        if (Array.isArray(data.stations)) {
+          RIVER_STATIONS = data.stations;
+        } else {
+          RIVER_STATIONS = RIVER_STATIONS.filter(s => s.col !== col);
+        }
+        localStorage.setItem('ppcwd_river_stations', JSON.stringify(RIVER_STATIONS));
+
+        const hCount = document.getElementById("rf-header-count");
+        if (hCount) hCount.textContent = RIVER_STATIONS.length;
+
+        renderRiverEntryTable();
+        calculateRiverTotals();
+        notifyRf(`Removed "${name}" from monitored rivers.`);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    // ── AUTOMATIC COMMA & NUMERIC FORMATTING HELPERS ──
+    function formatNumberWithCommas(val) {
+      if (val === undefined || val === null || val === '') return '';
+      const str = String(val).replace(/,/g, '').trim();
+      if (str === '' || isNaN(str)) return str;
+      const parts = str.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.slice(0, 2).join('.');
+    }
+
+    function onRiverNumberInput(input) {
+      const original = input.value;
+      const cursor = input.selectionStart || 0;
+      const rawBefore = original.slice(0, cursor).replace(/,/g, '');
+
+      // Allow digits and at most one decimal point
+      let clean = original.replace(/[^0-9.]/g, '');
+      const parts = clean.split('.');
+      if (parts.length > 2) {
+        clean = parts[0] + '.' + parts.slice(1).join('');
+      }
+
+      if (clean === '' || clean === '.') {
+        input.value = clean;
+        calculateRiverTotals();
+        return;
+      }
+
+      const segs = clean.split('.');
+      segs[0] = segs[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const formatted = segs.join('.');
+      input.value = formatted;
+
+      // Restore accurate cursor position without jumps
+      let newPos = 0;
+      let count = 0;
+      for (let i = 0; i < formatted.length; i++) {
+        if (formatted[i] !== ',') count++;
+        if (count === rawBefore.length) {
+          newPos = i + 1;
+          break;
+        }
+      }
+      input.setSelectionRange(newPos, newPos);
+      calculateRiverTotals();
+    }
+
+    function onRiverNumberBlur(input) {
+      if (!input.value.trim()) return;
+      const num = parseFloat(input.value.replace(/,/g, ''));
+      if (!isNaN(num)) {
+        input.value = num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        calculateRiverTotals();
+      }
+    }
+
+    async function fetchRiverflowHistory() {
+      const tbody = document.getElementById('rf-ledger-tbody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase river telemetry...</td></tr>`;
+      }
+
+      try {
+        const res = await fetch('/api/getRiverFlow');
+        if (!res.ok) throw new Error('Could not fetch river flow data.');
+        riverflowHistory = await res.json();
+        renderRiverflowLedger(riverflowHistory);
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; text-align:center; color:var(--red); font-family:var(--font-mono);">Error: ${err.message}</td></tr>`;
+        }
+      }
+    }
+
+    function renderRiverEntryTable() {
+      const tbody = document.getElementById("rf-entry-tbody");
+      if (!tbody) return;
+
+      const currentDate = document.getElementById("rf-date")?.value || "";
+
+      // Find baseline record (most recent record with a recorded_date strictly before current selected date)
+      const priorRecords = riverflowHistory
+        .filter(r => r.recorded_date && r.recorded_date < currentDate)
+        .sort((a, b) => new Date(b.recorded_date) - new Date(a.recorded_date));
+      const priorRecord = priorRecords.length > 0 ? priorRecords[0] : (riverflowHistory[0] || null);
+
+      const hCount = document.getElementById("rf-header-count");
+      if (hCount) hCount.textContent = RIVER_STATIONS.length;
+
+      tbody.innerHTML = RIVER_STATIONS.map((s, idx) => {
+        // Group badge
+        const isCity = s.group.includes("City");
+        const isNorth = s.group.includes("North");
+        const groupBadgeClass = isCity ? "pill-blue" : (isNorth ? "pill-teal" : "pill-amber");
+        const isCustom = s.isCustom || s.col > 20;
+
+        // Previous reading reference
+        let prevText = "—";
+        if (priorRecord && Array.isArray(priorRecord.readings)) {
+          const prevVal = priorRecord.readings[s.col];
+          if (prevVal !== null && prevVal !== undefined && prevVal !== "") {
+            const formattedVal = parseFloat(prevVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const dateLabel = priorRecord.recorded_date || priorRecord.readings[1] || "";
+            prevText = `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${dateLabel}:</span> <b style="font-family:var(--font-mono); font-size:11px; color:var(--teal);">${formattedVal}</b>`;
+          }
+        }
+
+        return `
+          <tr>
+            <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${idx + 1}</td>
+            <td>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+                <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${escapeHtml(s.name)}</div>
+                ${isCustom ? `<button type="button" onclick="deleteRiverStation(${s.col}, '${escapeHtml(s.name)}')" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:4px; font-size:9.5px; padding:1px 6px; cursor:pointer;" title="Remove this river station">Remove</button>` : ''}
+              </div>
+              ${isCustom ? `<span style="font-size:9.5px; color:var(--teal); font-weight:700;">Newly Monitored River</span>` : ''}
+            </td>
+            <td>
+              <span class="kpi-badge-pill ${groupBadgeClass}" style="font-size:10px;">${escapeHtml(s.group)}</span>
+            </td>
+            <td>${prevText}</td>
+            <td>
+              <input type="text" inputmode="decimal" class="form-input rf-input-val" id="rf-val-${s.col}" data-col="${s.col}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onRiverNumberInput(this)" onblur="onRiverNumberBlur(this)">
+            </td>
+            <td>
+              <input type="text" class="form-input rf-input-rem" id="rf-rem-${s.col}" data-col="${s.col}" list="river-remarks-datalist" placeholder="Optional notes...">
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      calculateRiverTotals();
+    }
+
+    function calculateRiverTotals() {
+      let total = 0;
+      let count = 0;
+      const inputs = document.querySelectorAll('.rf-input-val');
+
+      inputs.forEach(inp => {
+        const raw = inp.value.replace(/,/g, '').trim();
+        const val = parseFloat(raw);
+        if (!isNaN(val) && raw !== '') {
+          total += val;
+          count++;
+        }
+      });
+
+      const totalEl = document.getElementById("rf-kpi-total");
+      const countEl = document.getElementById("rf-kpi-count");
+
+      if (totalEl) {
+        totalEl.textContent = `${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³/day`;
+      }
+      if (countEl) {
+        countEl.textContent = `${count} / ${RIVER_STATIONS.length}`;
+        countEl.style.color = count === RIVER_STATIONS.length ? "var(--green)" : "var(--text-main)";
+      }
+    }
+
+    function onRiverDateChange(val) {
+      if (!val) return;
+      renderRiverEntryTable();
+
+      // Check if this date already exists in history
+      const existing = riverflowHistory.find(r => r.recorded_date === val);
+      const statusEl = document.getElementById("rf-cycle-status");
+
+      if (existing && Array.isArray(existing.readings)) {
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--amber); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Existing record loaded (${val}) &bull; Ready to update</span>`;
+        }
+        // Fill values from existing record with proper comma formatting
+        RIVER_STATIONS.forEach(s => {
+          const inp = document.getElementById(`rf-val-${s.col}`);
+          if (inp && existing.readings[s.col] !== null && existing.readings[s.col] !== undefined) {
+            inp.value = formatNumberWithCommas(existing.readings[s.col]);
+          }
+        });
+        calculateRiverTotals();
+      } else {
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--teal); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Ready for new weekly entry (${val})</span>`;
+        }
+      }
+    }
+
+    function clearRiverflowForm() {
+      RIVER_STATIONS.forEach(s => {
+        const inp = document.getElementById(`rf-val-${s.col}`);
+        const rem = document.getElementById(`rf-rem-${s.col}`);
+        if (inp) inp.value = "";
+        if (rem) rem.value = "";
+      });
+      calculateRiverTotals();
+      notifyRf("Form cleared.");
+    }
+
+    function loadPreviousRiverReadings() {
+      const currentDate = document.getElementById("rf-date")?.value || "";
+      const priorRecords = riverflowHistory
+        .filter(r => r.recorded_date && r.recorded_date < currentDate)
+        .sort((a, b) => new Date(b.recorded_date) - new Date(a.recorded_date));
+      const priorRecord = priorRecords.length > 0 ? priorRecords[0] : (riverflowHistory[0] || null);
+
+      if (!priorRecord || !Array.isArray(priorRecord.readings)) {
+        alert("No previous river flow records found in Supabase.");
+        return;
+      }
+
+      let loadedCount = 0;
+      RIVER_STATIONS.forEach(s => {
+        const prevVal = priorRecord.readings[s.col];
+        const inp = document.getElementById(`rf-val-${s.col}`);
+        if (inp && prevVal !== null && prevVal !== undefined && prevVal !== "") {
+          inp.value = formatNumberWithCommas(prevVal);
+          loadedCount++;
+        }
+      });
+
+      calculateRiverTotals();
+      notifyRf(`Loaded ${loadedCount} baseline readings from ${priorRecord.recorded_date || priorRecord.readings[1]}!`);
+    }
+
+    async function submitRiverflow(e) {
+      if (e) e.preventDefault();
+      const dateInput = document.getElementById("rf-date");
+      const recorded_date = dateInput?.value;
+
+      if (!recorded_date) {
+        alert("Please select a Measurement Date.");
+        dateInput?.focus();
+        return;
+      }
+
+      const btn1 = document.getElementById("btn-save-riverflow");
+      const btn2 = document.getElementById("btn-save-riverflow-bottom");
+      if (btn1) { btn1.disabled = true; btn1.textContent = "Saving to Supabase..."; }
+      if (btn2) { btn2.disabled = true; btn2.textContent = "Saving to Supabase..."; }
+
+      const readings_map = {};
+      let hasReadings = false;
+
+      RIVER_STATIONS.forEach(s => {
+        const inp = document.getElementById(`rf-val-${s.col}`);
+        if (inp && inp.value.trim() !== '') {
+          const numVal = parseFloat(inp.value.replace(/,/g, ''));
+          readings_map[s.col] = isNaN(numVal) ? null : numVal;
+          if (!isNaN(numVal)) hasReadings = true;
+        } else {
+          readings_map[s.col] = null;
+        }
+      });
+
+      if (!hasReadings) {
+        alert("Please enter at least one river discharge measurement.");
+        if (btn1) { btn1.disabled = false; btn1.textContent = "Save Readings to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "Save Readings to Supabase"; }
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/saveRiverFlow', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            action: 'save',
+            recorded_date,
+            readings_map
+          })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save river flow.');
+
+        notifyRf(data.message || `River flow measurements saved for ${recorded_date}!`);
+        await fetchRiverflowHistory();
+        onRiverDateChange(recorded_date);
+      } catch (err) {
+        notifyRf(err.message, true);
+      } finally {
+        if (btn1) { btn1.disabled = false; btn1.textContent = "Save Readings to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "Save Readings to Supabase"; }
+      }
+    }
+
+    function renderRiverflowLedger(list) {
+      const tbody = document.getElementById('rf-ledger-tbody');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No river flow records found in Supabase.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(r => {
+        const dateStr = r.recorded_date || '—';
+        const labelStr = (Array.isArray(r.readings) && r.readings[1]) ? r.readings[1] : '—';
+
+        let count = 0;
+        let sum = 0;
+        let topRiver = '—';
+        let maxVal = -1;
+
+        if (Array.isArray(r.readings)) {
+          RIVER_STATIONS.forEach(s => {
+            const v = parseFloat(r.readings[s.col]);
+            if (!isNaN(v) && r.readings[s.col] !== null) {
+              count++;
+              sum += v;
+              if (v > maxVal) {
+                maxVal = v;
+                topRiver = `${s.name} (${v.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³/d)`;
+              }
+            }
+          });
+        }
+
+        const sumStr = sum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const countBadge = count === RIVER_STATIONS.length ? 'pill-green' : (count > 0 ? 'pill-teal' : 'pill-amber');
+
+        return `
+          <tr>
+            <td class="mono" style="font-weight:700;">${escapeHtml(dateStr)}</td>
+            <td>${escapeHtml(labelStr)}</td>
+            <td style="text-align:right;"><span class="kpi-badge-pill ${countBadge}">${count} / ${RIVER_STATIONS.length}</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:var(--teal);">${escapeHtml(sumStr)}</td>
+            <td style="font-size:11.5px; color:var(--text-main);">${escapeHtml(topRiver)}</td>
+            <td style="text-align:right; white-space:nowrap;">
+              <button type="button" data-id="${escapeHtml(r.id)}" onclick="editRiverflowRecord(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);" title="Load into form for editing">Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id)}" data-date="${escapeHtml(dateStr)}" onclick="deleteRiverflowRecord(this.dataset.id, this.dataset.date)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete record">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function editRiverflowRecord(id) {
+      const record = riverflowHistory.find(r => r.id === id);
+      if (!record) return;
+
+      const dateInput = document.getElementById("rf-date");
+      if (dateInput && record.recorded_date) {
+        dateInput.value = record.recorded_date;
+        onRiverDateChange(record.recorded_date);
+      }
+
+      document.getElementById("section-riverflow")?.scrollIntoView({ behavior: 'smooth' });
+      notifyRf(`Record for ${record.recorded_date} loaded into form.`);
+    }
+
+    async function deleteRiverflowRecord(id, dateStr) {
+      if (!confirm(`Are you sure you want to permanently delete the river flow record for "${dateStr}" from Supabase?`)) return;
+
+      try {
+        const res = await fetch('/api/saveRiverFlow', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete', id })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+
+        notifyRf(`Record for ${dateStr} deleted successfully.`);
+        await fetchRiverflowHistory();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
+    function filterRiverflowHistory() {
+      const q = (document.getElementById('rf-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderRiverflowLedger(riverflowHistory);
+        return;
+      }
+      const filtered = riverflowHistory.filter(r => {
+        const d = (r.recorded_date || '').toLowerCase();
+        const l = (Array.isArray(r.readings) && r.readings[1] ? r.readings[1] : '').toLowerCase();
+        return d.includes(q) || l.includes(q);
+      });
+      renderRiverflowLedger(filtered);
+    }
+
+    // ── WEEKLY PRODUCTION MONITORING LOGIC (DIRECT SUPABASE SYNC) ──
+    // ══════════════════════════════════════════════════════════════════
+
+    const PROD_CATEGORIES = [
+      {
+        id: "swCity",
+        name: "Surface Water / City Proper",
+        shortName: "SW City Proper",
+        subColIdx: 8,
+        badgeClass: "pill-teal",
+        stations: [
+          { id: "wtp1", col: 3, no: 1, name: "Irawan WTP-1 / Campo Uno", subName: "Main WTP Intake" },
+          { id: "wtp2", col: 4, no: 2, name: "Irawan WTP-2 / Campo Uno", subName: "Main WTP Intake" },
+          {
+            id: "infilCity", col: 5, no: 3, name: "Irawan Infiltration Well",
+            isGroup: true,
+            subs: [
+              { subId: "well1", name: "Infiltration Well 1" },
+              { subId: "well2", name: "Infiltration Well 2" }
+            ]
+          },
+          {
+            id: "lapulapu", col: 6, no: 4, name: "From Lapu-Lapu Source",
+            isGroup: true,
+            canCombine: true,
+            combinedLabel: "Lapu-Lapu Combined Transmission",
+            subs: [
+              { subId: "lineA", name: "Line A" },
+              { subId: "lineB", name: "Line B" },
+              { subId: "lineC", name: "Line C" },
+              { subId: "lineD", name: "Line D" }
+            ]
+          },
+          { id: "montible", col: 7, no: 5, name: "Montible (Teruvian)", subName: "River Dam Intake" }
+        ]
+      },
+      {
+        id: "swSat",
+        name: "Surface Water / Satellite Subsystems",
+        shortName: "SW Satellite",
+        subColIdx: 17,
+        badgeClass: "pill-teal",
+        stations: [
+          {
+            id: "stalucia", col: 9, no: 1, name: "Sta. Lucia PS",
+            isGroup: true,
+            subs: [
+              { subId: "wtp", name: "WTP Meter" },
+              { subId: "dol", name: "DOL Meter" },
+              { subId: "solar", name: "Solar Meter" }
+            ]
+          },
+          { id: "sabangSW", col: 10, no: 2, name: "Sabang SW", subName: "Surface Subsystem" },
+          { id: "sanrafael", col: 11, no: 3, name: "San Rafael SW", subName: "Surface Subsystem" },
+          { id: "bahile", col: 12, no: 4, name: "Bahile SW", subName: "Surface Subsystem" },
+          { id: "napsan", col: 13, no: 5, name: "Napsan", subName: "Surface Subsystem" },
+          { id: "binduyan", col: 14, no: 6, name: "Binduyan", subName: "Surface Subsystem" },
+          { id: "bacungan", col: 15, no: 7, name: "Bacungan SW", subName: "Surface Subsystem" },
+          {
+            id: "maoyon", col: 16, no: 8, name: "Maoyon Infiltration Well",
+            isGroup: true,
+            subs: [
+              { subId: "p1", name: "Pump #1" },
+              { subId: "p2", name: "Pump #2" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "gwCity",
+        name: "Ground Water / City Proper",
+        shortName: "GW City Proper",
+        subColIdx: 35,
+        badgeClass: "pill-blue",
+        stations: [
+          { id: "macasaet", col: 18, no: 1, name: "Macasaet-I" },
+          { id: "pc5", col: 19, no: 2, name: "Pump Center #5" },
+          { id: "pc6", col: 20, no: 3, name: "Pump Center #6" },
+          { id: "da1", col: 21, no: 4, name: "DA #1" },
+          { id: "sicsican", col: 22, no: 5, name: "Sicsican" },
+          { id: "villaello", col: 23, no: 6, name: "Villa Ello" },
+          { id: "nha", col: 24, no: 7, name: "NHA" },
+          { id: "princeville", col: 25, no: 8, name: "Princeville" },
+          { id: "villaprin", col: 26, no: 9, name: "Villa Princesa" },
+          { id: "sanjose", col: 27, no: 10, name: "San Jose" },
+          { id: "bos", col: 28, no: 11, name: "BOS-II" },
+          { id: "esteban", col: 29, no: 12, name: "Esteban" },
+          { id: "kaakbayan", col: 30, no: 13, name: "Kaakbayan" },
+          { id: "newmarket", col: 31, no: 14, name: "New Market" },
+          { id: "pablico", col: 32, no: 15, name: "Pablico" },
+          { id: "baldosano", col: 33, no: 16, name: "Baldosano PS" },
+          { id: "stamonica", col: 34, no: 17, name: "Sta. Monica PS" }
+        ]
+      },
+      {
+        id: "aug",
+        name: "Augmented Pumping Stations",
+        shortName: "Augmented Stations",
+        subColIdx: 41,
+        badgeClass: "pill-amber",
+        stations: [
+          { id: "abueg", col: 36, no: 1, name: "Abueg PS" },
+          { id: "visapa", col: 37, no: 2, name: "Visapa PS" },
+          { id: "acacia", col: 38, no: 3, name: "Acacia PS" },
+          { id: "citywoods", col: 39, no: 4, name: "Citywood PS" },
+          { id: "virginia", col: 40, no: 5, name: "Virginia" }
+        ]
+      },
+      {
+        id: "gwSat",
+        name: "Ground Water / Satellite",
+        shortName: "GW Satellite",
+        subColIdx: 46,
+        badgeClass: "pill-blue",
+        stations: [
+          { id: "lucbuan", col: 42, no: 1, name: "Lucbuan #1" },
+          { id: "sabangGW", col: 43, no: 2, name: "Sabang GW" },
+          { id: "inagawan", col: 44, no: 3, name: "Inagawan" },
+          { id: "macarascas", col: 45, no: 4, name: "Macarascas PS" }
+        ]
+      }
+    ];
+
+    let productionHistory = [];
+    let customStations = [];
+    let currentEditingProdId = null;
+    let activeCatView = 'all';
+    let combineLapuLapu = false;
+
+    function notifyProd(msg, isErr = false) {
+      const box = document.getElementById("prod-alert-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.style.display = "block";
+      box.className = "alert-box " + (isErr ? "alert-error show" : "alert-success show");
+      setTimeout(() => { box.style.display = "none"; box.className = "alert-box"; }, 5000);
+    }
+
+    async function initProductionPortal() {
+      await fetchProductionHistory();
+      renderProductionTables();
+      const dateInp = document.getElementById("prod-date");
+      const weekInp = document.getElementById("prod-week-label");
+      if (dateInp && !dateInp.value && weekInp && !weekInp.value) {
+        autoSuggestNextWeek();
+      }
+    }
+
+    async function fetchProductionHistory() {
+      const tbody = document.getElementById('prod-ledger-tbody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="9" style="padding:20px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase production telemetry...</td></tr>`;
+      }
+
+      try {
+        const res = await fetch('/api/getProduction');
+        if (!res.ok) throw new Error('Could not fetch production data.');
+        const data = await res.json();
+
+        // Sort descending by week number
+        productionHistory = data.sort((a, b) => {
+          const numA = parseInt(String(a.week_label || (a.row_data && a.row_data[0]) || '').replace(/[^0-9]/g, '')) || 0;
+          const numB = parseInt(String(b.week_label || (b.row_data && b.row_data[0]) || '').replace(/[^0-9]/g, '')) || 0;
+          return numB - numA;
+        });
+
+        renderProductionLedger(productionHistory);
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="9" style="padding:20px; text-align:center; color:var(--red); font-family:var(--font-mono);">Error: ${err.message}</td></tr>`;
+        }
+      }
+    }
+
+    function renderProductionTables() {
+      const container = document.getElementById('prod-tables-container');
+      if (!container) return;
+
+      container.innerHTML = PROD_CATEGORIES.map(cat => {
+        const isHidden = (activeCatView !== 'all' && activeCatView !== cat.id) ? 'display:none;' : '';
+        const catCustoms = customStations.filter(cs => cs.catId === cat.id);
+
+        let rowsHtml = '';
+        cat.stations.forEach(st => {
+          if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+            // Combined single row for Lapu-Lapu
+            rowsHtml += `
+              <tr class="prod-row-item" data-station="${st.id}">
+                <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${st.no}</td>
+                <td>
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
+                  <div style="font-size:10.5px; color:var(--blue); font-weight:600;">Combined Single Transmission Reading</div>
+                </td>
+                <td><span class="kpi-badge-pill pill-teal" style="font-size:9.5px;">Combined</span></td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td style="text-align:right;">
+                  <div id="prod-net-${st.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
+                </td>
+                <td>
+                  <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                </td>
+              </tr>
+            `;
+          } else if (st.isGroup) {
+            // Group with sub-meter items
+            st.subs.forEach((sub, sIdx) => {
+              const isFirst = sIdx === 0;
+              const rowSpan = isFirst ? `rowspan="${st.subs.length}"` : '';
+              const stationCell = isFirst ? `
+                <td ${rowSpan} style="vertical-align:middle; background:#FAFAFA; border-right:1px solid #E2E8F0;">
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
+                  <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Group of ${st.subs.length} sub-meters</div>
+                  <div style="margin-top:6px; font-family:var(--font-mono); font-size:11px; font-weight:800; color:var(--blue);" id="prod-group-total-${st.id}">Subtotal: 0.00 m³</div>
+                </td>
+              ` : '';
+              const noCell = isFirst ? `<td ${rowSpan} style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px; vertical-align:middle;">${st.no}</td>` : '';
+
+              rowsHtml += `
+                <tr class="prod-row-item" data-station="${st.id}" data-sub="${sub.subId}">
+                  ${noCell}
+                  ${stationCell}
+                  <td>
+                    <span class="kpi-badge-pill pill-blue" style="font-size:10px;">${sub.name}</span>
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
+                  </td>
+                  <td style="text-align:right;">
+                    <div id="prod-net-${st.id}-${sub.subId}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
+                  </td>
+                  <td>
+                    <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}-${sub.subId}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                  </td>
+                </tr>
+              `;
+            });
+          } else {
+            // Standard single-meter station
+            rowsHtml += `
+              <tr class="prod-row-item" data-station="${st.id}">
+                <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${st.no}</td>
+                <td>
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
+                  ${st.subName ? `<div style="font-size:10.5px; color:var(--text-muted);">${st.subName}</div>` : ''}
+                </td>
+                <td><span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Main Flow Meter</span></td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td>
+                  <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
+                </td>
+                <td style="text-align:right;">
+                  <div id="prod-net-${st.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
+                </td>
+                <td>
+                  <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                </td>
+              </tr>
+            `;
+          }
+        });
+
+        // Add custom backup stations for this category
+        catCustoms.forEach((cs, cIdx) => {
+          rowsHtml += `
+            <tr class="prod-row-item custom-backup-row" data-custom-id="${cs.id}" style="background:#FFFBEB;">
+              <td style="text-align:center; color:var(--amber); font-weight:700; font-family:var(--font-mono); font-size:11px;">+</td>
+              <td>
+                <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${cs.name}</div>
+                <div style="font-size:10px; color:var(--amber); font-weight:700;">Backup / Newly Commissioned Station</div>
+              </td>
+              <td>
+                <span class="kpi-badge-pill pill-amber" style="font-size:9.5px;">Backup Unit</span>
+                <button type="button" onclick="removeCustomStation('${cs.id}')" style="background:none; border:none; color:var(--red); cursor:pointer; font-size:11px; margin-left:4px;" title="Remove this backup station">✕</button>
+              </td>
+              <td>
+                <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-cust-${cs.id}" value="${cs.prevReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onCustomReadingChange('${cs.id}')">
+              </td>
+              <td>
+                <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-cust-${cs.id}" value="${cs.presReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onCustomReadingChange('${cs.id}')">
+              </td>
+              <td style="text-align:right;">
+                <div id="prod-net-cust-${cs.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--amber); font-size:12.5px;">${(cs.volume || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³</div>
+              </td>
+              <td>
+                <input type="text" class="form-input prod-rem-input" id="prod-rem-cust-${cs.id}" value="${cs.remarks || 'Backup operational'}" list="prod-remarks-datalist">
+              </td>
+            </tr>
+          `;
+        });
+
+        return `
+          <div class="prod-cat-card" id="cat-card-${cat.id}" style="margin-bottom:20px; ${isHidden}">
+            <div style="background:#F1F5F9; border:1px solid var(--card-border); border-radius:8px 8px 0 0; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:800; font-size:13px; color:var(--text-main);">${cat.name}</span>
+                <span class="kpi-badge-pill ${cat.badgeClass}" style="font-size:10px;">${cat.stations.length} Default Stations</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--text-main);">
+                  Subtotal: <span id="prod-subtotal-${cat.id}" style="font-family:var(--font-mono); color:var(--blue); font-size:13px;">0.00 m³</span>
+                </div>
+                <button type="button" onclick="addCustomBackupStation('${cat.id}')" class="header-btn" style="font-size:10.5px; padding:4px 10px; color:var(--blue);" title="Add backup or ongoing operational station to this category">
+                  + Add Backup Station
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="border:1px solid var(--card-border); border-top:none; border-radius:0 0 8px 8px;">
+              <table class="data-table" style="background:#FFFFFF;">
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="width:38px; text-align:center; vertical-align:middle;">#</th>
+                    <th rowspan="2" style="min-width:210px; vertical-align:middle;">Monitored Station</th>
+                    <th rowspan="2" style="min-width:120px; vertical-align:middle;">Meter / Line</th>
+                    <th colspan="2" style="text-align:center; border-bottom:1px solid #CBD5E1; background:#F1F5F9; font-weight:800;">Total Production Reading (m³)</th>
+                    <th rowspan="2" style="text-align:right; min-width:130px; vertical-align:middle;">Net Yield (m³)</th>
+                    <th rowspan="2" style="min-width:180px; vertical-align:middle;">Remarks</th>
+                  </tr>
+                  <tr>
+                    <th style="min-width:150px; background:#F8FAFC;">Previous Reading</th>
+                    <th style="min-width:150px; background:#F8FAFC;">Present Reading</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      calculateProductionTotals();
+    }
+
+    function switchProdCatView(view) {
+      activeCatView = view;
+      document.querySelectorAll('#prod-cat-pills .seg-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(`'${view}'`));
+      });
+
+      PROD_CATEGORIES.forEach(cat => {
+        const el = document.getElementById(`cat-card-${cat.id}`);
+        if (el) {
+          el.style.display = (view === 'all' || view === cat.id) ? 'block' : 'none';
+        }
+      });
+    }
+
+    function toggleLapuLapuMode(checked) {
+      combineLapuLapu = checked;
+      renderProductionTables();
+    }
+
+    function onProdReadingChange(stId, subId) {
+      const prevId = subId ? `prod-prev-${stId}-${subId}` : `prod-prev-${stId}`;
+      const presId = subId ? `prod-pres-${stId}-${subId}` : `prod-pres-${stId}`;
+      const netId = subId ? `prod-net-${stId}-${subId}` : `prod-net-${stId}`;
+
+      const prevInp = document.getElementById(prevId);
+      const presInp = document.getElementById(presId);
+      const netEl = document.getElementById(netId);
+
+      if (prevInp && presInp && netEl) {
+        const prev = parseFloat(prevInp.value) || 0;
+        const pres = parseFloat(presInp.value) || 0;
+        let diff = 0;
+        if (presInp.value.trim() !== '') {
+          diff = Math.max(0, pres - prev);
+        }
+        netEl.textContent = `${diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+      }
+
+      if (subId) {
+        updateGroupStationTotal(stId);
+      }
+
+      calculateProductionTotals();
+    }
+
+    function updateGroupStationTotal(stId) {
+      const st = PROD_CATEGORIES.flatMap(c => c.stations).find(s => s.id === stId);
+      if (!st || !st.subs) return;
+      let grpSum = 0;
+      st.subs.forEach(sub => {
+        const prev = parseFloat(document.getElementById(`prod-prev-${stId}-${sub.subId}`)?.value) || 0;
+        const presInp = document.getElementById(`prod-pres-${stId}-${sub.subId}`);
+        const pres = parseFloat(presInp?.value) || 0;
+        if (presInp && presInp.value.trim() !== '') {
+          grpSum += Math.max(0, pres - prev);
+        }
+      });
+      const lbl = document.getElementById(`prod-group-total-${stId}`);
+      if (lbl) {
+        lbl.textContent = `Subtotal: ${grpSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+      }
+    }
+
+    function onCustomReadingChange(customId) {
+      const prevInp = document.getElementById(`prod-prev-cust-${customId}`);
+      const presInp = document.getElementById(`prod-pres-cust-${customId}`);
+      const netEl = document.getElementById(`prod-net-cust-${customId}`);
+      const cs = customStations.find(c => c.id === customId);
+
+      let diff = 0;
+      if (prevInp && presInp) {
+        const prev = parseFloat(prevInp.value) || 0;
+        const pres = parseFloat(presInp.value) || 0;
+        if (presInp.value.trim() !== '') {
+          diff = Math.max(0, pres - prev);
+        }
+        if (netEl) netEl.textContent = `${diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+      }
+
+      if (cs) {
+        cs.volume = diff;
+        cs.prevReading = prevInp?.value || '';
+        cs.presReading = presInp?.value || '';
+        cs.remarks = document.getElementById(`prod-rem-cust-${customId}`)?.value || '';
+      }
+
+      calculateProductionTotals();
+    }
+
+    function getStationVolume(st) {
+      if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+        const prev = parseFloat(document.getElementById(`prod-prev-${st.id}`)?.value) || 0;
+        const presInp = document.getElementById(`prod-pres-${st.id}`);
+        const pres = parseFloat(presInp?.value) || 0;
+        return (presInp && presInp.value.trim() !== '') ? Math.max(0, pres - prev) : 0;
+      }
+      if (st.isGroup) {
+        let sum = 0;
+        st.subs.forEach(sub => {
+          const prev = parseFloat(document.getElementById(`prod-prev-${st.id}-${sub.subId}`)?.value) || 0;
+          const presInp = document.getElementById(`prod-pres-${st.id}-${sub.subId}`);
+          const pres = parseFloat(presInp?.value) || 0;
+          if (presInp && presInp.value.trim() !== '') {
+            sum += Math.max(0, pres - prev);
+          }
+        });
+        return sum;
+      }
+      const prev = parseFloat(document.getElementById(`prod-prev-${st.id}`)?.value) || 0;
+      const presInp = document.getElementById(`prod-pres-${st.id}`);
+      const pres = parseFloat(presInp?.value) || 0;
+      return (presInp && presInp.value.trim() !== '') ? Math.max(0, pres - prev) : 0;
+    }
+
+    function calculateProductionTotals() {
+      let swCitySub = 0;
+      let swSatSub = 0;
+      let gwCitySub = 0;
+      let augSub = 0;
+      let gwSatSub = 0;
+      let encodedCount = 0;
+
+      PROD_CATEGORIES.forEach(cat => {
+        let catSum = 0;
+        cat.stations.forEach(st => {
+          const vol = getStationVolume(st);
+          catSum += vol;
+          if (vol > 0) encodedCount++;
+        });
+
+        // Add custom stations in this category
+        const catCustoms = customStations.filter(cs => cs.catId === cat.id);
+        catCustoms.forEach(cs => {
+          if (cs.volume > 0) {
+            catSum += cs.volume;
+            encodedCount++;
+          }
+        });
+
+        if (cat.id === "swCity") swCitySub = catSum;
+        else if (cat.id === "swSat") swSatSub = catSum;
+        else if (cat.id === "gwCity") gwCitySub = catSum;
+        else if (cat.id === "aug") augSub = catSum;
+        else if (cat.id === "gwSat") gwSatSub = catSum;
+
+        const subLbl = document.getElementById(`prod-subtotal-${cat.id}`);
+        if (subLbl) {
+          subLbl.textContent = `${catSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+        }
+      });
+
+      const totalSW = swCitySub + swSatSub;
+      const totalGW = gwCitySub + augSub + gwSatSub;
+      const grandTotal = totalSW + totalGW;
+      const mld = grandTotal > 0 ? Number((grandTotal / 7000).toFixed(2)) : 0;
+      const swPct = grandTotal > 0 ? ((totalSW / grandTotal) * 100).toFixed(1) : "0.0";
+      const gwPct = grandTotal > 0 ? ((totalGW / grandTotal) * 100).toFixed(1) : "0.0";
+      const targetPct = ((mld / 56.86) * 100).toFixed(1);
+
+      // Update Live HUD
+      const hudTotal = document.getElementById("prod-hud-total");
+      const hudMld = document.getElementById("prod-hud-mld");
+      const hudTarget = document.getElementById("prod-hud-target");
+      const hudSw = document.getElementById("prod-hud-sw");
+      const hudSwPct = document.getElementById("prod-hud-sw-pct");
+      const hudGw = document.getElementById("prod-hud-gw");
+      const hudGwPct = document.getElementById("prod-hud-gw-pct");
+      const hudStations = document.getElementById("prod-hud-stations");
+
+      if (hudTotal) hudTotal.innerHTML = `${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:12px; color:#94A3B8;">m³</span>`;
+      if (hudMld) hudMld.innerHTML = `${mld.toFixed(2)} <span style="font-size:12px; color:#94A3B8;">MLD</span>`;
+      if (hudTarget) hudTarget.textContent = `${targetPct}% of 56.86 MLD Target`;
+      if (hudSw) hudSw.innerHTML = `${totalSW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:11px; color:#94A3B8;">m³</span>`;
+      if (hudSwPct) hudSwPct.textContent = `${swPct}% Surface Share`;
+      if (hudGw) hudGw.innerHTML = `${totalGW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style="font-size:11px; color:#94A3B8;">m³</span>`;
+      if (hudGwPct) hudGwPct.textContent = `${gwPct}% Ground Share`;
+      if (hudStations) hudStations.textContent = `${encodedCount} stations reporting production`;
+
+      return { swCitySub, swSatSub, gwCitySub, augSub, gwSatSub, totalSW, totalGW, grandTotal, mld, swPct, gwPct };
+    }
+
+    function addCustomBackupStation(catId) {
+      const cat = PROD_CATEGORIES.find(c => c.id === catId);
+      const name = prompt(`Enter Backup / Future Station Name for ${cat ? cat.name : catId}:`);
+      if (!name || !name.trim()) return;
+
+      const newStation = {
+        id: 'cust_' + Date.now(),
+        name: name.trim(),
+        catId: catId,
+        volume: 0,
+        prevReading: '',
+        presReading: '',
+        remarks: 'Backup operational'
+      };
+
+      customStations.push(newStation);
+      renderProductionTables();
+      notifyProd(`Backup station "${newStation.name}" added to ${cat.shortName}.`);
+    }
+
+    function removeCustomStation(customId) {
+      const idx = customStations.findIndex(cs => cs.id === customId);
+      if (idx !== -1) {
+        const removed = customStations.splice(idx, 1)[0];
+        renderProductionTables();
+        notifyProd(`Backup station "${removed.name}" removed.`);
+      }
+    }
+
+    function autoSuggestNextWeek() {
+      let maxWeek = 23;
+      let latestDate = new Date("2026-09-04");
+
+      if (productionHistory && productionHistory.length > 0) {
+        productionHistory.forEach(r => {
+          const wkNum = parseInt(String(r.week_label || (r.row_data && r.row_data[0]) || '').replace(/[^0-9]/g, '')) || 0;
+          if (wkNum > maxWeek) maxWeek = wkNum;
+          const dtStr = r.date_recorded || (r.row_data && r.row_data[1]);
+          if (dtStr) {
+            const dt = new Date(dtStr);
+            if (!isNaN(dt) && dt > latestDate) latestDate = dt;
+          }
+        });
+      }
+
+      const nextWeekNum = maxWeek + 1;
+      const nextEndDate = new Date(latestDate.getTime() + (7 * 24 * 60 * 60 * 1000));
+      const nextStartDate = new Date(latestDate.getTime());
+
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const sMonth = months[nextStartDate.getMonth()];
+      const eMonth = months[nextEndDate.getMonth()];
+      const sDay = nextStartDate.getDate();
+      const eDay = nextEndDate.getDate();
+      const eYear = nextEndDate.getFullYear();
+
+      let periodStr = "";
+      if (sMonth === eMonth) {
+        periodStr = `${sMonth} ${sDay} - ${eDay}, ${eYear}`;
+      } else {
+        periodStr = `${sMonth} ${sDay} - ${eMonth} ${eDay}, ${eYear}`;
+      }
+
+      const weekInp = document.getElementById("prod-week-label");
+      const dateInp = document.getElementById("prod-date");
+      const periodInp = document.getElementById("prod-period-label");
+
+      if (weekInp) weekInp.value = `Week ${nextWeekNum}`;
+      if (dateInp) dateInp.value = nextEndDate.toISOString().split('T')[0];
+      if (periodInp) periodInp.value = periodStr;
+
+      onProdWeekChange(`Week ${nextWeekNum}`);
+    }
+
+    function onProdWeekChange(val) {
+      if (!val) return;
+      const statusEl = document.getElementById("prod-cycle-status");
+      const existing = productionHistory.find(r => {
+        const wk = String(r.week_label || (r.row_data && r.row_data[0]) || '').trim().toLowerCase();
+        return wk === val.trim().toLowerCase();
+      });
+
+      if (existing) {
+        currentEditingProdId = existing.id;
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--amber); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Existing record loaded (${val}) &bull; Ready to update</span>`;
+        }
+      } else {
+        currentEditingProdId = null;
+        if (statusEl) {
+          statusEl.innerHTML = `<span style="color:var(--blue); display:inline-flex; align-items:center; gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Ready for new weekly entry (${val})</span>`;
+        }
+      }
+    }
+
+    function onProdDateChange(val) {
+      if (!val) return;
+      const periodInp = document.getElementById("prod-period-label");
+      if (periodInp && !periodInp.value) {
+        const dt = new Date(val);
+        const dtPrev = new Date(dt.getTime() - (7 * 24 * 60 * 60 * 1000));
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        periodInp.value = `${months[dtPrev.getMonth()]} ${dtPrev.getDate()} - ${months[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
+      }
+    }
+
+    function loadPreviousProdReadings() {
+      if (!productionHistory || productionHistory.length === 0) {
+        alert("No previous production records found in Supabase.");
+        return;
+      }
+
+      const currentWk = document.getElementById("prod-week-label")?.value || "";
+      let prior = productionHistory.find(r => (r.week_label || (r.row_data && r.row_data[0])) !== currentWk);
+      if (!prior) prior = productionHistory[0];
+
+      if (!prior || !Array.isArray(prior.row_data)) {
+        alert("Baseline row_data not available.");
+        return;
+      }
+
+      let loadedCount = 0;
+      PROD_CATEGORIES.forEach(cat => {
+        cat.stations.forEach(st => {
+          const val = prior.row_data[st.col];
+          if (val !== undefined && val !== null) {
+            if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+              const inp = document.getElementById(`prod-prev-${st.id}`);
+              if (inp) { inp.value = val; loadedCount++; }
+            } else if (st.isGroup) {
+              // Group: distribute or mark baseline
+              st.subs.forEach(sub => {
+                const inp = document.getElementById(`prod-prev-${st.id}-${sub.subId}`);
+                if (inp && !inp.value) {
+                  inp.placeholder = `Prior m³: ${val}`;
+                }
+              });
+            } else {
+              const inp = document.getElementById(`prod-prev-${st.id}`);
+              if (inp) {
+                // If it's pure production volume, store as reference
+                inp.placeholder = `Prior: ${val}`;
+                loadedCount++;
+              }
+            }
+          }
+        });
+      });
+
+      const label = prior.week_label || (prior.row_data && prior.row_data[0]) || prior.period_label || "";
+      notifyProd(`Loaded baseline references from ${label}!`);
+    }
+
+    function clearProductionForm() {
+      currentEditingProdId = null;
+      customStations = [];
+      document.getElementById("prod-week-label").value = "";
+      document.getElementById("prod-date").value = "";
+      document.getElementById("prod-period-label").value = "";
+      document.getElementById("prod-cycle-status").textContent = "Ready for weekly submission";
+      renderProductionTables();
+      notifyProd("Production form cleared.");
+    }
+
+    async function submitProduction(e) {
+      if (e) e.preventDefault();
+      const weekInp = document.getElementById("prod-week-label");
+      const dateInp = document.getElementById("prod-date");
+      const periodInp = document.getElementById("prod-period-label");
+
+      const week_label = weekInp?.value.trim();
+      const date_recorded = dateInp?.value.trim();
+      const period_label = periodInp?.value.trim();
+
+      if (!week_label) {
+        alert("Please specify a Week Label (e.g. Week 25).");
+        weekInp?.focus();
+        return;
+      }
+      if (!date_recorded) {
+        alert("Please select the Recorded Date.");
+        dateInp?.focus();
+        return;
+      }
+      if (!period_label) {
+        alert("Please enter the Period Label (e.g. September 11 - 18, 2026).");
+        periodInp?.focus();
+        return;
+      }
+
+      const btn1 = document.getElementById("btn-save-production");
+      const btn2 = document.getElementById("btn-save-production-bottom");
+      if (btn1) { btn1.disabled = true; btn1.textContent = "Saving to Supabase..."; }
+      if (btn2) { btn2.disabled = true; btn2.textContent = "Saving to Supabase..."; }
+
+      try {
+        const totals = calculateProductionTotals();
+
+        // Build standard 53-element array matching COL
+        const row_data = new Array(53).fill(0);
+        row_data[0] = week_label;
+        row_data[1] = date_recorded;
+        row_data[2] = period_label;
+
+        // Category 1: SW City
+        PROD_CATEGORIES[0].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[8] = totals.swCitySub;
+
+        // Category 2: SW Satellite
+        PROD_CATEGORIES[1].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[17] = totals.swSatSub;
+
+        // Category 3: GW City
+        PROD_CATEGORIES[2].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[35] = totals.gwCitySub;
+
+        // Category 4: Augmented
+        PROD_CATEGORIES[3].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[41] = totals.augSub;
+
+        // Category 5: GW Satellite
+        PROD_CATEGORIES[4].stations.forEach(st => {
+          row_data[st.col] = getStationVolume(st);
+        });
+        row_data[46] = totals.gwSatSub;
+
+        // Totals & KPIs
+        row_data[47] = totals.totalSW;
+        row_data[48] = totals.totalGW;
+        row_data[49] = totals.grandTotal;
+        row_data[50] = totals.mld;
+        row_data[51] = parseFloat(totals.swPct);
+        row_data[52] = parseFloat(totals.gwPct);
+
+        // Preserve custom backup stations
+        if (customStations.length > 0) {
+          row_data[53] = { custom_stations: customStations };
+        }
+
+        const res = await fetch('/api/saveProductionWeekly', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            action: 'save',
+            id: currentEditingProdId,
+            week_label,
+            date_recorded,
+            period_label,
+            row_data
+          })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save production data.');
+
+        notifyProd(data.message || `Production data for ${week_label} successfully saved!`);
+        await fetchProductionHistory();
+        onProdWeekChange(week_label);
+      } catch (err) {
+        notifyProd(err.message, true);
+      } finally {
+        if (btn1) { btn1.disabled = false; btn1.textContent = "Save Production to Supabase"; }
+        if (btn2) { btn2.disabled = false; btn2.textContent = "Save Production to Supabase"; }
+      }
+    }
+
+    function renderProductionLedger(list) {
+      const tbody = document.getElementById('prod-ledger-tbody');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No weekly production records found in Supabase.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(r => {
+        const wk = r.week_label || (r.row_data && r.row_data[0]) || '—';
+        const period = r.period_label || (r.row_data && r.row_data[2]) || '—';
+        const dateStr = r.date_recorded || (r.row_data && r.row_data[1]) || '—';
+
+        let sw = 0, gw = 0, total = 0, mld = 0, targetPct = 0;
+        if (Array.isArray(r.row_data)) {
+          sw = Number(r.row_data[47] || 0);
+          gw = Number(r.row_data[48] || 0);
+          total = Number(r.row_data[49] || 0);
+          mld = Number(r.row_data[50] || 0);
+          targetPct = (mld / 56.86 * 100).toFixed(1);
+        }
+
+        const isTargetMet = mld >= 56.86;
+        const targetBadgeClass = isTargetMet ? 'pill-green' : (mld >= 45 ? 'pill-teal' : 'pill-amber');
+
+        return `
+          <tr>
+            <td class="mono" style="font-weight:800; color:var(--text-main); font-size:12.5px;">${escapeHtml(wk)}</td>
+            <td style="font-size:12px;">${escapeHtml(period)}</td>
+            <td class="mono" style="font-size:11.5px; color:var(--text-muted);">${escapeHtml(dateStr)}</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--teal); font-weight:700;">${sw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--blue); font-weight:700;">${gw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--text-main);">${total.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--green);">${mld.toFixed(2)}</td>
+            <td style="text-align:right;"><span class="kpi-badge-pill ${targetBadgeClass}">${targetPct}%</span></td>
+            <td style="text-align:right; white-space:nowrap;">
+              <button type="button" data-key="${escapeHtml(r.id || wk)}" onclick="editProductionRecord(this.dataset.key)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id || '')}" data-week="${escapeHtml(wk)}" onclick="deleteProductionRecord(this.dataset.id, this.dataset.week)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function editProductionRecord(recordIdOrWeek) {
+      const record = productionHistory.find(r => (r.id === recordIdOrWeek) || ((r.week_label || (r.row_data && r.row_data[0])) === recordIdOrWeek));
+      if (!record || !Array.isArray(record.row_data)) return;
+
+      currentEditingProdId = record.id || null;
+      const weekInp = document.getElementById("prod-week-label");
+      const dateInp = document.getElementById("prod-date");
+      const periodInp = document.getElementById("prod-period-label");
+
+      if (weekInp) weekInp.value = record.week_label || record.row_data[0] || '';
+      if (dateInp) dateInp.value = record.date_recorded || record.row_data[1] || '';
+      if (periodInp) periodInp.value = record.period_label || record.row_data[2] || '';
+
+      // Check if custom stations were stored in index 53
+      if (record.row_data[53] && Array.isArray(record.row_data[53].custom_stations)) {
+        customStations = [...record.row_data[53].custom_stations];
+      } else {
+        customStations = [];
+      }
+
+      renderProductionTables();
+
+      // Populate volumes from row_data
+      PROD_CATEGORIES.forEach(cat => {
+        cat.stations.forEach(st => {
+          const v = record.row_data[st.col];
+          if (v !== undefined && v !== null) {
+            if (st.isGroup && st.id === 'lapulapu' && combineLapuLapu) {
+              const inpPrev = document.getElementById(`prod-prev-${st.id}`);
+              const inpPres = document.getElementById(`prod-pres-${st.id}`);
+              const netEl = document.getElementById(`prod-net-${st.id}`);
+              if (inpPrev) inpPrev.value = 0;
+              if (inpPres) inpPres.value = v;
+              if (netEl) netEl.textContent = `${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+            } else if (st.isGroup) {
+              const inpPrev = document.getElementById(`prod-prev-${st.id}-${st.subs[0].subId}`);
+              const inpPres = document.getElementById(`prod-pres-${st.id}-${st.subs[0].subId}`);
+              const netEl = document.getElementById(`prod-net-${st.id}-${st.subs[0].subId}`);
+              if (inpPrev) inpPrev.value = 0;
+              if (inpPres) inpPres.value = v;
+              if (netEl) netEl.textContent = `${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+              updateGroupStationTotal(st.id);
+            } else {
+              const inpPrev = document.getElementById(`prod-prev-${st.id}`);
+              const inpPres = document.getElementById(`prod-pres-${st.id}`);
+              const netEl = document.getElementById(`prod-net-${st.id}`);
+              if (inpPrev) inpPrev.value = 0;
+              if (inpPres) inpPres.value = v;
+              if (netEl) netEl.textContent = `${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³`;
+            }
+          }
+        });
+      });
+
+      calculateProductionTotals();
+      document.getElementById("section-production")?.scrollIntoView({ behavior: 'smooth' });
+      notifyProd(`Record for ${record.week_label || record.row_data[0]} loaded into form for editing.`);
+      onProdWeekChange(weekInp.value);
+    }
+
+    async function deleteProductionRecord(id, weekLabel) {
+      if (!confirm(`Are you sure you want to permanently delete the production record for "${weekLabel}" from Supabase?`)) return;
+
+      try {
+        const res = await fetch('/api/saveProductionWeekly', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete', id: id || undefined, week_label: weekLabel })
+        });
+        if (res.status === 401) { lockPortal(); throw new Error("Unauthorized: Invalid passkey."); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+
+        notifyProd(`Record for ${weekLabel} deleted successfully.`);
+        await fetchProductionHistory();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+
+    function filterProductionHistory() {
+      const q = (document.getElementById('prod-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderProductionLedger(productionHistory);
+        return;
+      }
+      const filtered = productionHistory.filter(r => {
+        const wk = String(r.week_label || (r.row_data && r.row_data[0]) || '').toLowerCase();
+        const p = String(r.period_label || (r.row_data && r.row_data[2]) || '').toLowerCase();
+        const d = String(r.date_recorded || (r.row_data && r.row_data[1]) || '').toLowerCase();
+        return wk.includes(q) || p.includes(q) || d.includes(q);
+      });
+      renderProductionLedger(filtered);
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ── MONTHLY PRODUCTION PORTAL LOGIC (34 STATIONS) ──
+    // ══════════════════════════════════════════════════════════════════
+    const MONTHLY_TARGET = 1705700.00;
+    const MONTHLY_LWUA_CUTOFF = 1620415.00;
+
+    const MONTHLY_STATIONS_MASTER = [
+      // Surface Water (15)
+      { name: "Campo Uno (Line #1 & #2)", category: "Surface Water" },
+      { name: "Infiltration Well Pump #1", category: "Surface Water" },
+      { name: "Infiltration Well Pump #2", category: "Surface Water" },
+      { name: "Lapu-Lapu Source", category: "Surface Water" },
+      { name: "Montible Source", category: "Surface Water" },
+      { name: "Bahile PS", category: "Surface Water" },
+      { name: "Sabang (SW)", category: "Surface Water" },
+      { name: "Binduyan (SW)", category: "Surface Water" },
+      { name: "Napsan (SW)", category: "Surface Water" },
+      { name: "San Rafael (SW)", category: "Surface Water" },
+      { name: "Sta. Lucia Station - 1 (Genset)", category: "Surface Water" },
+      { name: "Sta. Lucia Station - 2 (Solar)", category: "Surface Water" },
+      { name: "Bacungan Station", category: "Surface Water" },
+      { name: "Maoyon Station - Gravity", category: "Surface Water" },
+      { name: "Maoyon Station - Well Pump", category: "Surface Water" },
+
+      // Groundwater (19)
+      { name: "DA 1", category: "Groundwater" },
+      { name: "Pump Center #5", category: "Groundwater" },
+      { name: "Pump Center #6", category: "Groundwater" },
+      { name: "Kaakbayan PS", category: "Groundwater" },
+      { name: "New Public Market PS", category: "Groundwater" },
+      { name: "Esteban PS", category: "Groundwater" },
+      { name: "BOS II PS", category: "Groundwater" },
+      { name: "San Jose (Pump 13)", category: "Groundwater" },
+      { name: "Princeville PS", category: "Groundwater" },
+      { name: "NHA Villa PS", category: "Groundwater" },
+      { name: "Macasaet PS", category: "Groundwater" },
+      { name: "Inagawan Satellite Station", category: "Groundwater" },
+      { name: "Pablico PS", category: "Groundwater" },
+      { name: "Villa Princesa PS", category: "Groundwater" },
+      { name: "Sabang PS (GW)", category: "Groundwater" },
+      { name: "Villa Ello PS", category: "Groundwater" },
+      { name: "Baldosano PS", category: "Groundwater" },
+      { name: "Sta. Monica PS", category: "Groundwater" },
+      { name: "Macarascas PS", category: "Groundwater" }
+    ];
+
+    let monthlyLoadedRecords = [];
+
+    function initMonthlyPortal() {
+      const picker = document.getElementById('monthly-portal-picker');
+      if (picker && !picker.value) {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        picker.value = `${y}-${m}`;
+      }
+      renderMonthlyInputs();
+      reloadMonthlyPortalData();
+    }
+
+    function renderMonthlyInputs() {
+      const swContainer = document.getElementById('monthly-sw-inputs-grid');
+      const gwContainer = document.getElementById('monthly-gw-inputs-grid');
+      if (!swContainer || !gwContainer) return;
+
+      const makeField = (st, idx) => {
+        const fid = 'minp-' + st.name.replace(/[^a-zA-Z0-9]/g, '');
+        return `
+          <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; gap:10px; box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+            <div style="flex:1; min-width:0;">
+              <label for="${fid}" style="font-size:12px; font-weight:700; color:var(--text-main); display:block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" title="${st.name}">
+                <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted); margin-right:4px;">#${String(idx+1).padStart(2, '0')}</span>${st.name}
+              </label>
+              <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">${st.category}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" step="0.01" min="0" placeholder="0.00" id="${fid}" data-station="${st.name}" data-cat="${st.category}"
+                     class="form-input monthly-station-input" oninput="updateMonthlyHUD()"
+                     style="width:130px; text-align:right; font-family:var(--font-mono); font-weight:600; padding:6px 10px; font-size:12px;">
+              <span style="font-size:11px; font-weight:600; color:var(--text-muted);">m³</span>
+            </div>
+          </div>
+        `;
+      };
+
+      swContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === 'Surface Water').map(makeField).join('');
+      gwContainer.innerHTML = MONTHLY_STATIONS_MASTER.filter(s => s.category === 'Groundwater').map(makeField).join('');
+    }
+
+    async function onMonthlyPickerChange(month) {
+      if (!month) return;
+      await reloadMonthlyPortalData();
+    }
+
+    async function reloadMonthlyPortalData() {
+      const picker = document.getElementById('monthly-portal-picker');
+      const month = picker ? picker.value : '';
+      const syncStatus = document.getElementById('monthly-portal-sync-status');
+      if (!month) return;
+
+      if (syncStatus) {
+        syncStatus.textContent = `Fetching ${month}...`;
+        syncStatus.style.color = 'var(--blue)';
+      }
+
+      try {
+        const res = await fetch(`/api/monthlyProduction?month=${encodeURIComponent(month)}`);
+        monthlyLoadedRecords = [];
+        if (res.ok) {
+          monthlyLoadedRecords = await res.json();
+        }
+
+        // Fill all 34 inputs (preserving empty if not logged)
+        MONTHLY_STATIONS_MASTER.forEach(st => {
+          const fid = 'minp-' + st.name.replace(/[^a-zA-Z0-9]/g, '');
+          const inp = document.getElementById(fid);
+          if (inp) {
+            const rec = Array.isArray(monthlyLoadedRecords) ? monthlyLoadedRecords.find(r => r.station_name && r.station_name.trim().toLowerCase() === st.name.trim().toLowerCase()) : null;
+            inp.value = (rec && rec.monthly_volume !== null && rec.monthly_volume !== undefined) ? rec.monthly_volume : '';
+          }
+        });
+
+        updateMonthlyHUD();
+        if (syncStatus) {
+          const recCount = Array.isArray(monthlyLoadedRecords) ? monthlyLoadedRecords.length : 0;
+          syncStatus.textContent = `Loaded (${recCount} records saved)`;
+          syncStatus.style.color = 'var(--green)';
+        }
+      } catch (err) {
+        if (syncStatus) {
+          syncStatus.textContent = 'Error: ' + err.message;
+          syncStatus.style.color = 'var(--red)';
+        }
+      }
+    }
+
+    function updateMonthlyHUD() {
+      const inputs = document.querySelectorAll('.monthly-station-input');
+      let totalActual = 0;
+      let swTotal = 0;
+      let gwTotal = 0;
+
+      inputs.forEach(inp => {
+        let val = parseFloat(inp.value);
+        if (!isNaN(val)) {
+          if (val < 0) {
+            val = 0;
+            inp.value = "0";
+          }
+          totalActual += val;
+          if (inp.dataset.cat === 'Surface Water') swTotal += val;
+          else gwTotal += val;
+        }
+      });
+
+      const pctAchieved = MONTHLY_TARGET > 0 ? (totalActual / MONTHLY_TARGET) * 100 : 0;
+      const hourlyRate = totalActual / 730;
+
+      const totalEl = document.getElementById('monthly-hud-total');
+      const achievedEl = document.getElementById('monthly-hud-achieved');
+      const hourlyEl = document.getElementById('monthly-hud-hourly');
+      const swSubEl = document.getElementById('monthly-sw-subtotal');
+      const gwSubEl = document.getElementById('monthly-gw-subtotal');
+
+      const fmtNum = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      if (totalEl) totalEl.innerHTML = `${fmtNum(totalActual)} <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span>`;
+      if (achievedEl) {
+        achievedEl.textContent = `${pctAchieved.toFixed(1)}%`;
+        if (totalActual === 0) achievedEl.style.color = 'var(--text-muted)';
+        else if (totalActual < MONTHLY_LWUA_CUTOFF) achievedEl.style.color = 'var(--red)';
+        else achievedEl.style.color = 'var(--green)';
+      }
+      if (hourlyEl) hourlyEl.innerHTML = `${fmtNum(hourlyRate)} <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³/h</span>`;
+      if (swSubEl) swSubEl.textContent = `${fmtNum(swTotal)} m³`;
+      if (gwSubEl) gwSubEl.textContent = `${fmtNum(gwTotal)} m³`;
+    }
+
+    function clearMonthlyForm() {
+      const inputs = document.querySelectorAll('.monthly-station-input');
+      inputs.forEach(inp => { inp.value = ''; });
+      updateMonthlyHUD();
+    }
+
+    async function submitMonthlyProduction(e) {
+      if (e) e.preventDefault();
+      const picker = document.getElementById('monthly-portal-picker');
+      const targetMonth = picker ? picker.value : '';
+      const alertBox = document.getElementById('monthly-alert-box');
+      const btnTop = document.getElementById('btn-save-monthly');
+      const btnBottom = document.getElementById('btn-save-monthly-bottom');
+
+      if (!targetMonth) {
+        if (alertBox) {
+          alertBox.className = 'alert-box alert-error';
+          alertBox.style.display = 'block';
+          alertBox.textContent = 'Please select a valid target month (YYYY-MM).';
+        }
+        return;
+      }
+
+      const inputs = document.querySelectorAll('.monthly-station-input');
+      const payload = [];
+
+      inputs.forEach(inp => {
+        const raw = inp.value;
+        const val = parseFloat(raw);
+        if (!isNaN(val) && val >= 0) {
+          payload.push({
+            month_year: targetMonth,
+            station_name: inp.dataset.station,
+            category: inp.dataset.cat,
+            monthly_volume: val
+          });
+        }
+      });
+
+      if (btnTop) { btnTop.disabled = true; btnTop.textContent = 'Saving...'; }
+      if (btnBottom) { btnBottom.disabled = true; btnBottom.textContent = 'Saving to Supabase...'; }
+
+      if (alertBox) {
+        alertBox.className = 'alert-box';
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--blue-light)';
+        alertBox.style.borderColor = 'var(--blue-border)';
+        alertBox.style.color = 'var(--blue)';
+        alertBox.textContent = `Transmitting ${payload.length} station volume records to Supabase...`;
+      }
+
+      try {
+        const res = await fetch('/api/monthlyProduction', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ records: payload })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 401) {
+            lockPortal();
+            throw new Error('Unauthorized: Admin passkey invalid or expired. Please sign in again.');
+          }
+          throw new Error(data.error || 'Failed to save monthly records.');
+        }
+
+        if (alertBox) {
+          alertBox.className = 'alert-box alert-success';
+          alertBox.style.display = 'block';
+          alertBox.textContent = `Success! Saved ${data.count || payload.length} station records for ${targetMonth} to Supabase.`;
+        }
+        await reloadMonthlyPortalData();
+      } catch (err) {
+        if (alertBox) {
+          alertBox.className = 'alert-box alert-error';
+          alertBox.style.display = 'block';
+          alertBox.textContent = 'Error: ' + err.message;
+        }
+      } finally {
+        if (btnTop) { btnTop.disabled = false; btnTop.textContent = 'Save Monthly Production to Supabase'; }
+        if (btnBottom) { btnBottom.disabled = false; btnBottom.textContent = 'Save Monthly Production to Supabase'; }
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      await checkPortalAuth();
+      populateStations();
+      fetchGensetFleet();
+      setupComplaintFormatters();
+      loadRiverStations();
+      const dateInput = document.getElementById("gs-serviced-date");
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+      const compDateInput = document.getElementById("comp-date");
+      if (compDateInput) compDateInput.value = new Date().toISOString().split('T')[0];
+
+      if (window.location.hash === '#complaints') {
+        switchPortalSection('complaints');
+      } else if (window.location.hash === '#riverflow') {
+        switchPortalSection('riverflow');
+      } else if (window.location.hash === '#production') {
+        switchPortalSection('production');
+      } else if (window.location.hash === '#monthly') {
+        switchPortalSection('monthly');
+      }
+
+      window.addEventListener('hashchange', () => {
+        const h = window.location.hash;
+        if (h === '#monthly') switchPortalSection('monthly');
+        else if (h === '#production') switchPortalSection('production');
+        else if (h === '#riverflow') switchPortalSection('riverflow');
+        else if (h === '#complaints') switchPortalSection('complaints');
+        else if (h === '#gensets') switchPortalSection('gensets');
+      });
+
+      // Restore collapsed sidebar preference on desktop
+      try {
+        if (window.innerWidth > 820 && localStorage.getItem('ppcwd_portal_sidebar_collapsed') === '1') {
+          document.getElementById('app-sidebar')?.classList.add('collapsed');
+        }
+      } catch(e){}
+
+      // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+          const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+          if (tag !== 'input' && tag !== 'textarea') {
+            e.preventDefault();
+            toggleSidebar();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
