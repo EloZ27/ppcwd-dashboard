@@ -1423,7 +1423,7 @@
       body * {
         visibility: hidden !important;
       }
-      #comprehensive-report-staging, #comprehensive-report-staging * {
+      #comprehensive-report-staging, #comprehensive-report-staging *, .comp-a4-page, .comp-a4-page * {
         visibility: visible !important;
       }
       #comprehensive-report-staging {
@@ -8513,26 +8513,40 @@
           <style>
             @page { size: A4 portrait; margin: 0.5in; }
             body { margin: 0; padding: 0; background: #FFF; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .comp-a4-page { width: 100% !important; min-height: 270mm !important; padding: 0 !important; margin: 0 0 20px 0 !important; box-shadow: none !important; border: none !important; page-break-after: always; }
+            body, body * { visibility: visible !important; }
+            #comprehensive-report-staging, #comprehensive-report-staging * { visibility: visible !important; }
+            .comp-a4-page, .comp-a4-page * { visibility: visible !important; }
+            .comp-a4-page { width: 100% !important; min-height: 270mm !important; padding: 0 !important; margin: 0 0 20px 0 !important; box-shadow: none !important; border: none !important; page-break-after: always; break-after: page; }
             @media print {
-              .comp-a4-page { margin: 0 !important; page-break-after: always; }
+              body, body * { visibility: visible !important; }
+              #comprehensive-report-staging, #comprehensive-report-staging * { visibility: visible !important; }
+              .comp-a4-page, .comp-a4-page * { visibility: visible !important; }
+              .comp-a4-page { margin: 0 !important; page-break-after: always; break-after: page; }
             }
           </style>
         </head>
         <body>
-          ${staging.innerHTML}
+          <div id="comprehensive-report-staging">
+            ${staging.innerHTML}
+          </div>
           <script>
             window.addEventListener('load', () => {
               setTimeout(() => {
                 window.focus();
                 window.print();
-              }, 350);
+              }, 400);
             });
           <\/script>
         </body>
       </html>
     `);
     printWin.document.close();
+    setTimeout(() => {
+      try {
+        printWin.focus();
+        printWin.print();
+      } catch(e) {}
+    }, 600);
 
     if (statusEl) {
       statusEl.textContent = "Print window opened successfully.";
