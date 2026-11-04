@@ -6791,29 +6791,27 @@
       }
 
       // Match corresponding production record in allProdData
-      const prodRow = allProdData.find(row => {
-        const wStr = String(row[COL.week] || '');
-        const match = wStr.match(/\d+/);
-        if (match && parseInt(match[0], 10) === wkNum) return true;
-        const pParsed = parsePeriodDates(row[COL.period], row[COL.date]);
-        if (pParsed.sDate && pParsed.eDate) {
-          return pParsed.sDate <= effectiveEDate && pParsed.eDate >= sDate;
-        }
-        return false;
-      });
-
-      // Special rule: If no production report is submitted for Oct 23-30 (Week 31),
-      // weekly pressure shall align to Oct 23-30 and reflect the pressure in this range.
+      // STRICT WEEK NUMBER MATCHING: prevents off-by-one boundary shifts
+      let prodRow = null;
       let hasProd = false;
-      if (prodRow) {
-        const pStr = String(prodRow[COL.period] || '');
-        if (wkNum === 31 && pStr.includes('23-28')) {
-          // In allProdData, Week 31 was only logged as MTD through Oct 28.
-          // For the full Oct 23-30 cycle, production report has not been submitted yet.
-          hasProd = false;
-        } else if (!pStr.includes('MTD')) {
-          hasProd = true;
-        }
+
+      // In actual PPCWD records, the recent production weekly report sent was Week 30 (October 16-23, 2026).
+      // Week 31 (Oct 23-30) and Week 32 (Oct 30-Nov 6) have no submitted production reports yet.
+      if (wkNum <= 30) {
+        prodRow = allProdData.find(row => {
+          const wStr = String(row[COL.week] || '');
+          const match = wStr.match(/\d+/);
+          return match && parseInt(match[0], 10) === wkNum;
+        }) || null;
+        if (prodRow) hasProd = true;
+      }
+
+      // Determine pending status text for unsubmitted weeks
+      let pendingStatus = 'No Report Yet (Pending Submission)';
+      if (wkNum >= 32) {
+        pendingStatus = 'Awaiting Cutoff';
+      } else if (wkNum === 31) {
+        pendingStatus = 'No Report Yet (Pending Submission)';
       }
 
       // Format inclusive dates string matching official PPCWD convention (e.g. October 23 – 30, 2026)
@@ -6844,6 +6842,7 @@
         sDate: new Date(sDate),
         eDate: new Date(effectiveEDate),
         hasProdReport: hasProd,
+        pendingStatus: pendingStatus,
         prodRow: prodRow || null,
         isSubsequent: wkNum > 30
       });
@@ -7817,8 +7816,9 @@
           const period = w.period || (w[COL.period] ? w[COL.period].replace(/(\d+)\s*[-–—]\s*(\d+)/, '$1 – $2') : '');
           const row = w.prodRow || (w.hasProdReport !== false ? w : null);
 
-          // If this week is an unsubmitted / subsequent week, render 'No Report Yet (Pending Submission)'
+          // If this week is an unsubmitted / subsequent week, render the appropriate pending status badge
           if (!row || w.hasProdReport === false) {
+            const statusLabel = w.pendingStatus || 'No Report Yet (Pending Submission)';
             return `
               <tr>
                 <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${wk}</td>
@@ -7828,7 +7828,7 @@
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
-                <td style="text-align:left; padding-left:12px;"><span style="font-size:8px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:2px 6px; border-radius:3px;">No Report Yet (Pending Submission)</span></td>
+                <td style="text-align:left; padding-left:12px;"><span style="font-size:8px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:2px 6px; border-radius:3px;">${statusLabel}</span></td>
               </tr>
             `;
           }
