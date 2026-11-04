@@ -11,11 +11,10 @@ const html = fs.readFileSync('index.html', 'utf8');
 const tests = [
   // 1. Page 1: Monthly & Weekly Production Logic
   {
-    name: "1.1 Prorated current month synthesizes from daily operational data when no final monthly record exists",
-    pass: html.includes("isProrated: true") &&
-          html.includes("1705700.0 * prorationFactor") &&
-          html.includes("lwuaStatus = totalActual >= lwuaCutoffM3 ? 'In Capacity' : 'For Reporting'") &&
-          html.includes("Prorated (${m.elapsedDays}/${m.daysInMonth}d)")
+    name: "1.1 Monthly Production strictly uses submitted Monthly Production Report without weekly proration ('No Report Yet submitted')",
+    pass: html.includes("Executive Directive: Use ONLY officially submitted Monthly Production Reports.") &&
+          html.includes("Weekly records must NOT be used for synthetic proration.") &&
+          html.includes("lwuaStatus: 'No Report Yet submitted'")
   },
   {
     name: "1.2 Date range hyphenation guard prevents Week 28 'October 2-9, 2026' from collapsing into 'October 29, 2026'",
