@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff0f;--sidebar-active:#2563eb;--sidebar-text:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f8fafc;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 1px 3px 0 #0f172a0a, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#64748b;--text-subtle:#94a3b8;--teal:#0d9488;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-light:#fef2f2;--red-border:#fecaca;--font-sans:"Inter", -apple-system, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;font-size:13px;line-height:1.5}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:1100;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;position:fixed;top:0;bottom:0;left:0;overflow:hidden auto}.app-sidebar.collapsed{transform:translate(-250px)}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-icon{color:#fff;background:linear-gradient(135deg,#0284c7,#0d9488);border-radius:9px;justify-content:center;align-items:center;width:36px;height:36px;font-size:16px;font-weight:800;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:4px;padding:12px 14px;display:flex;overflow-y:auto}.nav-btn{color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:9px;align-items:center;gap:10px;width:100%;padding:10px 14px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{background:var(--sidebar-active);color:var(--sidebar-text-active);font-weight:600;box-shadow:0 4px 12px #2563eb4d}.nav-icon{text-align:center;justify-content:center;align-items:center;width:20px;display:inline-flex}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;margin-left:250px;transition:margin-left .25s cubic-bezier(.4,0,.2,1);display:flex}.app-sidebar.collapsed~.app-main{margin-left:0}.app-top-sticky-container{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff2;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.app-header{background:0 0;justify-content:space-between;align-items:center;padding:12px 28px;display:flex}.header-titles h1{color:var(--text-main);letter-spacing:-.3px;font-size:clamp(13px,3.2vw,17px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11px;display:flex}.header-actions{flex-shrink:0;align-items:center;gap:10px;display:flex}.desktop-text,.reports-btn-full{display:inline}.reports-btn-short{display:none}.cycle-status-pill,#global-monthly-pill{white-space:nowrap!important;flex-shrink:0!important;align-items:center!important;display:inline-flex!important}#global-monthly-text{white-space:nowrap!important;flex-shrink:0!important}.reports-dropdown-wrap{position:relative}.reports-dropdown-menu{border:1px solid var(--card-border);z-index:3000;box-sizing:border-box;background:#fff;border-radius:12px;width:320px;padding:6px;display:none;position:absolute;top:calc(100% + 6px);right:0;box-shadow:0 16px 36px #0f172a29}.reports-dropdown-menu.show{display:block}.reports-dropdown-header{color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;padding:8px 12px 6px;font-size:10px;font-weight:800}.report-menu-item{text-align:left;cursor:pointer;box-sizing:border-box;background:0 0;border:none;border-radius:8px;flex-direction:column;gap:2px;width:100%;padding:8px 12px;font-family:inherit;transition:background .15s;display:flex}.report-menu-item:hover{background:#f8fafc}.report-menu-item:focus{background:#eff6ff;outline:none}.report-menu-item-primary{background:#eff6ff;border:1px solid #dbeafe;margin-bottom:4px}.report-menu-item-primary:hover{background:#dbeafe}.report-menu-item-title{color:#0f172a;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;display:flex}.report-menu-item-desc{color:#64748b;font-size:10.5px;line-height:1.3}.report-menu-badge{text-transform:uppercase;letter-spacing:.3px;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700}.report-menu-badge-blue{color:#4f46e5;background:#eef2ff}.report-menu-badge-green{color:#16a34a;background:#dcfce7}.header-btn{border:1px solid var(--card-border);font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 13px;font-size:11.5px;font-weight:600;transition:all .16s cubic-bezier(.16,1,.3,1);display:inline-flex;box-shadow:0 1px 2px #0f172a08}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 2px 5px #0f172a0d}.header-btn:active{transform:translateY(0)}.header-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 6px #2563eb4d}.header-btn:disabled{opacity:.65;pointer-events:none;cursor:not-allowed!important;color:var(--text-muted)!important;box-shadow:none!important;background:#f1f5f9!important;border-color:#e2e8f0!important;transform:none!important}.spin-icon{animation:.8s linear infinite spin;display:inline-block}.period-bar-wrap{background:0 0;border-top:1px solid #e2e8f0b3;justify-content:space-between;align-items:center;gap:16px;padding:8px 28px;display:flex}.week-dropdown{border:1px solid var(--card-border);font-family:var(--font-mono);color:var(--text-main);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 12px center no-repeat;border-radius:8px;outline:none;padding:7px 32px 7px 14px;font-size:12px;font-weight:600;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px #0f172a08}.week-dropdown:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px;display:none}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:16px;padding:20px}.card-title{letter-spacing:.6px;text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);justify-content:space-between;align-items:center;margin-bottom:12px;display:flex}.kpi-row-layout{grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;display:grid}.kpi-card-white{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;flex-direction:column;justify-content:space-between;padding:16px 18px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,border-color .18s;display:flex;position:relative}.kpi-card-white:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-2px)}.kpi-card-lbl{color:var(--text-muted);font-size:10.5px;font-weight:600}.kpi-card-num{color:var(--text-main);letter-spacing:-.6px;font-variant-numeric:tabular-nums;margin:6px 0;font-size:24px;font-weight:800;line-height:1.1}.kpi-card-num .unit{color:var(--text-muted);margin-left:3px;font-size:11px;font-weight:500}.kpi-card-foot{color:var(--text-muted);font-size:11px;font-weight:500}.kpi-badge-pill{font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.2px;border-radius:20px;align-items:center;gap:4px;padding:2.5px 8px;display:inline-flex}.pill-normal{color:#0b4f6c;background:#0b4f6c1a;border:1px solid #0b4f6c47}.pill-green{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}.pill-amber{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)}.pill-red{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}.pill-blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 18px;display:flex}.table-head-title{color:var(--text-main);font-size:13px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 14px;font-size:9.5px;font-weight:700}table.data-table thead th.right,table.data-table tbody td.right{text-align:right}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:9px 14px}table.data-table tbody td.mono{font-family:var(--font-mono);font-size:11px}.cat-pill{font-size:9px;font-family:var(--font-mono);border-radius:4px;padding:2px 6px;font-weight:600;display:inline-block}.cat-sw{background:var(--teal-light);color:var(--teal);border:1px solid var(--teal-border)}.cat-gw{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}.cat-aug{color:#8b5cf6;background:#faf5ff;border:1px solid #e9d5ff}.bar-cell{align-items:center;gap:6px;display:flex}.mini-bar-bg{background:#e2e8f0;border-radius:3px;flex:1;height:5px;overflow:hidden}.mini-bar{border-radius:3px;height:100%}.press-table-wrap{max-height:520px;position:relative;overflow:auto}.press-table-wrap thead th{z-index:10;background:#f1f5f9;position:sticky;top:0;box-shadow:0 1px 2px #0000000f}.press-table-wrap th:first-child,.press-table-wrap td:first-child{z-index:11;border-right:1px solid var(--card-border);background:#fff;position:sticky;left:0}.press-table-wrap thead th:first-child{z-index:12;background:#f1f5f9}.table-responsive,#priority-cards-row,.press-table-wrap{cursor:grab;-webkit-overflow-scrolling:touch}.table-responsive.is-dragging,#priority-cards-row.is-dragging,.press-table-wrap.is-dragging{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}.press-table-wrap th,.press-table-wrap td,table.data-table th,table.data-table td{white-space:nowrap;min-width:72px}.press-table-wrap th:first-child,.press-table-wrap td:first-child{min-width:140px}.map-frame-box{border:1px solid var(--card-border);height:480px;box-shadow:var(--card-shadow);z-index:1;isolation:isolate;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden}#leaflet-map{width:100%;height:100%}.pressure-dot{font-family:var(--font-mono);color:#fff;cursor:pointer;border:2px solid #fff;border-radius:50%;flex-direction:column;justify-content:center;align-items:center;font-weight:700;transition:transform .15s,box-shadow .15s;display:flex}.pressure-dot:hover{transform:scale(1.2);z-index:1000!important}.pressure-dot.dot-ok{background:var(--green);box-shadow:0 2px 8px #10b98180}.pressure-dot.dot-alert{background:var(--red);animation:1.4s ease-in-out infinite dot-pulse;box-shadow:0 0 10px #ef4444cc}.pressure-dot.dot-nodata{background:var(--text-muted)}.pressure-dot.dot-compare-1{outline:3px solid var(--blue);outline-offset:2px}.pressure-dot.dot-compare-2{outline:3px solid var(--teal);outline-offset:2px}@keyframes dot-pulse{0%,to{box-shadow:0 0 6px #ef444480}50%{box-shadow:0 0 18px #ef4444e6}}.leaflet-popup-content-wrapper{background:#fff!important;border-radius:12px!important;padding:0!important;box-shadow:0 10px 30px #0f172a26!important}.leaflet-popup-content{width:220px!important;margin:0!important}.map-header-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;display:flex}.map-view-toggles{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.map-mode-btn{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 12px;font-size:11px;font-weight:700;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.map-mode-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.map-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 6px #2563eb40}.map-outlier-chips{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.outlier-chip{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-main);cursor:pointer;white-space:nowrap;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:5px 11px;font-size:11px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.outlier-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}.outlier-chip span{color:var(--blue);font-weight:800}.section-title-wrap{margin-top:18px;margin-bottom:10px}.section-title-main{text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);letter-spacing:.5px}.section-title-sub{color:var(--text-muted);margin-top:1px;font-size:12px}.grid-featured-cards{grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;display:grid}.featured-card{border-radius:12px;flex-direction:column;justify-content:space-between;min-width:0;padding:0;display:flex;overflow:hidden}.card-mini-map-wrap{border-bottom:1px solid var(--card-border);cursor:pointer;background:#e2e8f0;width:100%;height:68px;position:relative;overflow:hidden}.card-mini-map-wrap:hover .card-map-overlay-btn{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}.card-map-overlay-btn{z-index:400;border:1px solid var(--card-border);color:var(--text-main);font-size:9px;font-family:var(--font-mono);cursor:pointer;background:#fffffff0;border-radius:4px;padding:2px 6px;font-weight:700;transition:all .15s;position:absolute;bottom:4px;right:4px;box-shadow:0 1px 4px #0000001f}.crisis-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:24px;display:grid}.crisis-card{border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;background:#fff;border-radius:14px;flex-direction:column;padding:16px 18px;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s;display:flex;position:relative;overflow:hidden}.crisis-card:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-3px)}.crisis-card:before{content:"";border-radius:14px 0 0 14px;width:4px;position:absolute;top:0;bottom:0;left:0}.crisis-card.lvl-normal:before{background:#0b4f6c}.crisis-card.lvl-1:before{background:var(--green)}.crisis-card.lvl-2:before{background:var(--amber)}.crisis-card.lvl-3:before{background:var(--red)}.crisis-header{justify-content:space-between;align-items:flex-start;margin-bottom:8px;display:flex}.crisis-title{color:var(--text-main);font-size:13px;font-weight:700}.crisis-pct{font-size:28px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px;line-height:1}.crisis-prog-track{background:#f1f5f9;border-radius:3px;height:5px;margin:8px 0 12px;overflow:hidden}.crisis-prog-fill{border-radius:3px;height:100%;transition:width .4s cubic-bezier(.16,1,.3,1)}.crisis-details{color:var(--text-muted);font-size:11px;font-family:var(--font-mono);flex-direction:column;gap:4px;display:flex}.crisis-details-row{border-bottom:1px dashed #e2e8f0;justify-content:space-between;padding-bottom:3px;display:flex}.crisis-details-row:last-child{border-bottom:none}.crisis-remarks-cta{color:var(--blue);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;font-size:11px;font-weight:600;transition:all .15s;display:flex}.crisis-card:hover .crisis-remarks-cta{color:#1d4ed8;padding-left:2px}.grid-overview-split{grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-production-charts{grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-priority-cards{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;display:grid}.grid-outlying-cards{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;display:grid}.grid-stations{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px;display:grid}.grid-stations .kpi-card-white{cursor:pointer;flex-direction:column;justify-content:space-between;min-width:0;display:flex}.grid-stations .kpi-card-white:hover{transform:translateY(-2px);border-color:var(--blue)!important;box-shadow:0 4px 12px #0d948826!important}.grid-river-layout{grid-template-columns:280px 1fr;gap:18px;display:grid}.grid-complaints-charts{grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:20px;display:grid}.grid-monthly-charts{grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px;display:grid}.grid-genset-summary{border-bottom:1px solid var(--card-border);background:#f8fafc;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 24px;display:grid}.modal-station-grid{grid-template-columns:1fr 1fr;gap:10px;display:grid}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:34px;height:34px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:28px;height:28px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:1200;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}.crisis-legend-bar{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:10px;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px;padding:6px 14px;display:flex}.crisis-legend-title{color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-size:10.5px;font-weight:800;font-family:var(--font-mono);margin-right:4px}.crisis-legend-item{color:var(--text-main);border:1px solid var(--card-border);background:#f8fafc;border-radius:6px;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;transition:background .15s;display:inline-flex}.crisis-legend-item:hover{background:#f1f5f9}.crisis-legend-dot{border-radius:50%;flex-shrink:0;width:8px;height:8px}.crisis-legend-normal{background:#0b4f6c0d;border-color:#0b4f6c40}.crisis-legend-watch{border-color:var(--green-border);background:var(--green-light)}.crisis-legend-alert{border-color:var(--amber-border);background:var(--amber-light)}.crisis-legend-critical{border-color:var(--red-border);background:var(--red-light)}@media (width<=1180px){.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>*{grid-column:auto!important}}@media (width<=1024px){.kpi-row-layout{grid-template-columns:repeat(3,1fr)}.grid-production-charts{grid-template-columns:1fr 1fr}.grid-production-charts>:first-child{grid-column:span 2}.grid-featured-cards{-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;box-sizing:border-box;gap:10px;width:100%;max-width:100%;margin-bottom:16px;padding-bottom:8px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.grid-featured-cards .featured-card{scroll-snap-align:start;flex:0 0 185px!important;min-width:185px!important;max-width:185px!important}.grid-featured-cards::-webkit-scrollbar{height:4px}.grid-featured-cards::-webkit-scrollbar-track{background:#f1f5f9;border-radius:4px}.grid-featured-cards::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}.mobile-swipe-hint{display:inline-block!important}}@media (width<=820px){.app-sidebar{z-index:1300;height:100vh;transition:transform .28s cubic-bezier(.4,0,.2,1);position:fixed;top:0;bottom:0;left:0;transform:translate(-100%);margin-left:0!important}.app-sidebar.open{transform:translate(0);box-shadow:10px 0 30px #0000004d}.app-main,.app-sidebar.collapsed~.app-main{margin-left:0!important}.menu-toggle-btn{justify-content:center;align-items:center;display:flex}.sidebar-close-btn{display:flex}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:10px}.app-header{padding:12px 16px}.header-titles h1{font-size:15px}.header-titles p{display:none}#header-auth-status-btn{justify-content:center;min-width:32px;padding:6px 9px}#header-auth-status-icon{justify-content:center;align-items:center;display:inline-flex}.header-actions{gap:6px}.page-content{box-sizing:border-box;width:100%;max-width:100%;padding:14px 12px;overflow-x:hidden}.period-bar-wrap{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}.period-bar-wrap select.week-dropdown{width:100%}.grid-overview-split,.grid-production-charts{grid-template-columns:1fr}.grid-production-charts>:first-child{grid-column:auto}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.grid-river-layout{grid-template-columns:1fr}#river-list-container{max-height:220px!important}.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>:first-child{grid-column:auto}.grid-monthly-charts{grid-template-columns:1fr}.map-frame-box{height:350px}.map-header-toolbar{box-sizing:border-box;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%}.map-view-toggles{box-sizing:border-box;flex-wrap:wrap;gap:6px;width:100%;max-width:100%;display:flex}.map-view-toggles .map-mode-btn{flex:auto;justify-content:center;padding:6px 8px;font-size:11px}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;box-sizing:border-box;gap:8px;width:100%;max-width:100%;padding-bottom:4px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.outlier-chip{box-sizing:border-box;flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.desktop-text{display:none!important}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px;flex-wrap:nowrap!important;gap:8px!important;display:flex!important;overflow-x:auto!important}}@media (width<=640px){.card{border-radius:12px;margin-bottom:12px;padding:14px}.table-container{border-radius:12px;margin-bottom:16px}.table-head-bar{padding:10px 14px}table.data-table th,table.data-table td{padding:7px 10px}.modal-station-grid{grid-template-columns:1fr}.grid-genset-summary{grid-template-columns:repeat(2,1fr);padding:12px 14px}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:1fr}.map-frame-box{height:300px}.kpi-card-white{padding:12px 14px}.kpi-card-num{font-size:20px}.chart-panel-header{flex-direction:column;gap:10px;align-items:flex-start!important}.reports-btn-full{display:none!important}.reports-btn-short{display:inline!important}.crisis-legend-title{grid-column:1/-1;margin-bottom:2px}.crisis-legend-item{justify-content:flex-start;padding:4px 6px;font-size:10px;line-height:1.2;white-space:normal!important;min-width:0!important}#btn-reports-menu{padding:6px 10px;font-size:11px}.crisis-legend-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:8px 10px!important;display:grid!important}}@media (width<=440px){.outlier-chip{flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:8px}.kpi-card-white{padding:10px}.kpi-card-lbl{font-size:9.5px}.kpi-card-num{margin:4px 0;font-size:18px}.grid-stations{grid-template-columns:repeat(2,1fr);gap:6px}.grid-stations .kpi-card-white{padding:8px 10px}.header-btn{padding:6px 10px;font-size:10.5px}.app-header{padding:10px 12px}.header-actions{gap:5px}#btn-reports-menu{padding:5px 8px;font-size:10.5px}#header-auth-status-btn{min-width:28px;padding:5px 7px}.reports-dropdown-menu{width:min(290px,100vw - 24px);right:-40px}.crisis-legend-item{gap:4px;padding:3px 5px;font-size:9.5px;line-height:1.2;white-space:normal!important;min-width:0!important}}.loading-overlay{z-index:9999;background:#fff;flex-direction:column;justify-content:center;align-items:center;gap:12px;transition:opacity .4s;display:flex;position:fixed;inset:0}.loading-overlay.hidden{opacity:0;pointer-events:none}.spinner-ring{border:3px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;width:38px;height:38px;animation:.8s linear infinite spin}@keyframes spin{to{transform:rotate(360deg)}}[id$=-modal]{transition:opacity .2s;-webkit-backdrop-filter:blur(8px)!important}[id$=-modal]>div{animation:.24s cubic-bezier(.16,1,.3,1) modalScaleIn;box-shadow:0 25px 50px -12px #0f172a40!important}@keyframes modalScaleIn{0%{opacity:0;transform:scale(.96)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}}.page-content.active{animation:.22s cubic-bezier(.16,1,.3,1) pageFadeIn;display:block}@keyframes pageFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.telemetry-beacon{background:var(--green);border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.2s infinite beaconPulse;display:inline-block;box-shadow:0 0 #10b98166}@keyframes beaconPulse{0%{box-shadow:0 0 #10b981b3}70%{box-shadow:0 0 0 7px #10b98100}to{box-shadow:0 0 #10b98100}}.comp-a4-page{color:#0f172a;box-sizing:border-box;page-break-after:always;background:#fff;border:1px solid #e2e8f0;flex-direction:column;justify-content:space-between;width:210mm;min-height:297mm;margin:0 auto 20px;padding:12.7mm;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:flex;position:relative}.comp-header-banner{border-bottom:2px solid #1560bd;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:8px;display:flex}.comp-kpi-grid{gap:8px;margin-bottom:12px;display:flex}.comp-kpi-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;flex:1;padding:8px 10px}.comp-kpi-label{color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-size:8.5px;font-weight:700}.comp-kpi-value{color:#0f172a;font-family:IBM Plex Mono,monospace;font-size:15px;font-weight:800;line-height:1.15}.comp-kpi-sub{color:#64748b;margin-top:2px;font-size:8px}.comp-section-title{color:#1e293b;text-transform:uppercase;letter-spacing:.4px;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;font-weight:800;display:flex}.comp-table{border-collapse:collapse;width:100%;margin-bottom:10px;font-size:9.5px}.comp-table th{color:#334155;text-align:left;background:#f1f5f9;border-bottom:2px solid #cbd5e1;padding:5px 6px;font-size:9px;font-weight:700}.comp-table td{color:#1e293b;border-bottom:1px solid #e2e8f0;padding:4.5px 6px}.comp-table tr:hover{background:#f8fafc}.comp-footer{color:#64748b;border-top:1px solid #e2e8f0;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;font-size:8.5px;display:flex}@media print{@page{size:A4 portrait;margin:.5in}body *{visibility:hidden!important}#comprehensive-report-staging,#comprehensive-report-staging *,.comp-a4-page,.comp-a4-page *{visibility:visible!important}#comprehensive-report-staging{width:100%!important;margin:0!important;padding:0!important;position:absolute!important;top:0!important;left:0!important}.comp-a4-page{width:100%!important;min-height:auto!important;box-shadow:none!important;page-break-after:always!important;border:none!important;margin:0!important;padding:0!important}}</style>
+  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff0f;--sidebar-active:#2563eb;--sidebar-text:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f8fafc;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 1px 3px 0 #0f172a0a, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#64748b;--text-subtle:#94a3b8;--teal:#0d9488;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-light:#fef2f2;--red-border:#fecaca;--font-sans:"Inter", -apple-system, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;font-size:13px;line-height:1.5}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:1100;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;position:fixed;top:0;bottom:0;left:0;overflow:hidden auto}.app-sidebar.collapsed{transform:translate(-250px)}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-icon{color:#fff;background:linear-gradient(135deg,#0284c7,#0d9488);border-radius:9px;justify-content:center;align-items:center;width:36px;height:36px;font-size:16px;font-weight:800;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:4px;padding:12px 14px;display:flex;overflow-y:auto}.nav-btn{color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:9px;align-items:center;gap:10px;width:100%;padding:10px 14px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{background:var(--sidebar-active);color:var(--sidebar-text-active);font-weight:600;box-shadow:0 4px 12px #2563eb4d}.nav-icon{text-align:center;justify-content:center;align-items:center;width:20px;display:inline-flex}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;margin-left:250px;transition:margin-left .25s cubic-bezier(.4,0,.2,1);display:flex}.app-sidebar.collapsed~.app-main{margin-left:0}.app-top-sticky-container{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff2;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.app-header{background:0 0;justify-content:space-between;align-items:center;padding:12px 28px;display:flex}.header-titles h1{color:var(--text-main);letter-spacing:-.3px;font-size:clamp(13px,3.2vw,17px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11px;display:flex}.header-actions{flex-shrink:0;align-items:center;gap:10px;display:flex}.desktop-text,.reports-btn-full{display:inline}.reports-btn-short{display:none}.cycle-status-pill,#global-monthly-pill{white-space:nowrap!important;flex-shrink:0!important;align-items:center!important;display:inline-flex!important}#global-monthly-text{white-space:nowrap!important;flex-shrink:0!important}.reports-dropdown-wrap{position:relative}.reports-dropdown-menu{border:1px solid var(--card-border);z-index:3000;box-sizing:border-box;background:#fff;border-radius:12px;width:320px;padding:6px;display:none;position:absolute;top:calc(100% + 6px);right:0;box-shadow:0 16px 36px #0f172a29}.reports-dropdown-menu.show{display:block}.reports-dropdown-header{color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;padding:8px 12px 6px;font-size:10px;font-weight:800}.report-menu-item{text-align:left;cursor:pointer;box-sizing:border-box;background:0 0;border:none;border-radius:8px;flex-direction:column;gap:2px;width:100%;padding:8px 12px;font-family:inherit;transition:background .15s;display:flex}.report-menu-item:hover{background:#f8fafc}.report-menu-item:focus{background:#eff6ff;outline:none}.report-menu-item-primary{background:#eff6ff;border:1px solid #dbeafe;margin-bottom:4px}.report-menu-item-primary:hover{background:#dbeafe}.report-menu-item-title{color:#0f172a;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;display:flex}.report-menu-item-desc{color:#64748b;font-size:10.5px;line-height:1.3}.report-menu-badge{text-transform:uppercase;letter-spacing:.3px;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700}.report-menu-badge-blue{color:#4f46e5;background:#eef2ff}.report-menu-badge-green{color:#16a34a;background:#dcfce7}.header-btn{border:1px solid var(--card-border);font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 13px;font-size:11.5px;font-weight:600;transition:all .16s cubic-bezier(.16,1,.3,1);display:inline-flex;box-shadow:0 1px 2px #0f172a08}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 2px 5px #0f172a0d}.header-btn:active{transform:translateY(0)}.header-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 6px #2563eb4d}.header-btn:disabled{opacity:.65;pointer-events:none;cursor:not-allowed!important;color:var(--text-muted)!important;box-shadow:none!important;background:#f1f5f9!important;border-color:#e2e8f0!important;transform:none!important}.spin-icon{animation:.8s linear infinite spin;display:inline-block}.period-bar-wrap{-webkit-backdrop-filter:blur(10px);background:#f8fafcf0;border-top:1px solid #e2e8f0cc;border-bottom:1px solid #e2e8f0cc;justify-content:space-between;align-items:center;gap:16px;padding:8px 28px;display:flex}.week-dropdown{border:1px solid var(--card-border);font-family:var(--font-mono);color:var(--text-main);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 12px center no-repeat;border-radius:8px;outline:none;padding:7px 32px 7px 14px;font-size:12px;font-weight:600;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px #0f172a08}.week-dropdown:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px;display:none}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:16px;padding:20px}.card-title{letter-spacing:.6px;text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);justify-content:space-between;align-items:center;margin-bottom:12px;display:flex}.kpi-row-layout{grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;display:grid}.kpi-card-white{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;flex-direction:column;justify-content:space-between;padding:16px 18px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,border-color .18s;display:flex;position:relative}.kpi-card-white:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-2px)}.kpi-card-num,.kpi-card-foot,.mono,table.data-table td.right,table.data-table td.mono,.featured-card .kpi-card-num,.station-card-item .mono,.pressure-status-pill,.data-freshness-pill,.tabular-nums{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}.kpi-card-lbl{text-transform:uppercase;letter-spacing:.04em;color:#64748b;font-size:.75rem;font-weight:700;line-height:1.2}.kpi-card-num{color:var(--text-main);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0;font-size:clamp(1.75rem,2.2vw,2.25rem);font-weight:800;line-height:1.1}.kpi-card-num .unit{color:#94a3b8;letter-spacing:normal;margin-left:4px;font-size:.85rem;font-weight:500}.kpi-card-foot{color:#64748b;font-size:.75rem;font-weight:500;line-height:1.3}.kpi-badge-pill{font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.2px;border-radius:20px;align-items:center;gap:5px;padding:3px 9px;line-height:1.2;display:inline-flex}.pill-normal,.pill-green{color:#059669;background:#10b98114;border:1px solid #10b98140}.pill-amber{color:#d97706;background:#f59e0b14;border:1px solid #f59e0b47}.pill-red{color:#dc2626;background:#ef44441a;border:1px solid #ef444459}.pill-blue{color:#2563eb;background:#2563eb14;border:1px solid #2563eb40}.alert-dot-pulse{background:#ef4444;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:1.6s cubic-bezier(.4,0,.6,1) infinite alertPulse;display:inline-block;box-shadow:0 0 6px #ef4444cc}.normal-dot-pulse{background:#10b981;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.4s cubic-bezier(.4,0,.6,1) infinite normalPulse;display:inline-block;box-shadow:0 0 6px #10b98199}.amber-dot-pulse{background:#f59e0b;border-radius:50%;flex-shrink:0;width:7px;height:7px;display:inline-block;box-shadow:0 0 6px #f59e0b99}@keyframes alertPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.25)}}@keyframes normalPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 18px;display:flex}.table-head-title{color:var(--text-main);font-size:13px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 14px;font-size:9.5px;font-weight:700}table.data-table thead th.right,table.data-table tbody td.right{text-align:right}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:9px 14px}table.data-table tbody td.mono{font-family:var(--font-mono);font-size:11px}.cat-pill{font-size:9px;font-family:var(--font-mono);border-radius:4px;padding:2px 6px;font-weight:600;display:inline-block}.cat-sw{background:var(--teal-light);color:var(--teal);border:1px solid var(--teal-border)}.cat-gw{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}.cat-aug{color:#8b5cf6;background:#faf5ff;border:1px solid #e9d5ff}.bar-cell{align-items:center;gap:6px;display:flex}.mini-bar-bg{background:#e2e8f0;border-radius:3px;flex:1;height:5px;overflow:hidden}.mini-bar{border-radius:3px;height:100%}.press-table-wrap{max-height:520px;position:relative;overflow:auto}.press-table-wrap thead th{z-index:10;background:#f1f5f9;position:sticky;top:0;box-shadow:0 1px 2px #0000000f}.press-table-wrap th:first-child,.press-table-wrap td:first-child{z-index:11;border-right:1px solid var(--card-border);background:#fff;position:sticky;left:0}.press-table-wrap thead th:first-child{z-index:12;background:#f1f5f9}.table-sticky-first th:first-child,.table-sticky-first td:first-child{z-index:10;background:#fff;border-right:1px solid #e2e8f0f2;position:sticky;left:0;box-shadow:3px 0 6px -2px #0f172a14}.table-sticky-first thead th:first-child{z-index:11;background:#f8fafc}.table-sticky-first tbody tr:hover td:first-child{background:#f8fafc}.chart-container-wrap{width:100%;min-height:220px;position:relative}.btn-primary-action{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;font-weight:700!important;box-shadow:0 2px 6px #2563eb47!important}.btn-primary-action:hover{transform:translateY(-1px);background:#1d4ed8!important;border-color:#1d4ed8!important;box-shadow:0 4px 12px #2563eb59!important}.btn-secondary-action{color:var(--text-main)!important;background:#fff!important;border:1px solid #94a3b859!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 1px 2px #0f172a0a!important}.btn-secondary-action:hover{transform:translateY(-1px);color:var(--blue)!important;background:#f8fafc!important;border-color:#cbd5e1!important;box-shadow:0 2px 6px #0f172a14!important}@keyframes shimmer{0%{background-position:-200% 0}to{background-position:200% 0}}.skeleton-shimmer{-webkit-user-select:none;user-select:none;background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%) 0 0/200% 100%;border-radius:4px;animation:1.8s infinite shimmer;display:inline-block;color:#0000!important}.table-responsive,#priority-cards-row,.press-table-wrap{cursor:grab;-webkit-overflow-scrolling:touch}.table-responsive.is-dragging,#priority-cards-row.is-dragging,.press-table-wrap.is-dragging{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}.press-table-wrap th,.press-table-wrap td,table.data-table th,table.data-table td{white-space:nowrap;min-width:72px}.press-table-wrap th:first-child,.press-table-wrap td:first-child{min-width:140px}.map-frame-box{border:1px solid var(--card-border);height:480px;box-shadow:var(--card-shadow);z-index:1;isolation:isolate;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden}#leaflet-map{width:100%;height:100%}.pressure-dot{font-family:var(--font-mono);color:#fff;cursor:pointer;border:2px solid #fff;border-radius:50%;flex-direction:column;justify-content:center;align-items:center;font-weight:700;transition:transform .15s,box-shadow .15s;display:flex}.pressure-dot:hover{transform:scale(1.2);z-index:1000!important}.pressure-dot.dot-ok{background:var(--green);box-shadow:0 2px 8px #10b98180}.pressure-dot.dot-alert{background:var(--red);animation:1.4s ease-in-out infinite dot-pulse;box-shadow:0 0 10px #ef4444cc}.pressure-dot.dot-nodata{background:var(--text-muted)}.pressure-dot.dot-compare-1{outline:3px solid var(--blue);outline-offset:2px}.pressure-dot.dot-compare-2{outline:3px solid var(--teal);outline-offset:2px}@keyframes dot-pulse{0%,to{box-shadow:0 0 6px #ef444480}50%{box-shadow:0 0 18px #ef4444e6}}.leaflet-popup-content-wrapper{background:#fff!important;border-radius:12px!important;padding:0!important;box-shadow:0 10px 30px #0f172a26!important}.leaflet-popup-content{width:220px!important;margin:0!important}.map-header-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;display:flex}.map-view-toggles{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.map-mode-btn{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 12px;font-size:11px;font-weight:700;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.map-mode-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.map-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 6px #2563eb40}.map-outlier-chips{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.outlier-chip{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-main);cursor:pointer;white-space:nowrap;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:5px 11px;font-size:11px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.outlier-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}.outlier-chip span{color:var(--blue);font-weight:800}.section-title-wrap{margin-top:18px;margin-bottom:10px}.section-title-main{text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);letter-spacing:.5px}.section-title-sub{color:var(--text-muted);margin-top:1px;font-size:12px}.grid-featured-cards{grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;display:grid}.featured-card{border-radius:12px;flex-direction:column;justify-content:space-between;min-width:0;padding:0;display:flex;overflow:hidden}.card-mini-map-wrap{border-bottom:1px solid var(--card-border);cursor:pointer;background:#e2e8f0;width:100%;height:68px;position:relative;overflow:hidden}.card-mini-map-wrap:hover .card-map-overlay-btn{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}.card-map-overlay-btn{z-index:400;border:1px solid var(--card-border);color:var(--text-main);font-size:9px;font-family:var(--font-mono);cursor:pointer;background:#fffffff0;border-radius:4px;padding:2px 6px;font-weight:700;transition:all .15s;position:absolute;bottom:4px;right:4px;box-shadow:0 1px 4px #0000001f}.crisis-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:24px;display:grid}.crisis-card{border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;background:#fff;border-radius:14px;flex-direction:column;padding:16px 18px;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s;display:flex;position:relative;overflow:hidden}.crisis-card:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-3px)}.crisis-card:before{content:"";border-radius:14px 0 0 14px;width:4px;position:absolute;top:0;bottom:0;left:0}.crisis-card.lvl-normal:before{background:#0b4f6c}.crisis-card.lvl-1:before{background:var(--green)}.crisis-card.lvl-2:before{background:var(--amber)}.crisis-card.lvl-3:before{background:var(--red)}.crisis-header{justify-content:space-between;align-items:flex-start;margin-bottom:8px;display:flex}.crisis-title{color:var(--text-main);font-size:13px;font-weight:700}.crisis-pct{font-size:28px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px;line-height:1}.crisis-prog-track{background:#f1f5f9;border-radius:3px;height:5px;margin:8px 0 12px;overflow:hidden}.crisis-prog-fill{border-radius:3px;height:100%;transition:width .4s cubic-bezier(.16,1,.3,1)}.crisis-details{color:var(--text-muted);font-size:11px;font-family:var(--font-mono);flex-direction:column;gap:4px;display:flex}.crisis-details-row{border-bottom:1px dashed #e2e8f0;justify-content:space-between;padding-bottom:3px;display:flex}.crisis-details-row:last-child{border-bottom:none}.crisis-remarks-cta{color:var(--blue);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;font-size:11px;font-weight:600;transition:all .15s;display:flex}.crisis-card:hover .crisis-remarks-cta{color:#1d4ed8;padding-left:2px}.grid-overview-split{grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-production-charts{grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-priority-cards{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;display:grid}.grid-outlying-cards{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;display:grid}.grid-stations{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px;display:grid}.grid-stations .kpi-card-white{cursor:pointer;flex-direction:column;justify-content:space-between;min-width:0;display:flex}.grid-stations .kpi-card-white:hover{transform:translateY(-2px);border-color:var(--blue)!important;box-shadow:0 4px 12px #0d948826!important}.grid-river-layout{grid-template-columns:280px 1fr;gap:18px;display:grid}.grid-complaints-charts{grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:20px;display:grid}.grid-monthly-charts{grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px;display:grid}.grid-genset-summary{border-bottom:1px solid var(--card-border);background:#f8fafc;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 24px;display:grid}.modal-station-grid{grid-template-columns:1fr 1fr;gap:10px;display:grid}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:34px;height:34px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:28px;height:28px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:1200;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}.crisis-legend-bar{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:10px;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px;padding:6px 14px;display:flex}.crisis-legend-title{color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-size:10.5px;font-weight:800;font-family:var(--font-mono);margin-right:4px}.crisis-legend-item{color:var(--text-main);border:1px solid var(--card-border);background:#f8fafc;border-radius:6px;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;transition:background .15s;display:inline-flex}.crisis-legend-item:hover{background:#f1f5f9}.crisis-legend-dot{border-radius:50%;flex-shrink:0;width:8px;height:8px}.crisis-legend-normal{background:#0b4f6c0d;border-color:#0b4f6c40}.crisis-legend-watch{border-color:var(--green-border);background:var(--green-light)}.crisis-legend-alert{border-color:var(--amber-border);background:var(--amber-light)}.crisis-legend-critical{border-color:var(--red-border);background:var(--red-light)}@media (width<=1180px){.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>*{grid-column:auto!important}}@media (width<=1024px){.kpi-row-layout{grid-template-columns:repeat(3,1fr)}.grid-production-charts{grid-template-columns:1fr 1fr}.grid-production-charts>:first-child{grid-column:span 2}.grid-featured-cards{-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;box-sizing:border-box;gap:10px;width:100%;max-width:100%;margin-bottom:16px;padding-bottom:8px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.grid-featured-cards .featured-card{scroll-snap-align:start;flex:0 0 185px!important;min-width:185px!important;max-width:185px!important}.grid-featured-cards::-webkit-scrollbar{height:4px}.grid-featured-cards::-webkit-scrollbar-track{background:#f1f5f9;border-radius:4px}.grid-featured-cards::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}.mobile-swipe-hint{display:inline-block!important}}@media (width<=820px){.app-sidebar{z-index:1300;height:100vh;transition:transform .28s cubic-bezier(.4,0,.2,1);position:fixed;top:0;bottom:0;left:0;transform:translate(-100%);margin-left:0!important}.app-sidebar.open{transform:translate(0);box-shadow:10px 0 30px #0000004d}.app-main,.app-sidebar.collapsed~.app-main{margin-left:0!important}.menu-toggle-btn{justify-content:center;align-items:center;display:flex}.sidebar-close-btn{display:flex}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:10px}.app-header{padding:12px 16px}.header-titles h1{font-size:15px}.header-titles p{display:none}#header-auth-status-btn{justify-content:center;min-width:32px;padding:6px 9px}#header-auth-status-icon{justify-content:center;align-items:center;display:inline-flex}.header-actions{gap:6px}.page-content{box-sizing:border-box;width:100%;max-width:100%;padding:14px 12px;overflow-x:hidden}.period-bar-wrap{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}.period-bar-wrap select.week-dropdown{width:100%}.grid-overview-split,.grid-production-charts{grid-template-columns:1fr}.grid-production-charts>:first-child{grid-column:auto}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.grid-river-layout{grid-template-columns:1fr}#river-list-container{max-height:220px!important}.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>:first-child{grid-column:auto}.grid-monthly-charts{grid-template-columns:1fr}.map-frame-box{height:350px}.map-header-toolbar{box-sizing:border-box;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%}.map-view-toggles{box-sizing:border-box;flex-wrap:wrap;gap:6px;width:100%;max-width:100%;display:flex}.map-view-toggles .map-mode-btn{flex:auto;justify-content:center;padding:6px 8px;font-size:11px}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;box-sizing:border-box;gap:8px;width:100%;max-width:100%;padding-bottom:4px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.outlier-chip{box-sizing:border-box;flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.desktop-text{display:none!important}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px;flex-wrap:nowrap!important;gap:8px!important;display:flex!important;overflow-x:auto!important}}@media (width<=640px){.card{border-radius:12px;margin-bottom:12px;padding:14px}.table-container{border-radius:12px;margin-bottom:16px}.table-head-bar{padding:10px 14px}table.data-table th,table.data-table td{padding:7px 10px}.modal-station-grid{grid-template-columns:1fr}.grid-genset-summary{grid-template-columns:repeat(2,1fr);padding:12px 14px}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:1fr}.map-frame-box{height:300px}.kpi-card-white{padding:12px 14px}.kpi-card-num{font-size:20px}.chart-panel-header{flex-direction:column;gap:10px;align-items:flex-start!important}.reports-btn-full{display:none!important}.reports-btn-short{display:inline!important}.crisis-legend-title{grid-column:1/-1;margin-bottom:2px}.crisis-legend-item{justify-content:flex-start;padding:4px 6px;font-size:10px;line-height:1.2;white-space:normal!important;min-width:0!important}#btn-reports-menu{padding:6px 10px;font-size:11px}.crisis-legend-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:8px 10px!important;display:grid!important}}@media (width<=440px){.outlier-chip{flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:8px}.kpi-card-white{padding:10px}.kpi-card-lbl{font-size:9.5px}.kpi-card-num{margin:4px 0;font-size:18px}.grid-stations{grid-template-columns:repeat(2,1fr);gap:6px}.grid-stations .kpi-card-white{padding:8px 10px}.header-btn{padding:6px 10px;font-size:10.5px}.app-header{padding:10px 12px}.header-actions{gap:5px}#btn-reports-menu{padding:5px 8px;font-size:10.5px}#header-auth-status-btn{min-width:28px;padding:5px 7px}.reports-dropdown-menu{width:min(290px,100vw - 24px);right:-40px}.crisis-legend-item{gap:4px;padding:3px 5px;font-size:9.5px;line-height:1.2;white-space:normal!important;min-width:0!important}}.loading-overlay{background:linear-gradient(90deg, var(--blue), #38bdf8, #10b981, var(--blue));z-index:99999;pointer-events:none;background-size:200% 100%;height:3px;transition:opacity .4s,visibility .4s;animation:1.5s linear infinite shimmerTopBar;position:fixed;top:0;left:0;right:0}.loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}.loading-overlay .spinner-ring,.loading-overlay>div:not(.spinner-ring){display:none!important}@keyframes shimmerTopBar{0%{background-position:200% 0}to{background-position:-200% 0}}.spinner-ring{border:3px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;width:38px;height:38px;animation:.8s linear infinite spin}@keyframes spin{to{transform:rotate(360deg)}}[id$=-modal]{transition:opacity .2s;-webkit-backdrop-filter:blur(8px)!important}[id$=-modal]>div{animation:.24s cubic-bezier(.16,1,.3,1) modalScaleIn;box-shadow:0 25px 50px -12px #0f172a40!important}@keyframes modalScaleIn{0%{opacity:0;transform:scale(.96)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}}.page-content.active{animation:.22s cubic-bezier(.16,1,.3,1) pageFadeIn;display:block}@keyframes pageFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.telemetry-beacon{background:var(--green);border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.2s infinite beaconPulse;display:inline-block;box-shadow:0 0 #10b98166}@keyframes beaconPulse{0%{box-shadow:0 0 #10b981b3}70%{box-shadow:0 0 0 7px #10b98100}to{box-shadow:0 0 #10b98100}}.comp-a4-page{color:#0f172a;box-sizing:border-box;page-break-after:always;background:#fff;border:1px solid #e2e8f0;flex-direction:column;justify-content:space-between;width:210mm;min-height:297mm;margin:0 auto 20px;padding:12.7mm;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:flex;position:relative}.comp-header-banner{border-bottom:2px solid #1560bd;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:8px;display:flex}.comp-kpi-grid{gap:8px;margin-bottom:12px;display:flex}.comp-kpi-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;flex:1;padding:8px 10px}.comp-kpi-label{color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-size:8.5px;font-weight:700}.comp-kpi-value{color:#0f172a;font-family:IBM Plex Mono,monospace;font-size:15px;font-weight:800;line-height:1.15}.comp-kpi-sub{color:#64748b;margin-top:2px;font-size:8px}.comp-section-title{color:#1e293b;text-transform:uppercase;letter-spacing:.4px;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;font-weight:800;display:flex}.comp-table{border-collapse:collapse;width:100%;margin-bottom:10px;font-size:9.5px}.comp-table th{color:#334155;text-align:left;background:#f1f5f9;border-bottom:2px solid #cbd5e1;padding:5px 6px;font-size:9px;font-weight:700}.comp-table td{color:#1e293b;border-bottom:1px solid #e2e8f0;padding:4.5px 6px}.comp-table tr:hover{background:#f8fafc}.comp-footer{color:#64748b;border-top:1px solid #e2e8f0;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;font-size:8.5px;display:flex}@media print{@page{size:A4 portrait;margin:.5in}body *{visibility:hidden!important}#comprehensive-report-staging,#comprehensive-report-staging *,.comp-a4-page,.comp-a4-page *{visibility:visible!important}#comprehensive-report-staging{width:100%!important;margin:0!important;padding:0!important;position:absolute!important;top:0!important;left:0!important}.comp-a4-page{width:100%!important;min-height:auto!important;box-shadow:none!important;page-break-after:always!important;border:none!important;margin:0!important;padding:0!important}}</style>
 </head>
 <body>
   <!-- Loading Screen -->
@@ -95,7 +95,7 @@
           <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
             <!-- Consolidated Reports & Exports Hub -->
             <div class="reports-dropdown-wrap">
-              <button id="btn-reports-menu" class="header-btn" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Consolidated Reports &amp; Exports Hub">
+              <button id="btn-reports-menu" class="header-btn btn-primary-action" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Consolidated Reports &amp; Exports Hub">
                 <span class="reports-btn-full">Reports &amp; Exports</span>
                 <span class="reports-btn-short">Reports</span>
                 <span style="font-size:8px; opacity:0.8;">▼</span>
@@ -168,7 +168,7 @@
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span class="cycle-status-pill" style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue); white-space:nowrap; flex-shrink:0;">Target: 56.86 MLD</span>
             
-            <a href="uploader.html#production" class="header-btn cycle-status-pill" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none; white-space:nowrap; flex-shrink:0;" title="Input or manage weekly production records">
+            <a href="uploader.html#production" class="header-btn btn-secondary-action cycle-status-pill" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none; white-space:nowrap; flex-shrink:0;" title="Input or manage weekly production records">
               <span>Log Weekly Production ↗</span>
             </a>
 
@@ -190,7 +190,7 @@
             </div>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <a href="uploader.html#monthly" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Open Monthly Production Uploader"><span>Log Monthly Volumes ↗</span></a>
+            <a href="uploader.html#monthly" class="header-btn btn-secondary-action" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Open Monthly Production Uploader"><span>Log Monthly Volumes ↗</span></a>
           </div>
         </div>
 
@@ -209,8 +209,9 @@
               <span id="refresh-pressure-icon" style="display:inline-block; font-size:12px; line-height:1;">↻</span>
               <span id="refresh-pressure-text">Refresh Live</span>
             </button>
-            <span id="pressure-last-synced-pill" class="kpi-badge-pill pill-blue" style="font-size:10px; font-family:var(--font-mono); padding:5px 8px; font-weight:600; white-space:nowrap;" title="Last time pressure telemetry was retrieved from Supabase">
-              Synced: <span id="pressure-last-synced-time">—</span>
+            <span id="pressure-last-synced-pill" class="kpi-badge-pill pill-blue" style="font-size:10px; font-family:var(--font-mono); padding:5px 8px; font-weight:600; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;" title="Last time pressure telemetry was retrieved from Supabase">
+              <span id="pressure-sync-dot" class="normal-dot-pulse" style="width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block;"></span>
+              <span>Synced: <span id="pressure-last-synced-time">—</span></span>
             </span>
 
             <input type="date" id="date-filter-input" class="header-btn" style="font-family:var(--font-mono); font-weight:600;" onchange="applyDateFilter()">
@@ -233,7 +234,7 @@
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
-            <a href="uploader.html#complaints" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
+            <a href="uploader.html#complaints" class="header-btn btn-secondary-action" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
               Log / Import Complaints ↗
             </a>
           </div>
@@ -279,7 +280,7 @@
               <span>Production Distribution &bull; Source Split</span>
               <span id="ov-progress-label" style="font-size: 10px; color: var(--blue);">0% Achieved</span>
             </div>
-            <div style="height: 220px;"><canvas id="ov-chart-source-split"></canvas></div>
+            <div class="chart-container-wrap" style="height: 220px;"><canvas id="ov-chart-source-split"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
@@ -324,8 +325,8 @@
         <div class="table-container">
           <div class="table-head-bar"><div class="table-head-title">Live Source Monitoring &amp; Yield Matrix</div></div>
           <div class="table-responsive">
-            <table class="data-table">
-              <thead><tr><th>Source Name</th><th>Classification</th><th>Current Intake Yield</th><th>Operating Status</th><th>Last Logged</th></tr></thead>
+            <table class="data-table table-sticky-first">
+              <thead><tr><th>Source Name</th><th>Classification</th><th class="right">Current Intake Yield</th><th>Operating Status</th><th>Last Logged</th></tr></thead>
               <tbody id="ov-source-tbody"></tbody>
             </table>
           </div>
@@ -343,25 +344,25 @@
         </div>
 
         <div class="grid-production-charts">
-          <div class="card"><div class="card-title">Weekly Total Production (m³)</div><div style="height:210px"><canvas id="chart-bar"></canvas></div></div>
-          <div class="card"><div class="card-title">SW vs GW Split</div><div style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
-          <div class="card"><div class="card-title">Source Breakdown</div><div style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
+          <div class="card"><div class="card-title">Weekly Total Production (m³)</div><div class="chart-container-wrap" style="height:210px"><canvas id="chart-bar"></canvas></div></div>
+          <div class="card"><div class="card-title">SW vs GW Split</div><div class="chart-container-wrap" style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
+          <div class="card"><div class="card-title">Source Breakdown</div><div class="chart-container-wrap" style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
         </div>
 
         <div class="card" style="margin-bottom:20px;">
           <div class="card-title">MLD Trend vs 56.86 Target</div>
-          <div style="height:300px"><canvas id="chart-mld"></canvas></div>
+          <div class="chart-container-wrap" style="height:300px"><canvas id="chart-mld"></canvas></div>
         </div>
 
         <div class="table-container">
           <div class="table-head-bar">
             <div class="table-head-title">Production by Source Group</div>
-            <a href="uploader.html#production" class="header-btn" style="color:var(--blue); font-size:11px; font-weight:700; text-decoration:none;" title="Open Weekly Production Monitoring Portal">
+            <a href="uploader.html#production" class="header-btn btn-secondary-action" style="color:var(--blue); font-size:11px; font-weight:700; text-decoration:none;" title="Open Weekly Production Monitoring Portal">
               <span>Input / Update Weekly Production ↗</span>
             </a>
           </div>
           <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table table-sticky-first">
               <thead><tr><th>Source</th><th>Category</th><th class="right">Production (m³)</th><th class="right">MLD</th><th class="right">% of Total</th><th style="width:140px">Share</th></tr></thead>
               <tbody id="source-table"></tbody>
             </table>
@@ -372,7 +373,7 @@
         <div class="table-container">
           <div class="table-head-bar"><div class="table-head-title">Rated Capacity vs Actual — Weekly Comparison</div></div>
           <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table table-sticky-first">
               <thead><tr><th>Station</th><th>Category</th><th class="right">Rated (m³/hr)</th><th class="right">Weekly Rated (m³)</th><th class="right">Actual (m³)</th><th class="right">Difference</th><th class="right">Utilization</th><th class="right">Status</th></tr></thead>
               <tbody id="capacity-table"></tbody>
             </table>
@@ -434,9 +435,15 @@
         <div class="grid-featured-cards" id="priority-cards-row"></div>
 
         <!-- Distribution Network Monitoring Points (Remaining Urban Core Stations) -->
-        <div class="section-title-wrap">
-          <div class="section-title-main">Distribution Network Monitoring Points</div>
-          <div class="section-title-sub">City proper distribution network telemetry (15 Nodes)</div>
+        <div class="section-title-wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <div class="section-title-main">Distribution Network Monitoring Points</div>
+            <div class="section-title-sub">City proper distribution network telemetry (15 Nodes)</div>
+          </div>
+          <div class="node-filter-group" style="display:inline-flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#FFFFFF;">
+            <button id="btn-nodes-all" class="header-btn active" onclick="setNodesFilter('all')" style="border:none; border-radius:0; font-size:11px; font-weight:700; padding:5px 12px; background:var(--blue-light); color:var(--blue);" title="Show all 15 distribution nodes">All Nodes (15)</button>
+            <button id="btn-nodes-alerts" class="header-btn" onclick="setNodesFilter('alerts')" style="border:none; border-radius:0; font-size:11px; font-weight:700; padding:5px 12px; color:var(--red);" title="Show only nodes at or below 6.5 PSI alert threshold">Alerts Only (≤ 6.5 PSI)</button>
+          </div>
         </div>
         <div class="grid-stations" id="station-cards-grid"></div>
 
@@ -454,7 +461,7 @@
               <button class="header-btn" id="btn-clear-compare-graph" onclick="clearCompare()" style="color:var(--red);">Clear All</button>
             </div>
           </div>
-          <div style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
+          <div class="chart-container-wrap" style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
           <div id="latest-strip" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;"></div>
         </div>
 
@@ -513,11 +520,11 @@
         <div class="card" style="margin-bottom: 20px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
             <div class="card-title" style="margin-bottom:0;">System-Wide Watershed Discharge Leaderboard (m³/day)</div>
-            <a href="uploader.html#riverflow" class="header-btn" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
+            <a href="uploader.html#riverflow" class="header-btn btn-secondary-action" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
               Log / Input River Flow ↗
             </a>
           </div>
-          <div style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
+          <div class="chart-container-wrap" style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
         </div>
 
         <div class="grid-river-layout">
@@ -525,7 +532,7 @@
           <div>
             <div class="card" id="river-chart-container" style="margin-bottom:16px;">
               <div class="card-title" id="river-chart-title">River Discharge Trend</div>
-              <div style="height: 300px;"><canvas id="chart-river"></canvas></div>
+              <div class="chart-container-wrap" style="height: 300px;"><canvas id="chart-river"></canvas></div>
             </div>
             <div class="table-container">
               <div class="table-head-bar"><div class="table-head-title">Recent Hydrology Readings</div></div>
@@ -554,9 +561,9 @@
         </div>
 
         <div class="grid-complaints-charts">
-          <div class="card"><div class="card-title">By Type</div><div style="height:270px; position:relative;"><canvas id="chart-complaints-type"></canvas></div></div>
-          <div class="card"><div class="card-title">By Barangay (Top 10)</div><div style="height:310px; position:relative;"><canvas id="chart-complaints-brgy"></canvas></div></div>
-          <div class="card"><div class="card-title">Top 10 Hotspot Stubouts</div><div style="height:310px; position:relative;"><canvas id="chart-complaints-stubouts"></canvas></div></div>
+          <div class="card"><div class="card-title">By Type</div><div class="chart-container-wrap" style="height:270px;"><canvas id="chart-complaints-type"></canvas></div></div>
+          <div class="card"><div class="card-title">By Barangay (Top 10)</div><div class="chart-container-wrap" style="height:310px;"><canvas id="chart-complaints-brgy"></canvas></div></div>
+          <div class="card"><div class="card-title">Top 10 Hotspot Stubouts</div><div class="chart-container-wrap" style="height:310px;"><canvas id="chart-complaints-stubouts"></canvas></div></div>
         </div>
 
         <div class="table-container">
@@ -607,11 +614,11 @@
         <div class="grid-monthly-charts">
           <div class="card">
             <div class="card-title">SW vs GW Monthly Share</div>
-            <div style="height: 240px;"><canvas id="chart-monthly-pie"></canvas></div>
+            <div class="chart-container-wrap" style="height: 240px;"><canvas id="chart-monthly-pie"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">Top 10 Producing Stations (m³/month)</div>
-            <div style="height: 240px;"><canvas id="chart-monthly-bar"></canvas></div>
+            <div class="chart-container-wrap" style="height: 240px;"><canvas id="chart-monthly-bar"></canvas></div>
           </div>
         </div>
 
@@ -622,7 +629,7 @@
             <span id="monthly-table-record-count" style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">0 / 34 entered</span>
           </div>
           <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table table-sticky-first">
               <thead>
                 <tr>
                   <th>Station Name</th>
@@ -1941,6 +1948,15 @@
         renderMonthlyDashboard();
       }
     }
+
+    // Trigger Chart.js resize to ensure dimensions match newly active container
+    setTimeout(() => {
+      if (window.Chart && Chart.instances) {
+        Object.values(Chart.instances).forEach(inst => {
+          try { inst.resize(); } catch(e){}
+        });
+      }
+    }, 60);
   }
 
   // ── OVERVIEW ──
@@ -2569,6 +2585,33 @@
 
   // 5 Featured Stations: Main Manalo Booster Station + 4 Far Outliers
   const FEATURED_COLS = [2, 19, 8, 10, 3];
+  let nodesFilter = 'all';
+
+  function setNodesFilter(mode) {
+    nodesFilter = mode;
+    const btnAll = document.getElementById('btn-nodes-all');
+    const btnAlerts = document.getElementById('btn-nodes-alerts');
+    if (btnAll && btnAlerts) {
+      if (mode === 'alerts') {
+        btnAlerts.classList.add('active');
+        btnAlerts.style.background = 'var(--red-light)';
+        btnAlerts.style.color = 'var(--red)';
+        btnAlerts.style.borderColor = 'var(--red-border)';
+        btnAll.classList.remove('active');
+        btnAll.style.background = '#FFFFFF';
+        btnAll.style.color = 'var(--text-muted)';
+      } else {
+        btnAll.classList.add('active');
+        btnAll.style.background = 'var(--blue-light)';
+        btnAll.style.color = 'var(--blue)';
+        btnAll.style.borderColor = 'var(--blue-border)';
+        btnAlerts.classList.remove('active');
+        btnAlerts.style.background = '#FFFFFF';
+        btnAlerts.style.color = 'var(--red)';
+      }
+    }
+    buildStationCards();
+  }
 
   function buildStationCards(){
     const priorityEl = document.getElementById("priority-cards-row");
@@ -2707,53 +2750,76 @@
     }, 60);
 
     // 2. Render Remaining Distribution Stations Grid (15 Urban Stations)
-    regularEl.innerHTML = regularStations.map(s => {
-      const { recent, isFallback } = getLatestOrFallback(s);
-      const val = recent ? recent.vals[s.col] : null;
-      const alertThreshold = s.customAlertPsi || ALERT_PSI;
-      const isAlert = val !== null && val <= alertThreshold;
-      const inCompare = compareStations.some(cs => cs.col === s.col);
-      const timeStr = recent && recent.dt ? 
-        recent.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
+    let regularStationsToRender = regularStations;
+    if (nodesFilter === 'alerts') {
+      regularStationsToRender = regularStations.filter(s => {
+        const { recent } = getLatestOrFallback(s);
+        const val = recent ? recent.vals[s.col] : null;
+        const alertThreshold = s.customAlertPsi || ALERT_PSI;
+        return val !== null && val <= alertThreshold;
+      });
+    }
 
-      return `
-        <div class="kpi-card-white station-card-item" onclick="focusMainMapOnStation(${s.col})" style="padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}" title="Focus ${s.name} on map">
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
-              <div onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" title="Focus ${s.name} on map">
-                ${s.name}
-              </div>
-              <button onclick="event.stopPropagation(); addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;" title="${inCompare ? 'Remove from compare' : 'Add to compare'}">
-                ${inCompare ? '✕' : '+ Compare'}
-              </button>
-            </div>
-
-            <div style="margin:2px 0 4px 0;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
-                  ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted); margin-left:2px;">PSI</span>
-                </div>
-                <span style="font-size:8.5px; font-weight:700; font-family:var(--font-mono); padding:1px 4px; border-radius:3px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
-                  ${isAlert ? 'Alert' : 'Normal'}
-                </span>
-              </div>
-              <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
-                ${timeStr} ${isFallback ? '(Last)' : ''}
-              </div>
-            </div>
+    if (nodesFilter === 'alerts' && regularStationsToRender.length === 0) {
+      regularEl.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 24px 18px; text-align: center; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; color: #059669;">
+          <div style="font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span class="normal-dot-pulse" style="width: 7px; height: 7px; border-radius: 50%; background: var(--green);"></span>
+            All 15 Distribution Nodes Operating Above 6.5 PSI Normal Threshold
           </div>
-
-          <div style="display:flex; gap:4px; border-top:1px solid var(--card-border); padding-top:6px; margin-top:6px;">
-            <button onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);" title="Focus ${s.name} on map">
-              Focus ↗
-            </button>
-            <button onclick="event.stopPropagation(); showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:600;" title="View history chart">
-              History
-            </button>
-          </div>
+          <div style="font-size: 11px; margin-top: 5px; color: var(--text-muted);">No active low-pressure telemetry alerts detected in the city proper distribution network.</div>
+          <button onclick="setNodesFilter('all')" class="header-btn" style="margin-top: 10px; font-size: 11px; font-weight: 600; padding: 4px 12px; background: #FFFFFF;">Show All 15 Nodes</button>
         </div>
       `;
-    }).join("");
+    } else {
+      regularEl.innerHTML = regularStationsToRender.map(s => {
+        const { recent, isFallback } = getLatestOrFallback(s);
+        const val = recent ? recent.vals[s.col] : null;
+        const alertThreshold = s.customAlertPsi || ALERT_PSI;
+        const isAlert = val !== null && val <= alertThreshold;
+        const inCompare = compareStations.some(cs => cs.col === s.col);
+        const timeStr = recent && recent.dt ? 
+          recent.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
+
+        return `
+          <div class="kpi-card-white station-card-item" onclick="focusMainMapOnStation(${s.col})" style="padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}" title="Focus ${s.name} on map">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
+                <div onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" title="Focus ${s.name} on map">
+                  ${s.name}
+                </div>
+                <button onclick="event.stopPropagation(); addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;" title="${inCompare ? 'Remove from compare' : 'Add to compare'}">
+                  ${inCompare ? '✕' : '+ Compare'}
+                </button>
+              </div>
+
+              <div style="margin:2px 0 4px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
+                    ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted); margin-left:2px;">PSI</span>
+                  </div>
+                  <span style="font-size:8.5px; font-weight:700; font-family:var(--font-mono); padding:1px 4px; border-radius:3px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
+                    ${isAlert ? 'Alert' : 'Normal'}
+                  </span>
+                </div>
+                <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
+                  ${timeStr} ${isFallback ? '(Last)' : ''}
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:4px; border-top:1px solid var(--card-border); padding-top:6px; margin-top:6px;">
+              <button onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);" title="Focus ${s.name} on map">
+                Focus ↗
+              </button>
+              <button onclick="event.stopPropagation(); showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:600;" title="View history chart">
+                History
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
   }
 
   function buildPressureRawTable(){
@@ -3540,35 +3606,52 @@
     const feedCountEl = document.getElementById('comp-feed-count');
     if (feedCountEl) feedCountEl.textContent = `${filtered.length} recorded`;
 
-    document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
-      const so = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no;
-      const rawAcc = c.account_number || c.account_no;
-      const acc = redactAccountNumber(rawAcc);
-      const isNoWater = (c.type || '').toLowerCase().includes('no water');
-      const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';
-      const remarks = c.consumer_remarks || c.remarks;
-      const count = parseInt(c.complaint_count, 10) || 1;
-
-      return `
-        <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:3px solid ${isNoWater ? 'var(--red)' : 'var(--amber)'}; border-radius:8px; padding:10px 14px; font-size:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:4px;">
-            <div>
-              <strong style="color:var(--text-main); font-size:12.5px;">${escapeHtml(c.barangay || 'UNKNOWN')}</strong>
-              ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${escapeHtml(so)}</b></span>` : ''}
-            </div>
-            <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${escapeHtml(c.date || '')}</span>
+    if (filtered.length === 0) {
+      document.getElementById('complaints-feed').innerHTML = `
+        <div style="padding: 36px 20px; text-align: center; border: 1px dashed var(--card-border); border-radius: 12px; background: #FAFBFD;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 10px;">
+            📋
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="kpi-badge-pill ${typeBadge}">${escapeHtml(c.type || 'Incident')}</span>
-              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${escapeHtml(acc)}</b></span>` : ''}
-            </div>
-            <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
+          <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">No Verified Complaints Found</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; max-width: 380px; margin-left: auto; margin-right: auto; line-height: 1.4;">
+            No verified complaints or service interruptions have been recorded for the selected reporting cycle.
           </div>
-          ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${escapeHtml(remarks)}"</div>` : ''}
+          <a href="uploader.html#complaints" class="header-btn btn-secondary-action" style="margin-top: 12px; display: inline-flex; padding: 6px 16px; border-radius: 20px; font-size: 11px;">
+            <span>Log / Import Complaints ↗</span>
+          </a>
         </div>
       `;
-    }).join("");
+    } else {
+      document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
+        const so = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no;
+        const rawAcc = c.account_number || c.account_no;
+        const acc = redactAccountNumber(rawAcc);
+        const isNoWater = (c.type || '').toLowerCase().includes('no water');
+        const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';
+        const remarks = c.consumer_remarks || c.remarks;
+        const count = parseInt(c.complaint_count, 10) || 1;
+
+        return `
+          <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:3px solid ${isNoWater ? 'var(--red)' : 'var(--amber)'}; border-radius:8px; padding:10px 14px; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:4px;">
+              <div>
+                <strong style="color:var(--text-main); font-size:12.5px;">${escapeHtml(c.barangay || 'UNKNOWN')}</strong>
+                ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${escapeHtml(so)}</b></span>` : ''}
+              </div>
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${escapeHtml(c.date || '')}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="kpi-badge-pill ${typeBadge}">${escapeHtml(c.type || 'Incident')}</span>
+                ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${escapeHtml(acc)}</b></span>` : ''}
+              </div>
+              <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
+            </div>
+            ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${escapeHtml(remarks)}"</div>` : ''}
+          </div>
+        `;
+      }).join("");
+    }
     });
   }
 
@@ -3582,6 +3665,7 @@
         const numB = parseInt(String(b[0]).replace(/[^0-9]/g, '')) || 0;
         return numA - numB;
       });
+      if (typeof PpcwdCache !== 'undefined') PpcwdCache.set('production', allProdData);
 
       const selectEl = document.getElementById("week-select");
       selectEl.innerHTML = [...allProdData].reverse().map(row => {
@@ -3631,8 +3715,45 @@
 
   function updatePressureSyncBadge(dt) {
     const el = document.getElementById("pressure-last-synced-time");
-    if (el && dt) {
-      el.textContent = dt.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const pill = document.getElementById("pressure-last-synced-pill");
+    const dot = document.getElementById("pressure-sync-dot");
+    if (!el || !dt) return;
+
+    const timeStr = dt.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+    const now = Date.now();
+    const diffMs = Math.max(0, now - dt.getTime());
+    const mins = Math.floor(diffMs / 60000);
+    const hrs = Math.floor(mins / 60);
+
+    let relText = "Just now";
+    if (mins >= 1 && mins < 60) {
+      relText = `${mins}m ago`;
+    } else if (hrs >= 1 && hrs < 24) {
+      relText = `${hrs}h ago`;
+    } else if (hrs >= 24) {
+      const days = Math.floor(hrs / 24);
+      relText = `${days}d ago`;
+    }
+
+    el.textContent = `${timeStr} (${relText})`;
+
+    if (pill && dot) {
+      pill.classList.remove('pill-green', 'pill-amber', 'pill-red', 'pill-blue');
+      dot.classList.remove('normal-dot-pulse', 'amber-dot-pulse', 'alert-dot-pulse');
+
+      if (diffMs <= 15 * 60 * 1000) {
+        pill.classList.add('pill-green');
+        dot.classList.add('normal-dot-pulse');
+        dot.style.background = 'var(--green)';
+      } else if (diffMs <= 6 * 60 * 60 * 1000) {
+        pill.classList.add('pill-amber');
+        dot.classList.add('amber-dot-pulse');
+        dot.style.background = 'var(--amber)';
+      } else {
+        pill.classList.add('pill-red');
+        dot.classList.add('alert-dot-pulse');
+        dot.style.background = 'var(--red)';
+      }
     }
   }
 
@@ -4046,6 +4167,7 @@
         while(raw.length <= maxCol) raw.push(null);
         return { dt: new Date(raw[1]), vals: raw, raw };
       }).sort((a, b) => a.dt - b.dt);
+      if (typeof PpcwdCache !== 'undefined' && Array.isArray(data)) PpcwdCache.set('river', data);
 
       if (typeof renderOverview === 'function') renderOverview();
       if (typeof buildRiverLeaderboard === 'function') buildRiverLeaderboard();
@@ -4060,6 +4182,7 @@
     try {
       const res = await fetch('/api/getComplaints');
       complaintsRaw = await res.json();
+      if (typeof PpcwdCache !== 'undefined' && Array.isArray(complaintsRaw)) PpcwdCache.set('complaints', complaintsRaw);
       REPORT_CYCLES = generateReportCycles(complaintsRaw);
       populateCycleFilter();
       renderComplaintsDashboard();
@@ -4575,6 +4698,23 @@
     }
   });
 
+  // ── LIGHTWEIGHT STALE-WHILE-REVALIDATE CACHE ──
+  const PpcwdCache = {
+    get(key) {
+      try {
+        const item = localStorage.getItem('ppcwd_cache_' + key);
+        return item ? JSON.parse(item) : null;
+      } catch (e) {
+        return null;
+      }
+    },
+    set(key, val) {
+      try {
+        localStorage.setItem('ppcwd_cache_' + key, JSON.stringify(val));
+      } catch (e) {}
+    }
+  };
+
   // ── INIT BOOT ──
   async function init() {
     try {
@@ -4592,6 +4732,45 @@
       }
 
       await initReportSecurity();
+
+      // SWR: Instant populate from localStorage if available (<100ms render)
+      try {
+        const cachedProd = PpcwdCache.get('production');
+        if (cachedProd && Array.isArray(cachedProd) && cachedProd.length > 0) {
+          allProdData = cachedProd;
+          const selectEl = document.getElementById("week-select");
+          if (selectEl) {
+            selectEl.innerHTML = [...allProdData].reverse().map(row => {
+              const wk = row[COL.week];
+              return `<option value="${wk}">${wk} &bull; ${row[COL.period] || ''}</option>`;
+            }).join("");
+          }
+          renderWeek(allProdData[allProdData.length - 1][COL.week]);
+        }
+        const cachedRiver = PpcwdCache.get('river');
+        if (cachedRiver && Array.isArray(cachedRiver) && cachedRiver.length > 0) {
+          const maxCol = Math.max(20, ...RIVER_STATIONS.map(s => s.col));
+          riverRaw = cachedRiver.map(r => {
+            const raw = Array.isArray(r.readings) ? [...r.readings] : [];
+            while(raw.length <= maxCol) raw.push(null);
+            return { dt: new Date(raw[1]), vals: raw, raw };
+          }).sort((a, b) => a.dt - b.dt);
+        }
+        const cachedComplaints = PpcwdCache.get('complaints');
+        if (cachedComplaints && Array.isArray(cachedComplaints) && cachedComplaints.length > 0) {
+          complaintsRaw = cachedComplaints;
+          REPORT_CYCLES = generateReportCycles(complaintsRaw);
+          populateCycleFilter();
+          renderComplaintsDashboard();
+        }
+        renderOverview();
+      } catch(cacheErr) {
+        console.warn("Cache hydration skipped", cacheErr);
+      }
+
+      const statusNote = document.getElementById("sidebar-status-note");
+      if (statusNote) statusNote.textContent = "Syncing live telemetry...";
+
       await Promise.allSettled([
         loadProductionData(),
         loadPressure(),
@@ -4601,6 +4780,7 @@
       ]);
       renderOverview();
       if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
+      if (statusNote) statusNote.textContent = "All systems nominal";
     } catch(err) {
       console.error("Boot err", err);
     } finally {
@@ -4692,6 +4872,9 @@
         if (picker) picker.value = monthToLoad;
 
         currentMonthlyRecords = data;
+        if (typeof PpcwdCache !== 'undefined' && Array.isArray(data) && data.length > 0) {
+          PpcwdCache.set('monthly_' + monthToLoad, data);
+        }
         renderMonthlyDashboard();
       } catch (e) {
         console.warn("Could not load monthly data:", e.message);
@@ -4776,24 +4959,49 @@
     const tbody = document.getElementById("monthly-station-tbody");
     document.getElementById("monthly-table-record-count").textContent = `${currentMonthlyRecords.length} / 34 entered`;
 
-    tbody.innerHTML = mapped.map(r => {
-      const share = totalActual > 0 ? (r.monthly_volume / totalActual) * 100 : 0;
-      const isSw = r.category === "Surface Water";
-      return `
+    if (!hasData || currentMonthlyRecords.length === 0) {
+      tbody.innerHTML = `
         <tr>
-          <td style="font-weight:700; color:var(--text-main);">${r.name}</td>
-          <td><span class="cat-pill ${isSw ? 'cat-sw' : 'cat-gw'}">${r.category}</span></td>
-          <td class="right mono" style="font-weight:700;">${r.monthly_volume > 0 ? fmt(r.monthly_volume, 2) : '—'}</td>
-          <td class="right mono">${r.hourly_volume > 0 ? fmt(r.hourly_volume, 2) : '—'}</td>
-          <td class="right mono">${share > 0 ? fmt(share, 1) + '%' : '—'}</td>
-          <td class="right">
-            <span class="kpi-badge-pill ${r.monthly_volume > 0 ? 'pill-green' : 'pill-amber'}">
-              ${r.monthly_volume > 0 ? 'Logged' : 'Standby / 0'}
-            </span>
+          <td colspan="6" style="padding: 36px 20px; text-align: center;">
+            <div style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                📊
+              </div>
+              <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">No Monthly Volumes Logged for ${monthLabel}</div>
+              <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
+                All 34 production stations are awaiting monthly volume input. You can import or record volumes via the monthly uploader portal.
+              </div>
+              <div style="width: 100%; max-width: 260px; height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; margin: 6px 0;">
+                <div style="width: 0%; height: 100%; background: var(--blue);"></div>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); font-weight: 600;">0 of 34 stations entered (0%)</div>
+              <a href="uploader.html#monthly" class="header-btn btn-secondary-action" style="margin-top: 6px; padding: 6px 16px; border-radius: 20px; font-size: 11px;">
+                <span>Log Monthly Volumes in Uploader ↗</span>
+              </a>
+            </div>
           </td>
         </tr>
       `;
-    }).join("");
+    } else {
+      tbody.innerHTML = mapped.map(r => {
+        const share = totalActual > 0 ? (r.monthly_volume / totalActual) * 100 : 0;
+        const isSw = r.category === "Surface Water";
+        return `
+          <tr>
+            <td style="font-weight:700; color:var(--text-main);">${r.name}</td>
+            <td><span class="cat-pill ${isSw ? 'cat-sw' : 'cat-gw'}">${r.category}</span></td>
+            <td class="right mono" style="font-weight:700;">${r.monthly_volume > 0 ? fmt(r.monthly_volume, 2) : '—'}</td>
+            <td class="right mono">${r.hourly_volume > 0 ? fmt(r.hourly_volume, 2) : '—'}</td>
+            <td class="right mono">${share > 0 ? fmt(share, 1) + '%' : '—'}</td>
+            <td class="right">
+              <span class="kpi-badge-pill ${r.monthly_volume > 0 ? 'pill-green' : 'pill-amber'}">
+                ${r.monthly_volume > 0 ? 'Logged' : 'Standby / 0'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
 
     // 4. Charts
     const swTotal = mapped.filter(r => r.category === "Surface Water").reduce((a, b) => a + b.monthly_volume, 0);

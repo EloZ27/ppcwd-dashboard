@@ -372,13 +372,16 @@
 
     /* ── PERIOD CONTROLLER ── */
     .period-bar-wrap {
-      background: transparent;
-      border-top: 1px solid rgba(226, 232, 240, 0.7);
+      background: rgba(248, 250, 252, 0.94);
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
       padding: 8px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     .week-dropdown {
       background: #FFFFFF;
@@ -456,35 +459,89 @@
       box-shadow: var(--card-shadow-hover);
       border-color: #CBD5E1;
     }
-    .kpi-card-lbl { font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
+    /* ── TABULAR NUMERALS & NUMERIC SCANNABILITY ── */
+    .kpi-card-num,
+    .kpi-card-foot,
+    .mono,
+    table.data-table td.right,
+    table.data-table td.mono,
+    .featured-card .kpi-card-num,
+    .station-card-item .mono,
+    .pressure-status-pill,
+    .data-freshness-pill,
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    .kpi-card-lbl {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748B;
+      line-height: 1.2;
+    }
     .kpi-card-num {
-      font-size: 24px;
+      font-size: clamp(1.75rem, 2.2vw, 2.25rem);
       font-weight: 800;
       color: var(--text-main);
-      letter-spacing: -0.6px;
+      letter-spacing: -0.03em;
       line-height: 1.1;
       margin: 6px 0;
       font-variant-numeric: tabular-nums;
     }
-    .kpi-card-num .unit { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-left: 3px; }
-    .kpi-card-foot { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+    .kpi-card-num .unit {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #94A3B8;
+      margin-left: 4px;
+      letter-spacing: normal;
+    }
+    .kpi-card-foot {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #64748B;
+      line-height: 1.3;
+    }
 
     .kpi-badge-pill {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 2.5px 8px;
+      gap: 5px;
+      padding: 3px 9px;
       border-radius: 20px;
       font-size: 10px;
       font-weight: 700;
       font-family: var(--font-mono);
       letter-spacing: 0.2px;
+      line-height: 1.2;
     }
-    .pill-normal { background: rgba(11, 79, 108, 0.1); color: #0b4f6c; border: 1px solid rgba(11, 79, 108, 0.28); }
-    .pill-green { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
-    .pill-amber { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
-    .pill-red { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
-    .pill-blue { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-border); }
+    .pill-normal { background: rgba(16, 185, 129, 0.08); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .pill-green { background: rgba(16, 185, 129, 0.08); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .pill-amber { background: rgba(245, 158, 11, 0.08); color: #D97706; border: 1px solid rgba(245, 158, 11, 0.28); }
+    .pill-red { background: rgba(239, 68, 68, 0.1); color: #DC2626; border: 1px solid rgba(239, 68, 68, 0.35); }
+    .pill-blue { background: rgba(37, 99, 235, 0.08); color: #2563EB; border: 1px solid rgba(37, 99, 235, 0.25); }
+
+    .alert-dot-pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #EF4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.8);
+      animation: alertPulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      display: inline-block; flex-shrink: 0;
+    }
+    .normal-dot-pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #10B981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+      animation: normalPulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      display: inline-block; flex-shrink: 0;
+    }
+    .amber-dot-pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #F59E0B; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+      display: inline-block; flex-shrink: 0;
+    }
+    @keyframes alertPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(1.25); } }
+    @keyframes normalPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.15); } }
 
     /* ── TABLES ── */
     .table-container {
@@ -539,6 +596,76 @@
       position: sticky; left: 0; background: #FFFFFF; z-index: 11; border-right: 1px solid var(--card-border);
     }
     .press-table-wrap thead th:first-child { z-index: 12; background: #F1F5F9; }
+
+    /* ── STICKY FIRST COLUMN FOR WIDE DATA TABLES ── */
+    .table-sticky-first th:first-child,
+    .table-sticky-first td:first-child {
+      position: sticky;
+      left: 0;
+      background: #FFFFFF;
+      z-index: 10;
+      border-right: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 3px 0 6px -2px rgba(15, 23, 42, 0.08);
+    }
+    .table-sticky-first thead th:first-child {
+      background: #F8FAFC;
+      z-index: 11;
+    }
+    .table-sticky-first tbody tr:hover td:first-child {
+      background: #F8FAFC;
+    }
+
+    /* ── CHART CONTAINER STABILITY WRAPPER ── */
+    .chart-container-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 220px;
+    }
+
+    /* ── BUTTON ACTION HIERARCHY ── */
+    .btn-primary-action {
+      background: var(--blue) !important;
+      color: #FFFFFF !important;
+      border-color: var(--blue) !important;
+      font-weight: 700 !important;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.28) !important;
+    }
+    .btn-primary-action:hover {
+      background: #1D4ED8 !important;
+      border-color: #1D4ED8 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+    }
+    .btn-secondary-action {
+      background: #FFFFFF !important;
+      color: var(--text-main) !important;
+      border: 1px solid rgba(148, 163, 184, 0.35) !important;
+      font-weight: 600 !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+      text-decoration: none !important;
+    }
+    .btn-secondary-action:hover {
+      background: #F8FAFC !important;
+      border-color: #CBD5E1 !important;
+      color: var(--blue) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    /* ── SHIMMER SKELETON LOADERS ── */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 4px;
+      color: transparent !important;
+      display: inline-block;
+      user-select: none;
+    }
 
     /* ── TABLE DRAG SCROLLING AFFORDANCES & TYPOGRAPHY ── */
     .table-responsive, #priority-cards-row, .press-table-wrap {
@@ -1261,11 +1388,31 @@
     }
 
     .loading-overlay {
-      position: fixed; inset: 0; background: #FFFFFF; z-index: 9999;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-      transition: opacity 0.4s ease;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), #38BDF8, #10B981, var(--blue));
+      background-size: 200% 100%;
+      animation: shimmerTopBar 1.5s linear infinite;
+      z-index: 99999;
+      pointer-events: none;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
     }
-    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loading-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loading-overlay .spinner-ring,
+    .loading-overlay > div:not(.spinner-ring) {
+      display: none !important;
+    }
+    @keyframes shimmerTopBar {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
     .spinner-ring {
       width: 38px; height: 38px; border: 3px solid #E2E8F0; border-top-color: var(--blue);
       border-radius: 50%; animation: spin 0.8s linear infinite;
@@ -1518,7 +1665,7 @@
           <div class="header-actions" style="flex-shrink: 0; display:flex; align-items:center; gap:8px;">
             <!-- Consolidated Reports & Exports Hub -->
             <div class="reports-dropdown-wrap">
-              <button id="btn-reports-menu" class="header-btn" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Consolidated Reports &amp; Exports Hub">
+              <button id="btn-reports-menu" class="header-btn btn-primary-action" onclick="toggleReportsDropdown(event)" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Consolidated Reports &amp; Exports Hub">
                 <span class="reports-btn-full">Reports &amp; Exports</span>
                 <span class="reports-btn-short">Reports</span>
                 <span style="font-size:8px; opacity:0.8;">▼</span>
@@ -1591,7 +1738,7 @@
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span class="cycle-status-pill" style="background:var(--blue-light); border:1px solid var(--blue-border); border-radius:20px; padding:4px 12px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--blue); white-space:nowrap; flex-shrink:0;">Target: 56.86 MLD</span>
             
-            <a href="uploader.html#production" class="header-btn cycle-status-pill" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none; white-space:nowrap; flex-shrink:0;" title="Input or manage weekly production records">
+            <a href="uploader.html#production" class="header-btn btn-secondary-action cycle-status-pill" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none; white-space:nowrap; flex-shrink:0;" title="Input or manage weekly production records">
               <span>Log Weekly Production ↗</span>
             </a>
 
@@ -1613,7 +1760,7 @@
             </div>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <a href="uploader.html#monthly" class="header-btn" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Open Monthly Production Uploader"><span>Log Monthly Volumes ↗</span></a>
+            <a href="uploader.html#monthly" class="header-btn btn-secondary-action" style="border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); text-decoration:none;" title="Open Monthly Production Uploader"><span>Log Monthly Volumes ↗</span></a>
           </div>
         </div>
 
@@ -1632,8 +1779,9 @@
               <span id="refresh-pressure-icon" style="display:inline-block; font-size:12px; line-height:1;">↻</span>
               <span id="refresh-pressure-text">Refresh Live</span>
             </button>
-            <span id="pressure-last-synced-pill" class="kpi-badge-pill pill-blue" style="font-size:10px; font-family:var(--font-mono); padding:5px 8px; font-weight:600; white-space:nowrap;" title="Last time pressure telemetry was retrieved from Supabase">
-              Synced: <span id="pressure-last-synced-time">—</span>
+            <span id="pressure-last-synced-pill" class="kpi-badge-pill pill-blue" style="font-size:10px; font-family:var(--font-mono); padding:5px 8px; font-weight:600; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;" title="Last time pressure telemetry was retrieved from Supabase">
+              <span id="pressure-sync-dot" class="normal-dot-pulse" style="width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block;"></span>
+              <span>Synced: <span id="pressure-last-synced-time">—</span></span>
             </span>
 
             <input type="date" id="date-filter-input" class="header-btn" style="font-family:var(--font-mono); font-weight:600;" onchange="applyDateFilter()">
@@ -1656,7 +1804,7 @@
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <select id="complaint-date-filter" class="week-dropdown" onchange="renderComplaintsDashboard()"></select>
-            <a href="uploader.html#complaints" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
+            <a href="uploader.html#complaints" class="header-btn btn-secondary-action" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
               Log / Import Complaints ↗
             </a>
           </div>
@@ -1702,7 +1850,7 @@
               <span>Production Distribution &bull; Source Split</span>
               <span id="ov-progress-label" style="font-size: 10px; color: var(--blue);">0% Achieved</span>
             </div>
-            <div style="height: 220px;"><canvas id="ov-chart-source-split"></canvas></div>
+            <div class="chart-container-wrap" style="height: 220px;"><canvas id="ov-chart-source-split"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
@@ -1747,8 +1895,8 @@
         <div class="table-container">
           <div class="table-head-bar"><div class="table-head-title">Live Source Monitoring &amp; Yield Matrix</div></div>
           <div class="table-responsive">
-            <table class="data-table">
-              <thead><tr><th>Source Name</th><th>Classification</th><th>Current Intake Yield</th><th>Operating Status</th><th>Last Logged</th></tr></thead>
+            <table class="data-table table-sticky-first">
+              <thead><tr><th>Source Name</th><th>Classification</th><th class="right">Current Intake Yield</th><th>Operating Status</th><th>Last Logged</th></tr></thead>
               <tbody id="ov-source-tbody"></tbody>
             </table>
           </div>
@@ -1766,25 +1914,25 @@
         </div>
 
         <div class="grid-production-charts">
-          <div class="card"><div class="card-title">Weekly Total Production (m³)</div><div style="height:210px"><canvas id="chart-bar"></canvas></div></div>
-          <div class="card"><div class="card-title">SW vs GW Split</div><div style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
-          <div class="card"><div class="card-title">Source Breakdown</div><div style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
+          <div class="card"><div class="card-title">Weekly Total Production (m³)</div><div class="chart-container-wrap" style="height:210px"><canvas id="chart-bar"></canvas></div></div>
+          <div class="card"><div class="card-title">SW vs GW Split</div><div class="chart-container-wrap" style="height:210px"><canvas id="chart-pie-swgw"></canvas></div></div>
+          <div class="card"><div class="card-title">Source Breakdown</div><div class="chart-container-wrap" style="height:210px"><canvas id="chart-pie-sources"></canvas></div></div>
         </div>
 
         <div class="card" style="margin-bottom:20px;">
           <div class="card-title">MLD Trend vs 56.86 Target</div>
-          <div style="height:300px"><canvas id="chart-mld"></canvas></div>
+          <div class="chart-container-wrap" style="height:300px"><canvas id="chart-mld"></canvas></div>
         </div>
 
         <div class="table-container">
           <div class="table-head-bar">
             <div class="table-head-title">Production by Source Group</div>
-            <a href="uploader.html#production" class="header-btn" style="color:var(--blue); font-size:11px; font-weight:700; text-decoration:none;" title="Open Weekly Production Monitoring Portal">
+            <a href="uploader.html#production" class="header-btn btn-secondary-action" style="color:var(--blue); font-size:11px; font-weight:700; text-decoration:none;" title="Open Weekly Production Monitoring Portal">
               <span>Input / Update Weekly Production ↗</span>
             </a>
           </div>
           <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table table-sticky-first">
               <thead><tr><th>Source</th><th>Category</th><th class="right">Production (m³)</th><th class="right">MLD</th><th class="right">% of Total</th><th style="width:140px">Share</th></tr></thead>
               <tbody id="source-table"></tbody>
             </table>
@@ -1795,7 +1943,7 @@
         <div class="table-container">
           <div class="table-head-bar"><div class="table-head-title">Rated Capacity vs Actual — Weekly Comparison</div></div>
           <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table table-sticky-first">
               <thead><tr><th>Station</th><th>Category</th><th class="right">Rated (m³/hr)</th><th class="right">Weekly Rated (m³)</th><th class="right">Actual (m³)</th><th class="right">Difference</th><th class="right">Utilization</th><th class="right">Status</th></tr></thead>
               <tbody id="capacity-table"></tbody>
             </table>
@@ -1857,9 +2005,15 @@
         <div class="grid-featured-cards" id="priority-cards-row"></div>
 
         <!-- Distribution Network Monitoring Points (Remaining Urban Core Stations) -->
-        <div class="section-title-wrap">
-          <div class="section-title-main">Distribution Network Monitoring Points</div>
-          <div class="section-title-sub">City proper distribution network telemetry (15 Nodes)</div>
+        <div class="section-title-wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <div class="section-title-main">Distribution Network Monitoring Points</div>
+            <div class="section-title-sub">City proper distribution network telemetry (15 Nodes)</div>
+          </div>
+          <div class="node-filter-group" style="display:inline-flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#FFFFFF;">
+            <button id="btn-nodes-all" class="header-btn active" onclick="setNodesFilter('all')" style="border:none; border-radius:0; font-size:11px; font-weight:700; padding:5px 12px; background:var(--blue-light); color:var(--blue);" title="Show all 15 distribution nodes">All Nodes (15)</button>
+            <button id="btn-nodes-alerts" class="header-btn" onclick="setNodesFilter('alerts')" style="border:none; border-radius:0; font-size:11px; font-weight:700; padding:5px 12px; color:var(--red);" title="Show only nodes at or below 6.5 PSI alert threshold">Alerts Only (≤ 6.5 PSI)</button>
+          </div>
         </div>
         <div class="grid-stations" id="station-cards-grid"></div>
 
@@ -1877,7 +2031,7 @@
               <button class="header-btn" id="btn-clear-compare-graph" onclick="clearCompare()" style="color:var(--red);">Clear All</button>
             </div>
           </div>
-          <div style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
+          <div class="chart-container-wrap" style="height: 300px;"><canvas id="chart-pressure"></canvas></div>
           <div id="latest-strip" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;"></div>
         </div>
 
@@ -1936,11 +2090,11 @@
         <div class="card" style="margin-bottom: 20px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
             <div class="card-title" style="margin-bottom:0;">System-Wide Watershed Discharge Leaderboard (m³/day)</div>
-            <a href="uploader.html#riverflow" class="header-btn" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
+            <a href="uploader.html#riverflow" class="header-btn btn-secondary-action" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
               Log / Input River Flow ↗
             </a>
           </div>
-          <div style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
+          <div class="chart-container-wrap" style="height: 250px;"><canvas id="chart-river-leaderboard"></canvas></div>
         </div>
 
         <div class="grid-river-layout">
@@ -1948,7 +2102,7 @@
           <div>
             <div class="card" id="river-chart-container" style="margin-bottom:16px;">
               <div class="card-title" id="river-chart-title">River Discharge Trend</div>
-              <div style="height: 300px;"><canvas id="chart-river"></canvas></div>
+              <div class="chart-container-wrap" style="height: 300px;"><canvas id="chart-river"></canvas></div>
             </div>
             <div class="table-container">
               <div class="table-head-bar"><div class="table-head-title">Recent Hydrology Readings</div></div>
@@ -1977,9 +2131,9 @@
         </div>
 
         <div class="grid-complaints-charts">
-          <div class="card"><div class="card-title">By Type</div><div style="height:270px; position:relative;"><canvas id="chart-complaints-type"></canvas></div></div>
-          <div class="card"><div class="card-title">By Barangay (Top 10)</div><div style="height:310px; position:relative;"><canvas id="chart-complaints-brgy"></canvas></div></div>
-          <div class="card"><div class="card-title">Top 10 Hotspot Stubouts</div><div style="height:310px; position:relative;"><canvas id="chart-complaints-stubouts"></canvas></div></div>
+          <div class="card"><div class="card-title">By Type</div><div class="chart-container-wrap" style="height:270px;"><canvas id="chart-complaints-type"></canvas></div></div>
+          <div class="card"><div class="card-title">By Barangay (Top 10)</div><div class="chart-container-wrap" style="height:310px;"><canvas id="chart-complaints-brgy"></canvas></div></div>
+          <div class="card"><div class="card-title">Top 10 Hotspot Stubouts</div><div class="chart-container-wrap" style="height:310px;"><canvas id="chart-complaints-stubouts"></canvas></div></div>
         </div>
 
         <div class="table-container">
@@ -2030,11 +2184,11 @@
         <div class="grid-monthly-charts">
           <div class="card">
             <div class="card-title">SW vs GW Monthly Share</div>
-            <div style="height: 240px;"><canvas id="chart-monthly-pie"></canvas></div>
+            <div class="chart-container-wrap" style="height: 240px;"><canvas id="chart-monthly-pie"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">Top 10 Producing Stations (m³/month)</div>
-            <div style="height: 240px;"><canvas id="chart-monthly-bar"></canvas></div>
+            <div class="chart-container-wrap" style="height: 240px;"><canvas id="chart-monthly-bar"></canvas></div>
           </div>
         </div>
 
@@ -2045,7 +2199,7 @@
             <span id="monthly-table-record-count" style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">0 / 34 entered</span>
           </div>
           <div class="table-responsive">
-            <table class="data-table">
+            <table class="data-table table-sticky-first">
               <thead>
                 <tr>
                   <th>Station Name</th>
@@ -3364,6 +3518,15 @@
         renderMonthlyDashboard();
       }
     }
+
+    // Trigger Chart.js resize to ensure dimensions match newly active container
+    setTimeout(() => {
+      if (window.Chart && Chart.instances) {
+        Object.values(Chart.instances).forEach(inst => {
+          try { inst.resize(); } catch(e){}
+        });
+      }
+    }, 60);
   }
 
   // ── OVERVIEW ──
@@ -3992,6 +4155,33 @@
 
   // 5 Featured Stations: Main Manalo Booster Station + 4 Far Outliers
   const FEATURED_COLS = [2, 19, 8, 10, 3];
+  let nodesFilter = 'all';
+
+  function setNodesFilter(mode) {
+    nodesFilter = mode;
+    const btnAll = document.getElementById('btn-nodes-all');
+    const btnAlerts = document.getElementById('btn-nodes-alerts');
+    if (btnAll && btnAlerts) {
+      if (mode === 'alerts') {
+        btnAlerts.classList.add('active');
+        btnAlerts.style.background = 'var(--red-light)';
+        btnAlerts.style.color = 'var(--red)';
+        btnAlerts.style.borderColor = 'var(--red-border)';
+        btnAll.classList.remove('active');
+        btnAll.style.background = '#FFFFFF';
+        btnAll.style.color = 'var(--text-muted)';
+      } else {
+        btnAll.classList.add('active');
+        btnAll.style.background = 'var(--blue-light)';
+        btnAll.style.color = 'var(--blue)';
+        btnAll.style.borderColor = 'var(--blue-border)';
+        btnAlerts.classList.remove('active');
+        btnAlerts.style.background = '#FFFFFF';
+        btnAlerts.style.color = 'var(--red)';
+      }
+    }
+    buildStationCards();
+  }
 
   function buildStationCards(){
     const priorityEl = document.getElementById("priority-cards-row");
@@ -4130,53 +4320,76 @@
     }, 60);
 
     // 2. Render Remaining Distribution Stations Grid (15 Urban Stations)
-    regularEl.innerHTML = regularStations.map(s => {
-      const { recent, isFallback } = getLatestOrFallback(s);
-      const val = recent ? recent.vals[s.col] : null;
-      const alertThreshold = s.customAlertPsi || ALERT_PSI;
-      const isAlert = val !== null && val <= alertThreshold;
-      const inCompare = compareStations.some(cs => cs.col === s.col);
-      const timeStr = recent && recent.dt ? 
-        recent.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
+    let regularStationsToRender = regularStations;
+    if (nodesFilter === 'alerts') {
+      regularStationsToRender = regularStations.filter(s => {
+        const { recent } = getLatestOrFallback(s);
+        const val = recent ? recent.vals[s.col] : null;
+        const alertThreshold = s.customAlertPsi || ALERT_PSI;
+        return val !== null && val <= alertThreshold;
+      });
+    }
 
-      return `
-        <div class="kpi-card-white station-card-item" onclick="focusMainMapOnStation(${s.col})" style="padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}" title="Focus ${s.name} on map">
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
-              <div onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" title="Focus ${s.name} on map">
-                ${s.name}
-              </div>
-              <button onclick="event.stopPropagation(); addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;" title="${inCompare ? 'Remove from compare' : 'Add to compare'}">
-                ${inCompare ? '✕' : '+ Compare'}
-              </button>
-            </div>
-
-            <div style="margin:2px 0 4px 0;">
-              <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
-                  ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted); margin-left:2px;">PSI</span>
-                </div>
-                <span style="font-size:8.5px; font-weight:700; font-family:var(--font-mono); padding:1px 4px; border-radius:3px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
-                  ${isAlert ? 'Alert' : 'Normal'}
-                </span>
-              </div>
-              <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
-                ${timeStr} ${isFallback ? '(Last)' : ''}
-              </div>
-            </div>
+    if (nodesFilter === 'alerts' && regularStationsToRender.length === 0) {
+      regularEl.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 24px 18px; text-align: center; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; color: #059669;">
+          <div style="font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span class="normal-dot-pulse" style="width: 7px; height: 7px; border-radius: 50%; background: var(--green);"></span>
+            All 15 Distribution Nodes Operating Above 6.5 PSI Normal Threshold
           </div>
-
-          <div style="display:flex; gap:4px; border-top:1px solid var(--card-border); padding-top:6px; margin-top:6px;">
-            <button onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);" title="Focus ${s.name} on map">
-              Focus ↗
-            </button>
-            <button onclick="event.stopPropagation(); showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:600;" title="View history chart">
-              History
-            </button>
-          </div>
+          <div style="font-size: 11px; margin-top: 5px; color: var(--text-muted);">No active low-pressure telemetry alerts detected in the city proper distribution network.</div>
+          <button onclick="setNodesFilter('all')" class="header-btn" style="margin-top: 10px; font-size: 11px; font-weight: 600; padding: 4px 12px; background: #FFFFFF;">Show All 15 Nodes</button>
         </div>
       `;
-    }).join("");
+    } else {
+      regularEl.innerHTML = regularStationsToRender.map(s => {
+        const { recent, isFallback } = getLatestOrFallback(s);
+        const val = recent ? recent.vals[s.col] : null;
+        const alertThreshold = s.customAlertPsi || ALERT_PSI;
+        const isAlert = val !== null && val <= alertThreshold;
+        const inCompare = compareStations.some(cs => cs.col === s.col);
+        const timeStr = recent && recent.dt ? 
+          recent.dt.toLocaleDateString("en-PH", {month:'short', day:'numeric'}) + " " + recent.dt.toLocaleTimeString("en-PH", { hour:"2-digit", minute:"2-digit" }) : "—";
+
+        return `
+          <div class="kpi-card-white station-card-item" onclick="focusMainMapOnStation(${s.col})" style="padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; border-top:3px solid ${isAlert ? 'var(--red)' : 'var(--green)'}; ${inCompare ? 'box-shadow: 0 0 0 2px var(--blue); border-color: var(--blue);' : ''}" title="Focus ${s.name} on map">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:4px;">
+                <div onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" style="font-size:10.5px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" title="Focus ${s.name} on map">
+                  ${s.name}
+                </div>
+                <button onclick="event.stopPropagation(); addStationToCompare(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" style="background:${inCompare ? 'var(--red-light)' : 'var(--blue-light)'}; border:1px solid ${inCompare ? 'var(--red-border)' : 'var(--blue-border)'}; color:${inCompare ? 'var(--red)' : 'var(--blue)'}; border-radius:4px; font-size:9.5px; font-weight:700; font-family:var(--font-mono); padding:1px 6px; cursor:pointer; flex-shrink:0;" title="${inCompare ? 'Remove from compare' : 'Add to compare'}">
+                  ${inCompare ? '✕' : '+ Compare'}
+                </button>
+              </div>
+
+              <div style="margin:2px 0 4px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <div style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:${isAlert ? 'var(--red)' : 'var(--green)'}; line-height:1;">
+                    ${val !== null ? fmt(val, 1) : "—"}<span style="font-size:9px; color:var(--text-muted); margin-left:2px;">PSI</span>
+                  </div>
+                  <span style="font-size:8.5px; font-weight:700; font-family:var(--font-mono); padding:1px 4px; border-radius:3px; flex-shrink:0; ${isAlert ? 'background:var(--red-light); color:var(--red); border:1px solid var(--red-border);' : 'background:var(--green-light); color:var(--green); border:1px solid var(--green-border);'}">
+                    ${isAlert ? 'Alert' : 'Normal'}
+                  </span>
+                </div>
+                <div style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
+                  ${timeStr} ${isFallback ? '(Last)' : ''}
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:4px; border-top:1px solid var(--card-border); padding-top:6px; margin-top:6px;">
+              <button onclick="event.stopPropagation(); focusMainMapOnStation(${s.col});" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);" title="Focus ${s.name} on map">
+                Focus ↗
+              </button>
+              <button onclick="event.stopPropagation(); showChartPanel(PRESSURE_STATIONS.find(st=>st.col===${s.col}))" class="header-btn" style="flex:1; justify-content:center; padding:3px 2px; font-size:9.5px; font-weight:600;" title="View history chart">
+                History
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
   }
 
   function buildPressureRawTable(){
@@ -4963,35 +5176,52 @@
     const feedCountEl = document.getElementById('comp-feed-count');
     if (feedCountEl) feedCountEl.textContent = `${filtered.length} recorded`;
 
-    document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
-      const so = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no;
-      const rawAcc = c.account_number || c.account_no;
-      const acc = redactAccountNumber(rawAcc);
-      const isNoWater = (c.type || '').toLowerCase().includes('no water');
-      const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';
-      const remarks = c.consumer_remarks || c.remarks;
-      const count = parseInt(c.complaint_count, 10) || 1;
-
-      return `
-        <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:3px solid ${isNoWater ? 'var(--red)' : 'var(--amber)'}; border-radius:8px; padding:10px 14px; font-size:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:4px;">
-            <div>
-              <strong style="color:var(--text-main); font-size:12.5px;">${escapeHtml(c.barangay || 'UNKNOWN')}</strong>
-              ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${escapeHtml(so)}</b></span>` : ''}
-            </div>
-            <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${escapeHtml(c.date || '')}</span>
+    if (filtered.length === 0) {
+      document.getElementById('complaints-feed').innerHTML = `
+        <div style="padding: 36px 20px; text-align: center; border: 1px dashed var(--card-border); border-radius: 12px; background: #FAFBFD;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 10px;">
+            📋
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="kpi-badge-pill ${typeBadge}">${escapeHtml(c.type || 'Incident')}</span>
-              ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${escapeHtml(acc)}</b></span>` : ''}
-            </div>
-            <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
+          <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">No Verified Complaints Found</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; max-width: 380px; margin-left: auto; margin-right: auto; line-height: 1.4;">
+            No verified complaints or service interruptions have been recorded for the selected reporting cycle.
           </div>
-          ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${escapeHtml(remarks)}"</div>` : ''}
+          <a href="uploader.html#complaints" class="header-btn btn-secondary-action" style="margin-top: 12px; display: inline-flex; padding: 6px 16px; border-radius: 20px; font-size: 11px;">
+            <span>Log / Import Complaints ↗</span>
+          </a>
         </div>
       `;
-    }).join("");
+    } else {
+      document.getElementById('complaints-feed').innerHTML = filtered.slice(0, 50).map(c => {
+        const so = c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no;
+        const rawAcc = c.account_number || c.account_no;
+        const acc = redactAccountNumber(rawAcc);
+        const isNoWater = (c.type || '').toLowerCase().includes('no water');
+        const typeBadge = isNoWater ? 'pill-red' : 'pill-amber';
+        const remarks = c.consumer_remarks || c.remarks;
+        const count = parseInt(c.complaint_count, 10) || 1;
+
+        return `
+          <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:3px solid ${isNoWater ? 'var(--red)' : 'var(--amber)'}; border-radius:8px; padding:10px 14px; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:4px;">
+              <div>
+                <strong style="color:var(--text-main); font-size:12.5px;">${escapeHtml(c.barangay || 'UNKNOWN')}</strong>
+                ${so ? `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-left:6px;">&bull; Stubout <b>${escapeHtml(so)}</b></span>` : ''}
+              </div>
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted);">${escapeHtml(c.date || '')}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="kpi-badge-pill ${typeBadge}">${escapeHtml(c.type || 'Incident')}</span>
+                ${acc ? `<span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);" title="Account Number Redacted (Data Privacy)">Acc: <b>${escapeHtml(acc)}</b></span>` : ''}
+              </div>
+              <span class="kpi-badge-pill pill-blue" style="font-weight:700;">${count} report${count > 1 ? 's' : ''}</span>
+            </div>
+            ${remarks ? `<div style="color:var(--text-muted); font-size:11px; margin-top:4px; font-style:italic;">"${escapeHtml(remarks)}"</div>` : ''}
+          </div>
+        `;
+      }).join("");
+    }
     });
   }
 
@@ -5005,6 +5235,7 @@
         const numB = parseInt(String(b[0]).replace(/[^0-9]/g, '')) || 0;
         return numA - numB;
       });
+      if (typeof PpcwdCache !== 'undefined') PpcwdCache.set('production', allProdData);
 
       const selectEl = document.getElementById("week-select");
       selectEl.innerHTML = [...allProdData].reverse().map(row => {
@@ -5054,8 +5285,45 @@
 
   function updatePressureSyncBadge(dt) {
     const el = document.getElementById("pressure-last-synced-time");
-    if (el && dt) {
-      el.textContent = dt.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const pill = document.getElementById("pressure-last-synced-pill");
+    const dot = document.getElementById("pressure-sync-dot");
+    if (!el || !dt) return;
+
+    const timeStr = dt.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+    const now = Date.now();
+    const diffMs = Math.max(0, now - dt.getTime());
+    const mins = Math.floor(diffMs / 60000);
+    const hrs = Math.floor(mins / 60);
+
+    let relText = "Just now";
+    if (mins >= 1 && mins < 60) {
+      relText = `${mins}m ago`;
+    } else if (hrs >= 1 && hrs < 24) {
+      relText = `${hrs}h ago`;
+    } else if (hrs >= 24) {
+      const days = Math.floor(hrs / 24);
+      relText = `${days}d ago`;
+    }
+
+    el.textContent = `${timeStr} (${relText})`;
+
+    if (pill && dot) {
+      pill.classList.remove('pill-green', 'pill-amber', 'pill-red', 'pill-blue');
+      dot.classList.remove('normal-dot-pulse', 'amber-dot-pulse', 'alert-dot-pulse');
+
+      if (diffMs <= 15 * 60 * 1000) {
+        pill.classList.add('pill-green');
+        dot.classList.add('normal-dot-pulse');
+        dot.style.background = 'var(--green)';
+      } else if (diffMs <= 6 * 60 * 60 * 1000) {
+        pill.classList.add('pill-amber');
+        dot.classList.add('amber-dot-pulse');
+        dot.style.background = 'var(--amber)';
+      } else {
+        pill.classList.add('pill-red');
+        dot.classList.add('alert-dot-pulse');
+        dot.style.background = 'var(--red)';
+      }
     }
   }
 
@@ -5469,6 +5737,7 @@
         while(raw.length <= maxCol) raw.push(null);
         return { dt: new Date(raw[1]), vals: raw, raw };
       }).sort((a, b) => a.dt - b.dt);
+      if (typeof PpcwdCache !== 'undefined' && Array.isArray(data)) PpcwdCache.set('river', data);
 
       if (typeof renderOverview === 'function') renderOverview();
       if (typeof buildRiverLeaderboard === 'function') buildRiverLeaderboard();
@@ -5483,6 +5752,7 @@
     try {
       const res = await fetch('/api/getComplaints');
       complaintsRaw = await res.json();
+      if (typeof PpcwdCache !== 'undefined' && Array.isArray(complaintsRaw)) PpcwdCache.set('complaints', complaintsRaw);
       REPORT_CYCLES = generateReportCycles(complaintsRaw);
       populateCycleFilter();
       renderComplaintsDashboard();
@@ -5998,6 +6268,23 @@
     }
   });
 
+  // ── LIGHTWEIGHT STALE-WHILE-REVALIDATE CACHE ──
+  const PpcwdCache = {
+    get(key) {
+      try {
+        const item = localStorage.getItem('ppcwd_cache_' + key);
+        return item ? JSON.parse(item) : null;
+      } catch (e) {
+        return null;
+      }
+    },
+    set(key, val) {
+      try {
+        localStorage.setItem('ppcwd_cache_' + key, JSON.stringify(val));
+      } catch (e) {}
+    }
+  };
+
   // ── INIT BOOT ──
   async function init() {
     try {
@@ -6015,6 +6302,45 @@
       }
 
       await initReportSecurity();
+
+      // SWR: Instant populate from localStorage if available (<100ms render)
+      try {
+        const cachedProd = PpcwdCache.get('production');
+        if (cachedProd && Array.isArray(cachedProd) && cachedProd.length > 0) {
+          allProdData = cachedProd;
+          const selectEl = document.getElementById("week-select");
+          if (selectEl) {
+            selectEl.innerHTML = [...allProdData].reverse().map(row => {
+              const wk = row[COL.week];
+              return `<option value="${wk}">${wk} &bull; ${row[COL.period] || ''}</option>`;
+            }).join("");
+          }
+          renderWeek(allProdData[allProdData.length - 1][COL.week]);
+        }
+        const cachedRiver = PpcwdCache.get('river');
+        if (cachedRiver && Array.isArray(cachedRiver) && cachedRiver.length > 0) {
+          const maxCol = Math.max(20, ...RIVER_STATIONS.map(s => s.col));
+          riverRaw = cachedRiver.map(r => {
+            const raw = Array.isArray(r.readings) ? [...r.readings] : [];
+            while(raw.length <= maxCol) raw.push(null);
+            return { dt: new Date(raw[1]), vals: raw, raw };
+          }).sort((a, b) => a.dt - b.dt);
+        }
+        const cachedComplaints = PpcwdCache.get('complaints');
+        if (cachedComplaints && Array.isArray(cachedComplaints) && cachedComplaints.length > 0) {
+          complaintsRaw = cachedComplaints;
+          REPORT_CYCLES = generateReportCycles(complaintsRaw);
+          populateCycleFilter();
+          renderComplaintsDashboard();
+        }
+        renderOverview();
+      } catch(cacheErr) {
+        console.warn("Cache hydration skipped", cacheErr);
+      }
+
+      const statusNote = document.getElementById("sidebar-status-note");
+      if (statusNote) statusNote.textContent = "Syncing live telemetry...";
+
       await Promise.allSettled([
         loadProductionData(),
         loadPressure(),
@@ -6024,6 +6350,7 @@
       ]);
       renderOverview();
       if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
+      if (statusNote) statusNote.textContent = "All systems nominal";
     } catch(err) {
       console.error("Boot err", err);
     } finally {
@@ -6115,6 +6442,9 @@
         if (picker) picker.value = monthToLoad;
 
         currentMonthlyRecords = data;
+        if (typeof PpcwdCache !== 'undefined' && Array.isArray(data) && data.length > 0) {
+          PpcwdCache.set('monthly_' + monthToLoad, data);
+        }
         renderMonthlyDashboard();
       } catch (e) {
         console.warn("Could not load monthly data:", e.message);
@@ -6199,24 +6529,49 @@
     const tbody = document.getElementById("monthly-station-tbody");
     document.getElementById("monthly-table-record-count").textContent = `${currentMonthlyRecords.length} / 34 entered`;
 
-    tbody.innerHTML = mapped.map(r => {
-      const share = totalActual > 0 ? (r.monthly_volume / totalActual) * 100 : 0;
-      const isSw = r.category === "Surface Water";
-      return `
+    if (!hasData || currentMonthlyRecords.length === 0) {
+      tbody.innerHTML = `
         <tr>
-          <td style="font-weight:700; color:var(--text-main);">${r.name}</td>
-          <td><span class="cat-pill ${isSw ? 'cat-sw' : 'cat-gw'}">${r.category}</span></td>
-          <td class="right mono" style="font-weight:700;">${r.monthly_volume > 0 ? fmt(r.monthly_volume, 2) : '—'}</td>
-          <td class="right mono">${r.hourly_volume > 0 ? fmt(r.hourly_volume, 2) : '—'}</td>
-          <td class="right mono">${share > 0 ? fmt(share, 1) + '%' : '—'}</td>
-          <td class="right">
-            <span class="kpi-badge-pill ${r.monthly_volume > 0 ? 'pill-green' : 'pill-amber'}">
-              ${r.monthly_volume > 0 ? 'Logged' : 'Standby / 0'}
-            </span>
+          <td colspan="6" style="padding: 36px 20px; text-align: center;">
+            <div style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                📊
+              </div>
+              <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">No Monthly Volumes Logged for ${monthLabel}</div>
+              <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
+                All 34 production stations are awaiting monthly volume input. You can import or record volumes via the monthly uploader portal.
+              </div>
+              <div style="width: 100%; max-width: 260px; height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; margin: 6px 0;">
+                <div style="width: 0%; height: 100%; background: var(--blue);"></div>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); font-weight: 600;">0 of 34 stations entered (0%)</div>
+              <a href="uploader.html#monthly" class="header-btn btn-secondary-action" style="margin-top: 6px; padding: 6px 16px; border-radius: 20px; font-size: 11px;">
+                <span>Log Monthly Volumes in Uploader ↗</span>
+              </a>
+            </div>
           </td>
         </tr>
       `;
-    }).join("");
+    } else {
+      tbody.innerHTML = mapped.map(r => {
+        const share = totalActual > 0 ? (r.monthly_volume / totalActual) * 100 : 0;
+        const isSw = r.category === "Surface Water";
+        return `
+          <tr>
+            <td style="font-weight:700; color:var(--text-main);">${r.name}</td>
+            <td><span class="cat-pill ${isSw ? 'cat-sw' : 'cat-gw'}">${r.category}</span></td>
+            <td class="right mono" style="font-weight:700;">${r.monthly_volume > 0 ? fmt(r.monthly_volume, 2) : '—'}</td>
+            <td class="right mono">${r.hourly_volume > 0 ? fmt(r.hourly_volume, 2) : '—'}</td>
+            <td class="right mono">${share > 0 ? fmt(share, 1) + '%' : '—'}</td>
+            <td class="right">
+              <span class="kpi-badge-pill ${r.monthly_volume > 0 ? 'pill-green' : 'pill-amber'}">
+                ${r.monthly_volume > 0 ? 'Logged' : 'Standby / 0'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
 
     // 4. Charts
     const swTotal = mapped.filter(r => r.category === "Surface Water").reduce((a, b) => a + b.monthly_volume, 0);
