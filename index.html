@@ -2348,7 +2348,6 @@
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Document Branding &amp; Metadata</span>
             <div style="display:flex; gap:6px;">
-              <button type="button" onclick="setCompReportTitlePreset('gm')" class="header-btn" style="font-size:10px; padding:2px 10px; background:#EEF2FF; color:#4F46E5; border-color:#C7D2FE; font-weight:700;">Switch to GM'S REPORT</button>
               <button type="button" onclick="setCompReportTitlePreset('default')" class="header-btn" style="font-size:10px; padding:2px 10px; background:#F1F5F9; color:#475569; border-color:#CBD5E1; font-weight:600;">Reset Default</button>
             </div>
           </div>
@@ -2360,7 +2359,7 @@
             </div>
             <div>
               <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Report Subtitle</label>
-              <input id="comp-rep-subtitle" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="El Niño Task Force" />
+              <input id="comp-rep-subtitle" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Water Quality &amp; Operational Telemetry" />
             </div>
           </div>
 
@@ -2376,11 +2375,12 @@
             <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Date Range &amp; Historical Backtracking</span>
             <div style="display:flex; gap:5px; flex-wrap:wrap;">
               <button type="button" onclick="setCompReportDatePreset('2weeks')" class="header-btn" style="font-size:10px; padding:3px 9px;">2 Weeks</button>
-              <button type="button" onclick="setCompReportDatePreset('4weeks')" class="header-btn" style="font-size:10px; padding:3px 9px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);">4 Weeks</button>
+              <button type="button" onclick="setCompReportDatePreset('4weeks')" class="header-btn" style="font-size:10px; padding:3px 9px;">4 Weeks</button>
+              <button type="button" onclick="setCompReportDatePreset('12weeks')" class="header-btn" style="font-size:10px; padding:3px 9px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);">12 Weeks</button>
+              <button type="button" onclick="setCompReportDatePreset('16weeks')" class="header-btn" style="font-size:10px; padding:3px 9px; font-weight:700;">16 Weeks</button>
               <button type="button" onclick="setCompReportDatePreset('month')" class="header-btn" style="font-size:10px; padding:3px 9px;">Current Month</button>
               <button type="button" onclick="setCompReportDatePreset('3months')" class="header-btn" style="font-size:10px; padding:3px 9px;">3 Months</button>
               <button type="button" onclick="setCompReportDatePreset('6months')" class="header-btn" style="font-size:10px; padding:3px 9px;">6 Months</button>
-              <button type="button" onclick="setCompReportDatePreset('aug_oct_2026')" class="header-btn" style="font-size:10px; padding:3px 9px; color:#475569;">Aug–Oct '26 (El Niño)</button>
               <button type="button" onclick="setCompReportDatePreset('all')" class="header-btn" style="font-size:10px; padding:3px 9px; color:#475569;">All History</button>
             </div>
           </div>
@@ -2477,7 +2477,7 @@
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
               <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
                 <input type="checkbox" id="comp-topic-comp" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
-                <span>Page 3: Top 5 Lowest Pressure Sensors &amp; Customer Complaints Correlation</span>
+                <span>Page 3: Customer Complaints Summary &amp; Top 10 Affected Barangays</span>
               </label>
               <span style="font-size:10px; background:#FEF3C7; color:#B45309; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 3</span>
             </div>
@@ -2488,7 +2488,7 @@
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-comp-hotspots" checked />
-                <span>Top Affected Barangays &amp; Hotspot Stubouts (SO-xxxx) Cross-Correlated with Low-Pressure Sensors</span>
+                <span>Top 10 Affected Barangays &amp; Hotspot Stubouts (SO-xxxx) Cross-Correlated with Low-Pressure Sensors</span>
               </label>
             </div>
           </div>
@@ -3170,13 +3170,29 @@
   }
 
   const BARANGAY_COORDS = {
-    "SAN MIGUEL": [9.7460, 118.7460], "STA MONICA": [9.7620, 118.7300], "BANCAO-BANCAO": [9.7280, 118.7460],
+    "SAN MIGUEL": [9.7460, 118.7460],
+    "STA. MONICA": [9.7620, 118.7300], "STA MONICA": [9.7620, 118.7300],
+    "STA. LOURDES": [9.8270, 118.7300], "STA LOURDES": [9.8270, 118.7300],
+    "BANCAO-BANCAO": [9.7280, 118.7460], "BANCAO BANCAO": [9.7280, 118.7460],
     "SAN MANUEL": [9.7560, 118.7510], "SAN PEDRO": [9.7420, 118.7550], "SICSICAN": [9.7820, 118.7120],
     "TAGBUROS": [9.7880, 118.7300], "SAN JOSE": [9.7750, 118.7450], "MANGGAHAN": [9.7400, 118.7400],
     "MANDARAGAT": [9.7410, 118.7330], "MILAGROSA": [9.7350, 118.7450], "IRAWAN": [9.8000, 118.6800],
     "MASIPAG": [9.7360, 118.7420], "MARUYOGON": [9.9333, 118.8833], "BACUNGAN": [9.8833, 118.7167],
     "TANGLAW": [9.7430, 118.7400], "BAGONG SILANG": [9.7850, 118.7350], "TINIGUIBAN": [9.7717, 118.7500]
   };
+
+  // Canonical Barangay Name Normalizer (standardizes case, spacing, and punctuation)
+  function normalizeBarangayName(str) {
+    if (!str) return 'UNKNOWN';
+    let s = String(str).trim().toUpperCase().replace(/\s+/g, ' ');
+    if (s === 'BANCAO BANCAO' || s === 'BANCAO-BANCAO' || s === 'BANCAO - BANCAO' || s === 'BANCAO_BANCAO') return 'BANCAO-BANCAO';
+    if (s === 'STA LOURDES' || s === 'STA. LOURDES' || s === 'SANTA LOURDES') return 'STA. LOURDES';
+    if (s === 'STA MONICA' || s === 'STA. MONICA' || s === 'SANTA MONICA') return 'STA. MONICA';
+    if (s === 'SAN MIGUEL') return 'SAN MIGUEL';
+    if (s.startsWith('STA ') && !s.startsWith('STA. ')) return 'STA. ' + s.slice(4);
+    if (s.startsWith('SANTA ')) return 'STA. ' + s.slice(6);
+    return s;
+  }
 
   let allProdData=[], pressureRaw=[], riverRaw=[];
   let complaintsRaw = [], REPORT_CYCLES = [];
@@ -4646,7 +4662,7 @@
       const grouped = {};
       complaintsRaw.forEach(c => {
         if(!c.barangay) return;
-        const b = c.barangay.toUpperCase().trim();
+        const b = normalizeBarangayName(c.barangay);
         grouped[b] = (grouped[b] || 0) + (parseInt(c.complaint_count, 10) || 1);
       });
       for(const [b, count] of Object.entries(grouped)){
@@ -4775,7 +4791,7 @@
     const brgys = {}, types = {}, stubouts = {};
     let total = 0;
     filtered.forEach(c => {
-      const b = (c.barangay || "Unknown").toUpperCase().trim();
+      const b = normalizeBarangayName(c.barangay);
       const t = (c.type || "Unclassified").trim();
       const so = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || "").trim();
       const n = parseInt(c.complaint_count, 10) || 1;
@@ -6372,7 +6388,7 @@
     const startInp = document.getElementById("comp-rep-start-date");
     const endInp = document.getElementById("comp-rep-end-date");
     if (startInp && endInp && (!startInp.value || !endInp.value)) {
-      setCompReportDatePreset("4weeks");
+      setCompReportDatePreset("16weeks");
     }
     updateCompTopicsUI();
     const statusEl = document.getElementById("comp-rep-status");
@@ -6390,11 +6406,11 @@
     const ctxInp = document.getElementById("comp-rep-context");
     if (preset === 'gm') {
       if (titleInp) titleInp.value = "GM'S REPORT";
-      if (subInp) subInp.value = "El Niño Task Force";
+      if (subInp) subInp.value = "Executive Operational Telemetry";
       if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     } else {
       if (titleInp) titleInp.value = "PPCWD Dashboard Comprehensive Report";
-      if (subInp) subInp.value = "El Niño Task Force";
+      if (subInp) subInp.value = "Water Quality & Operational Telemetry";
       if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     }
   }
@@ -6462,36 +6478,56 @@
     const pad = n => String(n).padStart(2, '0');
     const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-    const anchor = getCompReportAnchorDate();
+    const parseYMD = str => {
+      const p = (str || '').split('-');
+      if (p.length === 3) return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+      return new Date(str);
+    };
+
+    // If End Date is selected, anchor from that selected End Date! Otherwise fall back to anchor date.
+    let targetEnd = null;
+    if (endInp.value) {
+      const parsed = parseYMD(endInp.value);
+      if (!isNaN(parsed.getTime())) targetEnd = parsed;
+    }
+    if (!targetEnd) {
+      targetEnd = getCompReportAnchorDate();
+      endInp.value = fmtDate(targetEnd);
+    }
 
     if (preset === '2weeks') {
-      const s = new Date(anchor);
+      const s = new Date(targetEnd);
       s.setDate(s.getDate() - 13);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(anchor);
     } else if (preset === '4weeks' || preset === 'week') {
-      const s = new Date(anchor);
+      const s = new Date(targetEnd);
       s.setDate(s.getDate() - 27);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(anchor);
+    } else if (preset === '12weeks') {
+      const s = new Date(targetEnd);
+      s.setDate(s.getDate() - (12 * 7 - 1));
+      startInp.value = fmtDate(s);
+    } else if (preset === '16weeks') {
+      const s = new Date(targetEnd);
+      s.setDate(s.getDate() - (16 * 7 - 1));
+      startInp.value = fmtDate(s);
     } else if (preset === 'month') {
-      const s = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+      const s = new Date(targetEnd.getFullYear(), targetEnd.getMonth(), 1);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(anchor);
     } else if (preset === '3months') {
-      const s = new Date(anchor.getFullYear(), anchor.getMonth() - 2, 1);
+      const s = new Date(targetEnd.getFullYear(), targetEnd.getMonth() - 2, 1);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(anchor);
     } else if (preset === '6months') {
-      const s = new Date(anchor.getFullYear(), anchor.getMonth() - 5, 1);
+      const s = new Date(targetEnd.getFullYear(), targetEnd.getMonth() - 5, 1);
       startInp.value = fmtDate(s);
-      endInp.value = fmtDate(anchor);
-    } else if (preset === 'aug_oct_2026') {
-      startInp.value = '2026-08-01';
-      endInp.value = '2026-10-28';
     } else if (preset === 'all') {
-      startInp.value = '2026-08-01';
-      endInp.value = fmtDate(anchor);
+      let earliest = new Date(2026, 6, 31);
+      if (Array.isArray(allProdData) && allProdData.length > 0) {
+        const first = allProdData[0];
+        const { sDate } = parsePeriodDates(first[COL.period], first[COL.date]);
+        if (sDate && !isNaN(sDate.getTime())) earliest = sDate;
+      }
+      startInp.value = fmtDate(earliest);
     }
   }
 
@@ -6769,8 +6805,17 @@
     const activeWkOffset = Math.floor(daysSinceAnchor / 7);
     const activeWkNum = Math.max(ANCHOR_WEEK, ANCHOR_WEEK + activeWkOffset);
 
+    // Calculate how many weekly cycles to include (defaulting to 12-16 weeks descending)
+    let weekCount = 16;
+    if (startDt && !isNaN(startDt.getTime())) {
+      const startDaysSinceAnchor = Math.floor((startDt.getTime() - ANCHOR_DATE.getTime()) / msPerDay);
+      const startWkNum = Math.max(1, ANCHOR_WEEK + Math.floor(startDaysSinceAnchor / 7));
+      const requestedWeeks = activeWkNum - startWkNum + 1;
+      weekCount = Math.min(16, Math.max(1, requestedWeeks));
+    }
+
     const items = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < weekCount; i++) {
       const wkNum = activeWkNum - i;
       if (wkNum < 1) break;
 
@@ -6792,19 +6837,12 @@
 
       // Match corresponding production record in allProdData
       // STRICT WEEK NUMBER MATCHING: prevents off-by-one boundary shifts
-      let prodRow = null;
-      let hasProd = false;
-
-      // In actual PPCWD records, the recent production weekly report sent was Week 30 (October 16-23, 2026).
-      // Week 31 (Oct 23-30) and Week 32 (Oct 30-Nov 6) have no submitted production reports yet.
-      if (wkNum <= 30) {
-        prodRow = allProdData.find(row => {
-          const wStr = String(row[COL.week] || '');
-          const match = wStr.match(/\d+/);
-          return match && parseInt(match[0], 10) === wkNum;
-        }) || null;
-        if (prodRow) hasProd = true;
-      }
+      let prodRow = allProdData.find(row => {
+        const wStr = String(row[COL.week] || '');
+        const match = wStr.match(/\d+/);
+        return match && parseInt(match[0], 10) === wkNum;
+      }) || null;
+      let hasProd = !!prodRow;
 
       // Determine pending status text for unsubmitted weeks
       let pendingStatus = 'No Report Yet (Pending Submission)';
@@ -7239,7 +7277,7 @@
     let total = 0, nwCount = 0, lpCount = 0, turbidCount = 0;
 
     inRange.forEach(c => {
-      const b = (c.barangay || 'Unknown').trim();
+      const b = normalizeBarangayName(c.barangay);
       const t = (c.type || 'Unclassified').trim();
       const rawSo = (c.stub_out_no || c.stubout_number || c.stubout || c.stubout_no || '').trim();
       const so = sanitizeStubout(rawSo);
@@ -7266,7 +7304,7 @@
       .map(([name, data]) => ({ name, ...data }))
       .sort((a, b) => b.total - a.total);
 
-    const topBrgysDetailed = sortedBrgys.slice(0, 5).map(b => {
+    const topBrgysDetailed = sortedBrgys.slice(0, 10).map(b => {
       const soMap = stubouts[b.name] || {};
       const topSos = Object.entries(soMap).sort((a, b) => b[1] - a[1]).slice(0, 3).map(s => `${s[0]} (${s[1]})`).join(', ') || 'General Mains';
       return {
@@ -7619,11 +7657,19 @@
     }
 
     const title = (document.getElementById("comp-rep-title")?.value || "PPCWD Dashboard Comprehensive Report").trim();
-    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "El Niño Task Force").trim();
+    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "Water Quality & Operational Telemetry").trim();
     const context = (document.getElementById("comp-rep-context")?.value || "Operational & Hydrological Telemetry Report").trim();
     
-    const startVal = document.getElementById("comp-rep-start-date")?.value || "2026-08-01";
-    const endVal = document.getElementById("comp-rep-end-date")?.value || "2026-10-28";
+    const anchorFallback = getCompReportAnchorDate();
+    const pad = n => String(n).padStart(2, '0');
+    const fmtDateFallback = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const defaultEndStr = fmtDateFallback(anchorFallback);
+    const defaultStartDt = new Date(anchorFallback);
+    defaultStartDt.setDate(defaultStartDt.getDate() - (16 * 7 - 1));
+    const defaultStartStr = fmtDateFallback(defaultStartDt);
+
+    const startVal = document.getElementById("comp-rep-start-date")?.value || defaultStartStr;
+    const endVal = document.getElementById("comp-rep-end-date")?.value || defaultEndStr;
     
     // Explicit YMD local date construction to avoid timezone day shifts
     const parseYMD = str => {
@@ -7654,7 +7700,7 @@
     const subCompHotspots = document.getElementById("comp-sub-comp-hotspots")?.checked;
     const subRiverDepletion = document.getElementById("comp-sub-river-depletion")?.checked;
 
-    // Calibrate the 4-week operational schedule ending at endDt
+    // Calibrate the 12 to 16 week operational schedule ending at endDt
     const calibratedSchedule = buildCalibratedWeeklySchedule(startDt, endDt);
 
     // Ensure pressure telemetry covers requested date range AND all backfilled weeks
@@ -7697,42 +7743,57 @@
       const monthlyData = await fetchAllMonthlyRecords(startDt, endDt);
       const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
 
-      // Pre-compute summaries for the compact 3-column Executive Takeaways banner
+      // Pre-compute summaries for the compact 2-column Executive Takeaways banner
       const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report Yet submitted', pctVsNormal: 0, hasData: false };
       const execProdSummary = recentMonth.hasData 
         ? `${recentMonth.month_year}: ${fmt(recentMonth.pctVsNormal, 1)}% of Baseline (${recentMonth.lwuaStatus.toUpperCase()})`
         : `${recentMonth.month_year}: ${recentMonth.lwuaStatus}`;
 
-      const pressAnalyticsForBanner = computePressureAnalytics(startDt, endDt, matchedWeeks);
-      const lowestPoint = (pressAnalyticsForBanner.top5Lowest && pressAnalyticsForBanner.top5Lowest.length) ? pressAnalyticsForBanner.top5Lowest[0] : null;
-      const lowestName = lowestPoint ? lowestPoint.station.name : 'Urban Core';
-      const lowestPsi = lowestPoint ? fmt(lowestPoint.meanPsi, 2) : '—';
-      const critExposure = fmt(pressAnalyticsForBanner.lt65Pct + pressAnalyticsForBanner.eq0Pct, 1);
-      const execPressSummary = `${lowestName} (${lowestPsi} psi) &bull; ${critExposure}% Critical (<6.5 psi)`;
+      // Identify the most recent reported week with actual telemetry data
+      let recentWk = (matchedWeeks || []).find(w => w.prodRow || (w.hasProdReport !== false && w.prodRow));
+      if (!recentWk && Array.isArray(allProdData) && allProdData.length) {
+        const lastRow = allProdData[allProdData.length - 1];
+        recentWk = {
+          week: lastRow[COL.week] || 'Week',
+          period: lastRow[COL.period] || lastRow[COL.date] || '',
+          prodRow: lastRow
+        };
+      }
 
-      const riverMatrixForBanner = computeRiverDepletionMatrix(startDt, endDt);
-      const montibleStn = riverMatrixForBanner.find(r => r.station.name.toLowerCase().includes('montible'));
-      const lapuStn = riverMatrixForBanner.find(r => r.station.name.toLowerCase().includes('lapu'));
-      const mChg = montibleStn && montibleStn.hasReadings ? (montibleStn.netChange >= 0 ? '+' : '') + fmt(montibleStn.netChange, 0) + ' m&sup3;/d' : 'Gauged';
-      const lChg = lapuStn && lapuStn.hasReadings ? (lapuStn.netChange >= 0 ? '+' : '') + fmt(lapuStn.netChange, 0) + ' m&sup3;/d' : 'Gauged';
-      const execRiverSummary = `Montible: ${mChg} &bull; Lapu-Lapu: ${lChg}`;
+      let execWeeklySummary = 'No Weekly Report Submitted';
+      let execWeeklySub = 'Target: 398,020 m&sup3;/wk &bull; Standard Regulatory Evaluation';
+      if (recentWk && recentWk.prodRow) {
+        const rRow = recentWk.prodRow;
+        const totalVol = Number(rRow[COL.grandTotal]) || 0;
+        const sw = Number(rRow[COL.totalSW]) || 0;
+        const gw = Number(rRow[COL.totalGW]) || 0;
+        const swPct = totalVol > 0 ? (sw / totalVol) * 100 : 0;
+        const gwPct = totalVol > 0 ? (gw / totalVol) * 100 : 0;
+        const pctAchieved = (totalVol / 398020.0) * 100;
+        
+        let sText = 'Normal (&ge;100%)';
+        let sColor = '#16A34A';
+        if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; }
+        else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; }
+        else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; }
+
+        const wkName = recentWk.week || rRow[COL.week] || 'Recent Week';
+        const periodStr = recentWk.period || rRow[COL.period] || '';
+        execWeeklySummary = `${wkName}: ${fmt(totalVol, 0)} m&sup3; (${fmt(pctAchieved, 1)}%) &bull; <span style="color:${sColor}; font-weight:800;">${sText}</span>`;
+        execWeeklySub = `Target: 398,020 m&sup3;/wk &bull; SW: ${fmt(swPct, 0)}% / GW: ${fmt(gwPct, 0)}% &bull; ${escapeHtml(periodStr)}`;
+      }
 
       let p1Content = `
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; background:#F8FAFC; border:1px solid #CBD5E1; border-left:4px solid #1560BD; border-radius:4px; padding:6px 10px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px; background:#F8FAFC; border:1px solid #CBD5E1; border-left:4px solid #1560BD; border-radius:4px; padding:6px 12px;">
           <div>
-            <div style="font-size:7.5px; font-weight:800; color:#1E40AF; text-transform:uppercase; letter-spacing:0.4px;">1. Production Yield &amp; LWUA Trigger</div>
+            <div style="font-size:7.5px; font-weight:800; color:#1E40AF; text-transform:uppercase; letter-spacing:0.4px;">1. Monthly Production Yield &amp; LWUA Trigger</div>
             <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execProdSummary}</div>
             <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Monthly: 1.705M m&sup3; &bull; 5% Cutoff: 1.620M m&sup3;</div>
           </div>
           <div>
-            <div style="font-size:7.5px; font-weight:800; color:#D97706; text-transform:uppercase; letter-spacing:0.4px;">2. Hydraulic Hotspot &amp; Low-Pressure Risk</div>
-            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execPressSummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Critical threshold: &lt;6.5 psi &bull; Benchmark: 15.0 psi</div>
-          </div>
-          <div>
-            <div style="font-size:7.5px; font-weight:800; color:#0D9488; text-transform:uppercase; letter-spacing:0.4px;">3. Watershed Hydrology &amp; Source Depletion</div>
-            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execRiverSummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Primary city sources: Montible &amp; Lapu-Lapu</div>
+            <div style="font-size:7.5px; font-weight:800; color:#0D9488; text-transform:uppercase; letter-spacing:0.4px;">2. Recent Reported Weekly Production &amp; Crisis Indicator</div>
+            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execWeeklySummary}</div>
+            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">${execWeeklySub}</div>
           </div>
         </div>
       `;
@@ -8404,7 +8465,7 @@
         p3Content += `
           <div>
             <div class="comp-section-title">
-              <span>TOP AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
+              <span>TOP 10 AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
             </div>
             <table class="comp-table">
               <thead>

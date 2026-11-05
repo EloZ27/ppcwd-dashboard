@@ -1,5 +1,18 @@
 import crypto from 'crypto';
 
+// Canonical Barangay Name Normalizer (standardizes case, spacing, and punctuation)
+function normalizeBarangayName(str) {
+  if (!str) return 'UNKNOWN';
+  let s = String(str).trim().toUpperCase().replace(/\s+/g, ' ');
+  if (s === 'BANCAO BANCAO' || s === 'BANCAO-BANCAO' || s === 'BANCAO - BANCAO' || s === 'BANCAO_BANCAO') return 'BANCAO-BANCAO';
+  if (s === 'STA LOURDES' || s === 'STA. LOURDES' || s === 'SANTA LOURDES') return 'STA. LOURDES';
+  if (s === 'STA MONICA' || s === 'STA. MONICA' || s === 'SANTA MONICA') return 'STA. MONICA';
+  if (s === 'SAN MIGUEL') return 'SAN MIGUEL';
+  if (s.startsWith('STA ') && !s.startsWith('STA. ')) return 'STA. ' + s.slice(4);
+  if (s.startsWith('SANTA ')) return 'STA. ' + s.slice(6);
+  return s;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -73,7 +86,7 @@ export default async function handler(req, res) {
       const formatted = records.map((r, idx) => ({
         jo_number: r.jo_number || `WEB-${Date.now()}-${idx + 1}-${Math.floor(Math.random() * 1000)}`,
         date: r.date || new Date().toISOString().split('T')[0],
-        barangay: r.barangay ? String(r.barangay).trim() : 'Unknown',
+        barangay: normalizeBarangayName(r.barangay),
         stub_out_no: r.stub_out_no || r.stubout_number || r.stubout || r.stubout_no || null,
         account_number: r.account_number || r.account_no || null,
         type: r.type || 'No Water',
@@ -102,7 +115,7 @@ export default async function handler(req, res) {
       const singlePayload = {
         jo_number: dataToSave.jo_number || `WEB-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         date: dataToSave.date,
-        barangay: String(dataToSave.barangay).trim(),
+        barangay: normalizeBarangayName(dataToSave.barangay),
         stub_out_no: dataToSave.stub_out_no || dataToSave.stubout_number || dataToSave.stubout || dataToSave.stubout_no || null,
         account_number: dataToSave.account_number || dataToSave.account_no || null,
         type: dataToSave.type || 'No Water',

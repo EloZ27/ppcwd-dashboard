@@ -1,5 +1,18 @@
 import crypto from 'crypto';
 
+// Canonical Barangay Name Normalizer (standardizes case, spacing, and punctuation)
+function normalizeBarangayName(str) {
+  if (!str) return 'UNKNOWN';
+  let s = String(str).trim().toUpperCase().replace(/\s+/g, ' ');
+  if (s === 'BANCAO BANCAO' || s === 'BANCAO-BANCAO' || s === 'BANCAO - BANCAO' || s === 'BANCAO_BANCAO') return 'BANCAO-BANCAO';
+  if (s === 'STA LOURDES' || s === 'STA. LOURDES' || s === 'SANTA LOURDES') return 'STA. LOURDES';
+  if (s === 'STA MONICA' || s === 'STA. MONICA' || s === 'SANTA MONICA') return 'STA. MONICA';
+  if (s === 'SAN MIGUEL') return 'SAN MIGUEL';
+  if (s.startsWith('STA ') && !s.startsWith('STA. ')) return 'STA. ' + s.slice(4);
+  if (s.startsWith('SANTA ')) return 'STA. ' + s.slice(6);
+  return s;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -45,9 +58,15 @@ export default async function handler(req, res) {
       isAdmin = provBuf.length === confBuf.length && crypto.timingSafeEqual(provBuf, confBuf);
     }
 
-    // Server-side PII masking for unauthenticated public requests
+    // Server-side normalization and PII masking
     const sanitized = (data || []).map(record => {
-      if (isAdmin) return record;
+      const normBrgy = normalizeBarangayName(record.barangay);
+      if (isAdmin) {
+        return {
+          ...record,
+          barangay: normBrgy
+        };
+      }
 
       const rawAcc = String(record.account_number || record.account_no || '').trim();
       const cleanAcc = rawAcc.replace(/[^a-zA-Z0-9]/g, '');
@@ -55,6 +74,7 @@ export default async function handler(req, res) {
 
       return {
         ...record,
+        barangay: normBrgy,
         account_number: maskedAcc,
         account_no: maskedAcc
       };

@@ -802,7 +802,6 @@
                     <option value="BAGONG SIKAT">
                     <option value="BAGONG SILANG">
                     <option value="BAHILE">
-                    <option value="BANCAO BANCAO">
                     <option value="BANCAO-BANCAO">
                     <option value="BINDUYAN">
                     <option value="CABAYUGAN">
@@ -844,9 +843,7 @@
                     <option value="SAN RAFAEL">
                     <option value="SEASIDE">
                     <option value="SICSICAN">
-                    <option value="STA LOURDES">
                     <option value="STA. LOURDES">
-                    <option value="STA MONICA">
                     <option value="STA. MONICA">
                     <option value="TAGBUROS">
                     <option value="TAGUMPAY">
@@ -1943,6 +1940,19 @@
       return set;
     }
 
+    // Canonical Barangay Name Normalizer (standardizes case, spacing, and punctuation)
+    function normalizeBarangayName(str) {
+      if (!str) return 'UNKNOWN';
+      let s = String(str).trim().toUpperCase().replace(/\s+/g, ' ');
+      if (s === 'BANCAO BANCAO' || s === 'BANCAO-BANCAO' || s === 'BANCAO - BANCAO' || s === 'BANCAO_BANCAO') return 'BANCAO-BANCAO';
+      if (s === 'STA LOURDES' || s === 'STA. LOURDES' || s === 'SANTA LOURDES') return 'STA. LOURDES';
+      if (s === 'STA MONICA' || s === 'STA. MONICA' || s === 'SANTA MONICA') return 'STA. MONICA';
+      if (s === 'SAN MIGUEL') return 'SAN MIGUEL';
+      if (s.startsWith('STA ') && !s.startsWith('STA. ')) return 'STA. ' + s.slice(4);
+      if (s.startsWith('SANTA ')) return 'STA. ' + s.slice(6);
+      return s;
+    }
+
     // ── AUTOMATIC FORMATTERS FOR COMPLAINTS (Stubout: S#-####, Account: ###-####) ──
     function setupComplaintFormatters() {
       const stubInput = document.getElementById('comp-stubout');
@@ -2115,12 +2125,14 @@
       const fd = new FormData(form);
       const rawStubout = (fd.get('stubout_number') || fd.get('stub_out_no') || '').trim();
       const rawAccount = (fd.get('account_number') || '').trim();
-      const cleanBrgy = (fd.get('barangay') || '').trim();
+      const rawBrgy = (fd.get('barangay') || '').trim();
+      const cleanBrgy = normalizeBarangayName(rawBrgy);
       const brgyInput = document.getElementById('comp-barangay');
+      if (brgyInput && cleanBrgy && cleanBrgy !== 'UNKNOWN') brgyInput.value = cleanBrgy;
 
       // Case-sensitive validation against official barangay listing
       const validSet = getOfficialBarangaysSet();
-      if (!cleanBrgy) {
+      if (!cleanBrgy || cleanBrgy === 'UNKNOWN') {
         notifyComp("Please enter a Barangay.", true);
         if (brgyInput) { brgyInput.focus(); brgyInput.style.borderColor = 'var(--red, #EF4444)'; }
         return;
@@ -2180,7 +2192,7 @@
 
     function populateSamplePaste() {
       const today = new Date().toISOString().split('T')[0];
-      const sample = `${today}\tS1-0014\tNo Water\tSAN PEDRO\t123-4567\t1\n${today}\tS2-0022\tLow Pressure\tSTA MONICA\t234-5678\t2\n${today}\tS1-0008\tNo Water\tSAN JOSE\t345-6789\t1`;
+      const sample = `${today}\tS1-0014\tNo Water\tSAN PEDRO\t123-4567\t1\n${today}\tS2-0022\tLow Pressure\tSTA. MONICA\t234-5678\t2\n${today}\tS1-0008\tNo Water\tSAN JOSE\t345-6789\t1`;
       document.getElementById('comp-bulk-input').value = sample;
     }
 
@@ -2208,7 +2220,8 @@
           const date = parts[0] || new Date().toISOString().split('T')[0];
           const stubout = parts[1] || '';
           const type = parts[2] || 'No Water';
-          const barangay = parts[3] || 'UNKNOWN';
+          const rawBarangay = parts[3] || 'UNKNOWN';
+          const barangay = normalizeBarangayName(rawBarangay);
           const account = parts[4] || '';
           const count = parseInt(parts[5], 10) || 1;
 
@@ -2216,7 +2229,7 @@
             date,
             stub_out_no: stubout,
             type,
-            barangay: barangay.toUpperCase(),
+            barangay: barangay,
             account_number: account,
             complaint_count: count
           });
