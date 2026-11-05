@@ -32,13 +32,23 @@ export default async function handler(req, res) {
     headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
   }
 
+  const explicitCols = 'id,jo_number,date,barangay,stub_out_no,account_number,type,complaint_count,consumer_remarks';
+
   try {
-    // 1. Try ordering by date.desc
-    let response = await fetch(`${SUPABASE_URL}/rest/v1/complaints?select=*&order=date.desc`, { headers });
+    // 1. Try explicit column selection ordered by date.desc
+    let response = await fetch(`${SUPABASE_URL}/rest/v1/complaints?select=${explicitCols}&order=date.desc`, { headers });
     
-    // 2. Fallback to unordered query if column ordering error occurs
+    // 2. Fallback to unordered explicit query
     if (!response.ok) {
-      response = await fetch(`${SUPABASE_URL}/rest/v1/complaints?select=*`, { headers });
+      response = await fetch(`${SUPABASE_URL}/rest/v1/complaints?select=${explicitCols}`, { headers });
+    }
+
+    // 3. Fallback to general query if explicit column names mismatch schema
+    if (!response.ok) {
+      response = await fetch(`${SUPABASE_URL}/rest/v1/complaints?select=*&order=date.desc`, { headers });
+      if (!response.ok) {
+        response = await fetch(`${SUPABASE_URL}/rest/v1/complaints?select=*`, { headers });
+      }
     }
 
     if (!response.ok) {
@@ -58,25 +68,24 @@ export default async function handler(req, res) {
       isAdmin = provBuf.length === confBuf.length && crypto.timingSafeEqual(provBuf, confBuf);
     }
 
-    // Server-side normalization and PII masking
+    // Server-side normalization, strict column whitelist, and PII masking
     const sanitized = (data || []).map(record => {
       const normBrgy = normalizeBarangayName(record.barangay);
-      if (isAdmin) {
-        return {
-          ...record,
-          barangay: normBrgy
-        };
-      }
-
       const rawAcc = String(record.account_number || record.account_no || '').trim();
       const cleanAcc = rawAcc.replace(/[^a-zA-Z0-9]/g, '');
       const maskedAcc = cleanAcc.length > 4 ? `••••• ${cleanAcc.slice(-4)}` : (cleanAcc ? '••••••••' : null);
 
       return {
-        ...record,
+        id: record.id || record.jo_number || null,
+        jo_number: record.jo_number || null,
+        date: record.date || null,
         barangay: normBrgy,
-        account_number: maskedAcc,
-        account_no: maskedAcc
+        stub_out_no: record.stub_out_no || record.stubout_number || record.stubout || record.stubout_no || null,
+        account_number: isAdmin ? (record.account_number || record.account_no || null) : maskedAcc,
+        account_no: isAdmin ? (record.account_number || record.account_no || null) : maskedAcc,
+        type: record.type || 'No Water',
+        complaint_count: parseInt(record.complaint_count, 10) || 1,
+        consumer_remarks: record.consumer_remarks || record.remarks || null
       };
     });
 
