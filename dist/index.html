@@ -958,25 +958,25 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Date Range &amp; Historical Backtracking</span>
             <div style="display:flex; gap:5px; flex-wrap:wrap;">
-              <button type="button" onclick="setCompReportDatePreset('2weeks')" class="header-btn" style="font-size:10px; padding:3px 9px;">2 Weeks</button>
-              <button type="button" onclick="setCompReportDatePreset('4weeks')" class="header-btn" style="font-size:10px; padding:3px 9px;">4 Weeks</button>
-              <button type="button" onclick="setCompReportDatePreset('12weeks')" class="header-btn" style="font-size:10px; padding:3px 9px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);">12 Weeks</button>
-              <button type="button" onclick="setCompReportDatePreset('16weeks')" class="header-btn" style="font-size:10px; padding:3px 9px; font-weight:700;">16 Weeks</button>
-              <button type="button" onclick="setCompReportDatePreset('month')" class="header-btn" style="font-size:10px; padding:3px 9px;">Current Month</button>
-              <button type="button" onclick="setCompReportDatePreset('3months')" class="header-btn" style="font-size:10px; padding:3px 9px;">3 Months</button>
-              <button type="button" onclick="setCompReportDatePreset('6months')" class="header-btn" style="font-size:10px; padding:3px 9px;">6 Months</button>
-              <button type="button" onclick="setCompReportDatePreset('all')" class="header-btn" style="font-size:10px; padding:3px 9px; color:#475569;">All History</button>
+              <button type="button" data-comp-preset="2weeks" onclick="setCompReportDatePreset('2weeks')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px;">2 Weeks</button>
+              <button type="button" data-comp-preset="4weeks" onclick="setCompReportDatePreset('4weeks')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px;">4 Weeks</button>
+              <button type="button" data-comp-preset="12weeks" onclick="setCompReportDatePreset('12weeks')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px;">12 Weeks</button>
+              <button type="button" data-comp-preset="16weeks" onclick="setCompReportDatePreset('16weeks')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px; font-weight:700; background:var(--blue-light); color:var(--blue); border-color:var(--blue-border);">16 Weeks</button>
+              <button type="button" data-comp-preset="month" onclick="setCompReportDatePreset('month')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px;">Current Month</button>
+              <button type="button" data-comp-preset="3months" onclick="setCompReportDatePreset('3months')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px;">3 Months</button>
+              <button type="button" data-comp-preset="6months" onclick="setCompReportDatePreset('6months')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px;">6 Months</button>
+              <button type="button" data-comp-preset="all" onclick="setCompReportDatePreset('all')" class="header-btn comp-preset-btn" style="font-size:10px; padding:3px 9px; color:#475569;">All History</button>
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
             <div>
               <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Start Date</label>
-              <input id="comp-rep-start-date" type="date" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
+              <input id="comp-rep-start-date" type="date" onchange="updateCompPresetActive(null)" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
             </div>
             <div>
               <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">End Date</label>
-              <input id="comp-rep-end-date" type="date" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
+              <input id="comp-rep-end-date" type="date" onchange="updateCompPresetActive(null)" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
             </div>
           </div>
 
@@ -988,7 +988,7 @@
           </div>
 
           <div style="font-size:10.5px; color:#64748B; line-height:1.4;">
-            <span style="color:var(--blue); font-weight:600;">Automatic Backfill &amp; Dynamic Prorating:</span> If your date range starts earlier than cached telemetry, missing records are automatically queried from Supabase. Any in-progress month (such as partial MTD) is dynamically prorated so regulatory LWUA evaluations remain mathematically accurate.
+            <span style="color:var(--blue); font-weight:600;">Automatic Backfill &amp; Independent Monthly Evaluation:</span> If your date range starts earlier than cached telemetry, missing records are automatically queried from Supabase. Monthly production reports are evaluated unprorated against the full 1,705,700 m&sup3; baseline, completely separate from weekly production schedules.
           </div>
         </div>
 
@@ -1018,7 +1018,7 @@
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-prod-weekly" checked />
-                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Descending W30..W19 + Weekly Average)</span>
+                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Descending Operational Weeks + Weekly Average)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-prod-subsystems" />
@@ -5271,6 +5271,16 @@
     sel.innerHTML = opts;
   }
 
+  function updateCompPresetActive(activePreset) {
+    document.querySelectorAll('.comp-preset-btn').forEach(btn => {
+      const isMatch = activePreset && btn.dataset.compPreset === activePreset;
+      btn.style.background = isMatch ? 'var(--blue-light)' : '';
+      btn.style.color = isMatch ? 'var(--blue)' : (btn.dataset.compPreset === 'all' ? '#475569' : '');
+      btn.style.borderColor = isMatch ? 'var(--blue-border)' : '';
+      btn.style.fontWeight = isMatch ? '700' : '';
+    });
+  }
+
   function selectCompReportOperationalWeek(periodStr) {
     if (!periodStr) return;
     const startInp = document.getElementById("comp-rep-start-date");
@@ -5284,6 +5294,7 @@
     if (sDate && eDate) {
       startInp.value = fmtDate(sDate);
       endInp.value = fmtDate(eDate);
+      updateCompPresetActive(null);
     }
   }
 
@@ -5293,6 +5304,7 @@
     const weekSelect = document.getElementById("comp-rep-quick-week");
     if (weekSelect) weekSelect.value = "";
     if (!startInp || !endInp) return;
+    updateCompPresetActive(preset);
 
     const pad = n => String(n).padStart(2, '0');
     const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -5488,6 +5500,10 @@
       // Sort descending (latest month first, e.g. 2026-10, 2026-09, 2026-08)
       const sortedMonths = Array.from(set).sort((a, b) => b.localeCompare(a));
 
+      // Executive Directive: Monthly Production is an independent full-month report and is NOT prorated.
+      const fullBaselineM3 = typeof MONTHLY_TARGET === 'number' ? MONTHLY_TARGET : 1705700.0;
+      const fullLwuaCutoffM3 = typeof MONTHLY_LWUA_CUTOFF === 'number' ? MONTHLY_LWUA_CUTOFF : 1620415.0;
+
       const rows = sortedMonths.map(ym => {
         const parts = ym.split('-');
         const y = parseInt(parts[0], 10);
@@ -5495,29 +5511,20 @@
         const daysInMonth = new Date(y, m, 0).getDate();
         const recs = (Array.isArray(allRecords) ? allRecords : []).filter(r => r.month_year === ym);
         
-        // Dynamic MTD Prorating: Check if reporting end date falls within this month and is partial
-        let elapsedDays = daysInMonth;
-        let isProrated = false;
-        if (endDt && endDt.getFullYear() === y && (endDt.getMonth() + 1) === m) {
-          if (endDt.getDate() < daysInMonth) {
-            elapsedDays = Math.max(1, endDt.getDate());
-            isProrated = true;
-          }
-        }
+        const elapsedDays = daysInMonth;
+        const isProrated = false;
+        const baselineM3 = fullBaselineM3;
+        const lwuaCutoffM3 = fullLwuaCutoffM3;
+        const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
 
-        const prorationFactor = elapsedDays / daysInMonth;
-        const baselineM3 = 1705700.0 * prorationFactor;
-        const lwuaCutoffM3 = 1620415.0 * prorationFactor;
-
-        // If direct monthly records exist, use them
-        if (recs.length > 0) {
-          const totalActual = recs.reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-          const swVol = recs.filter(r => r.category === 'Surface Water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-          const gwVol = recs.filter(r => r.category === 'Groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
-          const dailyAvg = elapsedDays > 0 ? totalActual / elapsedDays : 0;
+        // If direct monthly records exist, evaluate against the full unprorated 1,705,700 m3 baseline
+        if (recs.length > 0 && totalActual > 0) {
+          const swVol = recs.filter(r => (r.category || '').trim().toLowerCase() === 'surface water').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+          const gwVol = recs.filter(r => (r.category || '').trim().toLowerCase() === 'groundwater').reduce((sum, r) => sum + (parseFloat(r.monthly_volume) || 0), 0);
+          const dailyAvg = daysInMonth > 0 ? totalActual / daysInMonth : 0;
           const swPct = totalActual > 0 ? (swVol / totalActual) * 100 : 0;
           const gwPct = totalActual > 0 ? (gwVol / totalActual) * 100 : 0;
-          const pctVsNormal = (totalActual / baselineM3) * 100;
+          const pctVsNormal = baselineM3 > 0 ? (totalActual / baselineM3) * 100 : 0;
           const lwuaStatus = totalActual >= lwuaCutoffM3 ? 'In Capacity' : 'For Reporting';
 
           return {
@@ -5615,19 +5622,21 @@
     // Week 30: October 16, 2026 (Friday)
     // Week 31: October 23, 2026 (Friday)
     // Week 32: October 30, 2026 (Friday)
-    const ANCHOR_DATE = new Date(2026, 6, 31, 0, 0, 0); // July 31, 2026 00:00:00 PST (Friday)
+    const ANCHOR_YEAR = 2026, ANCHOR_MONTH = 6, ANCHOR_DAY = 31; // July 31, 2026 (Friday)
     const ANCHOR_WEEK = 19;
     const msPerDay = 1000 * 60 * 60 * 24;
+    const toDayUTC = d => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+    const ANCHOR_UTC = Date.UTC(ANCHOR_YEAR, ANCHOR_MONTH, ANCHOR_DAY);
 
-    // Calculate active week number based on endDt
-    const daysSinceAnchor = Math.floor((endDt.getTime() - ANCHOR_DATE.getTime()) / msPerDay);
-    const activeWkOffset = Math.floor(daysSinceAnchor / 7);
+    // Friday cutoff closes the cycle ending on that date (e.g. Oct 30 -> Week 31, Oct 31 -> Week 32 MTD)
+    const endDaysSinceAnchor = Math.round((toDayUTC(endDt) - ANCHOR_UTC) / msPerDay);
+    const activeWkOffset = Math.floor((endDaysSinceAnchor - 1) / 7);
     const activeWkNum = Math.max(ANCHOR_WEEK, ANCHOR_WEEK + activeWkOffset);
 
-    // Calculate how many weekly cycles to include (defaulting to 12-16 weeks descending)
+    // Calculate how many weekly cycles to include (up to 16 weeks descending)
     let weekCount = 16;
     if (startDt && !isNaN(startDt.getTime())) {
-      const startDaysSinceAnchor = Math.floor((startDt.getTime() - ANCHOR_DATE.getTime()) / msPerDay);
+      const startDaysSinceAnchor = Math.round((toDayUTC(startDt) - ANCHOR_UTC) / msPerDay);
       const startWkNum = Math.max(1, ANCHOR_WEEK + Math.floor(startDaysSinceAnchor / 7));
       const requestedWeeks = activeWkNum - startWkNum + 1;
       weekCount = Math.min(16, Math.max(1, requestedWeeks));
@@ -5639,17 +5648,15 @@
       if (wkNum < 1) break;
 
       const offsetDays = (wkNum - ANCHOR_WEEK) * 7;
-      const sDate = new Date(ANCHOR_DATE.getTime() + (offsetDays * msPerDay));
-      sDate.setHours(0, 0, 0, 0);
+      const sDate = new Date(ANCHOR_YEAR, ANCHOR_MONTH, ANCHOR_DAY + offsetDays, 0, 0, 0, 0);
 
       // Standard Friday-to-Friday cycle ends on the following Friday (7 days later)
-      const fullEDate = new Date(sDate.getTime() + (7 * msPerDay));
-      fullEDate.setHours(23, 59, 59, 999);
+      const fullEDate = new Date(ANCHOR_YEAR, ANCHOR_MONTH, ANCHOR_DAY + offsetDays + 7, 23, 59, 59, 999);
 
       let effectiveEDate = new Date(fullEDate);
       let isCapped = false;
-      // Cap the most recent active week if endDt is before the standard Friday cycle end
-      if (i === 0 && endDt < fullEDate) {
+      // Cap the most recent active week if endDt is before the standard Friday cycle cutoff
+      if (i === 0 && toDayUTC(endDt) < toDayUTC(fullEDate)) {
         effectiveEDate = new Date(endDt);
         isCapped = true;
       }
@@ -5664,29 +5671,8 @@
       let hasProd = !!prodRow;
 
       // Determine pending status text for unsubmitted weeks
-      let pendingStatus = 'No Report Yet (Pending Submission)';
-      if (wkNum >= 32) {
-        pendingStatus = 'Awaiting Cutoff';
-      } else if (wkNum === 31) {
-        pendingStatus = 'No Report Yet (Pending Submission)';
-      }
-
-      // Format inclusive dates string matching official PPCWD convention (e.g. October 23 – 30, 2026)
-      const sMonth = sDate.toLocaleString('en-US', { month: 'short' });
-      const sDay = sDate.getDate();
-      const sYear = sDate.getFullYear();
-      const eMonth = effectiveEDate.toLocaleString('en-US', { month: 'short' });
-      const eDay = effectiveEDate.getDate();
-      const eYear = effectiveEDate.getFullYear();
-
-      let periodStr = '';
-      if (sYear === eYear && sMonth === eMonth) {
-        periodStr = `${sMonth} ${sDay} – ${eDay}, ${sYear}`;
-      } else if (sYear === eYear) {
-        periodStr = `${sMonth} ${sDay} – ${eMonth} ${eDay}, ${sYear}`;
-      } else {
-        periodStr = `${sMonth} ${sDay}, ${sYear} – ${eMonth} ${eDay}, ${eYear}`;
-      }
+      const pendingStatus = isCapped ? 'Awaiting Cutoff' : 'No Report Yet (Pending Submission)';
+      const periodStr = formatDateRange(sDate, effectiveEDate);
 
       let weekLabel = `Week ${wkNum}`;
       if (isCapped && i === 0) {
@@ -6607,7 +6593,7 @@
           <div>
             <div style="font-size:7.5px; font-weight:800; color:#1E40AF; text-transform:uppercase; letter-spacing:0.4px;">1. Monthly Production Yield &amp; LWUA Trigger</div>
             <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execProdSummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Monthly: 1.705M m&sup3; &bull; 5% Cutoff: 1.620M m&sup3;</div>
+            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Target: 1,705,700 m&sup3; &bull; 5% Cutoff: 1,620,415 m&sup3; (Full Month)</div>
           </div>
           <div>
             <div style="font-size:7.5px; font-weight:800; color:#0D9488; text-transform:uppercase; letter-spacing:0.4px;">2. Recent Reported Weekly Production &amp; Crisis Indicator</div>
@@ -6648,7 +6634,7 @@
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Recent Month LWUA Status</div>
                 <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:13px;">${recentMonth.lwuaStatus}</div>
-                <div class="comp-kpi-sub">${recentMonth.month_year}${recentMonth.isProrated ? ` (${recentMonth.elapsedDays}d Prorated)` : ''} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
+                <div class="comp-kpi-sub">${recentMonth.month_year} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
               </div>
             </div>
 
@@ -6667,10 +6653,9 @@
               <tbody>
                 ${monthlyData.map(m => {
                   const sColor = m.lwuaStatus === 'In Capacity' ? '#16A34A' : (m.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
-                  const proratedBadge = m.isProrated ? ` <span style="font-size:9px; font-weight:700; color:#4F46E5; background:#EEF2FF; padding:1px 5px; border-radius:3px; vertical-align:middle;">Prorated (${m.elapsedDays}/${m.daysInMonth}d)</span>` : '';
                   return `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}${proratedBadge}</td>
+                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
