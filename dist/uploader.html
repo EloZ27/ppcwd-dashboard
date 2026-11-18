@@ -6,31 +6,32 @@
   <title>PPCWD — Generator Asset Management Portal</title>
   <link rel="icon" type="image/png" href="/assets/logo-mINGB56k.png">
 
-  <!-- Modern Typography: Inter & IBM Plex Mono -->
+  <!-- Modern SaaS Typography: Plus Jakarta Sans, Inter & IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff0f;--sidebar-active:#2563eb;--sidebar-text:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f8fafc;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 1px 3px 0 #0f172a0a, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#64748b;--text-subtle:#94a3b8;--teal:#0d9488;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-light:#fef2f2;--red-border:#fecaca;--font-sans:"Inter", -apple-system, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);font-variant-numeric:tabular-nums;min-height:100vh;font-size:13px;line-height:1.5;overflow-x:hidden}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:150;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:margin-left .25s cubic-bezier(.4,0,.2,1),transform .3s;display:flex;position:sticky;top:0;overflow-x:hidden}.app-sidebar.collapsed{margin-left:-250px}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:4px;padding:12px 14px;display:flex;overflow-y:auto}.nav-btn{color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:9px;align-items:center;gap:10px;width:100%;padding:10px 14px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{background:var(--sidebar-active);color:var(--sidebar-text-active);font-weight:600;box-shadow:0 4px 12px #2563eb4d}.nav-icon{text-align:center;width:20px;font-size:15px}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;display:flex}.app-header{-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);z-index:100;background:#fffffff2;justify-content:space-between;align-items:center;gap:12px;padding:14px 28px;display:flex;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.header-titles h1{color:var(--text-main);letter-spacing:-.3px;font-size:18px;font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11px;display:flex}.header-btn{border:1px solid var(--card-border);font-family:var(--font-mono);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 13px;font-size:11px;font-weight:600;text-decoration:none;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:20px;padding:20px 24px}.card-header-bar{border-bottom:1px solid var(--card-border);flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;display:flex}.card-heading h2{color:var(--text-main);align-items:center;gap:8px;font-size:15px;font-weight:800;display:flex}.card-heading p{color:var(--text-muted);margin-top:2px;font-size:11px}.segment-pills{border:1px solid var(--card-border);background:#f1f5f9;border-radius:8px;gap:4px;padding:4px;display:flex}.seg-pill{font-family:var(--font-mono);color:var(--text-muted);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:6px 14px;font-size:11px;font-weight:600;transition:all .15s}.seg-pill.active{color:var(--blue);background:#fff;box-shadow:0 1px 3px #0000001a}.form-grid{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;display:grid}@media (width<=900px){.form-grid{grid-template-columns:1fr}}.field-group{flex-direction:column;gap:5px;display:flex}.form-lbl{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);font-size:10px;font-weight:700}.form-input{border:1px solid var(--card-border);color:var(--text-main);font-family:var(--font-sans);background:#f8fafc;border-radius:8px;outline:none;width:100%;padding:9px 12px;font-size:12px;transition:border-color .2s,background .2s}.form-input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px #2563eb14}select.form-input{cursor:pointer}.btn-submit{background:var(--blue);border:1px solid var(--blue);color:#fff;font-family:var(--font-mono);cursor:pointer;border-radius:8px;align-items:center;gap:6px;padding:9px 18px;font-size:11px;font-weight:700;transition:background .15s;display:inline-flex}.btn-submit:hover{background:#1d4ed8}.btn-submit:disabled{opacity:.6;cursor:not-allowed}.alert-box{font-family:var(--font-mono);border-radius:8px;margin-bottom:16px;padding:12px 16px;font-size:11px;font-weight:600;display:none}.alert-box.show{display:block}.alert-box.alert-error{background:var(--red-light);border:1px solid var(--red-border);color:var(--red)}.alert-box.alert-success{background:var(--green-light);border:1px solid var(--green-border);color:var(--green)}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 20px;display:flex}.table-head-title{color:var(--text-main);font-size:13px;font-weight:800}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 16px;font-size:9.5px;font-weight:700}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:11px 16px}.kpi-badge-pill{font-size:10px;font-weight:700;font-family:var(--font-mono);border-radius:6px;align-items:center;gap:4px;padding:2px 7px;display:inline-flex}.pill-green{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}.pill-amber{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)}.pill-red{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:34px;height:34px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:28px;height:28px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:149;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}@media (width<=820px){.app-sidebar{z-index:160;position:fixed;top:0;bottom:0;left:-270px;margin-left:0!important}.app-sidebar.open{transform:translate(270px);box-shadow:10px 0 30px #0000004d}.app-header{padding:12px 16px}.page-content{padding:14px 12px}}@media (width<=640px){.header-titles h1{white-space:nowrap;text-overflow:ellipsis;font-size:15px;overflow:hidden}.header-titles p{display:none}.card{border-radius:12px;padding:14px 16px}#edit-genset-modal .form-grid{grid-template-columns:1fr!important}}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline-offset:2px;outline:2px solid #2563eb8c}.app-sidebar::-webkit-scrollbar{width:6px;height:6px}.table-responsive::-webkit-scrollbar{width:6px;height:6px}.app-sidebar::-webkit-scrollbar-thumb{background:#94a3b840;border-radius:3px}.table-responsive::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}</style>
+  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff14;--sidebar-active:#2563eb;--sidebar-text:#cbd5e1;--sidebar-text-muted:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f4f6fa;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 1px 3px 0 #0f172a0d, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#475569;--text-subtle:#5b677a;--teal:#0d9488;--teal-text:#0f766e;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-text:#1d4ed8;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-text:#047857;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-text:#a14506;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-text:#b91c1c;--red-light:#fef2f2;--red-border:#fecaca;--font-display:"Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-sans:"Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;min-height:100vh;font-size:13px;line-height:1.5;overflow-x:hidden}h1,h2,h3,h4,.brand-sub,.table-head-title{font-family:var(--font-display);letter-spacing:-.02em}.sr-only{clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.skip-link{z-index:100000;background:var(--blue-text);color:#fff;font-family:var(--font-sans);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;text-decoration:none;transition:top .15s;position:fixed;top:-100px;left:16px;box-shadow:0 10px 25px #0f172a40}.skip-link:focus{outline-offset:2px;outline:2px solid #fff;top:14px}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:150;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:margin-left .25s cubic-bezier(.4,0,.2,1),transform .3s;display:flex;position:sticky;top:0;overflow-x:hidden}.app-sidebar.collapsed{margin-left:-250px}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:3px;padding:8px 14px 14px;display:flex;overflow-y:auto}.sidebar-section-label{letter-spacing:.08em;text-transform:uppercase;color:var(--sidebar-text-muted);font-size:10px;font-weight:700;font-family:var(--font-sans);padding:12px 12px 4px}.nav-btn{min-height:36px;color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:8px;align-items:center;gap:10px;width:100%;padding:9px 12px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex;position:relative}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{color:var(--sidebar-text-active);background:#2563eb38;font-weight:600;box-shadow:inset 0 0 0 1px #3b82f673}.nav-btn.active:before{content:"";background:#60a5fa;border-radius:0 3px 3px 0;width:3px;position:absolute;top:7px;bottom:7px;left:0}.nav-icon{text-align:center;width:20px;font-size:15px}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;display:flex}.app-header{-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);z-index:100;background:#fffffff2;justify-content:space-between;align-items:center;gap:12px;padding:14px 28px;display:flex;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.header-mobile-brand{display:none}.app-sidebar.collapsed~.app-main .header-mobile-brand{display:block}.header-titles h1{font-family:var(--font-display);color:var(--text-main);letter-spacing:-.025em;font-size:clamp(16px,2.2vw,20px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11.5px;display:flex}.header-btn{border:1px solid var(--card-border);min-height:36px;font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:600;text-decoration:none;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:20px;padding:20px 24px}.card-header-bar{border-bottom:1px solid var(--card-border);flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;display:flex}.card-heading h2{font-family:var(--font-display);color:var(--text-main);align-items:center;gap:8px;font-size:16px;font-weight:800;display:flex}.card-heading p{color:var(--text-muted);margin-top:2px;font-size:11.5px}.segment-pills{border:1px solid var(--card-border);background:#f1f5f9;border-radius:8px;gap:4px;padding:4px;display:flex}.seg-pill{min-height:36px;font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;transition:all .15s}.seg-pill.active{color:var(--blue-text);background:#fff;box-shadow:0 1px 3px #0000001a}.form-grid{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;display:grid}@media (width<=900px){.form-grid{grid-template-columns:1fr}}.field-group{flex-direction:column;gap:5px;display:flex}.form-lbl{font-family:var(--font-sans);text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-size:11px;font-weight:700}.form-input{border:1px solid var(--card-border);min-height:38px;color:var(--text-main);font-family:var(--font-sans);background:#f8fafc;border-radius:8px;outline:none;width:100%;padding:9px 12px;font-size:12.5px;transition:border-color .2s,background .2s}.form-input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px #2563eb14}select.form-input{cursor:pointer}.btn-submit{background:var(--blue);border:1px solid var(--blue);color:#fff;font-family:var(--font-sans);cursor:pointer;border-radius:8px;align-items:center;gap:6px;min-height:38px;padding:9px 18px;font-size:12px;font-weight:700;transition:background .15s;display:inline-flex}.btn-submit:hover{background:var(--blue-text)}.btn-submit:disabled{opacity:.6;cursor:not-allowed}.alert-box{font-family:var(--font-sans);border-radius:8px;margin-bottom:16px;padding:12px 16px;font-size:12px;font-weight:600;display:none}.alert-box.show{display:block}.alert-box.alert-error{background:var(--red-light);border:1px solid var(--red-border);color:var(--red-text)}.alert-box.alert-success{background:var(--green-light);border:1px solid var(--green-border);color:var(--green-text)}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 20px;display:flex}.table-head-title{color:var(--text-main);font-size:13.5px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-sans);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 16px;font-size:10px;font-weight:700}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:11px 16px}.kpi-badge-pill{font-size:10.5px;font-weight:700;font-family:var(--font-sans);border-radius:6px;align-items:center;gap:4px;padding:3px 8px;display:inline-flex}.pill-green{background:var(--green-light);color:var(--green-text);border:1px solid var(--green-border)}.pill-amber{background:var(--amber-light);color:var(--amber-text);border:1px solid var(--amber-border)}.pill-red{background:var(--red-light);color:var(--red-text);border:1px solid var(--red-border)}.pill-blue{background:var(--blue-light);color:var(--blue-text);border:1px solid var(--blue-border)}.pill-teal{background:var(--teal-light);color:var(--teal-text);border:1px solid var(--teal-border)}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:36px;height:36px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:30px;height:30px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:149;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}@media (width<=820px){.app-sidebar{z-index:160;position:fixed;top:0;bottom:0;left:-270px;margin-left:0!important}.app-sidebar.open{transform:translate(270px);box-shadow:10px 0 30px #0000004d}.header-mobile-brand{display:block}.app-header{padding:12px 16px}.page-content{padding:14px 12px}}@media (width<=640px){.header-titles h1{white-space:nowrap;text-overflow:ellipsis;font-size:15px;overflow:hidden}.header-titles p{display:none}.card{border-radius:12px;padding:14px 16px}#edit-genset-modal .form-grid{grid-template-columns:1fr!important}}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--blue-text);outline-offset:2px}@media (prefers-reduced-motion:reduce){*,:before,:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}.app-sidebar::-webkit-scrollbar{width:6px;height:6px}.table-responsive::-webkit-scrollbar{width:6px;height:6px}.app-sidebar::-webkit-scrollbar-thumb{background:#94a3b840;border-radius:3px}.table-responsive::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}</style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- ── SECURITY AUTHENTICATION GATE OVERLAY ── -->
-  <div id="portal-auth-gate" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
+  <div id="portal-auth-gate" role="dialog" aria-modal="true" aria-labelledby="portal-auth-heading" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
     <div style="background:#FFFFFF; border-radius:18px; width:440px; max-width:95vw; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); border:1px solid rgba(226,232,240,0.8); text-align:center;">
       <div style="width:68px; height:68px; border-radius:50%; background:#EFF6FF; border:2px solid #BFDBFE; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
         <img src="/assets/logo-sm-CTXHJ5nj.png" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;">
       </div>
-      <h2 style="font-size:17px; font-weight:800; color:var(--text-main); margin-bottom:4px;">PPCWD Operations Portal</h2>
+      <h2 id="portal-auth-heading" style="font-size:17px; font-weight:800; color:var(--text-main); margin-bottom:4px;">PPCWD Operations Portal</h2>
       <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">
         Restricted Access &bull; Production, Hydrology, Customer Incidents &amp; Generator Fleet Ingestion
       </p>
 
-      <div id="auth-gate-alert" class="alert-box alert-error" style="display:none; text-align:left; margin-bottom:16px;"></div>
+      <div id="auth-gate-alert" class="alert-box alert-error" role="alert" style="display:none; text-align:left; margin-bottom:16px;"></div>
 
       <form onsubmit="submitPortalAuth(event)">
         <div style="margin-bottom:14px; text-align:left;">
-          <label class="form-lbl" style="margin-bottom:6px; display:block;">Authorization Passkey / PIN *</label>
+          <label for="auth-passkey-input" class="form-lbl" style="margin-bottom:6px; display:block;">Authorization Passkey / PIN *</label>
           <div style="position:relative;">
             <input type="password" id="auth-passkey-input" class="form-input" placeholder="Enter Division Passkey..." style="padding-right:40px; font-size:13px; font-weight:600;" required autocomplete="current-password">
             <button type="button" onclick="togglePasskeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;" title="Show/Hide passkey"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
@@ -55,8 +56,8 @@
   <div class="app-layout">
 
     <!-- ── SIDEBAR ── -->
-    <aside class="app-sidebar" id="app-sidebar">
-      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Collapse sidebar" title="Hide Sidebar (Collapse)">✕</button>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Operations Portal Navigation">
+      <button type="button" class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Collapse sidebar" title="Hide Sidebar (Collapse)">✕</button>
       <div class="sidebar-brand">
         <img src="/assets/logo-sm-CTXHJ5nj.png" alt="PPCWD Logo" class="brand-logo-img">
         <div>
@@ -65,36 +66,39 @@
         </div>
       </div>
 
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav" aria-label="Portal Sections">
         <a href="index.html" class="nav-btn">
-          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
           <span>Back to Dashboard</span>
         </a>
 
         <div class="sidebar-divider"></div>
+        <div class="sidebar-section-label">Assets &amp; Field Intake</div>
 
-        <button class="nav-btn active" id="sidebar-btn-gensets" onclick="switchPortalSection('gensets')">
-          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+        <button type="button" class="nav-btn active" aria-current="page" id="sidebar-btn-gensets" onclick="switchPortalSection('gensets')">
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
           <span>Genset &amp; Asset Admin</span>
         </button>
 
-        <button class="nav-btn" id="sidebar-btn-complaints" onclick="switchPortalSection('complaints')">
-          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
+        <button type="button" class="nav-btn" id="sidebar-btn-complaints" onclick="switchPortalSection('complaints')">
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
           <span>Customer Complaints</span>
         </button>
 
-        <button class="nav-btn" id="sidebar-btn-riverflow" onclick="switchPortalSection('riverflow')">
-          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c3-3 6-3 9 0s6 3 9 0M2 17c3-3 6-3 9 0s6 3 9 0"/></svg></span>
+        <button type="button" class="nav-btn" id="sidebar-btn-riverflow" onclick="switchPortalSection('riverflow')">
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c3-3 6-3 9 0s6 3 9 0M2 17c3-3 6-3 9 0s6 3 9 0"/></svg></span>
           <span>River Hydrology</span>
         </button>
 
-        <button class="nav-btn" id="sidebar-btn-production" onclick="switchPortalSection('production')">
-          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
+        <div class="sidebar-section-label">Production Reporting</div>
+
+        <button type="button" class="nav-btn" id="sidebar-btn-production" onclick="switchPortalSection('production')">
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
           <span>Weekly Production</span>
         </button>
 
-        <button class="nav-btn" id="sidebar-btn-monthly" data-section="monthly" onclick="switchPortalSection('monthly')">
-          <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <button type="button" class="nav-btn" id="sidebar-btn-monthly" data-section="monthly" onclick="switchPortalSection('monthly')">
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           <span>Monthly Production</span>
         </button>
       </nav>
@@ -104,11 +108,11 @@
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="status-dot-pulse"></div>
             <div>
-              <div style="font-size: 10px; font-weight: 700; color: #FFFFFF;">Portal Protected</div>
-              <div style="font-size: 9.5px; color: #94A3B8;">Passkey Verified</div>
+              <div style="font-size: 10.5px; font-weight: 700; color: #FFFFFF;">Portal Protected</div>
+              <div style="font-size: 10px; color: #CBD5E1;">Passkey Verified</div>
             </div>
           </div>
-          <button type="button" onclick="lockPortal()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#F1F5F9; font-size:10px; font-weight:700; padding:4px 8px; cursor:pointer;" title="Lock Portal & Sign Out">
+          <button type="button" onclick="lockPortal()" style="background:#334155; border:1px solid #475569; border-radius:6px; color:#FFFFFF; font-size:10px; font-weight:700; padding:4px 9px; cursor:pointer;" title="Lock Portal & Sign Out">
             Lock
           </button>
         </div>
@@ -119,19 +123,20 @@
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
     <!-- ── MAIN CONTENT ── -->
-    <div class="app-main">
+    <main id="main-content" class="app-main" tabindex="-1">
+      <div id="portal-live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
       <header class="app-header">
         <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto;">
-          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
-          <img src="/assets/logo-sm-CTXHJ5nj.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px;">
+          <button type="button" class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
+          <img src="/assets/logo-sm-CTXHJ5nj.png" alt="PPCWD Logo" class="brand-logo-img header-mobile-brand" style="width: 30px; height: 30px; flex-shrink:0;">
           <div class="header-titles" style="min-width: 0; flex: 1 1 auto;">
             <h1 id="portal-title">Operations &amp; Asset Portal</h1>
-            <p id="portal-subtitle"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
+            <p id="portal-subtitle"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;" aria-hidden="true"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
           </div>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px; flex-shrink: 0;">
-          <a href="index.html" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); white-space:nowrap;">
+          <a href="index.html" class="header-btn" style="color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light); white-space:nowrap;">
             &larr; Exit to Dashboard
           </a>
         </div>
@@ -154,7 +159,7 @@
             </div>
           </div>
 
-          <div id="gs-alert-box" class="alert-box"></div>
+          <div id="gs-alert-box" class="alert-box" role="alert"></div>
 
           <!-- FORM 1: LOG ACTION / SERVICE -->
           <form id="form-genset-log" onsubmit="submitGensetAction(event)">
@@ -162,14 +167,14 @@
 
             <div class="form-grid">
               <div class="field-group">
-                <label class="form-lbl">Select Generator Unit *</label>
+                <label for="gs-select-unit" class="form-lbl">Select Generator Unit *</label>
                 <select id="gs-select-unit" name="genset_id" required class="form-input" onchange="onGensetUnitSelected(this.value)">
                   <option value="">Loading fleet units...</option>
                 </select>
               </div>
               <div class="field-group">
-                <label class="form-lbl">Action / Event Type *</label>
-                <select name="event_type" required class="form-input">
+                <label for="gs-event-type" class="form-lbl">Action / Event Type *</label>
+                <select id="gs-event-type" name="event_type" required class="form-input">
                   <option value="Preventive Maintenance (PMS)">Preventive Maintenance (PMS)</option>
                   <option value="Transfer / Relocation">Transfer / Relocation</option>
                   <option value="Emergency Repair">Emergency Repair</option>
@@ -179,14 +184,14 @@
                 </select>
               </div>
               <div class="field-group">
-                <label class="form-lbl">Station Deployed *</label>
+                <label for="gs-select-station" class="form-lbl">Station Deployed *</label>
                 <select id="gs-select-station" name="new_station" required class="form-input"></select>
               </div>
             </div>
 
             <div class="form-grid">
               <div class="field-group">
-                <label class="form-lbl">Operating Status *</label>
+                <label for="gs-select-status" class="form-lbl">Operating Status *</label>
                 <select id="gs-select-status" name="new_status" class="form-input">
                   <option value="Operational">Operational</option>
                   <option value="Under Maintenance">Under Maintenance</option>
@@ -195,18 +200,18 @@
                 </select>
               </div>
               <div class="field-group">
-                <label class="form-lbl">Service / Transfer Date</label>
+                <label for="gs-serviced-date" class="form-lbl">Service / Transfer Date</label>
                 <input type="date" name="serviced_date" id="gs-serviced-date" class="form-input">
               </div>
               <div class="field-group">
-                <label class="form-lbl">Personnel / In-Charge</label>
-                <input type="text" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
+                <label for="gs-technician" class="form-lbl">Personnel / In-Charge</label>
+                <input type="text" id="gs-technician" name="technician" placeholder="e.g. Engr. Santos / EMD Team" class="form-input">
               </div>
             </div>
 
             <div class="field-group" style="margin-bottom: 18px;">
-              <label class="form-lbl">Work Done / Action Remarks</label>
-              <textarea name="remarks" rows="3" placeholder="Specify parts replaced, reason for relocation, or run test results..." class="form-input"></textarea>
+              <label for="gs-remarks" class="form-lbl">Work Done / Action Remarks</label>
+              <textarea id="gs-remarks" name="remarks" rows="3" placeholder="Specify parts replaced, reason for relocation, or run test results..." class="form-input"></textarea>
             </div>
 
             <div style="display:flex; justify-content:flex-end;">
@@ -220,31 +225,31 @@
 
             <div class="form-grid">
               <div class="field-group">
-                <label class="form-lbl">Genset Identification Number *</label>
-                <input type="text" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
+                <label for="gs-create-no" class="form-lbl">Genset Identification Number *</label>
+                <input type="text" id="gs-create-no" name="genset_no" required placeholder="e.g. GEN-05" class="form-input">
               </div>
               <div class="field-group">
-                <label class="form-lbl">Brand &amp; Engine Model</label>
-                <input type="text" name="brand_model" placeholder="e.g. Cummins 6BT5.9 / Perkins" class="form-input">
+                <label for="gs-create-model" class="form-lbl">Brand &amp; Engine Model</label>
+                <input type="text" id="gs-create-model" name="brand_model" placeholder="e.g. Cummins 6BT5.9 / Perkins" class="form-input">
               </div>
               <div class="field-group">
-                <label class="form-lbl">Capacity Rating (kVA)</label>
-                <input type="number" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
+                <label for="gs-create-kva" class="form-lbl">Capacity Rating (kVA)</label>
+                <input type="number" id="gs-create-kva" step="0.01" name="capacity_kva" placeholder="e.g. 150" class="form-input">
               </div>
             </div>
 
             <div class="form-grid">
               <div class="field-group">
-                <label class="form-lbl">Initial Station Assignment *</label>
+                <label for="gs-create-station" class="form-lbl">Initial Station Assignment *</label>
                 <select id="gs-create-station" name="new_station" required class="form-input"></select>
               </div>
               <div class="field-group">
-                <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
-                <input type="number" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
+                <label for="gs-create-fuel" class="form-lbl">Fuel Tank Capacity (Liters)</label>
+                <input type="number" id="gs-create-fuel" step="0.1" name="fuel_capacity_liters" placeholder="e.g. 250" class="form-input">
               </div>
               <div class="field-group">
-                <label class="form-lbl">Commissioning Status</label>
-                <select name="new_status" class="form-input">
+                <label for="gs-create-status" class="form-lbl">Commissioning Status</label>
+                <select id="gs-create-status" name="new_status" class="form-input">
                   <option value="Operational">Operational</option>
                   <option value="Standby">Standby</option>
                 </select>
@@ -252,8 +257,8 @@
             </div>
 
             <div class="field-group" style="margin-bottom: 18px;">
-              <label class="form-lbl">Initial Notes / Asset Tagging</label>
-              <textarea name="remarks" rows="2" placeholder="Acquisition details or initial deployment condition..." class="form-input"></textarea>
+              <label for="gs-create-remarks" class="form-lbl">Initial Notes / Asset Tagging</label>
+              <textarea id="gs-create-remarks" name="remarks" rows="2" placeholder="Acquisition details or initial deployment condition..." class="form-input"></textarea>
             </div>
 
             <div style="display:flex; justify-content:flex-end;">
@@ -269,7 +274,7 @@
               <div class="table-head-title">Active Fleet Deployment &amp; Readiness</div>
               <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Station assignments and latest maintenance audit logs</div>
             </div>
-            <button onclick="fetchGensetFleet()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
+            <button type="button" onclick="fetchGensetFleet()" class="header-btn" style="color:var(--blue-text); font-size:11px;">Refresh</button>
           </div>
 
           <div class="table-responsive">
@@ -314,11 +319,11 @@
             <form id="form-complaint-single" onsubmit="submitSingleComplaint(event)">
               <div class="form-grid">
                 <div class="field-group">
-                  <label class="form-lbl">Date of Incident *</label>
+                  <label for="comp-date" class="form-lbl">Date of Incident *</label>
                   <input type="date" id="comp-date" name="date" required class="form-input">
                 </div>
                 <div class="field-group">
-                  <label class="form-lbl">Barangay *</label>
+                  <label for="comp-barangay" class="form-lbl">Barangay *</label>
                   <input type="text" id="comp-barangay" name="barangay" list="barangay-datalist" required placeholder="e.g. SAN PEDRO" class="form-input" style="text-transform:uppercase;" autocapitalize="characters" autocomplete="off" spellcheck="false">
                   <datalist id="barangay-datalist">
                     <option value="BABUYAN">
@@ -377,7 +382,7 @@
                   </datalist>
                 </div>
                 <div class="field-group">
-                  <label class="form-lbl">Complaint Type *</label>
+                  <label for="comp-type" class="form-lbl">Complaint Type *</label>
                   <select id="comp-type" name="type" required class="form-input">
                     <option value="No Water">No Water (Interruption)</option>
                     <option value="Low Pressure">Low Pressure</option>
@@ -389,21 +394,21 @@
 
               <div class="form-grid">
                 <div class="field-group">
-                  <label class="form-lbl">Stubout Number</label>
+                  <label for="comp-stubout" class="form-lbl">Stubout Number</label>
                   <input type="text" id="comp-stubout" name="stubout_number" placeholder="e.g. S1-1234" class="form-input" maxlength="7" autocapitalize="characters" autocomplete="off" spellcheck="false">
                 </div>
                 <div class="field-group">
-                  <label class="form-lbl">Account Number</label>
+                  <label for="comp-account" class="form-lbl">Account Number</label>
                   <input type="text" id="comp-account" name="account_number" placeholder="e.g. 123-4567" class="form-input" maxlength="8" inputmode="numeric" autocomplete="off" spellcheck="false">
                 </div>
                 <div class="field-group">
-                  <label class="form-lbl">Incident Count (Reports) *</label>
+                  <label for="comp-count" class="form-lbl">Incident Count (Reports) *</label>
                   <input type="number" id="comp-count" name="complaint_count" value="1" min="1" required class="form-input">
                 </div>
               </div>
 
               <div class="field-group" style="margin-bottom: 18px;">
-                <label class="form-lbl">Consumer Remarks / Details (Optional)</label>
+                <label for="comp-remarks" class="form-lbl">Consumer Remarks / Details (Optional)</label>
                 <input type="text" id="comp-remarks" name="consumer_remarks" placeholder="Optional notes from customer care..." class="form-input">
               </div>
 
@@ -418,13 +423,14 @@
             <div id="comp-bulk-panel" style="display:none;">
               <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:14px;">
                 <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">How to Paste Data from Excel or Google Sheets:</div>
-                <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
+                <div style="font-size:11.5px; color:var(--text-muted); line-height:1.6;">
                   Copy rows from your spreadsheet and paste directly into the box below. Columns are expected in this standard order:<br>
                   <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">Date | Stubout Number | Type of Complaint | Barangay | Account Number | Complaint Count</code><br>
-                  <span style="font-size:10px; color:var(--teal); font-weight:600;">✓ Supports Tab-separated (direct copy-paste from Excel) and Comma-separated (CSV).</span>
+                  <span style="font-size:10.5px; color:var(--teal-text); font-weight:600;">✓ Supports Tab-separated (direct copy-paste from Excel) and Comma-separated (CSV).</span>
                 </div>
               </div>
 
+              <label for="comp-bulk-input" class="sr-only">Paste Excel or CSV incident records</label>
               <textarea id="comp-bulk-input" class="form-input" style="font-family:var(--font-mono); font-size:11.5px; min-height:140px; resize:vertical; margin-bottom:12px;" placeholder="2026-09-22&#9;S1-0014&#9;No Water&#9;SAN PEDRO&#9;123-4567&#9;1&#10;2026-09-22&#9;S2-0022&#9;Low Pressure&#9;STA MONICA&#9;234-5678&#9;2"></textarea>
 
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
@@ -438,7 +444,7 @@
               <div id="comp-preview-container" style="display:none; border-top:1px solid var(--card-border); padding-top:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
                   <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Preview Parsed Records (<span id="comp-preview-count">0</span> valid rows)</h4>
-                  <button type="button" id="btn-upload-bulk-complaints" onclick="uploadBulkComplaints()" class="btn-submit" style="background:var(--green); border-color:var(--green);">
+                  <button type="button" id="btn-upload-bulk-complaints" onclick="uploadBulkComplaints()" class="btn-submit" style="background:var(--green-text); border-color:var(--green-text);">
                     Upload All to Supabase
                   </button>
                 </div>
@@ -469,8 +475,9 @@
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Live incoming telemetry from customer care triage</div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <input type="text" id="comp-search-input" placeholder="Filter by barangay, stubout, account..." class="form-input" style="width:230px; padding:6px 10px; font-size:11px;" oninput="filterComplaintsTable()">
-                <button onclick="fetchComplaintsList()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
+                <label for="comp-search-input" class="sr-only">Filter complaints by barangay, stubout, or account</label>
+                <input type="text" id="comp-search-input" placeholder="Filter by barangay, stubout, account..." class="form-input" style="width:230px; padding:6px 10px; font-size:11.5px;" oninput="filterComplaintsTable()">
+                <button type="button" onclick="fetchComplaintsList()" class="header-btn" style="color:var(--blue-text); font-size:11px;">Refresh</button>
               </div>
             </div>
 
@@ -507,31 +514,31 @@
                 <p>Environment Water Resources Division &bull; Record streamflow discharge (m³/day) across <span id="rf-header-count">19</span> monitored stations</p>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <button type="button" class="header-btn" onclick="openAddRiverModal()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
+                <button type="button" class="header-btn" onclick="openAddRiverModal()" style="color:var(--teal-text); border-color:var(--teal-border); background:var(--teal-light); font-weight:700;">
                   + Add Monitored River
                 </button>
                 <button type="button" class="header-btn" onclick="clearRiverflowForm()">Clear Form</button>
-                <button type="button" class="header-btn" onclick="loadPreviousRiverReadings()" style="color:var(--teal); border-color:var(--teal-border); background:var(--teal-light);">
+                <button type="button" class="header-btn" onclick="loadPreviousRiverReadings()" style="color:var(--teal-text); border-color:var(--teal-border); background:var(--teal-light);">
                   Load Previous As Baseline
                 </button>
-                <button type="button" id="btn-save-riverflow" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
+                <button type="button" id="btn-save-riverflow" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal-text); border-color:var(--teal-text);">
                   Save Readings to Supabase
                 </button>
               </div>
             </div>
 
-            <div id="rf-alert-box" class="alert-box"></div>
+            <div id="rf-alert-box" class="alert-box" role="alert"></div>
 
             <!-- Date Picker and Summary Strip -->
             <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
               <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
                 <div>
-                  <label class="form-lbl" style="margin-bottom:4px;">Measurement Date *</label>
+                  <label for="rf-date" class="form-lbl" style="margin-bottom:4px; display:block;">Measurement Date *</label>
                   <input type="date" id="rf-date" class="form-input" style="width:190px; font-weight:700;" onchange="onRiverDateChange(this.value)">
                 </div>
                 <div style="display:flex; flex-direction:column; justify-content:center;">
                   <span style="font-size:11px; color:var(--text-muted);">Current Cycle Status:</span>
-                  <span id="rf-cycle-status" style="font-size:12px; font-weight:700; color:var(--teal);">Ready for weekly submission</span>
+                  <span id="rf-cycle-status" style="font-size:12px; font-weight:700; color:var(--teal-text);">Ready for weekly submission</span>
                 </div>
               </div>
 
@@ -544,7 +551,7 @@
                 <div style="height:32px; width:1px; background:var(--card-border);"></div>
                 <div style="text-align:right;">
                   <div style="font-size:10px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Total Watershed Discharge</div>
-                  <div id="rf-kpi-total" style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:var(--teal);">0.00 m³/day</div>
+                  <div id="rf-kpi-total" style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:var(--teal-text);">0.00 m³/day</div>
                 </div>
               </div>
             </div>
@@ -582,7 +589,7 @@
               <span style="font-size:11px; color:var(--text-muted);">
                 Tip: Press <kbd style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10px;">Tab</kbd> to quickly jump directly to the next river's discharge input.
               </span>
-              <button type="button" id="btn-save-riverflow-bottom" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal); border-color:var(--teal);">
+              <button type="button" id="btn-save-riverflow-bottom" class="btn-submit" onclick="submitRiverflow(event)" style="background:var(--teal-text); border-color:var(--teal-text);">
                 Save Readings to Supabase
               </button>
             </div>
@@ -590,21 +597,21 @@
 
           
           <!-- Modal: Add Monitored River Station -->
-          <div id="modal-add-river" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+          <div id="modal-add-river" role="dialog" aria-modal="true" aria-labelledby="modal-add-river-title" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);" onclick="if(event.target===this)closeAddRiverModal()">
             <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:12px; width:440px; max-width:92vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15);">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Add Monitored River Station</h3>
-                <button type="button" onclick="closeAddRiverModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">&times;</button>
+                <h2 id="modal-add-river-title" style="font-size:16px; font-weight:800; color:var(--text-main);">Add Monitored River Station</h2>
+                <button type="button" onclick="closeAddRiverModal()" aria-label="Close modal" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); width:32px; height:32px; border-radius:6px;">&times;</button>
               </div>
               <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:16px; line-height:1.5;">
                 Register an additional streamflow monitoring source. It will automatically sync to Supabase and propagate to the live dashboard.
               </p>
               <div style="margin-bottom:14px;">
-                <label class="form-lbl" style="margin-bottom:4px;">River / Station Name *</label>
+                <label for="modal-river-name" class="form-lbl" style="margin-bottom:4px; display:block;">River / Station Name *</label>
                 <input type="text" id="modal-river-name" class="form-input" placeholder="e.g. Inagawan River, Irawan Upper" style="width:100%; font-weight:600;">
               </div>
               <div style="margin-bottom:18px;">
-                <label class="form-lbl" style="margin-bottom:4px;">Watershed Zone *</label>
+                <label for="modal-river-group" class="form-lbl" style="margin-bottom:4px; display:block;">Watershed Zone *</label>
                 <select id="modal-river-group" class="form-input" style="width:100%;">
                   <option value="City / Primary Sources">City / Primary Sources</option>
                   <option value="Satellite North">Satellite North</option>
@@ -612,10 +619,10 @@
                   <option value="Satellite Other">Satellite Other</option>
                 </select>
               </div>
-              <div id="modal-river-error" style="display:none; font-size:11px; color:var(--red); margin-bottom:12px;"></div>
+              <div id="modal-river-error" role="alert" style="display:none; font-size:11px; color:var(--red-text); margin-bottom:12px;"></div>
               <div style="display:flex; justify-content:flex-end; gap:8px;">
                 <button type="button" class="header-btn" onclick="closeAddRiverModal()">Cancel</button>
-                <button type="button" id="btn-submit-add-river" class="btn-submit" onclick="submitAddRiverModal()" style="background:var(--teal); border-color:var(--teal);">
+                <button type="button" id="btn-submit-add-river" class="btn-submit" onclick="submitAddRiverModal()" style="background:var(--teal-text); border-color:var(--teal-text);">
                   Add River
                 </button>
               </div>
@@ -630,8 +637,9 @@
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly discharge benchmarks stored in cloud database</div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <input type="text" id="rf-search-input" placeholder="Search by date or keyword..." class="form-input" style="width:210px; padding:6px 10px; font-size:11px;" oninput="filterRiverflowHistory()">
-                <button onclick="fetchRiverflowHistory()" class="header-btn" style="color:var(--teal); font-size:10px;">Refresh</button>
+                <label for="rf-search-input" class="sr-only">Search river flow history</label>
+                <input type="text" id="rf-search-input" placeholder="Search by date or keyword..." class="form-input" style="width:210px; padding:6px 10px; font-size:11.5px;" oninput="filterRiverflowHistory()">
+                <button type="button" onclick="fetchRiverflowHistory()" class="header-btn" style="color:var(--teal-text); font-size:11px;">Refresh</button>
               </div>
             </div>
 
@@ -667,7 +675,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="header-btn" onclick="clearProductionForm()">Clear Form</button>
-                <button type="button" class="header-btn" onclick="loadPreviousProdReadings()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                <button type="button" class="header-btn" onclick="loadPreviousProdReadings()" style="color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">
                   Load Previous As Baseline
                 </button>
                 <button type="button" id="btn-save-production" class="btn-submit" onclick="submitProduction(event)" style="background:var(--blue); border-color:var(--blue);">
@@ -676,32 +684,32 @@
               </div>
             </div>
 
-            <div id="prod-alert-box" class="alert-box"></div>
+            <div id="prod-alert-box" class="alert-box" role="alert"></div>
 
             <!-- Cycle & Period Configuration Bar -->
             <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
               <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
                 <div>
-                  <label class="form-lbl" style="margin-bottom:4px;">Week Label *</label>
+                  <label for="prod-week-label" class="form-lbl" style="margin-bottom:4px; display:block;">Week Label *</label>
                   <input type="text" id="prod-week-label" class="form-input" placeholder="e.g. Week 25" style="width:130px; font-weight:700;" onchange="onProdWeekChange(this.value)">
                 </div>
                 <div>
-                  <label class="form-lbl" style="margin-bottom:4px;">Recorded Date *</label>
+                  <label for="prod-date" class="form-lbl" style="margin-bottom:4px; display:block;">Recorded Date *</label>
                   <input type="date" id="prod-date" class="form-input" style="width:160px; font-weight:700;" onchange="onProdDateChange(this.value)">
                 </div>
                 <div>
-                  <label class="form-lbl" style="margin-bottom:4px;">Period Label *</label>
+                  <label for="prod-period-label" class="form-lbl" style="margin-bottom:4px; display:block;">Period Label *</label>
                   <input type="text" id="prod-period-label" class="form-input" placeholder="e.g. September 11 - 18, 2026" style="width:230px; font-weight:600;">
                 </div>
                 <div style="display:flex; flex-direction:column; justify-content:center;">
                   <span style="font-size:11px; color:var(--text-muted);">Audit Cycle Status:</span>
-                  <span id="prod-cycle-status" style="font-size:12px; font-weight:700; color:var(--blue);">Ready for weekly submission</span>
+                  <span id="prod-cycle-status" style="font-size:12px; font-weight:700; color:var(--blue-text);">Ready for weekly submission</span>
                 </div>
               </div>
 
               <!-- Quick Helper Button -->
               <div style="display:flex; align-items:center; gap:8px;">
-                <button type="button" onclick="autoSuggestNextWeek()" class="header-btn" style="font-size:11px;" title="Suggest next week label & date based on latest submission">
+                <button type="button" onclick="autoSuggestNextWeek()" class="header-btn" style="font-size:11.5px;" title="Suggest next week label & date based on latest submission">
                   Auto-Next Cycle
                 </button>
               </div>
@@ -710,40 +718,40 @@
             <!-- Live Executive KPI HUD Bar -->
             <div style="background:linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius:12px; padding:18px 24px; color:#FFFFFF; margin-bottom:22px; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:18px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
               <div>
-                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Grand Total Production</div>
-                <div id="prod-hud-total" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#38BDF8; margin-top:2px;">0.00 <span style="font-size:12px; color:#94A3B8;">m³</span></div>
-                <div style="font-size:10px; color:#CBD5E1; margin-top:2px;" id="prod-hud-stations">0 stations encoded</div>
+                <div style="font-size:10px; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Grand Total Production</div>
+                <div id="prod-hud-total" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#38BDF8; margin-top:2px;">0.00 <span style="font-size:12px; color:#CBD5E1;">m³</span></div>
+                <div style="font-size:10px; color:#E2E8F0; margin-top:2px;" id="prod-hud-stations">0 stations encoded</div>
               </div>
               <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
-                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Weekly Yield (MLD)</div>
-                <div id="prod-hud-mld" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#4ADE80; margin-top:2px;">0.00 <span style="font-size:12px; color:#94A3B8;">MLD</span></div>
-                <div style="font-size:10px; color:#CBD5E1; margin-top:2px;" id="prod-hud-target">0.0% of 56.86 MLD Target</div>
+                <div style="font-size:10px; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Weekly Yield (MLD)</div>
+                <div id="prod-hud-mld" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:#4ADE80; margin-top:2px;">0.00 <span style="font-size:12px; color:#CBD5E1;">MLD</span></div>
+                <div style="font-size:10px; color:#E2E8F0; margin-top:2px;" id="prod-hud-target">0.0% of 56.86 MLD Target</div>
               </div>
               <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
-                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Surface Water Yield</div>
-                <div id="prod-hud-sw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#2DD4BF; margin-top:2px;">0.00 <span style="font-size:11px; color:#94A3B8;">m³</span></div>
-                <div style="font-size:10px; color:#2DD4BF; margin-top:2px;" id="prod-hud-sw-pct">0.0% Share</div>
+                <div style="font-size:10px; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Surface Water Yield</div>
+                <div id="prod-hud-sw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#2DD4BF; margin-top:2px;">0.00 <span style="font-size:11px; color:#CBD5E1;">m³</span></div>
+                <div style="font-size:10px; color:#5EEAD4; margin-top:2px;" id="prod-hud-sw-pct">0.0% Share</div>
               </div>
               <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:16px;">
-                <div style="font-size:10px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Ground Water Yield</div>
-                <div id="prod-hud-gw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#818CF8; margin-top:2px;">0.00 <span style="font-size:11px; color:#94A3B8;">m³</span></div>
-                <div style="font-size:10px; color:#818CF8; margin-top:2px;" id="prod-hud-gw-pct">0.0% Share</div>
+                <div style="font-size:10px; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Ground Water Yield</div>
+                <div id="prod-hud-gw" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:#93C5FD; margin-top:2px;">0.00 <span style="font-size:11px; color:#CBD5E1;">m³</span></div>
+                <div style="font-size:10px; color:#BFDBFE; margin-top:2px;" id="prod-hud-gw-pct">0.0% Share</div>
               </div>
             </div>
 
             <!-- View / Filter Mode Segmented Bar -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
               <div class="segment-pills" id="prod-cat-pills">
-                <button class="seg-pill active" onclick="switchProdCatView('all')">All Monitored Sources</button>
-                <button class="seg-pill" onclick="switchProdCatView('swCity')">1. SW City Proper</button>
-                <button class="seg-pill" onclick="switchProdCatView('swSat')">2. SW Satellite</button>
-                <button class="seg-pill" onclick="switchProdCatView('gwCity')">3. GW City Proper</button>
-                <button class="seg-pill" onclick="switchProdCatView('aug')">4. Augmented PS</button>
-                <button class="seg-pill" onclick="switchProdCatView('gwSat')">5. GW Satellite</button>
+                <button type="button" class="seg-pill active" onclick="switchProdCatView('all')">All Monitored Sources</button>
+                <button type="button" class="seg-pill" onclick="switchProdCatView('swCity')">1. SW City Proper</button>
+                <button type="button" class="seg-pill" onclick="switchProdCatView('swSat')">2. SW Satellite</button>
+                <button type="button" class="seg-pill" onclick="switchProdCatView('gwCity')">3. GW City Proper</button>
+                <button type="button" class="seg-pill" onclick="switchProdCatView('aug')">4. Augmented PS</button>
+                <button type="button" class="seg-pill" onclick="switchProdCatView('gwSat')">5. GW Satellite</button>
               </div>
 
               <div style="display:flex; align-items:center; gap:8px;">
-                <label style="font-size:11px; font-weight:600; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                <label for="prod-chk-lapu-combine" style="font-size:11.5px; font-weight:600; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
                   <input type="checkbox" id="prod-chk-lapu-combine" onchange="toggleLapuLapuMode(this.checked)">
                   Combine Lapu-Lapu as Single Reading
                 </label>
@@ -786,8 +794,9 @@
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">All recorded weekly production audits stored in cloud database</div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <input type="text" id="prod-search-input" placeholder="Search by week or period..." class="form-input" style="width:220px; padding:6px 10px; font-size:11px;" oninput="filterProductionHistory()">
-                <button onclick="fetchProductionHistory()" class="header-btn" style="color:var(--blue); font-size:10px;">Refresh</button>
+                <label for="prod-search-input" class="sr-only">Search weekly production history</label>
+                <input type="text" id="prod-search-input" placeholder="Search by week or period..." class="form-input" style="width:220px; padding:6px 10px; font-size:11.5px;" oninput="filterProductionHistory()">
+                <button type="button" onclick="fetchProductionHistory()" class="header-btn" style="color:var(--blue-text); font-size:11px;">Refresh</button>
               </div>
             </div>
 
@@ -826,7 +835,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="header-btn" onclick="clearMonthlyForm()">Clear Form</button>
-                <button type="button" class="header-btn" onclick="reloadMonthlyPortalData()" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+                <button type="button" class="header-btn" onclick="reloadMonthlyPortalData()" style="color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">
                   Reload Saved
                 </button>
                 <button type="button" id="btn-save-monthly" class="btn-submit" onclick="submitMonthlyProduction(event)" style="background:var(--blue); border-color:var(--blue);">
@@ -835,38 +844,38 @@
               </div>
             </div>
 
-            <div id="monthly-alert-box" class="alert-box"></div>
+            <div id="monthly-alert-box" class="alert-box" role="alert"></div>
 
             <!-- Configuration & HUD KPI Bar -->
             <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
               <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
                 <div>
-                  <label class="form-lbl" style="margin-bottom:4px;">Target Month *</label>
+                  <label for="monthly-portal-picker" class="form-lbl" style="margin-bottom:4px; display:block;">Target Month *</label>
                   <input type="month" id="monthly-portal-picker" class="form-input" style="width:160px; font-weight:700; font-family:var(--font-mono);" onchange="onMonthlyPickerChange(this.value)" required>
                 </div>
                 <div style="display:flex; flex-direction:column; justify-content:center;">
                   <span style="font-size:11px; color:var(--text-muted);">Sync Status:</span>
-                  <span id="monthly-portal-sync-status" style="font-size:12px; font-weight:700; color:var(--blue);">Ready</span>
+                  <span id="monthly-portal-sync-status" style="font-size:12px; font-weight:700; color:var(--blue-text);">Ready</span>
                 </div>
               </div>
 
               <!-- HUD KPI Summary Cards -->
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
-                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Total Volume</div>
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Total Volume</div>
                   <div id="monthly-hud-total" style="font-size:15px; font-weight:800; color:var(--text-main); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span></div>
                 </div>
                 <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
-                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Target</div>
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Target</div>
                   <div style="font-size:15px; font-weight:800; color:var(--text-main); font-family:var(--font-mono);">1,705,700 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³</span></div>
                 </div>
                 <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
-                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Achieved</div>
-                  <div id="monthly-hud-achieved" style="font-size:15px; font-weight:800; color:var(--blue); font-family:var(--font-mono);">0.0%</div>
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Achieved</div>
+                  <div id="monthly-hud-achieved" style="font-size:15px; font-weight:800; color:var(--blue-text); font-family:var(--font-mono);">0.0%</div>
                 </div>
                 <div style="background:#FFFFFF; border:1px solid var(--card-border); border-radius:8px; padding:8px 14px; text-align:right;">
-                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:var(--font-mono);">Hourly Rate</div>
-                  <div id="monthly-hud-hourly" style="font-size:15px; font-weight:800; color:var(--teal); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³/h</span></div>
+                  <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Hourly Rate</div>
+                  <div id="monthly-hud-hourly" style="font-size:15px; font-weight:800; color:var(--teal-text); font-family:var(--font-mono);">0.00 <span style="font-size:10px; font-weight:600; color:var(--text-muted);">m³/h</span></div>
                 </div>
               </div>
             </div>
@@ -874,18 +883,18 @@
             <!-- Form with 34 Stations -->
             <form id="monthly-portal-form" onsubmit="submitMonthlyProduction(event)">
               <div style="margin-bottom:24px;">
-                <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--teal); font-family:var(--font-mono); margin-bottom:12px; border-bottom:2px solid var(--teal-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--teal-text); font-family:var(--font-sans); margin-bottom:12px; border-bottom:2px solid var(--teal-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
                   <span>Surface Water Stations (15)</span>
-                  <span id="monthly-sw-subtotal" style="font-size:11px; font-weight:700; color:var(--teal);">0.00 m³</span>
-                </h4>
+                  <span id="monthly-sw-subtotal" style="font-size:11.5px; font-weight:700; color:var(--teal-text); font-family:var(--font-mono);">0.00 m³</span>
+                </h3>
                 <div id="monthly-sw-inputs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;"></div>
               </div>
 
               <div style="margin-bottom:24px;">
-                <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--blue); font-family:var(--font-mono); margin-bottom:12px; border-bottom:2px solid var(--blue-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--blue-text); font-family:var(--font-sans); margin-bottom:12px; border-bottom:2px solid var(--blue-border); padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
                   <span>Groundwater Stations (19)</span>
-                  <span id="monthly-gw-subtotal" style="font-size:11px; font-weight:700; color:var(--blue);">0.00 m³</span>
-                </h4>
+                  <span id="monthly-gw-subtotal" style="font-size:11.5px; font-weight:700; color:var(--blue-text); font-family:var(--font-mono);">0.00 m³</span>
+                </h3>
                 <div id="monthly-gw-inputs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px;"></div>
               </div>
 
@@ -901,15 +910,15 @@
         </div> <!-- end #section-monthly -->
 
       </div>
-    </div>
+    </main>
   </div>
 
   <!-- ── MODAL: EDIT GENSET DETAILS ── -->
-  <div id="edit-genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
+  <div id="edit-genset-modal" role="dialog" aria-modal="true" aria-labelledby="edit-genset-modal-title" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeEditModal()">
     <div style="background:#FFFFFF; border-radius:14px; width:580px; max-width:95vw; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--card-border);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--card-border); padding-bottom:12px;">
-        <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Edit Generator Specifications</h3>
-        <button onclick="closeEditModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">✕</button>
+        <h2 id="edit-genset-modal-title" style="font-size:16px; font-weight:800; color:var(--text-main);">Edit Generator Specifications</h2>
+        <button type="button" onclick="closeEditModal()" aria-label="Close modal" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); width:32px; height:32px; border-radius:6px;">✕</button>
       </div>
 
       <form onsubmit="submitEditGenset(event)">
@@ -917,33 +926,33 @@
 
         <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
           <div class="field-group">
-            <label class="form-lbl">Genset ID *</label>
+            <label for="edit-gs-no" class="form-lbl">Genset ID *</label>
             <input type="text" id="edit-gs-no" name="genset_no" required class="form-input">
           </div>
           <div class="field-group">
-            <label class="form-lbl">Brand &amp; Engine Model</label>
+            <label for="edit-gs-model" class="form-lbl">Brand &amp; Engine Model</label>
             <input type="text" id="edit-gs-model" name="brand_model" class="form-input">
           </div>
         </div>
 
         <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
           <div class="field-group">
-            <label class="form-lbl">Capacity Rating (kVA)</label>
+            <label for="edit-gs-kva" class="form-lbl">Capacity Rating (kVA)</label>
             <input type="number" step="0.01" id="edit-gs-kva" name="capacity_kva" class="form-input">
           </div>
           <div class="field-group">
-            <label class="form-lbl">Fuel Tank Capacity (Liters)</label>
+            <label for="edit-gs-fuel" class="form-lbl">Fuel Tank Capacity (Liters)</label>
             <input type="number" step="0.1" id="edit-gs-fuel" name="fuel_capacity_liters" class="form-input">
           </div>
         </div>
 
         <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:18px;">
           <div class="field-group">
-            <label class="form-lbl">Assigned Station</label>
+            <label for="edit-gs-station" class="form-lbl">Assigned Station</label>
             <select id="edit-gs-station" name="new_station" required class="form-input"></select>
           </div>
           <div class="field-group">
-            <label class="form-lbl">Status</label>
+            <label for="edit-gs-status" class="form-lbl">Status</label>
             <select id="edit-gs-status" name="new_status" class="form-input">
               <option value="Operational">Operational</option>
               <option value="Under Maintenance">Under Maintenance</option>
@@ -1103,8 +1112,14 @@
           return false;
         }
       } catch (err) {
-        unlockPortal();
-        return true;
+        const gate = document.getElementById('portal-auth-gate');
+        if (gate) gate.style.display = 'flex';
+        const alertBox = document.getElementById('auth-gate-alert');
+        if (alertBox) {
+          alertBox.textContent = 'Unable to verify division passkey against security service. Please retry.';
+          alertBox.style.display = 'block';
+        }
+        return false;
       }
     }
 
@@ -1183,12 +1198,12 @@
               <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11px;">${g.capacity_kva ? escapeHtml(g.capacity_kva) + ' kVA' : '—'}</td>
               <td><span class="kpi-badge-pill ${badgeCls}">● ${escapeHtml(g.status)}</span></td>
               <td style="font-size:11px; color:var(--text-muted);">
-                ${latestLog ? `${escapeHtml(latestLog.event_type)} <span style="font-family:var(--font-mono); font-size:9.5px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
+                ${latestLog ? `${escapeHtml(latestLog.event_type)} <span style="font-family:var(--font-mono); font-size:10px;">(${new Date(latestLog.log_date).toLocaleDateString('en-PH')})</span>` : 'Initial state'}
               </td>
               <td style="text-align:right; white-space:nowrap;">
-                <button type="button" data-id="${escapeHtml(g.id)}" onclick="openEditModal(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--teal);">Edit</button>
-                <button type="button" data-id="${escapeHtml(g.id)}" onclick="selectGensetForEdit(this.dataset.id)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue); margin-left:4px;">Log Action</button>
-                <button type="button" data-id="${escapeHtml(g.id)}" data-no="${escapeHtml(g.genset_no)}" onclick="deleteGenset(this.dataset.id, this.dataset.no)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--red); margin-left:4px;">Delete</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="openEditModal(this.dataset.id)" class="header-btn" style="padding:4px 10px; min-height:30px; font-size:11px; color:var(--teal-text);">Edit</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" onclick="selectGensetForEdit(this.dataset.id)" class="header-btn" style="padding:4px 10px; min-height:30px; font-size:11px; color:var(--blue-text); margin-left:4px;">Log Action</button>
+                <button type="button" data-id="${escapeHtml(g.id)}" data-no="${escapeHtml(g.genset_no)}" onclick="deleteGenset(this.dataset.id, this.dataset.no)" class="header-btn" style="padding:4px 10px; min-height:30px; font-size:11px; color:var(--red-text); margin-left:4px;">Delete</button>
               </td>
             </tr>
           `;
@@ -1196,7 +1211,7 @@
 
       } catch (err) {
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red); font-family:var(--font-mono);">${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--red-text); font-family:var(--font-mono);">${escapeHtml(err.message)}</td></tr>`;
       }
     }
 
@@ -1312,21 +1327,81 @@
       }
     }
 
+    const _portalModalStack = [];
+    const _portalFocusableSel = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    function openPortalModal(modalOrId, initialFocusEl) {
+      const modal = typeof modalOrId === 'string' ? document.getElementById(modalOrId) : modalOrId;
+      if (!modal) return;
+      const prevEl = document.activeElement;
+      if (modal.style.display !== 'flex') {
+        _portalModalStack.push({ modal, trigger: prevEl });
+      }
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => {
+        const target = initialFocusEl || modal.querySelector(_portalFocusableSel);
+        if (target && typeof target.focus === 'function') target.focus();
+      });
+    }
+
+    function closePortalModal(modalOrId) {
+      const modal = typeof modalOrId === 'string' ? document.getElementById(modalOrId) : modalOrId;
+      if (!modal) return;
+      const wasOpen = modal.style.display !== 'none' && modal.style.display !== '';
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      if (wasOpen) {
+        for (let i = _portalModalStack.length - 1; i >= 0; i--) {
+          if (_portalModalStack[i].modal === modal) {
+            const item = _portalModalStack.splice(i, 1)[0];
+            if (item.trigger && typeof item.trigger.focus === 'function' && document.body.contains(item.trigger)) {
+              item.trigger.focus();
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && _portalModalStack.length > 0) {
+        const activeModal = _portalModalStack[_portalModalStack.length - 1].modal;
+        if (!activeModal || activeModal.style.display === 'none') return;
+        const focusables = Array.from(activeModal.querySelectorAll(_portalFocusableSel)).filter(el => el.offsetParent !== null);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first || !activeModal.contains(document.activeElement)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last || !activeModal.contains(document.activeElement)) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    });
+
     function openEditModal(id) {
       const g = fleet.find(item => item.id === id);
       if (!g) return;
+      const noInp = document.getElementById("edit-gs-no");
       document.getElementById("edit-gs-id").value = g.id;
-      document.getElementById("edit-gs-no").value = g.genset_no;
+      noInp.value = g.genset_no;
       document.getElementById("edit-gs-model").value = g.brand_model || "";
       document.getElementById("edit-gs-kva").value = g.capacity_kva || "";
       document.getElementById("edit-gs-fuel").value = g.fuel_capacity_liters || "";
       document.getElementById("edit-gs-station").value = g.current_station;
       document.getElementById("edit-gs-status").value = g.status;
-      document.getElementById("edit-genset-modal").style.display = "flex";
+      openPortalModal("edit-genset-modal", noInp);
     }
 
     function closeEditModal() {
-      document.getElementById("edit-genset-modal").style.display = "none";
+      closePortalModal("edit-genset-modal");
     }
 
     async function submitEditGenset(e) {
@@ -1404,17 +1479,18 @@
       if (btnRiverflow) btnRiverflow.classList.remove('active');
       if (btnProduction) btnProduction.classList.remove('active');
       if (btnMonthly) btnMonthly.classList.remove('active');
+      [btnGensets, btnComplaints, btnRiverflow, btnProduction, btnMonthly].forEach(b => b && b.removeAttribute('aria-current'));
 
       if (sec === 'monthly') {
         if (monthlySec) monthlySec.style.display = 'block';
-        if (btnMonthly) btnMonthly.classList.add('active');
+        if (btnMonthly) { btnMonthly.classList.add('active'); btnMonthly.setAttribute('aria-current', 'page'); }
         if (pTitle) pTitle.textContent = "Monthly Production Volumetric Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Production Division &bull; 34-Station Monthly Utilization Telemetry`;
         window.location.hash = 'monthly';
         initMonthlyPortal();
       } else if (sec === 'production') {
         if (productionSec) productionSec.style.display = 'block';
-        if (btnProduction) btnProduction.classList.add('active');
+        if (btnProduction) { btnProduction.classList.add('active'); btnProduction.setAttribute('aria-current', 'page'); }
         if (pTitle) pTitle.textContent = "Weekly Production Monitoring Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Production Division &bull; Groundwater &amp; Surface Water Telemetry`;
         window.location.hash = 'production';
@@ -1422,6 +1498,7 @@
       } else if (sec === 'complaints') {
         complaintsSec.style.display = 'block';
         btnComplaints.classList.add('active');
+        btnComplaints.setAttribute('aria-current', 'page');
         if (pTitle) pTitle.textContent = "Customer Complaints Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block;"></span> Service Incidents Ingestion &bull; Direct Supabase Telemetry`;
         window.location.hash = 'complaints';
@@ -1429,7 +1506,7 @@
         setupComplaintFormatters();
       } else if (sec === 'riverflow') {
         if (riverflowSec) riverflowSec.style.display = 'block';
-        if (btnRiverflow) btnRiverflow.classList.add('active');
+        if (btnRiverflow) { btnRiverflow.classList.add('active'); btnRiverflow.setAttribute('aria-current', 'page'); }
         if (pTitle) pTitle.textContent = "River Hydrology Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Environment & Water Resources &bull; Weekly Streamflow (m³/day)`;
         window.location.hash = 'riverflow';
@@ -1437,10 +1514,14 @@
       } else {
         gensetsSec.style.display = 'block';
         btnGensets.classList.add('active');
+        btnGensets.setAttribute('aria-current', 'page');
         if (pTitle) pTitle.textContent = "Operations & Asset Portal";
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit`;
         window.location.hash = 'gensets';
       }
+
+      const announcer = document.getElementById('portal-live-announcer');
+      if (announcer && pTitle) announcer.textContent = `Switched to ${pTitle.textContent}`;
 
       if (window.innerWidth <= 820) {
         document.getElementById('app-sidebar').classList.remove('open');
@@ -2021,17 +2102,16 @@
     function openAddRiverModal() {
       const modal = document.getElementById('modal-add-river');
       if (modal) {
-        modal.style.display = 'flex';
         const nameInp = document.getElementById('modal-river-name');
-        if (nameInp) { nameInp.value = ''; nameInp.focus(); }
+        if (nameInp) nameInp.value = '';
         const errEl = document.getElementById('modal-river-error');
         if (errEl) errEl.style.display = 'none';
+        openPortalModal(modal, nameInp);
       }
     }
 
     function closeAddRiverModal() {
-      const modal = document.getElementById('modal-add-river');
-      if (modal) modal.style.display = 'none';
+      closePortalModal('modal-add-river');
     }
 
     async function submitAddRiverModal() {
@@ -2221,7 +2301,7 @@
           if (prevVal !== null && prevVal !== undefined && prevVal !== "") {
             const formattedVal = parseFloat(prevVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             const dateLabel = priorRecord.recorded_date || priorRecord.readings[1] || "";
-            prevText = `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${dateLabel}:</span> <b style="font-family:var(--font-mono); font-size:11px; color:var(--teal);">${formattedVal}</b>`;
+            prevText = `<span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${escapeHtml(dateLabel)}:</span> <b style="font-family:var(--font-mono); font-size:11px; color:var(--teal-text);">${formattedVal}</b>`;
           }
         }
 
@@ -2231,19 +2311,19 @@
             <td>
               <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
                 <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${escapeHtml(s.name)}</div>
-                ${isCustom ? `<button type="button" data-col="${s.col}" data-name="${escapeHtml(s.name)}" onclick="deleteRiverStation(Number(this.dataset.col), this.dataset.name)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:4px; font-size:9.5px; padding:1px 6px; cursor:pointer;" title="Remove this river station">Remove</button>` : ''}
+                ${isCustom ? `<button type="button" data-col="${s.col}" data-name="${escapeHtml(s.name)}" onclick="deleteRiverStation(Number(this.dataset.col), this.dataset.name)" style="background:var(--red-light); color:var(--red-text); border:1px solid var(--red-border); border-radius:4px; font-size:9.5px; padding:2px 7px; cursor:pointer;" title="Remove this river station">Remove</button>` : ''}
               </div>
-              ${isCustom ? `<span style="font-size:9.5px; color:var(--teal); font-weight:700;">Newly Monitored River</span>` : ''}
+              ${isCustom ? `<span style="font-size:9.5px; color:var(--teal-text); font-weight:700;">Newly Monitored River</span>` : ''}
             </td>
             <td>
               <span class="kpi-badge-pill ${groupBadgeClass}" style="font-size:10px;">${escapeHtml(s.group)}</span>
             </td>
             <td>${prevText}</td>
             <td>
-              <input type="text" inputmode="decimal" class="form-input rf-input-val" id="rf-val-${s.col}" data-col="${s.col}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onRiverNumberInput(this)" onblur="onRiverNumberBlur(this)">
+              <input type="text" inputmode="decimal" class="form-input rf-input-val" id="rf-val-${s.col}" data-col="${s.col}" aria-label="${escapeHtml(s.name)} Discharge (m³/day)" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onRiverNumberInput(this)" onblur="onRiverNumberBlur(this)">
             </td>
             <td>
-              <input type="text" class="form-input rf-input-rem" id="rf-rem-${s.col}" data-col="${s.col}" list="river-remarks-datalist" placeholder="Optional notes...">
+              <input type="text" class="form-input rf-input-rem" id="rf-rem-${s.col}" data-col="${s.col}" aria-label="${escapeHtml(s.name)} Remarks" list="river-remarks-datalist" placeholder="Optional notes...">
             </td>
           </tr>
         `;
@@ -2730,19 +2810,19 @@
                   ${noCell}
                   ${stationCell}
                   <td>
-                    <span class="kpi-badge-pill pill-blue" style="font-size:10px;">${sub.name}</span>
+                    <span class="kpi-badge-pill pill-blue" style="font-size:10px;">${escapeHtml(sub.name)}</span>
                   </td>
                   <td>
-                    <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
+                    <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}-${sub.subId}" aria-label="${escapeHtml(st.name)} ${escapeHtml(sub.name)} Previous Reading" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
                   </td>
                   <td>
-                    <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}-${sub.subId}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
+                    <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}-${sub.subId}" aria-label="${escapeHtml(st.name)} ${escapeHtml(sub.name)} Present Reading" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}', '${sub.subId}')">
                   </td>
                   <td style="text-align:right;">
-                    <div id="prod-net-${st.id}-${sub.subId}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
+                    <div id="prod-net-${st.id}-${sub.subId}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue-text); font-size:12.5px;">0.00 m³</div>
                   </td>
                   <td>
-                    <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}-${sub.subId}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                    <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}-${sub.subId}" aria-label="${escapeHtml(st.name)} ${escapeHtml(sub.name)} Remarks" list="prod-remarks-datalist" placeholder="Operational notes...">
                   </td>
                 </tr>
               `;
@@ -2753,21 +2833,21 @@
               <tr class="prod-row-item" data-station="${st.id}">
                 <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${st.no}</td>
                 <td>
-                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${st.name}</div>
-                  ${st.subName ? `<div style="font-size:10.5px; color:var(--text-muted);">${st.subName}</div>` : ''}
+                  <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${escapeHtml(st.name)}</div>
+                  ${st.subName ? `<div style="font-size:10.5px; color:var(--text-muted);">${escapeHtml(st.subName)}</div>` : ''}
                 </td>
                 <td><span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Main Flow Meter</span></td>
                 <td>
-                  <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}')">
+                  <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-${st.id}" aria-label="${escapeHtml(st.name)} Previous Reading" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onProdReadingChange('${st.id}')">
                 </td>
                 <td>
-                  <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
+                  <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-${st.id}" aria-label="${escapeHtml(st.name)} Present Reading" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onProdReadingChange('${st.id}')">
                 </td>
                 <td style="text-align:right;">
-                  <div id="prod-net-${st.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue); font-size:12.5px;">0.00 m³</div>
+                  <div id="prod-net-${st.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--blue-text); font-size:12.5px;">0.00 m³</div>
                 </td>
                 <td>
-                  <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" list="prod-remarks-datalist" placeholder="Operational notes...">
+                  <input type="text" class="form-input prod-rem-input" id="prod-rem-${st.id}" aria-label="${escapeHtml(st.name)} Remarks" list="prod-remarks-datalist" placeholder="Operational notes...">
                 </td>
               </tr>
             `;
@@ -2778,26 +2858,26 @@
         catCustoms.forEach((cs, cIdx) => {
           rowsHtml += `
             <tr class="prod-row-item custom-backup-row" data-custom-id="${cs.id}" style="background:#FFFBEB;">
-              <td style="text-align:center; color:var(--amber); font-weight:700; font-family:var(--font-mono); font-size:11px;">+</td>
+              <td style="text-align:center; color:var(--amber-text); font-weight:700; font-family:var(--font-mono); font-size:11px;">+</td>
               <td>
-                <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${cs.name}</div>
-                <div style="font-size:10px; color:var(--amber); font-weight:700;">Backup / Newly Commissioned Station</div>
+                <div style="font-weight:700; color:var(--text-main); font-size:12.5px;">${escapeHtml(cs.name)}</div>
+                <div style="font-size:10px; color:var(--amber-text); font-weight:700;">Backup / Newly Commissioned Station</div>
               </td>
               <td>
                 <span class="kpi-badge-pill pill-amber" style="font-size:9.5px;">Backup Unit</span>
-                <button type="button" onclick="removeCustomStation('${cs.id}')" style="background:none; border:none; color:var(--red); cursor:pointer; font-size:11px; margin-left:4px;" title="Remove this backup station">✕</button>
+                <button type="button" onclick="removeCustomStation('${cs.id}')" style="background:none; border:none; color:var(--red-text); cursor:pointer; font-size:11px; margin-left:4px;" aria-label="Remove backup station ${escapeHtml(cs.name)}" title="Remove this backup station">✕</button>
               </td>
               <td>
-                <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-cust-${cs.id}" value="${cs.prevReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onCustomReadingChange('${cs.id}')">
+                <input type="number" step="0.01" class="form-input prod-prev-input" id="prod-prev-cust-${cs.id}" aria-label="${escapeHtml(cs.name)} Previous Reading" value="${cs.prevReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:600;" oninput="onCustomReadingChange('${cs.id}')">
               </td>
               <td>
-                <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-cust-${cs.id}" value="${cs.presReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onCustomReadingChange('${cs.id}')">
+                <input type="number" step="0.01" class="form-input prod-pres-input" id="prod-pres-cust-${cs.id}" aria-label="${escapeHtml(cs.name)} Present Reading" value="${cs.presReading || ''}" placeholder="0.00" style="font-family:var(--font-mono); font-weight:700;" oninput="onCustomReadingChange('${cs.id}')">
               </td>
               <td style="text-align:right;">
-                <div id="prod-net-cust-${cs.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--amber); font-size:12.5px;">${(cs.volume || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³</div>
+                <div id="prod-net-cust-${cs.id}" style="font-family:var(--font-mono); font-weight:800; color:var(--amber-text); font-size:12.5px;">${(cs.volume || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m³</div>
               </td>
               <td>
-                <input type="text" class="form-input prod-rem-input" id="prod-rem-cust-${cs.id}" value="${cs.remarks || 'Backup operational'}" list="prod-remarks-datalist">
+                <input type="text" class="form-input prod-rem-input" id="prod-rem-cust-${cs.id}" aria-label="${escapeHtml(cs.name)} Remarks" value="${escapeHtml(cs.remarks || 'Backup operational')}" list="prod-remarks-datalist">
               </td>
             </tr>
           `;
@@ -3334,14 +3414,14 @@
             <td class="mono" style="font-weight:800; color:var(--text-main); font-size:12.5px;">${escapeHtml(wk)}</td>
             <td style="font-size:12px;">${escapeHtml(period)}</td>
             <td class="mono" style="font-size:11.5px; color:var(--text-muted);">${escapeHtml(dateStr)}</td>
-            <td style="text-align:right; font-family:var(--font-mono); color:var(--teal); font-weight:700;">${sw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
-            <td style="text-align:right; font-family:var(--font-mono); color:var(--blue); font-weight:700;">${gw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--teal-text); font-weight:700;">${sw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--blue-text); font-weight:700;">${gw.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
             <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--text-main);">${total.toLocaleString('en-US', { maximumFractionDigits: 0 })} m³</td>
-            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--green);">${mld.toFixed(2)}</td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:var(--green-text);">${mld.toFixed(2)}</td>
             <td style="text-align:right;"><span class="kpi-badge-pill ${targetBadgeClass}">${targetPct}%</span></td>
             <td style="text-align:right; white-space:nowrap;">
-              <button type="button" data-key="${escapeHtml(r.id || wk)}" onclick="editProductionRecord(this.dataset.key)" class="header-btn" style="padding:3px 8px; font-size:10px; color:var(--blue);" title="Load into form for editing">Edit</button>
-              <button type="button" data-id="${escapeHtml(r.id || '')}" data-week="${escapeHtml(wk)}" onclick="deleteProductionRecord(this.dataset.id, this.dataset.week)" style="background:var(--red-light); color:var(--red); border:1px solid var(--red-border); border-radius:6px; padding:3px 8px; font-size:10px; cursor:pointer; margin-left:4px;" title="Delete this week">Delete</button>
+              <button type="button" data-key="${escapeHtml(r.id || wk)}" onclick="editProductionRecord(this.dataset.key)" class="header-btn" style="padding:4px 10px; min-height:30px; font-size:11px; color:var(--blue-text);" title="Load into form for editing">Edit</button>
+              <button type="button" data-id="${escapeHtml(r.id || '')}" data-week="${escapeHtml(wk)}" onclick="deleteProductionRecord(this.dataset.id, this.dataset.week)" style="background:var(--red-light); color:var(--red-text); border:1px solid var(--red-border); border-radius:6px; padding:4px 10px; min-height:30px; font-size:11px; font-weight:600; cursor:pointer; margin-left:4px;" title="Delete this week">Delete</button>
             </td>
           </tr>
         `;

@@ -6,6 +6,9 @@ export default async function handler(req, res) {
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    return res.status(500).json({ error: 'Server configuration error: missing Supabase credentials.' });
+  }
   const headers = {
     'apikey': SUPABASE_KEY
   };
@@ -29,7 +32,7 @@ export default async function handler(req, res) {
     const latestTime = timeData[0].reading_time;
 
     // 2. Get the count of readings at that exact time to detect new data for the same timestamp
-    const countUrl = `${SUPABASE_URL}/rest/v1/pressure_readings?reading_time=eq.${latestTime}&select=count`;
+    const countUrl = `${SUPABASE_URL}/rest/v1/pressure_readings?reading_time=eq.${encodeURIComponent(latestTime)}&select=count`;
     const countResponse = await fetch(countUrl, {
       headers: { ...headers, 'Prefer': 'count=exact' }
     });
