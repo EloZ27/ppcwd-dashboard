@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff0f;--sidebar-active:#2563eb;--sidebar-text:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f8fafc;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 1px 3px 0 #0f172a0a, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#64748b;--text-subtle:#94a3b8;--teal:#0d9488;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-light:#fef2f2;--red-border:#fecaca;--font-sans:"Inter", -apple-system, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;font-size:13px;line-height:1.5}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:1100;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;position:fixed;top:0;bottom:0;left:0;overflow:hidden auto}.app-sidebar.collapsed{transform:translate(-250px)}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-icon{color:#fff;background:linear-gradient(135deg,#0284c7,#0d9488);border-radius:9px;justify-content:center;align-items:center;width:36px;height:36px;font-size:16px;font-weight:800;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:4px;padding:12px 14px;display:flex;overflow-y:auto}.nav-btn{color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:9px;align-items:center;gap:10px;width:100%;padding:10px 14px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{background:var(--sidebar-active);color:var(--sidebar-text-active);font-weight:600;box-shadow:0 4px 12px #2563eb4d}.nav-icon{text-align:center;justify-content:center;align-items:center;width:20px;display:inline-flex}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;margin-left:250px;transition:margin-left .25s cubic-bezier(.4,0,.2,1);display:flex}.app-sidebar.collapsed~.app-main{margin-left:0}.app-top-sticky-container{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff2;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.app-header{background:0 0;justify-content:space-between;align-items:center;padding:12px 28px;display:flex}.header-titles h1{color:var(--text-main);letter-spacing:-.3px;font-size:clamp(13px,3.2vw,17px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11px;display:flex}.header-actions{flex-shrink:0;align-items:center;gap:10px;display:flex}.desktop-text,.reports-btn-full{display:inline}.reports-btn-short{display:none}.cycle-status-pill,#global-monthly-pill{white-space:nowrap!important;flex-shrink:0!important;align-items:center!important;display:inline-flex!important}#global-monthly-text{white-space:nowrap!important;flex-shrink:0!important}.reports-dropdown-wrap{position:relative}.reports-dropdown-menu{border:1px solid var(--card-border);z-index:3000;box-sizing:border-box;background:#fff;border-radius:12px;width:320px;padding:6px;display:none;position:absolute;top:calc(100% + 6px);right:0;box-shadow:0 16px 36px #0f172a29}.reports-dropdown-menu.show{display:block}.reports-dropdown-header{color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;padding:8px 12px 6px;font-size:10px;font-weight:800}.report-menu-item{text-align:left;cursor:pointer;box-sizing:border-box;background:0 0;border:none;border-radius:8px;flex-direction:column;gap:2px;width:100%;padding:8px 12px;font-family:inherit;transition:background .15s;display:flex}.report-menu-item:hover{background:#f8fafc}.report-menu-item:focus{background:#eff6ff;outline:none}.report-menu-item-primary{background:#eff6ff;border:1px solid #dbeafe;margin-bottom:4px}.report-menu-item-primary:hover{background:#dbeafe}.report-menu-item-title{color:#0f172a;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;display:flex}.report-menu-item-desc{color:#64748b;font-size:10.5px;line-height:1.3}.report-menu-badge{text-transform:uppercase;letter-spacing:.3px;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700}.report-menu-badge-blue{color:#4f46e5;background:#eef2ff}.report-menu-badge-green{color:#16a34a;background:#dcfce7}.header-btn{border:1px solid var(--card-border);font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 13px;font-size:11.5px;font-weight:600;transition:all .16s cubic-bezier(.16,1,.3,1);display:inline-flex;box-shadow:0 1px 2px #0f172a08}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 2px 5px #0f172a0d}.header-btn:active{transform:translateY(0)}.header-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 6px #2563eb4d}.header-btn:disabled{opacity:.65;pointer-events:none;cursor:not-allowed!important;color:var(--text-muted)!important;box-shadow:none!important;background:#f1f5f9!important;border-color:#e2e8f0!important;transform:none!important}.spin-icon{animation:.8s linear infinite spin;display:inline-block}.period-bar-wrap{-webkit-backdrop-filter:blur(10px);background:#f8fafcf0;border-top:1px solid #e2e8f0cc;border-bottom:1px solid #e2e8f0cc;justify-content:space-between;align-items:center;gap:16px;padding:8px 28px;display:flex}.week-dropdown{border:1px solid var(--card-border);font-family:var(--font-mono);color:var(--text-main);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 12px center no-repeat;border-radius:8px;outline:none;padding:7px 32px 7px 14px;font-size:12px;font-weight:600;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px #0f172a08}.week-dropdown:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px;display:none}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:16px;padding:20px}.card-title{letter-spacing:.6px;text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);justify-content:space-between;align-items:center;margin-bottom:12px;display:flex}.kpi-row-layout{grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;display:grid}.kpi-card-white{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;flex-direction:column;justify-content:space-between;padding:16px 18px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,border-color .18s;display:flex;position:relative}.kpi-card-white:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-2px)}.kpi-card-num,.kpi-card-foot,.mono,table.data-table td.right,table.data-table td.mono,.featured-card .kpi-card-num,.station-card-item .mono,.pressure-status-pill,.data-freshness-pill,.tabular-nums{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}.kpi-card-lbl{text-transform:uppercase;letter-spacing:.04em;color:#64748b;font-size:.75rem;font-weight:700;line-height:1.2}.kpi-card-num{color:var(--text-main);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0;font-size:clamp(1.75rem,2.2vw,2.25rem);font-weight:800;line-height:1.1}.kpi-card-num .unit{color:#94a3b8;letter-spacing:normal;margin-left:4px;font-size:.85rem;font-weight:500}.kpi-card-foot{color:#64748b;font-size:.75rem;font-weight:500;line-height:1.3}.kpi-badge-pill{font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.2px;border-radius:20px;align-items:center;gap:5px;padding:3px 9px;line-height:1.2;display:inline-flex}.pill-normal,.pill-green{color:#059669;background:#10b98114;border:1px solid #10b98140}.pill-amber{color:#d97706;background:#f59e0b14;border:1px solid #f59e0b47}.pill-red{color:#dc2626;background:#ef44441a;border:1px solid #ef444459}.pill-blue{color:#2563eb;background:#2563eb14;border:1px solid #2563eb40}.alert-dot-pulse{background:#ef4444;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:1.6s cubic-bezier(.4,0,.6,1) infinite alertPulse;display:inline-block;box-shadow:0 0 6px #ef4444cc}.normal-dot-pulse{background:#10b981;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.4s cubic-bezier(.4,0,.6,1) infinite normalPulse;display:inline-block;box-shadow:0 0 6px #10b98199}.amber-dot-pulse{background:#f59e0b;border-radius:50%;flex-shrink:0;width:7px;height:7px;display:inline-block;box-shadow:0 0 6px #f59e0b99}@keyframes alertPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.25)}}@keyframes normalPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 18px;display:flex}.table-head-title{color:var(--text-main);font-size:13px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 14px;font-size:9.5px;font-weight:700}table.data-table thead th.right,table.data-table tbody td.right{text-align:right}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:9px 14px}table.data-table tbody td.mono{font-family:var(--font-mono);font-size:11px}.cat-pill{font-size:9px;font-family:var(--font-mono);border-radius:4px;padding:2px 6px;font-weight:600;display:inline-block}.cat-sw{background:var(--teal-light);color:var(--teal);border:1px solid var(--teal-border)}.cat-gw{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}.cat-aug{color:#8b5cf6;background:#faf5ff;border:1px solid #e9d5ff}.bar-cell{align-items:center;gap:6px;display:flex}.mini-bar-bg{background:#e2e8f0;border-radius:3px;flex:1;height:5px;overflow:hidden}.mini-bar{border-radius:3px;height:100%}.press-table-wrap{max-height:520px;position:relative;overflow:auto}.press-table-wrap thead th{z-index:10;background:#f1f5f9;position:sticky;top:0;box-shadow:0 1px 2px #0000000f}.press-table-wrap th:first-child,.press-table-wrap td:first-child{z-index:11;border-right:1px solid var(--card-border);background:#fff;position:sticky;left:0}.press-table-wrap thead th:first-child{z-index:12;background:#f1f5f9}.table-sticky-first th:first-child,.table-sticky-first td:first-child{z-index:10;background:#fff;border-right:1px solid #e2e8f0f2;position:sticky;left:0;box-shadow:3px 0 6px -2px #0f172a14}.table-sticky-first thead th:first-child{z-index:11;background:#f8fafc}.table-sticky-first tbody tr:hover td:first-child{background:#f8fafc}.chart-container-wrap{width:100%;min-height:220px;position:relative}.btn-primary-action{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;font-weight:700!important;box-shadow:0 2px 6px #2563eb47!important}.btn-primary-action:hover{transform:translateY(-1px);background:#1d4ed8!important;border-color:#1d4ed8!important;box-shadow:0 4px 12px #2563eb59!important}.btn-secondary-action{color:var(--text-main)!important;background:#fff!important;border:1px solid #94a3b859!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 1px 2px #0f172a0a!important}.btn-secondary-action:hover{transform:translateY(-1px);color:var(--blue)!important;background:#f8fafc!important;border-color:#cbd5e1!important;box-shadow:0 2px 6px #0f172a14!important}@keyframes shimmer{0%{background-position:-200% 0}to{background-position:200% 0}}.skeleton-shimmer{-webkit-user-select:none;user-select:none;background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%) 0 0/200% 100%;border-radius:4px;animation:1.8s infinite shimmer;display:inline-block;color:#0000!important}.table-responsive,#priority-cards-row,.press-table-wrap{cursor:grab;-webkit-overflow-scrolling:touch}.table-responsive.is-dragging,#priority-cards-row.is-dragging,.press-table-wrap.is-dragging{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}.press-table-wrap th,.press-table-wrap td,table.data-table th,table.data-table td{white-space:nowrap;min-width:72px}.press-table-wrap th:first-child,.press-table-wrap td:first-child{min-width:140px}.map-frame-box{border:1px solid var(--card-border);height:480px;box-shadow:var(--card-shadow);z-index:1;isolation:isolate;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden}#leaflet-map{width:100%;height:100%}.pressure-dot{font-family:var(--font-mono);color:#fff;cursor:pointer;border:2px solid #fff;border-radius:50%;flex-direction:column;justify-content:center;align-items:center;font-weight:700;transition:transform .15s,box-shadow .15s;display:flex}.pressure-dot:hover{transform:scale(1.2);z-index:1000!important}.pressure-dot.dot-ok{background:var(--green);box-shadow:0 2px 8px #10b98180}.pressure-dot.dot-alert{background:var(--red);animation:1.4s ease-in-out infinite dot-pulse;box-shadow:0 0 10px #ef4444cc}.pressure-dot.dot-nodata{background:var(--text-muted)}.pressure-dot.dot-compare-1{outline:3px solid var(--blue);outline-offset:2px}.pressure-dot.dot-compare-2{outline:3px solid var(--teal);outline-offset:2px}@keyframes dot-pulse{0%,to{box-shadow:0 0 6px #ef444480}50%{box-shadow:0 0 18px #ef4444e6}}.leaflet-popup-content-wrapper{background:#fff!important;border-radius:12px!important;padding:0!important;box-shadow:0 10px 30px #0f172a26!important}.leaflet-popup-content{width:220px!important;margin:0!important}.map-header-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;display:flex}.map-view-toggles{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.map-mode-btn{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 12px;font-size:11px;font-weight:700;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.map-mode-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.map-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 6px #2563eb40}.map-outlier-chips{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.outlier-chip{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-main);cursor:pointer;white-space:nowrap;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:5px 11px;font-size:11px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.outlier-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}.outlier-chip span{color:var(--blue);font-weight:800}.section-title-wrap{margin-top:18px;margin-bottom:10px}.section-title-main{text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);letter-spacing:.5px}.section-title-sub{color:var(--text-muted);margin-top:1px;font-size:12px}.grid-featured-cards{grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;display:grid}.featured-card{border-radius:12px;flex-direction:column;justify-content:space-between;min-width:0;padding:0;display:flex;overflow:hidden}.card-mini-map-wrap{border-bottom:1px solid var(--card-border);cursor:pointer;background:#e2e8f0;width:100%;height:68px;position:relative;overflow:hidden}.card-mini-map-wrap:hover .card-map-overlay-btn{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}.card-map-overlay-btn{z-index:400;border:1px solid var(--card-border);color:var(--text-main);font-size:9px;font-family:var(--font-mono);cursor:pointer;background:#fffffff0;border-radius:4px;padding:2px 6px;font-weight:700;transition:all .15s;position:absolute;bottom:4px;right:4px;box-shadow:0 1px 4px #0000001f}.crisis-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:24px;display:grid}.crisis-card{border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;background:#fff;border-radius:14px;flex-direction:column;padding:16px 18px;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s;display:flex;position:relative;overflow:hidden}.crisis-card:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-3px)}.crisis-card:before{content:"";border-radius:14px 0 0 14px;width:4px;position:absolute;top:0;bottom:0;left:0}.crisis-card.lvl-normal:before{background:#0b4f6c}.crisis-card.lvl-1:before{background:var(--green)}.crisis-card.lvl-2:before{background:var(--amber)}.crisis-card.lvl-3:before{background:var(--red)}.crisis-header{justify-content:space-between;align-items:flex-start;margin-bottom:8px;display:flex}.crisis-title{color:var(--text-main);font-size:13px;font-weight:700}.crisis-pct{font-size:28px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px;line-height:1}.crisis-prog-track{background:#f1f5f9;border-radius:3px;height:5px;margin:8px 0 12px;overflow:hidden}.crisis-prog-fill{border-radius:3px;height:100%;transition:width .4s cubic-bezier(.16,1,.3,1)}.crisis-details{color:var(--text-muted);font-size:11px;font-family:var(--font-mono);flex-direction:column;gap:4px;display:flex}.crisis-details-row{border-bottom:1px dashed #e2e8f0;justify-content:space-between;padding-bottom:3px;display:flex}.crisis-details-row:last-child{border-bottom:none}.crisis-remarks-cta{color:var(--blue);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;font-size:11px;font-weight:600;transition:all .15s;display:flex}.crisis-card:hover .crisis-remarks-cta{color:#1d4ed8;padding-left:2px}.grid-overview-split{grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-production-charts{grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-priority-cards{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;display:grid}.grid-outlying-cards{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;display:grid}.grid-stations{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px;display:grid}.grid-stations .kpi-card-white{cursor:pointer;flex-direction:column;justify-content:space-between;min-width:0;display:flex}.grid-stations .kpi-card-white:hover{transform:translateY(-2px);border-color:var(--blue)!important;box-shadow:0 4px 12px #0d948826!important}.grid-river-layout{grid-template-columns:280px 1fr;gap:18px;display:grid}.grid-complaints-charts{grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:20px;display:grid}.grid-monthly-charts{grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px;display:grid}.grid-genset-summary{border-bottom:1px solid var(--card-border);background:#f8fafc;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 24px;display:grid}.modal-station-grid{grid-template-columns:1fr 1fr;gap:10px;display:grid}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:34px;height:34px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:28px;height:28px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:1200;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}.crisis-legend-bar{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:10px;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px;padding:6px 14px;display:flex}.crisis-legend-title{color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-size:10.5px;font-weight:800;font-family:var(--font-mono);margin-right:4px}.crisis-legend-item{color:var(--text-main);border:1px solid var(--card-border);background:#f8fafc;border-radius:6px;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;transition:background .15s;display:inline-flex}.crisis-legend-item:hover{background:#f1f5f9}.crisis-legend-dot{border-radius:50%;flex-shrink:0;width:8px;height:8px}.crisis-legend-normal{background:#0b4f6c0d;border-color:#0b4f6c40}.crisis-legend-watch{border-color:var(--green-border);background:var(--green-light)}.crisis-legend-alert{border-color:var(--amber-border);background:var(--amber-light)}.crisis-legend-critical{border-color:var(--red-border);background:var(--red-light)}@media (width<=1180px){.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>*{grid-column:auto!important}}@media (width<=1024px){.kpi-row-layout{grid-template-columns:repeat(3,1fr)}.grid-production-charts{grid-template-columns:1fr 1fr}.grid-production-charts>:first-child{grid-column:span 2}.grid-featured-cards{-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;box-sizing:border-box;gap:10px;width:100%;max-width:100%;margin-bottom:16px;padding-bottom:8px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.grid-featured-cards .featured-card{scroll-snap-align:start;flex:0 0 185px!important;min-width:185px!important;max-width:185px!important}.grid-featured-cards::-webkit-scrollbar{height:4px}.grid-featured-cards::-webkit-scrollbar-track{background:#f1f5f9;border-radius:4px}.grid-featured-cards::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}.mobile-swipe-hint{display:inline-block!important}}@media (width<=820px){.app-sidebar{z-index:1300;height:100vh;transition:transform .28s cubic-bezier(.4,0,.2,1);position:fixed;top:0;bottom:0;left:0;transform:translate(-100%);margin-left:0!important}.app-sidebar.open{transform:translate(0);box-shadow:10px 0 30px #0000004d}.app-main,.app-sidebar.collapsed~.app-main{margin-left:0!important}.menu-toggle-btn{justify-content:center;align-items:center;display:flex}.sidebar-close-btn{display:flex}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:10px}.app-header{padding:12px 16px}.header-titles h1{font-size:15px}.header-titles p{display:none}#header-auth-status-btn{justify-content:center;min-width:32px;padding:6px 9px}#header-auth-status-icon{justify-content:center;align-items:center;display:inline-flex}.header-actions{gap:6px}.page-content{box-sizing:border-box;width:100%;max-width:100%;padding:14px 12px;overflow-x:hidden}.period-bar-wrap{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}.period-bar-wrap select.week-dropdown{width:100%}.grid-overview-split,.grid-production-charts{grid-template-columns:1fr}.grid-production-charts>:first-child{grid-column:auto}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.grid-river-layout{grid-template-columns:1fr}#river-list-container{max-height:220px!important}.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>:first-child{grid-column:auto}.grid-monthly-charts{grid-template-columns:1fr}.map-frame-box{height:350px}.map-header-toolbar{box-sizing:border-box;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%}.map-view-toggles{box-sizing:border-box;flex-wrap:wrap;gap:6px;width:100%;max-width:100%;display:flex}.map-view-toggles .map-mode-btn{flex:auto;justify-content:center;padding:6px 8px;font-size:11px}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;box-sizing:border-box;gap:8px;width:100%;max-width:100%;padding-bottom:4px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.outlier-chip{box-sizing:border-box;flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.desktop-text{display:none!important}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px;flex-wrap:nowrap!important;gap:8px!important;display:flex!important;overflow-x:auto!important}}@media (width<=640px){.card{border-radius:12px;margin-bottom:12px;padding:14px}.table-container{border-radius:12px;margin-bottom:16px}.table-head-bar{padding:10px 14px}table.data-table th,table.data-table td{padding:7px 10px}.modal-station-grid{grid-template-columns:1fr}.grid-genset-summary{grid-template-columns:repeat(2,1fr);padding:12px 14px}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:1fr}.map-frame-box{height:300px}.kpi-card-white{padding:12px 14px}.kpi-card-num{font-size:20px}.chart-panel-header{flex-direction:column;gap:10px;align-items:flex-start!important}.reports-btn-full{display:none!important}.reports-btn-short{display:inline!important}.crisis-legend-title{grid-column:1/-1;margin-bottom:2px}.crisis-legend-item{justify-content:flex-start;padding:4px 6px;font-size:10px;line-height:1.2;white-space:normal!important;min-width:0!important}#btn-reports-menu{padding:6px 10px;font-size:11px}.crisis-legend-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:8px 10px!important;display:grid!important}}@media (width<=440px){.outlier-chip{flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:8px}.kpi-card-white{padding:10px}.kpi-card-lbl{font-size:9.5px}.kpi-card-num{margin:4px 0;font-size:18px}.grid-stations{grid-template-columns:repeat(2,1fr);gap:6px}.grid-stations .kpi-card-white{padding:8px 10px}.header-btn{padding:6px 10px;font-size:10.5px}.app-header{padding:10px 12px}.header-actions{gap:5px}#btn-reports-menu{padding:5px 8px;font-size:10.5px}#header-auth-status-btn{min-width:28px;padding:5px 7px}.reports-dropdown-menu{width:min(290px,100vw - 24px);right:-40px}.crisis-legend-item{gap:4px;padding:3px 5px;font-size:9.5px;line-height:1.2;white-space:normal!important;min-width:0!important}}.loading-overlay{background:linear-gradient(90deg, var(--blue), #38bdf8, #10b981, var(--blue));z-index:99999;pointer-events:none;background-size:200% 100%;height:3px;transition:opacity .4s,visibility .4s;animation:1.5s linear infinite shimmerTopBar;position:fixed;top:0;left:0;right:0}.loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}.loading-overlay .spinner-ring,.loading-overlay>div:not(.spinner-ring){display:none!important}@keyframes shimmerTopBar{0%{background-position:200% 0}to{background-position:-200% 0}}.spinner-ring{border:3px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;width:38px;height:38px;animation:.8s linear infinite spin}@keyframes spin{to{transform:rotate(360deg)}}[id$=-modal]{transition:opacity .2s;-webkit-backdrop-filter:blur(8px)!important}[id$=-modal]>div{animation:.24s cubic-bezier(.16,1,.3,1) modalScaleIn;box-shadow:0 25px 50px -12px #0f172a40!important}@keyframes modalScaleIn{0%{opacity:0;transform:scale(.96)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}}.page-content.active{animation:.22s cubic-bezier(.16,1,.3,1) pageFadeIn;display:block}@keyframes pageFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.form-input{color:var(--text-main);font-family:var(--font-sans);background:#fff;border:1px solid #cbd5e1;border-radius:8px;outline:none;padding:8px 11px;font-size:12px;transition:border-color .16s,box-shadow .16s,background-color .16s}.form-input:hover:not(:disabled){border-color:#94a3b8}.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.form-input:disabled{color:var(--text-muted);cursor:not-allowed;background:#f1f5f9}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline-offset:2px;outline:2px solid #2563eb8c}.reports-dropdown-menu.show{transform-origin:100% 0;animation:.16s cubic-bezier(.16,1,.3,1) dropdownFadeIn;display:block}@keyframes dropdownFadeIn{0%{opacity:0;transform:translateY(-4px)scale(.98)}to{opacity:1;transform:translateY(0)scale(1)}}.modal-close-btn{color:#64748b;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:8px;justify-content:center;align-items:center;width:30px;height:30px;font-size:16px;line-height:1;transition:all .15s;display:inline-flex}.modal-close-btn:hover{color:#0f172a;background:#f1f5f9;border-color:#e2e8f0}.ov-node-card{border:1px solid var(--card-border);cursor:pointer;background:#f8fafc;border-radius:10px;justify-content:space-between;align-items:center;padding:11px 14px;transition:transform .16s,box-shadow .16s,border-color .16s,background-color .16s;display:flex}.ov-node-card:hover{background:#fff;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 4px 12px #0f172a0f}.river-list-item{cursor:pointer;border-bottom:1px solid #f1f5f9;border-left:3px solid #0000;border-radius:8px;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;padding:10px 12px;transition:background-color .15s,border-color .15s,transform .12s;display:flex}.river-list-item:hover{background:#f8fafc}.river-list-item.active{background:var(--teal-light);border-left-color:var(--teal);border-bottom-color:#0000}#page-complaints .kpi-row-layout{grid-template-columns:repeat(4,1fr)}@media (width<=1024px){#page-complaints .kpi-row-layout{grid-template-columns:repeat(2,1fr)}}#source-cards:empty,#capacity-cards:empty{display:none}.comp-topic-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;transition:border-color .16s,background-color .16s}.comp-topic-card:hover{border-color:#cbd5e1}.comp-topic-card.is-disabled .comp-subtopics-list{opacity:.45;pointer-events:none}.comp-modal-grid{grid-template-columns:1fr 1fr;gap:12px;display:grid}@media (width<=640px){.comp-modal-grid{grid-template-columns:1fr}#comprehensive-report-modal .comp-modal-footer-actions{flex-direction:column;align-items:stretch}#comprehensive-report-modal .comp-modal-footer-btns{flex-direction:column}}.app-sidebar::-webkit-scrollbar{width:6px;height:6px}.table-responsive::-webkit-scrollbar{width:6px;height:6px}#river-list-container::-webkit-scrollbar{width:6px;height:6px}#complaints-feed::-webkit-scrollbar{width:6px;height:6px}.comp-modal-body::-webkit-scrollbar{width:6px;height:6px}.app-sidebar::-webkit-scrollbar-thumb{background:#94a3b840;border-radius:3px}.table-responsive::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#river-list-container::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#complaints-feed::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.comp-modal-body::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.table-responsive::-webkit-scrollbar-track{background:0 0}#river-list-container::-webkit-scrollbar-track{background:0 0}#complaints-feed::-webkit-scrollbar-track{background:0 0}.comp-modal-body::-webkit-scrollbar-track{background:0 0}.telemetry-beacon{background:var(--green);border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.2s infinite beaconPulse;display:inline-block;box-shadow:0 0 #10b98166}@keyframes beaconPulse{0%{box-shadow:0 0 #10b981b3}70%{box-shadow:0 0 0 7px #10b98100}to{box-shadow:0 0 #10b98100}}.comp-a4-page{color:#0f172a;box-sizing:border-box;page-break-after:always;background:#fff;border:1px solid #e2e8f0;flex-direction:column;justify-content:space-between;width:210mm;min-height:297mm;margin:0 auto 20px;padding:12.7mm;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:flex;position:relative}.comp-header-banner{border-bottom:2px solid #1560bd;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:8px;display:flex}.comp-kpi-grid{gap:8px;margin-bottom:12px;display:flex}.comp-kpi-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;flex:1;padding:8px 10px}.comp-kpi-label{color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-size:8.5px;font-weight:700}.comp-kpi-value{color:#0f172a;font-family:IBM Plex Mono,monospace;font-size:15px;font-weight:800;line-height:1.15}.comp-kpi-sub{color:#64748b;margin-top:2px;font-size:8px}.comp-section-title{color:#1e293b;text-transform:uppercase;letter-spacing:.4px;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;font-weight:800;display:flex}.comp-table{border-collapse:collapse;width:100%;margin-bottom:10px;font-size:9.5px}.comp-table th{color:#334155;text-align:left;background:#f1f5f9;border-bottom:2px solid #cbd5e1;padding:5px 6px;font-size:9px;font-weight:700}.comp-table td{color:#1e293b;border-bottom:1px solid #e2e8f0;padding:4.5px 6px}.comp-table tr:hover{background:#f8fafc}.comp-footer{color:#64748b;border-top:1px solid #e2e8f0;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;font-size:8.5px;display:flex}@media print{@page{size:A4 portrait;margin:.5in}body *{visibility:hidden!important}#comprehensive-report-staging,#comprehensive-report-staging *,.comp-a4-page,.comp-a4-page *{visibility:visible!important}#comprehensive-report-staging{width:100%!important;margin:0!important;padding:0!important;position:absolute!important;top:0!important;left:0!important}.comp-a4-page{width:100%!important;min-height:auto!important;box-shadow:none!important;page-break-after:always!important;border:none!important;margin:0!important;padding:0!important}}</style>
+  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff0f;--sidebar-active:#2563eb;--sidebar-text:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f8fafc;--card-bg:#fff;--card-border:#e2e8f0;--card-shadow:0 1px 3px 0 #0f172a0a, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#64748b;--text-subtle:#94a3b8;--teal:#0d9488;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-light:#fef2f2;--red-border:#fecaca;--font-sans:"Inter", -apple-system, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;font-size:13px;line-height:1.5}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:1100;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;position:fixed;top:0;bottom:0;left:0;overflow:hidden auto}.app-sidebar.collapsed{transform:translate(-250px)}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-icon{color:#fff;background:linear-gradient(135deg,#0284c7,#0d9488);border-radius:9px;justify-content:center;align-items:center;width:36px;height:36px;font-size:16px;font-weight:800;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:4px;padding:12px 14px;display:flex;overflow-y:auto}.nav-btn{color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:9px;align-items:center;gap:10px;width:100%;padding:10px 14px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{background:var(--sidebar-active);color:var(--sidebar-text-active);font-weight:600;box-shadow:0 4px 12px #2563eb4d}.nav-icon{text-align:center;justify-content:center;align-items:center;width:20px;display:inline-flex}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;margin-left:250px;transition:margin-left .25s cubic-bezier(.4,0,.2,1);display:flex}.app-sidebar.collapsed~.app-main{margin-left:0}.app-top-sticky-container{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff2;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.app-header{background:0 0;justify-content:space-between;align-items:center;padding:12px 28px;display:flex}.header-titles h1{color:var(--text-main);letter-spacing:-.3px;font-size:clamp(13px,3.2vw,17px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11px;display:flex}.header-actions{flex-shrink:0;align-items:center;gap:10px;display:flex}.desktop-text,.reports-btn-full{display:inline}.reports-btn-short{display:none}.cycle-status-pill,#global-monthly-pill{white-space:nowrap!important;flex-shrink:0!important;align-items:center!important;display:inline-flex!important}#global-monthly-text{white-space:nowrap!important;flex-shrink:0!important}.reports-dropdown-wrap{position:relative}.reports-dropdown-menu{border:1px solid var(--card-border);z-index:3000;box-sizing:border-box;background:#fff;border-radius:12px;width:320px;padding:6px;display:none;position:absolute;top:calc(100% + 6px);right:0;box-shadow:0 16px 36px #0f172a29}.reports-dropdown-menu.show{display:block}.reports-dropdown-header{color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;padding:8px 12px 6px;font-size:10px;font-weight:800}.report-menu-item{text-align:left;cursor:pointer;box-sizing:border-box;background:0 0;border:none;border-radius:8px;flex-direction:column;gap:2px;width:100%;padding:8px 12px;font-family:inherit;transition:background .15s;display:flex}.report-menu-item:hover{background:#f8fafc}.report-menu-item:focus{background:#eff6ff;outline:none}.report-menu-item-primary{background:#eff6ff;border:1px solid #dbeafe;margin-bottom:4px}.report-menu-item-primary:hover{background:#dbeafe}.report-menu-item-title{color:#0f172a;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;display:flex}.report-menu-item-desc{color:#64748b;font-size:10.5px;line-height:1.3}.report-menu-badge{text-transform:uppercase;letter-spacing:.3px;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700}.report-menu-badge-blue{color:#4f46e5;background:#eef2ff}.report-menu-badge-green{color:#16a34a;background:#dcfce7}.header-btn{border:1px solid var(--card-border);font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 13px;font-size:11.5px;font-weight:600;transition:all .16s cubic-bezier(.16,1,.3,1);display:inline-flex;box-shadow:0 1px 2px #0f172a08}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 2px 5px #0f172a0d}.header-btn:active{transform:translateY(0)}.header-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 6px #2563eb4d}.header-btn:disabled{opacity:.65;pointer-events:none;cursor:not-allowed!important;color:var(--text-muted)!important;box-shadow:none!important;background:#f1f5f9!important;border-color:#e2e8f0!important;transform:none!important}.spin-icon{animation:.8s linear infinite spin;display:inline-block}.period-bar-wrap{-webkit-backdrop-filter:blur(10px);background:#f8fafcf0;border-top:1px solid #e2e8f0cc;border-bottom:1px solid #e2e8f0cc;justify-content:space-between;align-items:center;gap:16px;padding:8px 28px;display:flex}.week-dropdown{border:1px solid var(--card-border);font-family:var(--font-mono);color:var(--text-main);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 12px center no-repeat;border-radius:8px;outline:none;padding:7px 32px 7px 14px;font-size:12px;font-weight:600;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px #0f172a08}.week-dropdown:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px;display:none}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:16px;padding:20px}.card-title{letter-spacing:.6px;text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);justify-content:space-between;align-items:center;margin-bottom:12px;display:flex}.kpi-row-layout{grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;display:grid}.kpi-card-white{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;flex-direction:column;justify-content:space-between;padding:16px 18px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,border-color .18s;display:flex;position:relative}.kpi-card-white:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-2px)}.kpi-card-num,.kpi-card-foot,.mono,table.data-table td.right,table.data-table td.mono,.featured-card .kpi-card-num,.station-card-item .mono,.pressure-status-pill,.data-freshness-pill,.tabular-nums{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}.kpi-card-lbl{text-transform:uppercase;letter-spacing:.04em;color:#64748b;font-size:.75rem;font-weight:700;line-height:1.2}.kpi-card-num{color:var(--text-main);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0;font-size:clamp(1.75rem,2.2vw,2.25rem);font-weight:800;line-height:1.1}.kpi-card-num .unit{color:#94a3b8;letter-spacing:normal;margin-left:4px;font-size:.85rem;font-weight:500}.kpi-card-foot{color:#64748b;font-size:.75rem;font-weight:500;line-height:1.3}.kpi-badge-pill{font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.2px;border-radius:20px;align-items:center;gap:5px;padding:3px 9px;line-height:1.2;display:inline-flex}.pill-normal,.pill-green{color:#059669;background:#10b98114;border:1px solid #10b98140}.pill-amber{color:#d97706;background:#f59e0b14;border:1px solid #f59e0b47}.pill-red{color:#dc2626;background:#ef44441a;border:1px solid #ef444459}.pill-blue{color:#2563eb;background:#2563eb14;border:1px solid #2563eb40}.alert-dot-pulse{background:#ef4444;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:1.6s cubic-bezier(.4,0,.6,1) infinite alertPulse;display:inline-block;box-shadow:0 0 6px #ef4444cc}.normal-dot-pulse{background:#10b981;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.4s cubic-bezier(.4,0,.6,1) infinite normalPulse;display:inline-block;box-shadow:0 0 6px #10b98199}.amber-dot-pulse{background:#f59e0b;border-radius:50%;flex-shrink:0;width:7px;height:7px;display:inline-block;box-shadow:0 0 6px #f59e0b99}@keyframes alertPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.25)}}@keyframes normalPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 18px;display:flex}.table-head-title{color:var(--text-main);font-size:13px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 14px;font-size:9.5px;font-weight:700}table.data-table thead th.right,table.data-table tbody td.right{text-align:right}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:9px 14px}table.data-table tbody td.mono{font-family:var(--font-mono);font-size:11px}.cat-pill{font-size:9px;font-family:var(--font-mono);border-radius:4px;padding:2px 6px;font-weight:600;display:inline-block}.cat-sw{background:var(--teal-light);color:var(--teal);border:1px solid var(--teal-border)}.cat-gw{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}.cat-aug{color:#8b5cf6;background:#faf5ff;border:1px solid #e9d5ff}.bar-cell{align-items:center;gap:6px;display:flex}.mini-bar-bg{background:#e2e8f0;border-radius:3px;flex:1;height:5px;overflow:hidden}.mini-bar{border-radius:3px;height:100%}.press-table-wrap{max-height:520px;position:relative;overflow:auto}.press-table-wrap thead th{z-index:10;background:#f1f5f9;position:sticky;top:0;box-shadow:0 1px 2px #0000000f}.press-table-wrap th:first-child,.press-table-wrap td:first-child{z-index:11;border-right:1px solid var(--card-border);background:#fff;position:sticky;left:0}.press-table-wrap thead th:first-child{z-index:12;background:#f1f5f9}.table-sticky-first th:first-child,.table-sticky-first td:first-child{z-index:10;background:#fff;border-right:1px solid #e2e8f0f2;position:sticky;left:0;box-shadow:3px 0 6px -2px #0f172a14}.table-sticky-first thead th:first-child{z-index:11;background:#f8fafc}.table-sticky-first tbody tr:hover td:first-child{background:#f8fafc}.chart-container-wrap{width:100%;min-height:220px;position:relative}.btn-primary-action{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;font-weight:700!important;box-shadow:0 2px 6px #2563eb47!important}.btn-primary-action:hover{transform:translateY(-1px);background:#1d4ed8!important;border-color:#1d4ed8!important;box-shadow:0 4px 12px #2563eb59!important}.btn-secondary-action{color:var(--text-main)!important;background:#fff!important;border:1px solid #94a3b859!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 1px 2px #0f172a0a!important}.btn-secondary-action:hover{transform:translateY(-1px);color:var(--blue)!important;background:#f8fafc!important;border-color:#cbd5e1!important;box-shadow:0 2px 6px #0f172a14!important}@keyframes shimmer{0%{background-position:-200% 0}to{background-position:200% 0}}.skeleton-shimmer{-webkit-user-select:none;user-select:none;background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%) 0 0/200% 100%;border-radius:4px;animation:1.8s infinite shimmer;display:inline-block;color:#0000!important}.table-responsive,#priority-cards-row,.press-table-wrap{cursor:grab;-webkit-overflow-scrolling:touch}.table-responsive.is-dragging,#priority-cards-row.is-dragging,.press-table-wrap.is-dragging{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}.press-table-wrap th,.press-table-wrap td,table.data-table th,table.data-table td{white-space:nowrap;min-width:72px}.press-table-wrap th:first-child,.press-table-wrap td:first-child{min-width:140px}.map-frame-box{border:1px solid var(--card-border);height:480px;box-shadow:var(--card-shadow);z-index:1;isolation:isolate;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden}#leaflet-map{width:100%;height:100%}.pressure-dot{font-family:var(--font-mono);color:#fff;cursor:pointer;border:2px solid #fff;border-radius:50%;flex-direction:column;justify-content:center;align-items:center;font-weight:700;transition:transform .15s,box-shadow .15s;display:flex}.pressure-dot:hover{transform:scale(1.2);z-index:1000!important}.pressure-dot.dot-ok{background:var(--green);box-shadow:0 2px 8px #10b98180}.pressure-dot.dot-alert{background:var(--red);animation:1.4s ease-in-out infinite dot-pulse;box-shadow:0 0 10px #ef4444cc}.pressure-dot.dot-nodata{background:var(--text-muted)}.pressure-dot.dot-compare-1{outline:3px solid var(--blue);outline-offset:2px}.pressure-dot.dot-compare-2{outline:3px solid var(--teal);outline-offset:2px}@keyframes dot-pulse{0%,to{box-shadow:0 0 6px #ef444480}50%{box-shadow:0 0 18px #ef4444e6}}.leaflet-popup-content-wrapper{background:#fff!important;border-radius:12px!important;padding:0!important;box-shadow:0 10px 30px #0f172a26!important}.leaflet-popup-content{width:220px!important;margin:0!important}.map-header-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;display:flex}.map-view-toggles{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.map-mode-btn{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 12px;font-size:11px;font-weight:700;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.map-mode-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.map-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 6px #2563eb40}.map-outlier-chips{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.outlier-chip{font-family:var(--font-mono);border:1px solid var(--card-border);color:var(--text-main);cursor:pointer;white-space:nowrap;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:5px 11px;font-size:11px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.outlier-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}.outlier-chip span{color:var(--blue);font-weight:800}.section-title-wrap{margin-top:18px;margin-bottom:10px}.section-title-main{text-transform:uppercase;color:var(--text-muted);font-size:11px;font-weight:700;font-family:var(--font-mono);letter-spacing:.5px}.section-title-sub{color:var(--text-muted);margin-top:1px;font-size:12px}.grid-featured-cards{grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;display:grid}.featured-card{border-radius:12px;flex-direction:column;justify-content:space-between;min-width:0;padding:0;display:flex;overflow:hidden}.card-mini-map-wrap{border-bottom:1px solid var(--card-border);cursor:pointer;background:#e2e8f0;width:100%;height:68px;position:relative;overflow:hidden}.card-mini-map-wrap:hover .card-map-overlay-btn{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}.card-map-overlay-btn{z-index:400;border:1px solid var(--card-border);color:var(--text-main);font-size:9px;font-family:var(--font-mono);cursor:pointer;background:#fffffff0;border-radius:4px;padding:2px 6px;font-weight:700;transition:all .15s;position:absolute;bottom:4px;right:4px;box-shadow:0 1px 4px #0000001f}.crisis-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:24px;display:grid}.crisis-card{border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;background:#fff;border-radius:14px;flex-direction:column;padding:16px 18px;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s;display:flex;position:relative;overflow:hidden}.crisis-card:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-3px)}.crisis-card:before{content:"";border-radius:14px 0 0 14px;width:4px;position:absolute;top:0;bottom:0;left:0}.crisis-card.lvl-normal:before{background:#0b4f6c}.crisis-card.lvl-1:before{background:var(--green)}.crisis-card.lvl-2:before{background:var(--amber)}.crisis-card.lvl-3:before{background:var(--red)}.crisis-header{justify-content:space-between;align-items:flex-start;margin-bottom:8px;display:flex}.crisis-title{color:var(--text-main);font-size:13px;font-weight:700}.crisis-pct{font-size:28px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px;line-height:1}.crisis-prog-track{background:#f1f5f9;border-radius:3px;height:5px;margin:8px 0 12px;overflow:hidden}.crisis-prog-fill{border-radius:3px;height:100%;transition:width .4s cubic-bezier(.16,1,.3,1)}.crisis-details{color:var(--text-muted);font-size:11px;font-family:var(--font-mono);flex-direction:column;gap:4px;display:flex}.crisis-details-row{border-bottom:1px dashed #e2e8f0;justify-content:space-between;padding-bottom:3px;display:flex}.crisis-details-row:last-child{border-bottom:none}.crisis-remarks-cta{color:var(--blue);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;font-size:11px;font-weight:600;transition:all .15s;display:flex}.crisis-card:hover .crisis-remarks-cta{color:#1d4ed8;padding-left:2px}.grid-overview-split{grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-production-charts{grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-priority-cards{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;display:grid}.grid-outlying-cards{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;display:grid}.grid-stations{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px;display:grid}.grid-stations .kpi-card-white{cursor:pointer;flex-direction:column;justify-content:space-between;min-width:0;display:flex}.grid-stations .kpi-card-white:hover{transform:translateY(-2px);border-color:var(--blue)!important;box-shadow:0 4px 12px #0d948826!important}.grid-river-layout{grid-template-columns:280px 1fr;gap:18px;display:grid}.grid-complaints-charts{grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:20px;display:grid}.grid-monthly-charts{grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px;display:grid}.grid-genset-summary{border-bottom:1px solid var(--card-border);background:#f8fafc;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 24px;display:grid}.modal-station-grid{grid-template-columns:1fr 1fr;gap:10px;display:grid}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:34px;height:34px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:28px;height:28px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:1200;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}.crisis-legend-bar{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:10px;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px;padding:6px 14px;display:flex}.crisis-legend-title{color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-size:10.5px;font-weight:800;font-family:var(--font-mono);margin-right:4px}.crisis-legend-item{color:var(--text-main);border:1px solid var(--card-border);background:#f8fafc;border-radius:6px;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;transition:background .15s;display:inline-flex}.crisis-legend-item:hover{background:#f1f5f9}.crisis-legend-dot{border-radius:50%;flex-shrink:0;width:8px;height:8px}.crisis-legend-normal{background:#0b4f6c0d;border-color:#0b4f6c40}.crisis-legend-watch{border-color:var(--green-border);background:var(--green-light)}.crisis-legend-alert{border-color:var(--amber-border);background:var(--amber-light)}.crisis-legend-critical{border-color:var(--red-border);background:var(--red-light)}@media (width<=1180px){.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>*{grid-column:auto!important}}@media (width<=1024px){.kpi-row-layout{grid-template-columns:repeat(3,1fr)}.grid-production-charts{grid-template-columns:1fr 1fr}.grid-production-charts>:first-child{grid-column:span 2}.grid-featured-cards{-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;box-sizing:border-box;gap:10px;width:100%;max-width:100%;margin-bottom:16px;padding-bottom:8px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.grid-featured-cards .featured-card{scroll-snap-align:start;flex:0 0 185px!important;min-width:185px!important;max-width:185px!important}.grid-featured-cards::-webkit-scrollbar{height:4px}.grid-featured-cards::-webkit-scrollbar-track{background:#f1f5f9;border-radius:4px}.grid-featured-cards::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}.mobile-swipe-hint{display:inline-block!important}}@media (width<=820px){.app-sidebar{z-index:1300;height:100vh;transition:transform .28s cubic-bezier(.4,0,.2,1);position:fixed;top:0;bottom:0;left:0;transform:translate(-100%);margin-left:0!important}.app-sidebar.open{transform:translate(0);box-shadow:10px 0 30px #0000004d}.app-main,.app-sidebar.collapsed~.app-main{margin-left:0!important}.menu-toggle-btn{justify-content:center;align-items:center;display:flex}.sidebar-close-btn{display:flex}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:10px}.app-header{padding:12px 16px}.header-titles h1{font-size:15px}.header-titles p{display:none}#header-auth-status-btn{justify-content:center;min-width:32px;padding:6px 9px}#header-auth-status-icon{justify-content:center;align-items:center;display:inline-flex}.header-actions{gap:6px}.page-content{box-sizing:border-box;width:100%;max-width:100%;padding:14px 12px;overflow-x:hidden}.period-bar-wrap{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}.period-bar-wrap select.week-dropdown{width:100%}.grid-overview-split,.grid-production-charts{grid-template-columns:1fr}.grid-production-charts>:first-child{grid-column:auto}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.grid-river-layout{grid-template-columns:1fr}#river-list-container{max-height:220px!important}.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>:first-child{grid-column:auto}.grid-monthly-charts{grid-template-columns:1fr}.map-frame-box{height:350px}.map-header-toolbar{box-sizing:border-box;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%}.map-view-toggles{box-sizing:border-box;flex-wrap:wrap;gap:6px;width:100%;max-width:100%;display:flex}.map-view-toggles .map-mode-btn{flex:auto;justify-content:center;padding:6px 8px;font-size:11px}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;box-sizing:border-box;gap:8px;width:100%;max-width:100%;padding-bottom:4px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.outlier-chip{box-sizing:border-box;flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.desktop-text{display:none!important}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px;flex-wrap:nowrap!important;gap:8px!important;display:flex!important;overflow-x:auto!important}}@media (width<=640px){.card{border-radius:12px;margin-bottom:12px;padding:14px}.table-container{border-radius:12px;margin-bottom:16px}.table-head-bar{padding:10px 14px}table.data-table th,table.data-table td{padding:7px 10px}.modal-station-grid{grid-template-columns:1fr}.grid-genset-summary{grid-template-columns:repeat(2,1fr);padding:12px 14px}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:1fr}.map-frame-box{height:300px}.kpi-card-white{padding:12px 14px}.kpi-card-num{font-size:20px}.chart-panel-header{flex-direction:column;gap:10px;align-items:flex-start!important}.reports-btn-full{display:none!important}.reports-btn-short{display:inline!important}.crisis-legend-title{grid-column:1/-1;margin-bottom:2px}.crisis-legend-item{justify-content:flex-start;padding:4px 6px;font-size:10px;line-height:1.2;white-space:normal!important;min-width:0!important}#btn-reports-menu{padding:6px 10px;font-size:11px}.crisis-legend-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:8px 10px!important;display:grid!important}}@media (width<=440px){.outlier-chip{flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:8px}.kpi-card-white{padding:10px}.kpi-card-lbl{font-size:9.5px}.kpi-card-num{margin:4px 0;font-size:18px}.grid-stations{grid-template-columns:repeat(2,1fr);gap:6px}.grid-stations .kpi-card-white{padding:8px 10px}.header-btn{padding:6px 10px;font-size:10.5px}.app-header{padding:10px 12px}.header-actions{gap:5px}#btn-reports-menu{padding:5px 8px;font-size:10.5px}#header-auth-status-btn{min-width:28px;padding:5px 7px}.reports-dropdown-menu{width:min(290px,100vw - 24px);right:-40px}.crisis-legend-item{gap:4px;padding:3px 5px;font-size:9.5px;line-height:1.2;white-space:normal!important;min-width:0!important}}.loading-overlay{background:linear-gradient(90deg, var(--blue), #38bdf8, #10b981, var(--blue));z-index:99999;pointer-events:none;background-size:200% 100%;height:3px;transition:opacity .4s,visibility .4s;animation:1.5s linear infinite shimmerTopBar;position:fixed;top:0;left:0;right:0}.loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}.loading-overlay .spinner-ring,.loading-overlay>div:not(.spinner-ring){display:none!important}@keyframes shimmerTopBar{0%{background-position:200% 0}to{background-position:-200% 0}}.spinner-ring{border:3px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;width:38px;height:38px;animation:.8s linear infinite spin}@keyframes spin{to{transform:rotate(360deg)}}[id$=-modal]{transition:opacity .2s;-webkit-backdrop-filter:blur(8px)!important}[id$=-modal]>div{animation:.24s cubic-bezier(.16,1,.3,1) modalScaleIn;box-shadow:0 25px 50px -12px #0f172a40!important}@keyframes modalScaleIn{0%{opacity:0;transform:scale(.96)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}}.page-content.active{animation:.22s cubic-bezier(.16,1,.3,1) pageFadeIn;display:block}@keyframes pageFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.form-input{color:var(--text-main);font-family:var(--font-sans);background:#fff;border:1px solid #cbd5e1;border-radius:8px;outline:none;padding:8px 11px;font-size:12px;transition:border-color .16s,box-shadow .16s,background-color .16s}.form-input:hover:not(:disabled){border-color:#94a3b8}.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.form-input:disabled{color:var(--text-muted);cursor:not-allowed;background:#f1f5f9}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline-offset:2px;outline:2px solid #2563eb8c}.reports-dropdown-menu.show{transform-origin:100% 0;animation:.16s cubic-bezier(.16,1,.3,1) dropdownFadeIn;display:block}@keyframes dropdownFadeIn{0%{opacity:0;transform:translateY(-4px)scale(.98)}to{opacity:1;transform:translateY(0)scale(1)}}.modal-close-btn{color:#64748b;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:8px;justify-content:center;align-items:center;width:30px;height:30px;font-size:16px;line-height:1;transition:all .15s;display:inline-flex}.modal-close-btn:hover{color:#0f172a;background:#f1f5f9;border-color:#e2e8f0}.ov-node-card{border:1px solid var(--card-border);cursor:pointer;background:#f8fafc;border-radius:10px;justify-content:space-between;align-items:center;padding:11px 14px;transition:transform .16s,box-shadow .16s,border-color .16s,background-color .16s;display:flex}.ov-node-card:hover{background:#fff;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 4px 12px #0f172a0f}.river-list-item{cursor:pointer;border-bottom:1px solid #f1f5f9;border-left:3px solid #0000;border-radius:8px;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;padding:10px 12px;transition:background-color .15s,border-color .15s,transform .12s;display:flex}.river-list-item:hover{background:#f8fafc}.river-list-item.active{background:var(--teal-light);border-left-color:var(--teal);border-bottom-color:#0000}#page-complaints .kpi-row-layout{grid-template-columns:repeat(4,1fr)}@media (width<=1024px){#page-complaints .kpi-row-layout{grid-template-columns:repeat(2,1fr)}}#source-cards:empty,#capacity-cards:empty{display:none}.comp-topic-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;transition:border-color .16s,background-color .16s}.comp-topic-card:hover{border-color:#cbd5e1}.comp-topic-card.is-disabled .comp-subtopics-list{opacity:.45;pointer-events:none}.comp-modal-grid{grid-template-columns:1fr 1fr;gap:12px;display:grid}@media (width<=640px){.comp-modal-grid{grid-template-columns:1fr}#comprehensive-report-modal .comp-modal-footer-actions{flex-direction:column;align-items:stretch}#comprehensive-report-modal .comp-modal-footer-btns{flex-direction:column}}.app-sidebar::-webkit-scrollbar{width:6px;height:6px}.table-responsive::-webkit-scrollbar{width:6px;height:6px}#river-list-container::-webkit-scrollbar{width:6px;height:6px}#complaints-feed::-webkit-scrollbar{width:6px;height:6px}.comp-modal-body::-webkit-scrollbar{width:6px;height:6px}.app-sidebar::-webkit-scrollbar-thumb{background:#94a3b840;border-radius:3px}.table-responsive::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#river-list-container::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#complaints-feed::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.comp-modal-body::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.table-responsive::-webkit-scrollbar-track{background:0 0}#river-list-container::-webkit-scrollbar-track{background:0 0}#complaints-feed::-webkit-scrollbar-track{background:0 0}.comp-modal-body::-webkit-scrollbar-track{background:0 0}.telemetry-beacon{background:var(--green);border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.2s infinite beaconPulse;display:inline-block;box-shadow:0 0 #10b98166}@keyframes beaconPulse{0%{box-shadow:0 0 #10b981b3}70%{box-shadow:0 0 0 7px #10b98100}to{box-shadow:0 0 #10b98100}}.comp-a4-page{color:#0f172a;box-sizing:border-box;page-break-after:always;background:#fff;border:1px solid #e2e8f0;flex-direction:column;justify-content:space-between;width:210mm;min-height:297mm;margin:0 auto 20px;padding:12.7mm;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:flex;position:relative}.comp-header-banner{border-bottom:2.5px solid #1560bd;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:9px;display:flex}.comp-exec-strip{background:linear-gradient(90deg,#f8fafc 0%,#fff 100%);border:1px solid #cbd5e1;border-left:4px solid #1560bd;border-radius:6px;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;padding:8px 12px;display:grid}.comp-exec-item{min-width:0}.comp-exec-item+.comp-exec-item{border-left:1px solid #e2e8f0;padding-left:12px}.comp-exec-kicker{text-transform:uppercase;letter-spacing:.45px;font-size:8.5px;font-weight:800;line-height:1.2}.comp-exec-main{color:#0f172a;margin-top:2px;font-size:11px;font-weight:800;line-height:1.25}.comp-exec-sub{color:#475569;margin-top:2px;font-size:9px;line-height:1.2}.comp-kpi-grid{gap:10px;margin-bottom:12px;display:flex}.comp-kpi-card{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #1560bd;border-radius:7px;flex:1;padding:9px 11px}.comp-kpi-label{color:#475569;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-size:9px;font-weight:800}.comp-kpi-value{color:#0f172a;font-variant-numeric:tabular-nums;font-family:IBM Plex Mono,monospace;font-size:17px;font-weight:800;line-height:1.15}.comp-kpi-sub{color:#64748b;margin-top:3px;font-size:9px;font-weight:500;line-height:1.2}.comp-section-title{color:#0f172a;text-transform:uppercase;letter-spacing:.45px;border-left:3.5px solid #1560bd;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;padding-left:8px;font-size:11px;font-weight:800;line-height:1.2;display:flex}.comp-table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%;margin-bottom:10px;font-size:10.5px}.comp-table th{color:#fff;text-align:left;text-transform:uppercase;letter-spacing:.3px;background:#1e293b;border:1px solid #1e293b;padding:6px 7px;font-size:9.2px;font-weight:700;line-height:1.2}.comp-table tr.comp-th-group-row th{color:#e2e8f0;text-align:center;letter-spacing:.55px;background:#0f172a;border:1px solid #334155;padding:4px 6px;font-size:8.5px;font-weight:800}.comp-table td{color:#0f172a;border-bottom:1px solid #cbd5e1;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;padding:5.5px 7px;line-height:1.25}.comp-table tbody tr:nth-child(2n) td{background:#f8fafc}.comp-table tr.comp-summary-row td{color:#0f172a;border-top:2px solid #475569;border-bottom:2px solid #475569;padding:6.5px 7px;font-weight:800;background:#e2e8f0!important}.comp-table.comp-table-major th{letter-spacing:.1px;padding:6.5px 4px;font-size:8.4px}.comp-table.comp-table-major td{padding:7.5px 4px;font-size:9.4px;line-height:1.35}.comp-table.comp-table-major tr.comp-summary-row td{padding:8px 4px}.comp-table.comp-table-weekly th{padding:7.5px 7px}.comp-table.comp-table-weekly td{padding:9px 7px;line-height:1.35}.comp-table.comp-table-weekly tr.comp-summary-row td{padding:9.5px 7px}.comp-status-pill{white-space:nowrap;border-radius:4px;padding:1.5px 6px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;display:inline-block}.comp-note-box{color:#334155;background:#f8fafc;border:1px solid #cbd5e1;border-left:3.5px solid #64748b;border-radius:5px;margin-top:6px;padding:7px 10px;font-size:9.2px;line-height:1.4}.comp-footer{color:#475569;border-top:1.5px solid #cbd5e1;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;font-size:9.2px;font-weight:600;display:flex}@media print{@page{size:A4 portrait;margin:.5in}body *{visibility:hidden!important}#comprehensive-report-staging,#comprehensive-report-staging *,.comp-a4-page,.comp-a4-page *{visibility:visible!important}#comprehensive-report-staging{width:100%!important;margin:0!important;padding:0!important;position:absolute!important;top:0!important;left:0!important}.comp-a4-page{width:100%!important;min-height:auto!important;box-shadow:none!important;page-break-after:always!important;border:none!important;margin:0!important;padding:0!important}}</style>
 </head>
 <body>
   <!-- Loading Screen -->
@@ -964,15 +964,11 @@
               <input id="comp-rep-title" type="text" class="form-input" style="width:100%; font-size:12px; font-weight:700; padding:7px 10px; box-sizing:border-box;" value="PPCWD Dashboard Comprehensive Report" />
             </div>
             <div>
-              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Report Subtitle</label>
-              <input id="comp-rep-subtitle" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Water Quality &amp; Operational Telemetry" />
+              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Sub-header / Context Note</label>
+              <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Operational &amp; Hydrological Telemetry Report" />
             </div>
           </div>
-
-          <div>
-            <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Sub-header / Context Note</label>
-            <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Operational &amp; Hydrological Telemetry Report" />
-          </div>
+          <input id="comp-rep-subtitle" type="hidden" value="" />
         </div>
 
         <!-- Date Range Selection & Quick Presets -->
@@ -1055,7 +1051,7 @@
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-prod-weekly" checked style="accent-color:var(--blue);" />
-                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Descending Operational Weeks + Weekly Average)</span>
+                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Latest 8 Operational Weeks + Full-Period Average)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-prod-subsystems" style="accent-color:var(--blue);" />
@@ -1076,19 +1072,19 @@
             <div class="comp-subtopics-list" style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-press-monthly" checked style="accent-color:var(--blue);" />
-                <span>Monthly / Period Pressure Compliance Summary (KPIs + Compliance Table)</span>
+                <span>Executive Pressure Network KPI Scorecards (System Dist Avg, Sta. Monica Boosted, &lt;6.5 psi Exposure, 0 psi Outages)</span>
               </label>
-              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-press-diurnal" checked style="accent-color:var(--blue);" />
+              <label style="display:none; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-press-diurnal" style="accent-color:var(--blue);" />
                 <span>Diurnal Pressure Distribution Profile (Peak &amp; Off-Peak Zone Graph + Summary Table)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-press-weekly-major" checked style="accent-color:var(--blue);" />
-                <span>Weekly Major Pressure Monitoring Points (MBS, UV Facility, Campo Uno Chamber Box, AVG System, Peak/Off-Peak)</span>
+                <span>Weekly Major Pressure Monitoring Points (Grouped Urban Core &amp; Boosted vs. Transmission Mains, Latest 8 Weeks)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-press-lowest5" checked style="accent-color:var(--blue);" />
-                <span>Top 5 Lowest-Pressure Sensors Ranking (18 Distribution Stations, Daily Hours &lt; 6.5 psi)</span>
+                <span>Top 5 Lowest-Pressure Sensors Ranking (15 Urban Distribution Stations, Daily Hours &lt; 6.5 psi)</span>
               </label>
             </div>
           </div>
@@ -5298,7 +5294,7 @@
       if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     } else {
       if (titleInp) titleInp.value = "PPCWD Dashboard Comprehensive Report";
-      if (subInp) subInp.value = "Water Quality & Operational Telemetry";
+      if (subInp) subInp.value = "";
       if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     }
   }
@@ -6569,17 +6565,17 @@
   function buildCompHeader(title, subtitle, context, startStr, endStr) {
     return `
       <div class="comp-header-banner">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <img src="${PPCWD_LOGO_BASE64}" alt="PPCWD Logo" style="width:40px; height:40px; object-fit:contain;" />
+        <div style="display:flex; align-items:center; gap:13px;">
+          <img src="${PPCWD_LOGO_BASE64}" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;" />
           <div>
-            <div style="font-size:16px; font-weight:800; color:#1560BD; letter-spacing:-0.2px; text-transform:uppercase;">${escapeHtml(title)}</div>
-            <div style="font-size:10.5px; font-weight:700; color:#334155;">${escapeHtml(subtitle)} &bull; <span style="font-weight:500; color:#64748B;">${escapeHtml(context)}</span></div>
+            <div style="font-size:17px; font-weight:800; color:#1560BD; letter-spacing:-0.3px; text-transform:uppercase; line-height:1.15;">${escapeHtml(title)}</div>
+            <div style="font-size:11px; font-weight:700; color:#334155; margin-top:2px;">${subtitle ? `${escapeHtml(subtitle)} &bull; ` : ''}<span style="font-weight:600; color:#475569;">${escapeHtml(context)}</span></div>
           </div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:9px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px;">Reporting Period</div>
-          <div style="font-size:11.5px; font-weight:800; color:#0F172A; font-family:'IBM Plex Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
-          <div style="font-size:8.5px; color:#94A3B8; margin-top:2px;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
+          <div style="font-size:9px; font-weight:800; color:#64748B; text-transform:uppercase; letter-spacing:0.6px;">Reporting Period</div>
+          <div style="font-size:12px; font-weight:800; color:#0F172A; font-family:'IBM Plex Mono', monospace; margin-top:1px;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
+          <div style="font-size:9px; font-weight:600; color:#64748B; margin-top:2px;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
         </div>
       </div>
     `;
@@ -6589,8 +6585,8 @@
   function buildCompFooter(pageNum, totalPages) {
     return `
       <div class="comp-footer">
-        <div>Puerto Princesa City Water District &bull; SCADA Telemetry &amp; Field Operations Monitoring</div>
-        <div style="font-weight:700; font-family:'IBM Plex Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
+        <div>Puerto Princesa City Water District &bull; Executive SCADA &amp; Field Operations Pack</div>
+        <div style="font-weight:800; color:#1E293B; font-family:'IBM Plex Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
       </div>
     `;
   }
@@ -6604,7 +6600,7 @@
     }
 
     const title = (document.getElementById("comp-rep-title")?.value || "PPCWD Dashboard Comprehensive Report").trim();
-    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "Water Quality & Operational Telemetry").trim();
+    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "").trim();
     const context = (document.getElementById("comp-rep-context")?.value || "Operational & Hydrological Telemetry Report").trim();
     
     const anchorFallback = getCompReportAnchorDate();
@@ -6667,7 +6663,7 @@
     const startStr = startDt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
     const endStr = endDt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 
-    // Determine whether Pressure content extends across 2 pages without skewing or crowding
+    // Determine whether Pressure content extends across 2 pages (only if optional Diurnal SVG is explicitly checked)
     const pressNeedsTwoPages = topicPress && (subPressDiurnal && (subPressWeekly || subPressLowest5 || subPressMonthly));
     const pressPages = topicPress ? (pressNeedsTwoPages ? 2 : 1) : 0;
     const totalPages = (topicProd ? 1 : 0) + pressPages + (topicComp ? 1 : 0) + (topicRiver ? 1 : 0);
@@ -6682,101 +6678,48 @@
     const pagesHtml = [];
     let curPage = 0;
 
+    // Pre-compute domain telemetry for selected topics
+    const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
+    const pressData = topicPress ? computePressureAnalytics(startDt, endDt, matchedWeeks) : null;
+    const compData = topicComp ? computeComplaintsAnalytics(startDt, endDt) : null;
+    const riverMatrix = topicRiver ? computeRiverDepletionMatrix(startDt, endDt) : [];
+
     // ─────────────────────────────────────────────────────────────
     // PAGE 1: PRODUCTION WEEKLY & MONTHLY SUMMARY
     // ─────────────────────────────────────────────────────────────
     if (topicProd) {
       curPage++;
       const monthlyData = await fetchAllMonthlyRecords(startDt, endDt);
-      const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
-
-      // Pre-compute summaries for the compact 2-column Executive Takeaways banner
       const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report Yet submitted', pctVsNormal: 0, hasData: false };
-      const execProdSummary = recentMonth.hasData 
-        ? `${recentMonth.month_year}: ${fmt(recentMonth.pctVsNormal, 1)}% of Baseline (${recentMonth.lwuaStatus.toUpperCase()})`
-        : `${recentMonth.month_year}: ${recentMonth.lwuaStatus}`;
 
-      // Identify the most recent reported week with actual telemetry data
-      let recentWk = (matchedWeeks || []).find(w => w.prodRow || (w.hasProdReport !== false && w.prodRow));
-      if (!recentWk && Array.isArray(allProdData) && allProdData.length) {
-        const lastRow = allProdData[allProdData.length - 1];
-        recentWk = {
-          week: lastRow[COL.week] || 'Week',
-          period: lastRow[COL.period] || lastRow[COL.date] || '',
-          prodRow: lastRow
-        };
-      }
-
-      let execWeeklySummary = 'No Weekly Report Submitted';
-      let execWeeklySub = 'Target: 398,020 m&sup3;/wk &bull; Standard Regulatory Evaluation';
-      if (recentWk && recentWk.prodRow) {
-        const rRow = recentWk.prodRow;
-        const totalVol = Number(rRow[COL.grandTotal]) || 0;
-        const sw = Number(rRow[COL.totalSW]) || 0;
-        const gw = Number(rRow[COL.totalGW]) || 0;
-        const swPct = totalVol > 0 ? (sw / totalVol) * 100 : 0;
-        const gwPct = totalVol > 0 ? (gw / totalVol) * 100 : 0;
-        const pctAchieved = (totalVol / 398020.0) * 100;
-        
-        let sText = 'Normal (&ge;100%)';
-        let sColor = '#16A34A';
-        if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; }
-        else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; }
-        else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; }
-
-        const wkName = recentWk.week || rRow[COL.week] || 'Recent Week';
-        const periodStr = recentWk.period || rRow[COL.period] || '';
-        execWeeklySummary = `${wkName}: ${fmt(totalVol, 0)} m&sup3; (${fmt(pctAchieved, 1)}%) &bull; <span style="color:${sColor}; font-weight:800;">${sText}</span>`;
-        execWeeklySub = `Target: 398,020 m&sup3;/wk &bull; SW: ${fmt(swPct, 0)}% / GW: ${fmt(gwPct, 0)}% &bull; ${escapeHtml(periodStr)}`;
-      }
-
-      let p1Content = `
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px; background:#F8FAFC; border:1px solid #CBD5E1; border-left:4px solid #1560BD; border-radius:4px; padding:6px 12px;">
-          <div>
-            <div style="font-size:7.5px; font-weight:800; color:#1E40AF; text-transform:uppercase; letter-spacing:0.4px;">1. Monthly Production Yield &amp; LWUA Trigger</div>
-            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execProdSummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Target: 1,705,700 m&sup3; &bull; 5% Cutoff: 1,620,415 m&sup3; (Full Month)</div>
-          </div>
-          <div>
-            <div style="font-size:7.5px; font-weight:800; color:#0D9488; text-transform:uppercase; letter-spacing:0.4px;">2. Recent Reported Weekly Production &amp; Crisis Indicator</div>
-            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execWeeklySummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">${execWeeklySub}</div>
-          </div>
-        </div>
-      `;
+      let p1Content = '';
 
       // Section 1: Monthly Production & LWUA Trigger Status (All records descending)
       if (subProdMonthly) {
-        const totalActualPeriod = monthlyData.reduce((s, m) => s + m.totalActual, 0);
-        // Identify most recent reported month for the card
-        const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report yet', pctVsNormal: 0 };
-        const recentStatusColor = recentMonth.lwuaStatus === 'In Capacity' ? '#16A34A' : (recentMonth.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
+        const recentMonthCard = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report Yet submitted', pctVsNormal: 0 };
+        const recentStatusColor = recentMonthCard.lwuaStatus === 'In Capacity' ? '#16A34A' : (recentMonthCard.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
 
         p1Content += `
-          <div style="margin-bottom:14px;">
+          <div style="margin-bottom:18px;">
             <div class="comp-section-title">
-              <span>MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER STATUS (ALL REPORTED MONTHS)</span>
+              <span>1A. MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER STATUS</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Regulatory Baseline: 1,705,700 m&sup3;/mo</span>
             </div>
-            <div class="comp-kpi-grid">
+            <div class="comp-kpi-grid" style="grid-template-columns:repeat(3, 1fr);">
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Normal Baseline</div>
                 <div class="comp-kpi-value">1,705,700 <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
                 <div class="comp-kpi-sub">2,336.58 m&sup3;/hr (730 hrs)</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#D97706;">
                 <div class="comp-kpi-label">LWUA 5% Cutoff</div>
                 <div class="comp-kpi-value" style="color:#D97706;">1,620,415 <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
                 <div class="comp-kpi-sub">Mandatory Notice Threshold</div>
               </div>
-              <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Cumulative Telemetry Volume</div>
-                <div class="comp-kpi-value">${fmt(totalActualPeriod, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
-                <div class="comp-kpi-sub">${monthlyData.filter(m => m.hasData).length} Reported Calendar Months</div>
-              </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:${recentStatusColor};">
                 <div class="comp-kpi-label">Recent Month LWUA Status</div>
-                <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:13px;">${recentMonth.lwuaStatus}</div>
-                <div class="comp-kpi-sub">${recentMonth.month_year} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
+                <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:15px;">${recentMonth.lwuaStatus}</div>
+                <div class="comp-kpi-sub">${recentMonth.month_year} (${recentMonth.hasData ? fmt(recentMonth.pctVsNormal, 1) + '% vs Baseline' : 'Pending Report'})</div>
               </div>
             </div>
 
@@ -6795,15 +6738,16 @@
               <tbody>
                 ${monthlyData.map(m => {
                   const sColor = m.lwuaStatus === 'In Capacity' ? '#16A34A' : (m.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
+                  const pillClass = m.lwuaStatus === 'In Capacity' ? 'comp-pill-ok' : (m.lwuaStatus === 'For Reporting' ? 'comp-pill-crit' : 'comp-pill-muted');
                   return `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
+                      <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.gwPct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
-                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${m.lwuaStatus}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
+                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};"><span class="comp-status-pill ${pillClass}">${m.lwuaStatus}</span></td>
                     </tr>
                   `;
                 }).join('')}
@@ -6813,29 +6757,48 @@
         `;
       }
 
-      // Section 2: Weekly Production & Crisis Monitoring (Up to 4 Calibrated Operational Weeks)
+      // Section 2: Weekly Production & Crisis Monitoring (Latest 8 Operational Weeks + Full-Period Summary Row)
       if (subProdWeekly) {
         let sumTotal = 0, sumDaily = 0, sumSW = 0, sumGW = 0;
         let reportedCount = 0;
 
-        const weekRows = matchedWeeks.map(w => {
+        // Accumulate full period totals across all matched weeks first
+        matchedWeeks.forEach(w => {
+          const row = w.prodRow || (w.hasProdReport !== false ? w : null);
+          if (row && w.hasProdReport !== false) {
+            const total = Number(row[COL.grandTotal]) || 0;
+            const daily = (Number(row[COL.mld]) || 0) * 1000 || (total / 7);
+            const sw = Number(row[COL.totalSW]) || 0;
+            const gw = Number(row[COL.totalGW]) || 0;
+            if (total > 0) {
+              sumTotal += total;
+              sumDaily += daily;
+              sumSW += sw;
+              sumGW += gw;
+              reportedCount++;
+            }
+          }
+        });
+
+        // Display latest 8 operational weeks so the table fits cleanly on 1 A4 page with large executive typography
+        const displayWeeks = matchedWeeks.slice(0, 8);
+        const weekRows = displayWeeks.map(w => {
           const wk = w.week || w[COL.week];
           const period = w.period || (w[COL.period] ? w[COL.period].replace(/(\d+)\s*[-–—]\s*(\d+)/, '$1 – $2') : '');
           const row = w.prodRow || (w.hasProdReport !== false ? w : null);
 
-          // If this week is an unsubmitted / subsequent week, render the appropriate pending status badge
           if (!row || w.hasProdReport === false) {
             const statusLabel = w.pendingStatus || 'No Report Yet (Pending Submission)';
             return `
               <tr>
-                <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${wk}</td>
-                <td>${escapeHtml(period)}</td>
+                <td style="font-weight:800; font-family:'IBM Plex Mono', monospace; white-space:nowrap;">${wk}</td>
+                <td style="white-space:nowrap;">${escapeHtml(period)}</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
-                <td style="text-align:left; padding-left:12px;"><span style="font-size:8px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:2px 6px; border-radius:3px;">${statusLabel}</span></td>
+                <td style="text-align:left; padding-left:12px;"><span class="comp-status-pill comp-pill-muted">${statusLabel}</span></td>
               </tr>
             `;
           }
@@ -6849,28 +6812,23 @@
           const target = 398020.0;
           const pctAchieved = (total / target) * 100;
 
-          sumTotal += total;
-          sumDaily += daily;
-          sumSW += sw;
-          sumGW += gw;
-          reportedCount++;
-
           let sText = 'Normal (&ge;100%)';
           let sColor = '#16A34A';
-          if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; }
-          else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; }
-          else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; }
+          let pillClass = 'comp-pill-ok';
+          if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; pillClass = 'comp-pill-crit'; }
+          else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; pillClass = 'comp-pill-warn'; }
+          else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; pillClass = 'comp-pill-watch'; }
 
           return `
             <tr>
-              <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${wk}</td>
-              <td>${escapeHtml(period)}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(total, 2)}</td>
+              <td style="font-weight:800; font-family:'IBM Plex Mono', monospace; white-space:nowrap;">${wk}</td>
+              <td style="white-space:nowrap;">${escapeHtml(period)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${fmt(total, 2)}</td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(daily, 2)}</td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(swPct, 1)}%</td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(gwPct, 1)}%</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
-              <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${sText}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
+              <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};"><span class="comp-status-pill ${pillClass}">${sText}</span></td>
             </tr>
           `;
         }).join('');
@@ -6885,16 +6843,20 @@
 
         p1Content += `
           <div>
-            <div class="comp-section-title">
-              <span>WEEKLY PRODUCTION, SW/GW SPLIT &amp; CRISIS MONITORING (TARGET: 398,020 m&sup3;/wk)</span>
+            <div class="comp-section-title" style="margin-bottom:9px;">
+              <span>1B. WEEKLY PRODUCTION, SW/GW SPLIT &amp; CRISIS MONITORING (LATEST ${displayWeeks.length} OPERATIONAL WEEKS)</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569; white-space:nowrap;">Target: 398,020 m&sup3;/wk</span>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:8px; font-size:9px; background:#F8FAFC; border:1px solid #E2E8F0; padding:5px 10px; border-radius:4px;">
-              <span style="color:#16A34A; font-weight:700;">&bull; Normal &ge; 100%</span>
-              <span style="color:#2563EB; font-weight:700;">&bull; Level 1: Watch (90&ndash;99.9%)</span>
-              <span style="color:#D97706; font-weight:700;">&bull; Level 2: Alert (75&ndash;89.9%)</span>
-              <span style="color:#DC2626; font-weight:700;">&bull; Level 3: Critical (&lt;75%)</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; font-size:9px; background:#F8FAFC; border:1px solid #CBD5E1; padding:6px 10px; border-radius:4px;">
+              <div style="display:flex; gap:10px; white-space:nowrap;">
+                <span style="color:#16A34A; font-weight:800;">&bull; Normal &ge; 100%</span>
+                <span style="color:#2563EB; font-weight:800;">&bull; Watch (90&ndash;99.9%)</span>
+                <span style="color:#D97706; font-weight:800;">&bull; Alert (75&ndash;89.9%)</span>
+                <span style="color:#DC2626; font-weight:800;">&bull; Critical (&lt;75%)</span>
+              </div>
+              <span style="font-size:8.5px; color:#64748B; font-weight:600; white-space:nowrap;">Latest ${displayWeeks.length} wks &bull; Avg of ${cnt} reported wks</span>
             </div>
-            <table class="comp-table">
+            <table class="comp-table comp-table-weekly">
               <thead>
                 <tr>
                   <th>Week</th>
@@ -6909,7 +6871,7 @@
               </thead>
               <tbody>
                 ${weekRows}
-                <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                <tr class="comp-summary-row" style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
                   <td colspan="2">WEEKLY AVERAGE (${cnt > 0 ? `${cnt} Reported Weeks` : 'No Reports Yet'})</td>
                   <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${cnt > 0 ? fmt(avgWeekly, 2) : '&mdash;'}</td>
                   <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${cnt > 0 ? fmt(avgDaily, 2) : '&mdash;'}</td>
@@ -6934,7 +6896,7 @@
         p1Content += `
           <div style="margin-top:10px; border-top:1px solid #E2E8F0; padding-top:8px;">
             <div style="font-size:10px; font-weight:700; color:#1E293B; margin-bottom:4px;">Operational Crisis Remarks &amp; Task Force Directives:</div>
-            <div style="font-size:9px; color:#475569; display:flex; flex-direction:column; gap:3px;">
+            <div style="font-size:9.5px; color:#475569; display:flex; flex-direction:column; gap:3px;">
               ${activeRemarks.length ? activeRemarks.map(r => `<div><strong>&bull; ${escapeHtml(r.name)}:</strong> ${escapeHtml(r.remark)}</div>`).join('') : '<div style="font-style:italic; color:#94A3B8;">No operational remarks logged for this period.</div>'}
             </div>
           </div>
@@ -6953,14 +6915,83 @@
     }
 
     // ─────────────────────────────────────────────────────────────
-    // PRESSURE NETWORK TELEMETRY (DYNAMIC MULTI-PAGE EXTENSION)
+    // PAGE 2: EXECUTIVE NETWORK PRESSURE & HYDRAULIC HOTSPOTS
     // ─────────────────────────────────────────────────────────────
     if (topicPress) {
-      const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
-      const pressData = computePressureAnalytics(startDt, endDt, matchedWeeks);
+      const renderExecutiveWeeklyMajorTable = (rowsToDisplay, allRows) => {
+        const validDist = (allRows || []).filter(r => r.distAvg !== null && !isNaN(r.distAvg));
+        const validMbs = (allRows || []).filter(r => r.mbsAvg !== null && !isNaN(r.mbsAvg));
+        const validSm = (allRows || []).filter(r => r.staMonicaAvg !== null && !isNaN(r.staMonicaAvg));
+        const validPk = (allRows || []).filter(r => r.peakAvg !== null && !isNaN(r.peakAvg));
+        const validOp = (allRows || []).filter(r => r.offPeakAvg !== null && !isNaN(r.offPeakAvg));
+        const validCampo = (allRows || []).filter(r => r.campoAvg !== null && !isNaN(r.campoAvg));
+        const validEsc = (allRows || []).filter(r => r.escalanteAvg !== null && !isNaN(r.escalanteAvg));
+        const validTag = (allRows || []).filter(r => r.tagburosAvg !== null && !isNaN(r.tagburosAvg));
+        const avgOf = (arr, key) => arr.length ? arr.reduce((s, x) => s + Number(x[key]), 0) / arr.length : null;
+
+        const mDist = avgOf(validDist, 'distAvg');
+        const mMbs = avgOf(validMbs, 'mbsAvg');
+        const mSm = avgOf(validSm, 'staMonicaAvg');
+        const mPk = avgOf(validPk, 'peakAvg');
+        const mOp = avgOf(validOp, 'offPeakAvg');
+        const mCampo = avgOf(validCampo, 'campoAvg');
+        const mEsc = avgOf(validEsc, 'escalanteAvg');
+        const mTag = avgOf(validTag, 'tagburosAvg');
+
+        return `
+          <table class="comp-table comp-table-major">
+            <thead>
+              <tr class="comp-th-group-row">
+                <th colspan="2" style="text-align:left;">Operational Cycle</th>
+                <th colspan="4">Urban Core &amp; Boosted Distribution Network (PSI)</th>
+                <th colspan="4">Primary Transmission Mains (PSI &bull; Excluded from Dist Avg)</th>
+              </tr>
+              <tr>
+                <th>Week</th>
+                <th>Inclusive Dates</th>
+                <th style="text-align:right;">System Dist Avg</th>
+                <th style="text-align:right;">MBS (Urban Core)</th>
+                <th style="text-align:right;">Sta. Monica (Boosted)</th>
+                <th style="text-align:right;">Peak / Off-Peak</th>
+                <th style="text-align:right;">Campo Uno (Trans.)</th>
+                <th style="text-align:right;">UV Facility (Trans.)</th>
+                <th style="text-align:right;">Escalante (Trans.)</th>
+                <th style="text-align:right;">Tagburos (Trans.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsToDisplay.map(w => `
+                <tr>
+                  <td style="font-weight:800; font-family:'IBM Plex Mono', monospace; white-space:nowrap;">${w.week}</td>
+                  <td style="white-space:nowrap;">${escapeHtml(w.period)}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:700;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-size:8.8px; white-space:nowrap;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}<span style="color:#94A3B8;">/</span>${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:6.8px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 3px; border-radius:3px; white-space:nowrap;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
+                </tr>
+              `).join('')}
+              <tr class="comp-summary-row" style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                <td colspan="2">PERIOD WEEKLY MEAN (${validDist.length} Wks)</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${mDist !== null ? fmt(mDist, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${mMbs !== null ? fmt(mMbs, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${mSm !== null ? fmt(mSm, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-size:8.8px; white-space:nowrap;">${mPk !== null ? fmt(mPk, 2) : 'N/A'}/${mOp !== null ? fmt(mOp, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${mCampo !== null ? fmt(mCampo, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;"><span style="font-size:6.8px; font-weight:700; color:#64748B; background:#E2E8F0; padding:1px 3px; border-radius:3px; white-space:nowrap;">Offline / No Telemetry</span></td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${mEsc !== null ? fmt(mEsc, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${mTag !== null ? fmt(mTag, 2) : 'N/A'}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      };
 
       if (pressNeedsTwoPages) {
-        // ─── PRESSURE PAGE 1: Compliance Summary & Diurnal Profile ───
+        // ─── OPTIONAL 2-PAGE PRESSURE PACK (when Diurnal SVG is explicitly enabled) ───
         curPage++;
         let pPress1 = '';
 
@@ -6976,17 +7007,17 @@
                   <div class="comp-kpi-value" style="color:#2563EB;">${fmt(pressData.overallDistMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">15 Urban Core &amp; Dist Points (inc. MBS)</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#0D9488;">
                   <div class="comp-kpi-label">Sta. Monica (Boosted Zone)</div>
                   <div class="comp-kpi-value" style="color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">Peak: ${fmt(pressData.staMonicaPeak, 2)} / Off-Pk: ${fmt(pressData.staMonicaOffPeak, 2)} psi</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#D97706;">
                   <div class="comp-kpi-label">Critical Exposure (&lt;6.5 psi)</div>
                   <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt65Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
                   <div class="comp-kpi-sub">${fmt(pressData.lt65Pct + pressData.eq0Pct, 1)}% of distribution station-hours</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#DC2626;">
                   <div class="comp-kpi-label">Supply Interruption (0 psi)</div>
                   <div class="comp-kpi-value" style="color:#DC2626;">${pressData.eq0Count} <span style="font-size:10px; font-weight:600;">hrs</span></div>
                   <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours</div>
@@ -7023,7 +7054,7 @@
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
                     </tr>
                   `).join('')}
-                  <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                  <tr class="comp-summary-row" style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
                     <td>PERIOD TOTAL / MEAN</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
@@ -7037,7 +7068,7 @@
                   </tr>
                 </tbody>
               </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
+              <div style="font-size:8.5px; color:#64748B; margin-top:-4px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
             </div>
           `;
         }
@@ -7069,46 +7100,14 @@
         let pPress2 = '';
 
         if (subPressWeekly) {
+          const displayRows = pressData.weeklyMajorRows.slice(0, 8);
           pPress2 += `
             <div style="margin-bottom:14px;">
               <div class="comp-section-title">
-                <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI)</span>
+                <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI &bull; LATEST ${displayRows.length} WEEKS)</span>
               </div>
-              <table class="comp-table">
-                <thead>
-                  <tr>
-                    <th>Week</th>
-                    <th>Inclusive Dates</th>
-                    <th style="text-align:right;">AVG System (Dist)</th>
-                    <th style="text-align:right;">MBS (Urban Core)</th>
-                    <th style="text-align:right;">Sta. Monica (Boosted)</th>
-                    <th style="text-align:right;">Peak Avg</th>
-                    <th style="text-align:right;">Off-Peak Avg</th>
-                    <th style="text-align:right;">Campo Uno (Trans.)</th>
-                    <th style="text-align:right;">UV Facility (Trans.)</th>
-                    <th style="text-align:right;">Escalante (Trans.)</th>
-                    <th style="text-align:right;">Tagburos (Trans.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${pressData.weeklyMajorRows.map(w => `
-                    <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${w.week}</td>
-                      <td>${escapeHtml(w.period)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:7.5px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 4px; border-radius:3px;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages. N/A indicates no sensor readings logged.</div>
+              ${renderExecutiveWeeklyMajorTable(displayRows, pressData.weeklyMajorRows)}
+              <div class="comp-note-box">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages.</div>
             </div>
           `;
         }
@@ -7122,21 +7121,23 @@
               <table class="comp-table">
                 <thead>
                   <tr>
-                    <th style="width:30px;">Rank</th>
+                    <th style="width:45px;">Rank</th>
                     <th>Monitoring Point / Station Name</th>
                     <th style="text-align:right;">Average PSI</th>
                     <th style="text-align:right;">Hours &lt; 6.5 psi</th>
                     <th style="text-align:right;">Avg Daily Hours &lt; 6.5 psi</th>
+                    <th style="text-align:left; padding-left:14px;">Hydraulic Risk Classification</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${pressData.top5Lowest.map((st, idx) => `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
-                      <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${st.hoursLt65} hrs</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
+                      <td style="font-weight:800;">${escapeHtml(st.station.name)}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${st.hoursLt65} hrs</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="text-align:left; padding-left:14px;"><span class="comp-status-pill ${st.meanPsi < 6.5 ? 'comp-pill-crit' : 'comp-pill-warn'}">${st.meanPsi < 6.5 ? 'Chronic Low-Pressure Spur (&lt;6.5 psi)' : 'Marginal Pressure Zone (6.5&ndash;14.9 psi)'}</span></td>
                     </tr>
                   `).join('')}
                 </tbody>
@@ -7155,91 +7156,46 @@
           </div>
         `);
       } else {
-        // Single Pressure Page (compact mode when subtopics fit comfortably)
+        // ─── DEFAULT SINGLE-PAGE EXECUTIVE PRESSURE OVERVIEW (Page 2 of 4-Page Pack) ───
         curPage++;
         let pPress = '';
 
         if (subPressMonthly) {
           pPress += `
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:10px;">
               <div class="comp-section-title">
-                <span>SYSTEM PRESSURE NETWORK COMPLIANCE &amp; EXPOSURE SUMMARY</span>
+                <span>2A. SYSTEM PRESSURE NETWORK COMPLIANCE &amp; EXPOSURE SCORECARDS</span>
+                <span style="font-size:9.5px; font-weight:700; color:#475569; white-space:nowrap;">15 Urban Core &amp; Consumer Sensors</span>
               </div>
-              <div class="comp-kpi-grid">
+              <div class="comp-kpi-grid" style="margin-bottom:2px;">
                 <div class="comp-kpi-card">
                   <div class="comp-kpi-label">System Dist Average</div>
                   <div class="comp-kpi-value" style="color:#2563EB;">${fmt(pressData.overallDistMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">15 Urban Core &amp; Dist Points (inc. MBS)</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#0D9488;">
                   <div class="comp-kpi-label">Sta. Monica (Boosted Zone)</div>
                   <div class="comp-kpi-value" style="color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">Peak: ${fmt(pressData.staMonicaPeak, 2)} / Off-Pk: ${fmt(pressData.staMonicaOffPeak, 2)} psi</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#D97706;">
                   <div class="comp-kpi-label">Critical Exposure (&lt;6.5 psi)</div>
                   <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt65Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
                   <div class="comp-kpi-sub">${fmt(pressData.lt65Pct + pressData.eq0Pct, 1)}% of distribution station-hours</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#DC2626;">
                   <div class="comp-kpi-label">Supply Interruption (0 psi)</div>
                   <div class="comp-kpi-value" style="color:#DC2626;">${pressData.eq0Count} <span style="font-size:10px; font-weight:600;">hrs</span></div>
-                  <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours</div>
+                  <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours (${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compTotal, 10) || 0), 0)} / ${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compNW, 10) || 0), 0)} Tot/NW)</div>
                 </div>
               </div>
-
-              <table class="comp-table">
-                <thead>
-                  <tr>
-                    <th>Period / Month</th>
-                    <th style="text-align:right;">Dist Mean (inc. MBS)</th>
-                    <th style="text-align:right;">Peak (5-8 AM &amp; 5-8 PM)</th>
-                    <th style="text-align:right;">Off-Peak (8AM-5PM &amp; 8PM-5AM)</th>
-                    <th style="text-align:right;">Sta. Monica</th>
-                    <th style="text-align:right;">&ge; 15.0 psi</th>
-                    <th style="text-align:right;">6.5&ndash;14.9 psi</th>
-                    <th style="text-align:right;">&lt; 6.5 psi</th>
-                    <th style="text-align:right;">0.0 psi (hrs)</th>
-                    <th style="text-align:right;">Complaints (Tot / NW)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${pressData.monthlyComplianceRows.map(m => `
-                    <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.distMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.peakMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.offPeakMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600; color:#0D9488;">${m.hasReadings ? fmt(m.staMonicaMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${m.hasReadings ? fmt(m.ge15Pct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m65_149Pct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt65Pct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${m.hasReadings ? fmt(m.eq0Pct, 1) + '% (' + m.eq0Count + ')' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
-                    </tr>
-                  `).join('')}
-                  <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
-                    <td>PERIOD TOTAL / MEAN</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallOffPeakMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${fmt(pressData.ge15Pct, 1)}%</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compTotal, 10) || 0), 0)} / ${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compNW, 10) || 0), 0)}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
             </div>
           `;
         }
 
         if (subPressDiurnal) {
           pPress += `
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:10px;">
               <div class="comp-section-title">
                 <span>PRESSURE DISTRIBUTION &amp; OPERATIONAL TIME AREAS (PSI)</span>
               </div>
@@ -7250,46 +7206,15 @@
         }
 
         if (subPressWeekly) {
+          const displayRows = pressData.weeklyMajorRows.slice(0, 8);
           pPress += `
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:10px;">
               <div class="comp-section-title">
-                <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI)</span>
+                <span>2B. WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI &bull; LATEST ${displayRows.length} OPERATIONAL WEEKS)</span>
+                <span style="font-size:9.5px; font-weight:700; color:#475569; white-space:nowrap;">Grouped by Network Tier</span>
               </div>
-              <table class="comp-table">
-                <thead>
-                  <tr>
-                    <th>Week</th>
-                    <th>Inclusive Dates</th>
-                    <th style="text-align:right;">AVG System (Dist)</th>
-                    <th style="text-align:right;">MBS (Urban Core)</th>
-                    <th style="text-align:right;">Sta. Monica (Boosted)</th>
-                    <th style="text-align:right;">Peak Avg</th>
-                    <th style="text-align:right;">Off-Peak Avg</th>
-                    <th style="text-align:right;">Campo Uno (Trans.)</th>
-                    <th style="text-align:right;">UV Facility (Trans.)</th>
-                    <th style="text-align:right;">Escalante (Trans.)</th>
-                    <th style="text-align:right;">Tagburos (Trans.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${pressData.weeklyMajorRows.map(w => `
-                    <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${w.week}</td>
-                      <td>${escapeHtml(w.period)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:7.5px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 4px; border-radius:3px;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages. N/A indicates no sensor readings logged.</div>
+              ${renderExecutiveWeeklyMajorTable(displayRows, pressData.weeklyMajorRows)}
+              <div class="comp-note-box" style="margin-top:5px; padding:5px 9px;">* Note: Distribution readings sanitized &le; 30 psi (MBS included in System Avg; Sta. Monica tracked as boosted zone; Campo Uno, UV Facility, Escalante &amp; Tagburos excluded as transmission mains).</div>
             </div>
           `;
         }
@@ -7298,26 +7223,29 @@
           pPress += `
             <div>
               <div class="comp-section-title">
-                <span>TOP 5 LOWEST-PRESSURE SENSORS (DISTRIBUTION NETWORK)</span>
+                <span>2C. TOP 5 LOWEST-PRESSURE SENSORS (DISTRIBUTION NETWORK HOTSPOTS)</span>
+                <span style="font-size:9.5px; font-weight:700; color:#DC2626; white-space:nowrap;">Threshold: &lt; 6.5 psi Critical</span>
               </div>
               <table class="comp-table">
                 <thead>
                   <tr>
-                    <th style="width:30px;">Rank</th>
+                    <th style="width:45px;">Rank</th>
                     <th>Monitoring Point / Station Name</th>
                     <th style="text-align:right;">Average PSI</th>
                     <th style="text-align:right;">Hours &lt; 6.5 psi</th>
                     <th style="text-align:right;">Avg Daily Hours &lt; 6.5 psi</th>
+                    <th style="text-align:left; padding-left:14px;">Hydraulic Risk Classification</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${pressData.top5Lowest.map((st, idx) => `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
-                      <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${st.hoursLt65} hrs</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
+                      <td style="font-weight:800;">${escapeHtml(st.station.name)}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${st.hoursLt65} hrs</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="text-align:left; padding-left:14px;"><span class="comp-status-pill ${st.meanPsi < 6.5 ? 'comp-pill-crit' : 'comp-pill-warn'}">${st.meanPsi < 6.5 ? 'Chronic Low-Pressure Spur (&lt;6.5 psi)' : 'Marginal Pressure Zone (6.5&ndash;14.9 psi)'}</span></td>
                     </tr>
                   `).join('')}
                 </tbody>
@@ -7339,19 +7267,18 @@
     }
 
     // ─────────────────────────────────────────────────────────────
-    // PAGE 3: TOP 5 LOWEST PRESSURE SENSORS & COMPLAINTS CORRELATION
+    // PAGE 3: CUSTOMER COMPLAINTS SUMMARY & TOP 10 BARANGAY HOTSPOTS
     // ─────────────────────────────────────────────────────────────
     if (topicComp) {
       curPage++;
-      const compData = computeComplaintsAnalytics(startDt, endDt);
-
       let p3Content = '';
 
       if (subCompSummary) {
         p3Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
-              <span>CUSTOMER SERVICE COMPLAINTS SUMMARY BY INCIDENT TYPE</span>
+              <span>3A. CUSTOMER SERVICE COMPLAINTS SUMMARY BY INCIDENT TYPE</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Field Dispatch &amp; Call Center Logs</span>
             </div>
             <div class="comp-kpi-grid">
               <div class="comp-kpi-card">
@@ -7359,17 +7286,17 @@
                 <div class="comp-kpi-value">${fmt(compData.total)} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">Across All Barangays</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#DC2626;">
                 <div class="comp-kpi-label">No Water Outages</div>
                 <div class="comp-kpi-value" style="color:#DC2626;">${fmt(compData.nwCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">${compData.total > 0 ? fmt((compData.nwCount / compData.total) * 100, 1) : 0}% of all complaints</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#D97706;">
                 <div class="comp-kpi-label">Low Pressure Incidents</div>
                 <div class="comp-kpi-value" style="color:#D97706;">${fmt(compData.lpCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">${compData.total > 0 ? fmt((compData.lpCount / compData.total) * 100, 1) : 0}% of all complaints</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#854D0E;">
                 <div class="comp-kpi-label">Water Quality / Turbidity</div>
                 <div class="comp-kpi-value" style="color:#854D0E;">${(compData.turbidCount || 0).toLocaleString()} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">${compData.total > 0 ? fmt(((compData.turbidCount || 0) / compData.total) * 100, 1) : '0.0'}% of all complaints</div>
@@ -7382,7 +7309,7 @@
                   <th>Incident Classification</th>
                   <th style="text-align:right;">Total Reports</th>
                   <th style="text-align:right;">% Share</th>
-                  <th style="text-align:left; padding-left:14px;">Operational Impact</th>
+                  <th style="text-align:left; padding-left:14px;">Operational Impact &amp; Field Protocol</th>
                 </tr>
               </thead>
               <tbody>
@@ -7390,14 +7317,14 @@
                   const share = compData.total > 0 ? (count / compData.total) * 100 : 0;
                   const isNW = type.toLowerCase().includes('no water');
                   const isLP = type.toLowerCase().includes('low pressure');
-                  const tColor = isNW ? '#DC2626' : (isLP ? '#D97706' : '#334155');
+                  const tColor = isNW ? '#DC2626' : (isLP ? '#D97706' : '#1E293B');
                   const impact = isNW ? 'Critical Service Disruption &bull; Water Trucking Deployment' : (isLP ? 'Peak Hour Flow Restriction &bull; Line Valving' : 'Routine Maintenance &bull; Customer Service Response');
                   return `
                     <tr>
-                      <td style="font-weight:700; color:${tColor};">${escapeHtml(type)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${count}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(share, 1)}%</td>
-                      <td style="text-align:left; padding-left:14px; font-size:9px; color:#475569;">${impact}</td>
+                      <td style="font-weight:800; color:${tColor};">${escapeHtml(type)}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${count}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${fmt(share, 1)}%</td>
+                      <td style="text-align:left; padding-left:14px; font-size:9.5px; color:#334155;">${impact}</td>
                     </tr>
                   `;
                 }).join('')}
@@ -7411,12 +7338,13 @@
         p3Content += `
           <div>
             <div class="comp-section-title">
-              <span>TOP 10 AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
+              <span>3B. TOP 10 AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Ranked by Cumulative Incident Count</span>
             </div>
             <table class="comp-table">
               <thead>
                 <tr>
-                  <th style="width:30px;">Rank</th>
+                  <th style="width:42px;">Rank</th>
                   <th>Barangay Name</th>
                   <th style="text-align:right;">Total Reports</th>
                   <th style="text-align:right;">No Water (NW) Outages</th>
@@ -7427,18 +7355,18 @@
               <tbody>
                 ${compData.topBrgysDetailed.map((b, idx) => `
                   <tr>
-                    <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
+                    <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
                     <td style="font-weight:800; color:#0F172A;">${escapeHtml(b.name)}</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${b.total}</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#DC2626;">${b.nw}</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#D97706;">${b.lp}</td>
-                    <td style="font-family:'IBM Plex Mono', monospace; font-size:8.5px; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${b.total}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:#DC2626;">${b.nw}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:#D97706;">${b.lp}</td>
+                    <td style="font-family:'IBM Plex Mono', monospace; font-size:9.5px; font-weight:600; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-            <div style="margin-top:10px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.4;">
-              <strong>Consumer Outage Observations:</strong> Persistent complaint clustering in San Miguel, San Pedro, and Sta. Monica reflects hydraulic stress across downstream spurs. Field operations prioritize mobile water tanker augmentation and localized gate valve throttling during peak usage periods.
+            <div class="comp-note-box">
+              <strong>Consumer Outage Observations:</strong> Persistent complaint clustering in downstream barangays reflects hydraulic stress during peak hours. Field operations prioritize mobile water tanker augmentation and localized gate valve throttling across affected stubout spurs.
             </div>
           </div>
         `;
@@ -7460,29 +7388,26 @@
     // ─────────────────────────────────────────────────────────────
     if (topicRiver) {
       curPage++;
-      const riverMatrix = computeRiverDepletionMatrix(startDt, endDt);
-
       let p4Content = '';
 
       if (subRiverDepletion) {
         const currentGauges = riverMatrix.filter(r => !r.isStale);
         const staleGauges = riverMatrix.filter(r => r.isStale);
-
         const renderRiverRow = (r) => {
           const pDateStr = r.prevDate || '—';
           const lDateStr = r.latestDate || '—';
           const changeColor = r.netChange < 0 ? '#DC2626' : (r.netChange > 0 ? '#0D9488' : '#64748B');
-          const staleBadge = r.isStale ? ` <span style="display:inline-block; font-size:7px; font-weight:700; color:#B45309; background:#FEF3C7; border:1px solid #FDE68A; padding:0 4px; border-radius:3px; vertical-align:middle;">[Last Gauged: ${lDateStr}]</span>` : '';
+          const staleBadge = r.isStale ? ` <span style="display:inline-block; font-size:8px; font-weight:700; color:#B45309; background:#FEF3C7; border:1px solid #FDE68A; padding:1px 5px; border-radius:3px; vertical-align:middle;">[Last Gauged: ${lDateStr}]</span>` : '';
           return `
             <tr ${r.isStale ? 'style="background:#F8FAFC;"' : ''}>
-              <td style="font-weight:700;">${escapeHtml(r.station.name)}${staleBadge}</td>
-              <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
-              <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
-              <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; font-weight:600;">${lDateStr}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.pctLabel}</td>
+              <td style="font-weight:800;">${escapeHtml(r.station.name)}${staleBadge}</td>
+              <td style="font-size:9.5px; font-weight:600; color:#475569;">${escapeHtml(r.station.group)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
+              <td style="font-size:9.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
+              <td style="font-size:9.5px; font-family:'IBM Plex Mono', monospace; font-weight:700;">${lDateStr}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${changeColor};">${r.pctLabel}</td>
             </tr>
           `;
         };
@@ -7490,11 +7415,18 @@
         p4Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
-              <span>WATERSHED RIVER FLOW TELEMETRY MATRIX (PREVIOUS VS. LATEST GAUGED DISCHARGE)</span>
+              <span>4A. WATERSHED RIVER FLOW TELEMETRY MATRIX (PREVIOUS VS. LATEST GAUGED DISCHARGE)</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Discharge in m&sup3;/day</span>
             </div>
 
             <table class="comp-table">
               <thead>
+                <tr class="comp-th-group-row">
+                  <th colspan="2" style="text-align:left;">Catchment &amp; Intake Station</th>
+                  <th colspan="2">Baseline / Preceding Measurement</th>
+                  <th colspan="2">Latest Gauged Telemetry</th>
+                  <th colspan="2">Hydrological Depletion / Variance</th>
+                </tr>
                 <tr>
                   <th>River Station Name</th>
                   <th>Watershed Zone</th>
@@ -7510,7 +7442,7 @@
                 ${currentGauges.map(renderRiverRow).join('')}
                 ${staleGauges.length > 0 ? `
                   <tr style="background:#F1F5F9; border-top:2px solid #CBD5E1; border-bottom:1px solid #CBD5E1;">
-                    <td colspan="8" style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.5px; padding:5px 8px;">
+                    <td colspan="8" style="font-size:9px; font-weight:800; color:#334155; text-transform:uppercase; letter-spacing:0.5px; padding:6px 9px;">
                       Historical / Non-Current Gauge Readings (&gt;14 Days Old &bull; Baseline Reference &bull; Not Reflective of Current-Week Collapse)
                     </td>
                   </tr>
@@ -7519,7 +7451,7 @@
               </tbody>
             </table>
 
-            <div style="margin-top:12px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.45;">
+            <div class="comp-note-box">
               <strong>Hydrological Telemetry Notes:</strong> Surface river discharge observations reflect raw intake gauging across primary infiltration galleries and northern satellite catchments. Comparative metrics monitor seasonal recession rates against preceding gauge dates to assess aquifer recharge and river baseflow stability.
             </div>
           </div>

@@ -1657,88 +1657,203 @@
       margin: 0 auto 20px auto;
     }
     .comp-header-banner {
-      border-bottom: 2px solid #1560BD;
-      padding-bottom: 8px;
+      border-bottom: 2.5px solid #1560BD;
+      padding-bottom: 9px;
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
     }
+    .comp-exec-strip {
+      background: linear-gradient(90deg, #F8FAFC 0%, #FFFFFF 100%);
+      border: 1px solid #CBD5E1;
+      border-left: 4px solid #1560BD;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .comp-exec-item {
+      min-width: 0;
+    }
+    .comp-exec-item + .comp-exec-item {
+      border-left: 1px solid #E2E8F0;
+      padding-left: 12px;
+    }
+    .comp-exec-kicker {
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+      line-height: 1.2;
+    }
+    .comp-exec-main {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-top: 2px;
+      line-height: 1.25;
+    }
+    .comp-exec-sub {
+      font-size: 9px;
+      color: #475569;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
     .comp-kpi-grid {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 12px;
     }
     .comp-kpi-card {
       flex: 1;
       background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      border-radius: 6px;
-      padding: 8px 10px;
+      border: 1px solid #CBD5E1;
+      border-top: 3px solid #1560BD;
+      border-radius: 7px;
+      padding: 9px 11px;
     }
     .comp-kpi-label {
-      font-size: 8.5px;
-      font-weight: 700;
-      color: #64748B;
+      font-size: 9px;
+      font-weight: 800;
+      color: #475569;
       text-transform: uppercase;
       letter-spacing: 0.4px;
       margin-bottom: 3px;
     }
     .comp-kpi-value {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 800;
       font-family: 'IBM Plex Mono', monospace;
       color: #0F172A;
       line-height: 1.15;
+      font-variant-numeric: tabular-nums;
     }
     .comp-kpi-sub {
-      font-size: 8px;
+      font-size: 9px;
       color: #64748B;
-      margin-top: 2px;
+      margin-top: 3px;
+      font-weight: 500;
+      line-height: 1.2;
     }
     .comp-section-title {
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 800;
-      color: #1E293B;
+      color: #0F172A;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 6px;
+      letter-spacing: 0.45px;
+      margin-bottom: 7px;
+      padding-left: 8px;
+      border-left: 3.5px solid #1560BD;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
+      line-height: 1.2;
     }
     .comp-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 9.5px;
+      font-size: 10.5px;
       margin-bottom: 10px;
+      font-variant-numeric: tabular-nums;
     }
     .comp-table th {
-      background: #F1F5F9;
-      border-bottom: 2px solid #CBD5E1;
-      padding: 5px 6px;
+      background: #1E293B;
+      border: 1px solid #1E293B;
+      padding: 6px 7px;
       font-weight: 700;
-      color: #334155;
+      color: #FFFFFF;
       text-align: left;
-      font-size: 9px;
+      font-size: 9.2px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .comp-table tr.comp-th-group-row th {
+      background: #0F172A;
+      color: #E2E8F0;
+      font-size: 8.5px;
+      font-weight: 800;
+      text-align: center;
+      padding: 4px 6px;
+      border: 1px solid #334155;
+      letter-spacing: 0.55px;
     }
     .comp-table td {
-      padding: 4.5px 6px;
-      border-bottom: 1px solid #E2E8F0;
-      color: #1E293B;
+      padding: 5.5px 7px;
+      border-bottom: 1px solid #CBD5E1;
+      border-left: 1px solid #E2E8F0;
+      border-right: 1px solid #E2E8F0;
+      color: #0F172A;
+      line-height: 1.25;
     }
-    .comp-table tr:hover {
+    .comp-table tbody tr:nth-child(even) td {
       background: #F8FAFC;
     }
+    .comp-table tr.comp-summary-row td {
+      background: #E2E8F0 !important;
+      font-weight: 800;
+      border-top: 2px solid #475569;
+      border-bottom: 2px solid #475569;
+      color: #0F172A;
+      padding: 6.5px 7px;
+    }
+    .comp-table.comp-table-major th {
+      padding: 6.5px 4px;
+      font-size: 8.4px;
+      letter-spacing: 0.1px;
+    }
+    .comp-table.comp-table-major td {
+      padding: 7.5px 4px;
+      font-size: 9.4px;
+      line-height: 1.35;
+    }
+    .comp-table.comp-table-major tr.comp-summary-row td {
+      padding: 8px 4px;
+    }
+    .comp-table.comp-table-weekly th {
+      padding: 7.5px 7px;
+    }
+    .comp-table.comp-table-weekly td {
+      padding: 9px 7px;
+      line-height: 1.35;
+    }
+    .comp-table.comp-table-weekly tr.comp-summary-row td {
+      padding: 9.5px 7px;
+    }
+    .comp-status-pill {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1.5px 6px;
+      border-radius: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      white-space: nowrap;
+    }
+    .comp-note-box {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-left: 3.5px solid #64748B;
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-size: 9.2px;
+      color: #334155;
+      line-height: 1.4;
+      margin-top: 6px;
+    }
     .comp-footer {
-      border-top: 1px solid #E2E8F0;
+      border-top: 1.5px solid #CBD5E1;
       padding-top: 6px;
       margin-top: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 8.5px;
-      color: #64748B;
+      font-size: 9.2px;
+      color: #475569;
+      font-weight: 600;
     }
     @media print {
       @page {
@@ -2712,15 +2827,11 @@
               <input id="comp-rep-title" type="text" class="form-input" style="width:100%; font-size:12px; font-weight:700; padding:7px 10px; box-sizing:border-box;" value="PPCWD Dashboard Comprehensive Report" />
             </div>
             <div>
-              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Report Subtitle</label>
-              <input id="comp-rep-subtitle" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Water Quality &amp; Operational Telemetry" />
+              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Sub-header / Context Note</label>
+              <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Operational &amp; Hydrological Telemetry Report" />
             </div>
           </div>
-
-          <div>
-            <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Sub-header / Context Note</label>
-            <input id="comp-rep-context" type="text" class="form-input" style="width:100%; font-size:12px; padding:7px 10px; box-sizing:border-box;" value="Operational &amp; Hydrological Telemetry Report" />
-          </div>
+          <input id="comp-rep-subtitle" type="hidden" value="" />
         </div>
 
         <!-- Date Range Selection & Quick Presets -->
@@ -2803,7 +2914,7 @@
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-prod-weekly" checked style="accent-color:var(--blue);" />
-                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Descending Operational Weeks + Weekly Average)</span>
+                <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Latest 8 Operational Weeks + Full-Period Average)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-prod-subsystems" style="accent-color:var(--blue);" />
@@ -2824,19 +2935,19 @@
             <div class="comp-subtopics-list" style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-press-monthly" checked style="accent-color:var(--blue);" />
-                <span>Monthly / Period Pressure Compliance Summary (KPIs + Compliance Table)</span>
+                <span>Executive Pressure Network KPI Scorecards (System Dist Avg, Sta. Monica Boosted, &lt;6.5 psi Exposure, 0 psi Outages)</span>
               </label>
-              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-press-diurnal" checked style="accent-color:var(--blue);" />
+              <label style="display:none; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="comp-sub-press-diurnal" style="accent-color:var(--blue);" />
                 <span>Diurnal Pressure Distribution Profile (Peak &amp; Off-Peak Zone Graph + Summary Table)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-press-weekly-major" checked style="accent-color:var(--blue);" />
-                <span>Weekly Major Pressure Monitoring Points (MBS, UV Facility, Campo Uno Chamber Box, AVG System, Peak/Off-Peak)</span>
+                <span>Weekly Major Pressure Monitoring Points (Grouped Urban Core &amp; Boosted vs. Transmission Mains, Latest 8 Weeks)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                 <input type="checkbox" id="comp-sub-press-lowest5" checked style="accent-color:var(--blue);" />
-                <span>Top 5 Lowest-Pressure Sensors Ranking (18 Distribution Stations, Daily Hours &lt; 6.5 psi)</span>
+                <span>Top 5 Lowest-Pressure Sensors Ranking (15 Urban Distribution Stations, Daily Hours &lt; 6.5 psi)</span>
               </label>
             </div>
           </div>
@@ -7046,7 +7157,7 @@
       if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     } else {
       if (titleInp) titleInp.value = "PPCWD Dashboard Comprehensive Report";
-      if (subInp) subInp.value = "Water Quality & Operational Telemetry";
+      if (subInp) subInp.value = "";
       if (ctxInp) ctxInp.value = "Operational & Hydrological Telemetry Report";
     }
   }
@@ -8317,17 +8428,17 @@
   function buildCompHeader(title, subtitle, context, startStr, endStr) {
     return `
       <div class="comp-header-banner">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <img src="${PPCWD_LOGO_BASE64}" alt="PPCWD Logo" style="width:40px; height:40px; object-fit:contain;" />
+        <div style="display:flex; align-items:center; gap:13px;">
+          <img src="${PPCWD_LOGO_BASE64}" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;" />
           <div>
-            <div style="font-size:16px; font-weight:800; color:#1560BD; letter-spacing:-0.2px; text-transform:uppercase;">${escapeHtml(title)}</div>
-            <div style="font-size:10.5px; font-weight:700; color:#334155;">${escapeHtml(subtitle)} &bull; <span style="font-weight:500; color:#64748B;">${escapeHtml(context)}</span></div>
+            <div style="font-size:17px; font-weight:800; color:#1560BD; letter-spacing:-0.3px; text-transform:uppercase; line-height:1.15;">${escapeHtml(title)}</div>
+            <div style="font-size:11px; font-weight:700; color:#334155; margin-top:2px;">${subtitle ? `${escapeHtml(subtitle)} &bull; ` : ''}<span style="font-weight:600; color:#475569;">${escapeHtml(context)}</span></div>
           </div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:9px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px;">Reporting Period</div>
-          <div style="font-size:11.5px; font-weight:800; color:#0F172A; font-family:'IBM Plex Mono', monospace;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
-          <div style="font-size:8.5px; color:#94A3B8; margin-top:2px;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
+          <div style="font-size:9px; font-weight:800; color:#64748B; text-transform:uppercase; letter-spacing:0.6px;">Reporting Period</div>
+          <div style="font-size:12px; font-weight:800; color:#0F172A; font-family:'IBM Plex Mono', monospace; margin-top:1px;">${escapeHtml(startStr)} &ndash; ${escapeHtml(endStr)}</div>
+          <div style="font-size:9px; font-weight:600; color:#64748B; margin-top:2px;">Generated: ${new Date().toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' })}</div>
         </div>
       </div>
     `;
@@ -8337,8 +8448,8 @@
   function buildCompFooter(pageNum, totalPages) {
     return `
       <div class="comp-footer">
-        <div>Puerto Princesa City Water District &bull; SCADA Telemetry &amp; Field Operations Monitoring</div>
-        <div style="font-weight:700; font-family:'IBM Plex Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
+        <div>Puerto Princesa City Water District &bull; Executive SCADA &amp; Field Operations Pack</div>
+        <div style="font-weight:800; color:#1E293B; font-family:'IBM Plex Mono', monospace;">Page ${pageNum} of ${totalPages}</div>
       </div>
     `;
   }
@@ -8352,7 +8463,7 @@
     }
 
     const title = (document.getElementById("comp-rep-title")?.value || "PPCWD Dashboard Comprehensive Report").trim();
-    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "Water Quality & Operational Telemetry").trim();
+    const subtitle = (document.getElementById("comp-rep-subtitle")?.value || "").trim();
     const context = (document.getElementById("comp-rep-context")?.value || "Operational & Hydrological Telemetry Report").trim();
     
     const anchorFallback = getCompReportAnchorDate();
@@ -8415,7 +8526,7 @@
     const startStr = startDt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
     const endStr = endDt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 
-    // Determine whether Pressure content extends across 2 pages without skewing or crowding
+    // Determine whether Pressure content extends across 2 pages (only if optional Diurnal SVG is explicitly checked)
     const pressNeedsTwoPages = topicPress && (subPressDiurnal && (subPressWeekly || subPressLowest5 || subPressMonthly));
     const pressPages = topicPress ? (pressNeedsTwoPages ? 2 : 1) : 0;
     const totalPages = (topicProd ? 1 : 0) + pressPages + (topicComp ? 1 : 0) + (topicRiver ? 1 : 0);
@@ -8430,101 +8541,48 @@
     const pagesHtml = [];
     let curPage = 0;
 
+    // Pre-compute domain telemetry for selected topics
+    const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
+    const pressData = topicPress ? computePressureAnalytics(startDt, endDt, matchedWeeks) : null;
+    const compData = topicComp ? computeComplaintsAnalytics(startDt, endDt) : null;
+    const riverMatrix = topicRiver ? computeRiverDepletionMatrix(startDt, endDt) : [];
+
     // ─────────────────────────────────────────────────────────────
     // PAGE 1: PRODUCTION WEEKLY & MONTHLY SUMMARY
     // ─────────────────────────────────────────────────────────────
     if (topicProd) {
       curPage++;
       const monthlyData = await fetchAllMonthlyRecords(startDt, endDt);
-      const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
-
-      // Pre-compute summaries for the compact 2-column Executive Takeaways banner
       const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report Yet submitted', pctVsNormal: 0, hasData: false };
-      const execProdSummary = recentMonth.hasData 
-        ? `${recentMonth.month_year}: ${fmt(recentMonth.pctVsNormal, 1)}% of Baseline (${recentMonth.lwuaStatus.toUpperCase()})`
-        : `${recentMonth.month_year}: ${recentMonth.lwuaStatus}`;
 
-      // Identify the most recent reported week with actual telemetry data
-      let recentWk = (matchedWeeks || []).find(w => w.prodRow || (w.hasProdReport !== false && w.prodRow));
-      if (!recentWk && Array.isArray(allProdData) && allProdData.length) {
-        const lastRow = allProdData[allProdData.length - 1];
-        recentWk = {
-          week: lastRow[COL.week] || 'Week',
-          period: lastRow[COL.period] || lastRow[COL.date] || '',
-          prodRow: lastRow
-        };
-      }
-
-      let execWeeklySummary = 'No Weekly Report Submitted';
-      let execWeeklySub = 'Target: 398,020 m&sup3;/wk &bull; Standard Regulatory Evaluation';
-      if (recentWk && recentWk.prodRow) {
-        const rRow = recentWk.prodRow;
-        const totalVol = Number(rRow[COL.grandTotal]) || 0;
-        const sw = Number(rRow[COL.totalSW]) || 0;
-        const gw = Number(rRow[COL.totalGW]) || 0;
-        const swPct = totalVol > 0 ? (sw / totalVol) * 100 : 0;
-        const gwPct = totalVol > 0 ? (gw / totalVol) * 100 : 0;
-        const pctAchieved = (totalVol / 398020.0) * 100;
-        
-        let sText = 'Normal (&ge;100%)';
-        let sColor = '#16A34A';
-        if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; }
-        else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; }
-        else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; }
-
-        const wkName = recentWk.week || rRow[COL.week] || 'Recent Week';
-        const periodStr = recentWk.period || rRow[COL.period] || '';
-        execWeeklySummary = `${wkName}: ${fmt(totalVol, 0)} m&sup3; (${fmt(pctAchieved, 1)}%) &bull; <span style="color:${sColor}; font-weight:800;">${sText}</span>`;
-        execWeeklySub = `Target: 398,020 m&sup3;/wk &bull; SW: ${fmt(swPct, 0)}% / GW: ${fmt(gwPct, 0)}% &bull; ${escapeHtml(periodStr)}`;
-      }
-
-      let p1Content = `
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px; background:#F8FAFC; border:1px solid #CBD5E1; border-left:4px solid #1560BD; border-radius:4px; padding:6px 12px;">
-          <div>
-            <div style="font-size:7.5px; font-weight:800; color:#1E40AF; text-transform:uppercase; letter-spacing:0.4px;">1. Monthly Production Yield &amp; LWUA Trigger</div>
-            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execProdSummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">Target: 1,705,700 m&sup3; &bull; 5% Cutoff: 1,620,415 m&sup3; (Full Month)</div>
-          </div>
-          <div>
-            <div style="font-size:7.5px; font-weight:800; color:#0D9488; text-transform:uppercase; letter-spacing:0.4px;">2. Recent Reported Weekly Production &amp; Crisis Indicator</div>
-            <div style="font-size:9.5px; font-weight:800; color:#0F172A; margin-top:2px;">${execWeeklySummary}</div>
-            <div style="font-size:7.5px; color:#64748B; margin-top:1px;">${execWeeklySub}</div>
-          </div>
-        </div>
-      `;
+      let p1Content = '';
 
       // Section 1: Monthly Production & LWUA Trigger Status (All records descending)
       if (subProdMonthly) {
-        const totalActualPeriod = monthlyData.reduce((s, m) => s + m.totalActual, 0);
-        // Identify most recent reported month for the card
-        const recentMonth = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report yet', pctVsNormal: 0 };
-        const recentStatusColor = recentMonth.lwuaStatus === 'In Capacity' ? '#16A34A' : (recentMonth.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
+        const recentMonthCard = monthlyData.find(m => m.hasData) || monthlyData[0] || { month_year: 'N/A', lwuaStatus: 'No Report Yet submitted', pctVsNormal: 0 };
+        const recentStatusColor = recentMonthCard.lwuaStatus === 'In Capacity' ? '#16A34A' : (recentMonthCard.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
 
         p1Content += `
-          <div style="margin-bottom:14px;">
+          <div style="margin-bottom:18px;">
             <div class="comp-section-title">
-              <span>MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER STATUS (ALL REPORTED MONTHS)</span>
+              <span>1A. MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER STATUS</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Regulatory Baseline: 1,705,700 m&sup3;/mo</span>
             </div>
-            <div class="comp-kpi-grid">
+            <div class="comp-kpi-grid" style="grid-template-columns:repeat(3, 1fr);">
               <div class="comp-kpi-card">
                 <div class="comp-kpi-label">Normal Baseline</div>
                 <div class="comp-kpi-value">1,705,700 <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
                 <div class="comp-kpi-sub">2,336.58 m&sup3;/hr (730 hrs)</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#D97706;">
                 <div class="comp-kpi-label">LWUA 5% Cutoff</div>
                 <div class="comp-kpi-value" style="color:#D97706;">1,620,415 <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
                 <div class="comp-kpi-sub">Mandatory Notice Threshold</div>
               </div>
-              <div class="comp-kpi-card">
-                <div class="comp-kpi-label">Cumulative Telemetry Volume</div>
-                <div class="comp-kpi-value">${fmt(totalActualPeriod, 2)} <span style="font-size:10px; font-weight:600;">m&sup3;</span></div>
-                <div class="comp-kpi-sub">${monthlyData.filter(m => m.hasData).length} Reported Calendar Months</div>
-              </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:${recentStatusColor};">
                 <div class="comp-kpi-label">Recent Month LWUA Status</div>
-                <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:13px;">${recentMonth.lwuaStatus}</div>
-                <div class="comp-kpi-sub">${recentMonth.month_year} (${fmt(recentMonth.pctVsNormal, 1)}% vs Baseline)</div>
+                <div class="comp-kpi-value" style="color:${recentStatusColor}; font-size:15px;">${recentMonth.lwuaStatus}</div>
+                <div class="comp-kpi-sub">${recentMonth.month_year} (${recentMonth.hasData ? fmt(recentMonth.pctVsNormal, 1) + '% vs Baseline' : 'Pending Report'})</div>
               </div>
             </div>
 
@@ -8543,15 +8601,16 @@
               <tbody>
                 ${monthlyData.map(m => {
                   const sColor = m.lwuaStatus === 'In Capacity' ? '#16A34A' : (m.lwuaStatus === 'For Reporting' ? '#DC2626' : '#64748B');
+                  const pillClass = m.lwuaStatus === 'In Capacity' ? 'comp-pill-ok' : (m.lwuaStatus === 'For Reporting' ? 'comp-pill-crit' : 'comp-pill-muted');
                   return `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
+                      <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${m.hasData ? fmt(m.totalActual, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.dailyAvg, 2) : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.swPct, 1) + '%' : '—'}</td>
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasData ? fmt(m.gwPct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
-                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${m.lwuaStatus}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${sColor};">${m.hasData ? fmt(m.pctVsNormal, 1) + '%' : '—'}</td>
+                      <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};"><span class="comp-status-pill ${pillClass}">${m.lwuaStatus}</span></td>
                     </tr>
                   `;
                 }).join('')}
@@ -8561,29 +8620,48 @@
         `;
       }
 
-      // Section 2: Weekly Production & Crisis Monitoring (Up to 4 Calibrated Operational Weeks)
+      // Section 2: Weekly Production & Crisis Monitoring (Latest 8 Operational Weeks + Full-Period Summary Row)
       if (subProdWeekly) {
         let sumTotal = 0, sumDaily = 0, sumSW = 0, sumGW = 0;
         let reportedCount = 0;
 
-        const weekRows = matchedWeeks.map(w => {
+        // Accumulate full period totals across all matched weeks first
+        matchedWeeks.forEach(w => {
+          const row = w.prodRow || (w.hasProdReport !== false ? w : null);
+          if (row && w.hasProdReport !== false) {
+            const total = Number(row[COL.grandTotal]) || 0;
+            const daily = (Number(row[COL.mld]) || 0) * 1000 || (total / 7);
+            const sw = Number(row[COL.totalSW]) || 0;
+            const gw = Number(row[COL.totalGW]) || 0;
+            if (total > 0) {
+              sumTotal += total;
+              sumDaily += daily;
+              sumSW += sw;
+              sumGW += gw;
+              reportedCount++;
+            }
+          }
+        });
+
+        // Display latest 8 operational weeks so the table fits cleanly on 1 A4 page with large executive typography
+        const displayWeeks = matchedWeeks.slice(0, 8);
+        const weekRows = displayWeeks.map(w => {
           const wk = w.week || w[COL.week];
           const period = w.period || (w[COL.period] ? w[COL.period].replace(/(\d+)\s*[-–—]\s*(\d+)/, '$1 – $2') : '');
           const row = w.prodRow || (w.hasProdReport !== false ? w : null);
 
-          // If this week is an unsubmitted / subsequent week, render the appropriate pending status badge
           if (!row || w.hasProdReport === false) {
             const statusLabel = w.pendingStatus || 'No Report Yet (Pending Submission)';
             return `
               <tr>
-                <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${wk}</td>
-                <td>${escapeHtml(period)}</td>
+                <td style="font-weight:800; font-family:'IBM Plex Mono', monospace; white-space:nowrap;">${wk}</td>
+                <td style="white-space:nowrap;">${escapeHtml(period)}</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
                 <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#94A3B8;">&mdash;</td>
-                <td style="text-align:left; padding-left:12px;"><span style="font-size:8px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:2px 6px; border-radius:3px;">${statusLabel}</span></td>
+                <td style="text-align:left; padding-left:12px;"><span class="comp-status-pill comp-pill-muted">${statusLabel}</span></td>
               </tr>
             `;
           }
@@ -8597,28 +8675,23 @@
           const target = 398020.0;
           const pctAchieved = (total / target) * 100;
 
-          sumTotal += total;
-          sumDaily += daily;
-          sumSW += sw;
-          sumGW += gw;
-          reportedCount++;
-
           let sText = 'Normal (&ge;100%)';
           let sColor = '#16A34A';
-          if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; }
-          else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; }
-          else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; }
+          let pillClass = 'comp-pill-ok';
+          if (pctAchieved < 75) { sText = 'Level 3: Critical (&lt;75%)'; sColor = '#DC2626'; pillClass = 'comp-pill-crit'; }
+          else if (pctAchieved < 90) { sText = 'Level 2: Alert (75&ndash;89.9%)'; sColor = '#D97706'; pillClass = 'comp-pill-warn'; }
+          else if (pctAchieved < 100) { sText = 'Level 1: Watch (90&ndash;99.9%)'; sColor = '#2563EB'; pillClass = 'comp-pill-watch'; }
 
           return `
             <tr>
-              <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${wk}</td>
-              <td>${escapeHtml(period)}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(total, 2)}</td>
+              <td style="font-weight:800; font-family:'IBM Plex Mono', monospace; white-space:nowrap;">${wk}</td>
+              <td style="white-space:nowrap;">${escapeHtml(period)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${fmt(total, 2)}</td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(daily, 2)}</td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(swPct, 1)}%</td>
               <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(gwPct, 1)}%</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
-              <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};">${sText}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${sColor};">${fmt(pctAchieved, 1)}%</td>
+              <td style="text-align:left; padding-left:12px; font-weight:700; color:${sColor};"><span class="comp-status-pill ${pillClass}">${sText}</span></td>
             </tr>
           `;
         }).join('');
@@ -8633,16 +8706,20 @@
 
         p1Content += `
           <div>
-            <div class="comp-section-title">
-              <span>WEEKLY PRODUCTION, SW/GW SPLIT &amp; CRISIS MONITORING (TARGET: 398,020 m&sup3;/wk)</span>
+            <div class="comp-section-title" style="margin-bottom:9px;">
+              <span>1B. WEEKLY PRODUCTION, SW/GW SPLIT &amp; CRISIS MONITORING (LATEST ${displayWeeks.length} OPERATIONAL WEEKS)</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569; white-space:nowrap;">Target: 398,020 m&sup3;/wk</span>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:8px; font-size:9px; background:#F8FAFC; border:1px solid #E2E8F0; padding:5px 10px; border-radius:4px;">
-              <span style="color:#16A34A; font-weight:700;">&bull; Normal &ge; 100%</span>
-              <span style="color:#2563EB; font-weight:700;">&bull; Level 1: Watch (90&ndash;99.9%)</span>
-              <span style="color:#D97706; font-weight:700;">&bull; Level 2: Alert (75&ndash;89.9%)</span>
-              <span style="color:#DC2626; font-weight:700;">&bull; Level 3: Critical (&lt;75%)</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; font-size:9px; background:#F8FAFC; border:1px solid #CBD5E1; padding:6px 10px; border-radius:4px;">
+              <div style="display:flex; gap:10px; white-space:nowrap;">
+                <span style="color:#16A34A; font-weight:800;">&bull; Normal &ge; 100%</span>
+                <span style="color:#2563EB; font-weight:800;">&bull; Watch (90&ndash;99.9%)</span>
+                <span style="color:#D97706; font-weight:800;">&bull; Alert (75&ndash;89.9%)</span>
+                <span style="color:#DC2626; font-weight:800;">&bull; Critical (&lt;75%)</span>
+              </div>
+              <span style="font-size:8.5px; color:#64748B; font-weight:600; white-space:nowrap;">Latest ${displayWeeks.length} wks &bull; Avg of ${cnt} reported wks</span>
             </div>
-            <table class="comp-table">
+            <table class="comp-table comp-table-weekly">
               <thead>
                 <tr>
                   <th>Week</th>
@@ -8657,7 +8734,7 @@
               </thead>
               <tbody>
                 ${weekRows}
-                <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                <tr class="comp-summary-row" style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
                   <td colspan="2">WEEKLY AVERAGE (${cnt > 0 ? `${cnt} Reported Weeks` : 'No Reports Yet'})</td>
                   <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${cnt > 0 ? fmt(avgWeekly, 2) : '&mdash;'}</td>
                   <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${cnt > 0 ? fmt(avgDaily, 2) : '&mdash;'}</td>
@@ -8682,7 +8759,7 @@
         p1Content += `
           <div style="margin-top:10px; border-top:1px solid #E2E8F0; padding-top:8px;">
             <div style="font-size:10px; font-weight:700; color:#1E293B; margin-bottom:4px;">Operational Crisis Remarks &amp; Task Force Directives:</div>
-            <div style="font-size:9px; color:#475569; display:flex; flex-direction:column; gap:3px;">
+            <div style="font-size:9.5px; color:#475569; display:flex; flex-direction:column; gap:3px;">
               ${activeRemarks.length ? activeRemarks.map(r => `<div><strong>&bull; ${escapeHtml(r.name)}:</strong> ${escapeHtml(r.remark)}</div>`).join('') : '<div style="font-style:italic; color:#94A3B8;">No operational remarks logged for this period.</div>'}
             </div>
           </div>
@@ -8701,14 +8778,83 @@
     }
 
     // ─────────────────────────────────────────────────────────────
-    // PRESSURE NETWORK TELEMETRY (DYNAMIC MULTI-PAGE EXTENSION)
+    // PAGE 2: EXECUTIVE NETWORK PRESSURE & HYDRAULIC HOTSPOTS
     // ─────────────────────────────────────────────────────────────
     if (topicPress) {
-      const matchedWeeks = filterOperationalWeeksInRange(startDt, endDt);
-      const pressData = computePressureAnalytics(startDt, endDt, matchedWeeks);
+      const renderExecutiveWeeklyMajorTable = (rowsToDisplay, allRows) => {
+        const validDist = (allRows || []).filter(r => r.distAvg !== null && !isNaN(r.distAvg));
+        const validMbs = (allRows || []).filter(r => r.mbsAvg !== null && !isNaN(r.mbsAvg));
+        const validSm = (allRows || []).filter(r => r.staMonicaAvg !== null && !isNaN(r.staMonicaAvg));
+        const validPk = (allRows || []).filter(r => r.peakAvg !== null && !isNaN(r.peakAvg));
+        const validOp = (allRows || []).filter(r => r.offPeakAvg !== null && !isNaN(r.offPeakAvg));
+        const validCampo = (allRows || []).filter(r => r.campoAvg !== null && !isNaN(r.campoAvg));
+        const validEsc = (allRows || []).filter(r => r.escalanteAvg !== null && !isNaN(r.escalanteAvg));
+        const validTag = (allRows || []).filter(r => r.tagburosAvg !== null && !isNaN(r.tagburosAvg));
+        const avgOf = (arr, key) => arr.length ? arr.reduce((s, x) => s + Number(x[key]), 0) / arr.length : null;
+
+        const mDist = avgOf(validDist, 'distAvg');
+        const mMbs = avgOf(validMbs, 'mbsAvg');
+        const mSm = avgOf(validSm, 'staMonicaAvg');
+        const mPk = avgOf(validPk, 'peakAvg');
+        const mOp = avgOf(validOp, 'offPeakAvg');
+        const mCampo = avgOf(validCampo, 'campoAvg');
+        const mEsc = avgOf(validEsc, 'escalanteAvg');
+        const mTag = avgOf(validTag, 'tagburosAvg');
+
+        return `
+          <table class="comp-table comp-table-major">
+            <thead>
+              <tr class="comp-th-group-row">
+                <th colspan="2" style="text-align:left;">Operational Cycle</th>
+                <th colspan="4">Urban Core &amp; Boosted Distribution Network (PSI)</th>
+                <th colspan="4">Primary Transmission Mains (PSI &bull; Excluded from Dist Avg)</th>
+              </tr>
+              <tr>
+                <th>Week</th>
+                <th>Inclusive Dates</th>
+                <th style="text-align:right;">System Dist Avg</th>
+                <th style="text-align:right;">MBS (Urban Core)</th>
+                <th style="text-align:right;">Sta. Monica (Boosted)</th>
+                <th style="text-align:right;">Peak / Off-Peak</th>
+                <th style="text-align:right;">Campo Uno (Trans.)</th>
+                <th style="text-align:right;">UV Facility (Trans.)</th>
+                <th style="text-align:right;">Escalante (Trans.)</th>
+                <th style="text-align:right;">Tagburos (Trans.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsToDisplay.map(w => `
+                <tr>
+                  <td style="font-weight:800; font-family:'IBM Plex Mono', monospace; white-space:nowrap;">${w.week}</td>
+                  <td style="white-space:nowrap;">${escapeHtml(w.period)}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:700;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-size:8.8px; white-space:nowrap;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}<span style="color:#94A3B8;">/</span>${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:6.8px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 3px; border-radius:3px; white-space:nowrap;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
+                  <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
+                </tr>
+              `).join('')}
+              <tr class="comp-summary-row" style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                <td colspan="2">PERIOD WEEKLY MEAN (${validDist.length} Wks)</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${mDist !== null ? fmt(mDist, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${mMbs !== null ? fmt(mMbs, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${mSm !== null ? fmt(mSm, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-size:8.8px; white-space:nowrap;">${mPk !== null ? fmt(mPk, 2) : 'N/A'}/${mOp !== null ? fmt(mOp, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${mCampo !== null ? fmt(mCampo, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;"><span style="font-size:6.8px; font-weight:700; color:#64748B; background:#E2E8F0; padding:1px 3px; border-radius:3px; white-space:nowrap;">Offline / No Telemetry</span></td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${mEsc !== null ? fmt(mEsc, 2) : 'N/A'}</td>
+                <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#475569;">${mTag !== null ? fmt(mTag, 2) : 'N/A'}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      };
 
       if (pressNeedsTwoPages) {
-        // ─── PRESSURE PAGE 1: Compliance Summary & Diurnal Profile ───
+        // ─── OPTIONAL 2-PAGE PRESSURE PACK (when Diurnal SVG is explicitly enabled) ───
         curPage++;
         let pPress1 = '';
 
@@ -8724,17 +8870,17 @@
                   <div class="comp-kpi-value" style="color:#2563EB;">${fmt(pressData.overallDistMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">15 Urban Core &amp; Dist Points (inc. MBS)</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#0D9488;">
                   <div class="comp-kpi-label">Sta. Monica (Boosted Zone)</div>
                   <div class="comp-kpi-value" style="color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">Peak: ${fmt(pressData.staMonicaPeak, 2)} / Off-Pk: ${fmt(pressData.staMonicaOffPeak, 2)} psi</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#D97706;">
                   <div class="comp-kpi-label">Critical Exposure (&lt;6.5 psi)</div>
                   <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt65Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
                   <div class="comp-kpi-sub">${fmt(pressData.lt65Pct + pressData.eq0Pct, 1)}% of distribution station-hours</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#DC2626;">
                   <div class="comp-kpi-label">Supply Interruption (0 psi)</div>
                   <div class="comp-kpi-value" style="color:#DC2626;">${pressData.eq0Count} <span style="font-size:10px; font-weight:600;">hrs</span></div>
                   <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours</div>
@@ -8771,7 +8917,7 @@
                       <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
                     </tr>
                   `).join('')}
-                  <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
+                  <tr class="comp-summary-row" style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
                     <td>PERIOD TOTAL / MEAN</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
                     <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
@@ -8785,7 +8931,7 @@
                   </tr>
                 </tbody>
               </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
+              <div style="font-size:8.5px; color:#64748B; margin-top:-4px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
             </div>
           `;
         }
@@ -8817,46 +8963,14 @@
         let pPress2 = '';
 
         if (subPressWeekly) {
+          const displayRows = pressData.weeklyMajorRows.slice(0, 8);
           pPress2 += `
             <div style="margin-bottom:14px;">
               <div class="comp-section-title">
-                <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI)</span>
+                <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI &bull; LATEST ${displayRows.length} WEEKS)</span>
               </div>
-              <table class="comp-table">
-                <thead>
-                  <tr>
-                    <th>Week</th>
-                    <th>Inclusive Dates</th>
-                    <th style="text-align:right;">AVG System (Dist)</th>
-                    <th style="text-align:right;">MBS (Urban Core)</th>
-                    <th style="text-align:right;">Sta. Monica (Boosted)</th>
-                    <th style="text-align:right;">Peak Avg</th>
-                    <th style="text-align:right;">Off-Peak Avg</th>
-                    <th style="text-align:right;">Campo Uno (Trans.)</th>
-                    <th style="text-align:right;">UV Facility (Trans.)</th>
-                    <th style="text-align:right;">Escalante (Trans.)</th>
-                    <th style="text-align:right;">Tagburos (Trans.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${pressData.weeklyMajorRows.map(w => `
-                    <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${w.week}</td>
-                      <td>${escapeHtml(w.period)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:7.5px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 4px; border-radius:3px;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages. N/A indicates no sensor readings logged.</div>
+              ${renderExecutiveWeeklyMajorTable(displayRows, pressData.weeklyMajorRows)}
+              <div class="comp-note-box">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages.</div>
             </div>
           `;
         }
@@ -8870,21 +8984,23 @@
               <table class="comp-table">
                 <thead>
                   <tr>
-                    <th style="width:30px;">Rank</th>
+                    <th style="width:45px;">Rank</th>
                     <th>Monitoring Point / Station Name</th>
                     <th style="text-align:right;">Average PSI</th>
                     <th style="text-align:right;">Hours &lt; 6.5 psi</th>
                     <th style="text-align:right;">Avg Daily Hours &lt; 6.5 psi</th>
+                    <th style="text-align:left; padding-left:14px;">Hydraulic Risk Classification</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${pressData.top5Lowest.map((st, idx) => `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
-                      <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${st.hoursLt65} hrs</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
+                      <td style="font-weight:800;">${escapeHtml(st.station.name)}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${st.hoursLt65} hrs</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="text-align:left; padding-left:14px;"><span class="comp-status-pill ${st.meanPsi < 6.5 ? 'comp-pill-crit' : 'comp-pill-warn'}">${st.meanPsi < 6.5 ? 'Chronic Low-Pressure Spur (&lt;6.5 psi)' : 'Marginal Pressure Zone (6.5&ndash;14.9 psi)'}</span></td>
                     </tr>
                   `).join('')}
                 </tbody>
@@ -8903,91 +9019,46 @@
           </div>
         `);
       } else {
-        // Single Pressure Page (compact mode when subtopics fit comfortably)
+        // ─── DEFAULT SINGLE-PAGE EXECUTIVE PRESSURE OVERVIEW (Page 2 of 4-Page Pack) ───
         curPage++;
         let pPress = '';
 
         if (subPressMonthly) {
           pPress += `
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:10px;">
               <div class="comp-section-title">
-                <span>SYSTEM PRESSURE NETWORK COMPLIANCE &amp; EXPOSURE SUMMARY</span>
+                <span>2A. SYSTEM PRESSURE NETWORK COMPLIANCE &amp; EXPOSURE SCORECARDS</span>
+                <span style="font-size:9.5px; font-weight:700; color:#475569; white-space:nowrap;">15 Urban Core &amp; Consumer Sensors</span>
               </div>
-              <div class="comp-kpi-grid">
+              <div class="comp-kpi-grid" style="margin-bottom:2px;">
                 <div class="comp-kpi-card">
                   <div class="comp-kpi-label">System Dist Average</div>
                   <div class="comp-kpi-value" style="color:#2563EB;">${fmt(pressData.overallDistMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">15 Urban Core &amp; Dist Points (inc. MBS)</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#0D9488;">
                   <div class="comp-kpi-label">Sta. Monica (Boosted Zone)</div>
                   <div class="comp-kpi-value" style="color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} <span style="font-size:10px; font-weight:600;">psi</span></div>
                   <div class="comp-kpi-sub">Peak: ${fmt(pressData.staMonicaPeak, 2)} / Off-Pk: ${fmt(pressData.staMonicaOffPeak, 2)} psi</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#D97706;">
                   <div class="comp-kpi-label">Critical Exposure (&lt;6.5 psi)</div>
                   <div class="comp-kpi-value" style="color:#D97706;">${fmt(pressData.hoursLt65Daily, 2)} <span style="font-size:10px; font-weight:600;">hrs/day</span></div>
                   <div class="comp-kpi-sub">${fmt(pressData.lt65Pct + pressData.eq0Pct, 1)}% of distribution station-hours</div>
                 </div>
-                <div class="comp-kpi-card">
+                <div class="comp-kpi-card" style="border-top-color:#DC2626;">
                   <div class="comp-kpi-label">Supply Interruption (0 psi)</div>
                   <div class="comp-kpi-value" style="color:#DC2626;">${pressData.eq0Count} <span style="font-size:10px; font-weight:600;">hrs</span></div>
-                  <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours</div>
+                  <div class="comp-kpi-sub">${fmt(pressData.eq0Pct, 2)}% of total distribution hours (${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compTotal, 10) || 0), 0)} / ${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compNW, 10) || 0), 0)} Tot/NW)</div>
                 </div>
               </div>
-
-              <table class="comp-table">
-                <thead>
-                  <tr>
-                    <th>Period / Month</th>
-                    <th style="text-align:right;">Dist Mean (inc. MBS)</th>
-                    <th style="text-align:right;">Peak (5-8 AM &amp; 5-8 PM)</th>
-                    <th style="text-align:right;">Off-Peak (8AM-5PM &amp; 8PM-5AM)</th>
-                    <th style="text-align:right;">Sta. Monica</th>
-                    <th style="text-align:right;">&ge; 15.0 psi</th>
-                    <th style="text-align:right;">6.5&ndash;14.9 psi</th>
-                    <th style="text-align:right;">&lt; 6.5 psi</th>
-                    <th style="text-align:right;">0.0 psi (hrs)</th>
-                    <th style="text-align:right;">Complaints (Tot / NW)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${pressData.monthlyComplianceRows.map(m => `
-                    <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${m.month_year}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.distMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.peakMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.hasReadings ? fmt(m.offPeakMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600; color:#0D9488;">${m.hasReadings ? fmt(m.staMonicaMean, 2) + ' psi' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${m.hasReadings ? fmt(m.ge15Pct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${m.hasReadings ? fmt(m.m65_149Pct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${m.hasReadings ? fmt(m.lt65Pct, 1) + '%' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${m.hasReadings ? fmt(m.eq0Pct, 1) + '% (' + m.eq0Count + ')' : '—'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${m.compTotal} / ${m.compNW}</td>
-                    </tr>
-                  `).join('')}
-                  <tr style="background:#F1F5F9; font-weight:800; border-top:2px solid #CBD5E1;">
-                    <td>PERIOD TOTAL / MEAN</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallDistMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallPeakMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(pressData.overallOffPeakMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488;">${fmt(pressData.staMonicaMean, 2)} psi</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#16A34A;">${fmt(pressData.ge15Pct, 1)}%</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#2563EB;">${fmt(pressData.m65_149Pct, 1)}%</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#D97706;">${fmt(pressData.lt65Pct, 1)}%</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#DC2626;">${fmt(pressData.eq0Pct, 1)}% (${pressData.eq0Count})</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compTotal, 10) || 0), 0)} / ${pressData.monthlyComplianceRows.reduce((s, r) => s + (parseInt(r.compNW, 10) || 0), 0)}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Monthly compliance rows aggregate full calendar months for regulatory baseline tracking; period totals reflect cumulative customer complaints across the reported operational window.</div>
             </div>
           `;
         }
 
         if (subPressDiurnal) {
           pPress += `
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:10px;">
               <div class="comp-section-title">
                 <span>PRESSURE DISTRIBUTION &amp; OPERATIONAL TIME AREAS (PSI)</span>
               </div>
@@ -8998,46 +9069,15 @@
         }
 
         if (subPressWeekly) {
+          const displayRows = pressData.weeklyMajorRows.slice(0, 8);
           pPress += `
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:10px;">
               <div class="comp-section-title">
-                <span>WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI)</span>
+                <span>2B. WEEKLY MAJOR PRESSURE MONITORING POINTS (PSI &bull; LATEST ${displayRows.length} OPERATIONAL WEEKS)</span>
+                <span style="font-size:9.5px; font-weight:700; color:#475569; white-space:nowrap;">Grouped by Network Tier</span>
               </div>
-              <table class="comp-table">
-                <thead>
-                  <tr>
-                    <th>Week</th>
-                    <th>Inclusive Dates</th>
-                    <th style="text-align:right;">AVG System (Dist)</th>
-                    <th style="text-align:right;">MBS (Urban Core)</th>
-                    <th style="text-align:right;">Sta. Monica (Boosted)</th>
-                    <th style="text-align:right;">Peak Avg</th>
-                    <th style="text-align:right;">Off-Peak Avg</th>
-                    <th style="text-align:right;">Campo Uno (Trans.)</th>
-                    <th style="text-align:right;">UV Facility (Trans.)</th>
-                    <th style="text-align:right;">Escalante (Trans.)</th>
-                    <th style="text-align:right;">Tagburos (Trans.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${pressData.weeklyMajorRows.map(w => `
-                    <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">${w.week}</td>
-                      <td>${escapeHtml(w.period)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#2563EB;">${w.distAvg !== null ? fmt(w.distAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.mbsAvg !== null ? fmt(w.mbsAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#0D9488; font-weight:600;">${w.staMonicaAvg !== null ? fmt(w.staMonicaAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.peakAvg !== null ? fmt(w.peakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${w.offPeakAvg !== null ? fmt(w.offPeakAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.campoAvg !== null ? fmt(w.campoAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${(w.uvAvg === null || w.uvAvg === 0 || isNaN(w.uvAvg)) ? '<span style="font-size:7.5px; font-weight:700; color:#64748B; background:#F1F5F9; border:1px solid #CBD5E1; padding:1px 4px; border-radius:3px;">Offline / No Telemetry</span>' : fmt(w.uvAvg, 2)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.escalanteAvg !== null ? fmt(w.escalanteAvg, 2) : 'N/A'}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; color:#64748B;">${w.tagburosAvg !== null ? fmt(w.tagburosAvg, 2) : 'N/A'}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-              <div style="font-size:8px; color:#64748B; margin-top:-6px; margin-bottom:8px;">* Note: Distribution readings sanitized &le; 30 psi. MBS (Urban Core) is included in System Average. Sta. Monica is classified separately as a boosted zone. Campo Uno, UV Facility, Escalante, and Tagburos are transmission line pressure points and excluded from system distribution averages. N/A indicates no sensor readings logged.</div>
+              ${renderExecutiveWeeklyMajorTable(displayRows, pressData.weeklyMajorRows)}
+              <div class="comp-note-box" style="margin-top:5px; padding:5px 9px;">* Note: Distribution readings sanitized &le; 30 psi (MBS included in System Avg; Sta. Monica tracked as boosted zone; Campo Uno, UV Facility, Escalante &amp; Tagburos excluded as transmission mains).</div>
             </div>
           `;
         }
@@ -9046,26 +9086,29 @@
           pPress += `
             <div>
               <div class="comp-section-title">
-                <span>TOP 5 LOWEST-PRESSURE SENSORS (DISTRIBUTION NETWORK)</span>
+                <span>2C. TOP 5 LOWEST-PRESSURE SENSORS (DISTRIBUTION NETWORK HOTSPOTS)</span>
+                <span style="font-size:9.5px; font-weight:700; color:#DC2626; white-space:nowrap;">Threshold: &lt; 6.5 psi Critical</span>
               </div>
               <table class="comp-table">
                 <thead>
                   <tr>
-                    <th style="width:30px;">Rank</th>
+                    <th style="width:45px;">Rank</th>
                     <th>Monitoring Point / Station Name</th>
                     <th style="text-align:right;">Average PSI</th>
                     <th style="text-align:right;">Hours &lt; 6.5 psi</th>
                     <th style="text-align:right;">Avg Daily Hours &lt; 6.5 psi</th>
+                    <th style="text-align:left; padding-left:14px;">Hydraulic Risk Classification</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${pressData.top5Lowest.map((st, idx) => `
                     <tr>
-                      <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
-                      <td style="font-weight:700;">${escapeHtml(st.station.name)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${st.hoursLt65} hrs</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
+                      <td style="font-weight:800;">${escapeHtml(st.station.name)}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${st.meanPsi < 6.5 ? '#DC2626' : '#D97706'};">${fmt(st.meanPsi, 2)} psi</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${st.hoursLt65} hrs</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${fmt(st.dailyHoursLt65, 2)} hrs/day</td>
+                      <td style="text-align:left; padding-left:14px;"><span class="comp-status-pill ${st.meanPsi < 6.5 ? 'comp-pill-crit' : 'comp-pill-warn'}">${st.meanPsi < 6.5 ? 'Chronic Low-Pressure Spur (&lt;6.5 psi)' : 'Marginal Pressure Zone (6.5&ndash;14.9 psi)'}</span></td>
                     </tr>
                   `).join('')}
                 </tbody>
@@ -9087,19 +9130,18 @@
     }
 
     // ─────────────────────────────────────────────────────────────
-    // PAGE 3: TOP 5 LOWEST PRESSURE SENSORS & COMPLAINTS CORRELATION
+    // PAGE 3: CUSTOMER COMPLAINTS SUMMARY & TOP 10 BARANGAY HOTSPOTS
     // ─────────────────────────────────────────────────────────────
     if (topicComp) {
       curPage++;
-      const compData = computeComplaintsAnalytics(startDt, endDt);
-
       let p3Content = '';
 
       if (subCompSummary) {
         p3Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
-              <span>CUSTOMER SERVICE COMPLAINTS SUMMARY BY INCIDENT TYPE</span>
+              <span>3A. CUSTOMER SERVICE COMPLAINTS SUMMARY BY INCIDENT TYPE</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Field Dispatch &amp; Call Center Logs</span>
             </div>
             <div class="comp-kpi-grid">
               <div class="comp-kpi-card">
@@ -9107,17 +9149,17 @@
                 <div class="comp-kpi-value">${fmt(compData.total)} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">Across All Barangays</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#DC2626;">
                 <div class="comp-kpi-label">No Water Outages</div>
                 <div class="comp-kpi-value" style="color:#DC2626;">${fmt(compData.nwCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">${compData.total > 0 ? fmt((compData.nwCount / compData.total) * 100, 1) : 0}% of all complaints</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#D97706;">
                 <div class="comp-kpi-label">Low Pressure Incidents</div>
                 <div class="comp-kpi-value" style="color:#D97706;">${fmt(compData.lpCount)} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">${compData.total > 0 ? fmt((compData.lpCount / compData.total) * 100, 1) : 0}% of all complaints</div>
               </div>
-              <div class="comp-kpi-card">
+              <div class="comp-kpi-card" style="border-top-color:#854D0E;">
                 <div class="comp-kpi-label">Water Quality / Turbidity</div>
                 <div class="comp-kpi-value" style="color:#854D0E;">${(compData.turbidCount || 0).toLocaleString()} <span style="font-size:10px; font-weight:600;">reports</span></div>
                 <div class="comp-kpi-sub">${compData.total > 0 ? fmt(((compData.turbidCount || 0) / compData.total) * 100, 1) : '0.0'}% of all complaints</div>
@@ -9130,7 +9172,7 @@
                   <th>Incident Classification</th>
                   <th style="text-align:right;">Total Reports</th>
                   <th style="text-align:right;">% Share</th>
-                  <th style="text-align:left; padding-left:14px;">Operational Impact</th>
+                  <th style="text-align:left; padding-left:14px;">Operational Impact &amp; Field Protocol</th>
                 </tr>
               </thead>
               <tbody>
@@ -9138,14 +9180,14 @@
                   const share = compData.total > 0 ? (count / compData.total) * 100 : 0;
                   const isNW = type.toLowerCase().includes('no water');
                   const isLP = type.toLowerCase().includes('low pressure');
-                  const tColor = isNW ? '#DC2626' : (isLP ? '#D97706' : '#334155');
+                  const tColor = isNW ? '#DC2626' : (isLP ? '#D97706' : '#1E293B');
                   const impact = isNW ? 'Critical Service Disruption &bull; Water Trucking Deployment' : (isLP ? 'Peak Hour Flow Restriction &bull; Line Valving' : 'Routine Maintenance &bull; Customer Service Response');
                   return `
                     <tr>
-                      <td style="font-weight:700; color:${tColor};">${escapeHtml(type)}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${count}</td>
-                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${fmt(share, 1)}%</td>
-                      <td style="text-align:left; padding-left:14px; font-size:9px; color:#475569;">${impact}</td>
+                      <td style="font-weight:800; color:${tColor};">${escapeHtml(type)}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${count}</td>
+                      <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${fmt(share, 1)}%</td>
+                      <td style="text-align:left; padding-left:14px; font-size:9.5px; color:#334155;">${impact}</td>
                     </tr>
                   `;
                 }).join('')}
@@ -9159,12 +9201,13 @@
         p3Content += `
           <div>
             <div class="comp-section-title">
-              <span>TOP 10 AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
+              <span>3B. TOP 10 AFFECTED BARANGAYS &amp; HOTSPOT STUBOUTS</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Ranked by Cumulative Incident Count</span>
             </div>
             <table class="comp-table">
               <thead>
                 <tr>
-                  <th style="width:30px;">Rank</th>
+                  <th style="width:42px;">Rank</th>
                   <th>Barangay Name</th>
                   <th style="text-align:right;">Total Reports</th>
                   <th style="text-align:right;">No Water (NW) Outages</th>
@@ -9175,18 +9218,18 @@
               <tbody>
                 ${compData.topBrgysDetailed.map((b, idx) => `
                   <tr>
-                    <td style="font-weight:700; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
+                    <td style="font-weight:800; font-family:'IBM Plex Mono', monospace;">#${idx + 1}</td>
                     <td style="font-weight:800; color:#0F172A;">${escapeHtml(b.name)}</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${b.total}</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#DC2626;">${b.nw}</td>
-                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:#D97706;">${b.lp}</td>
-                    <td style="font-family:'IBM Plex Mono', monospace; font-size:8.5px; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${b.total}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:#DC2626;">${b.nw}</td>
+                    <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:#D97706;">${b.lp}</td>
+                    <td style="font-family:'IBM Plex Mono', monospace; font-size:9.5px; font-weight:600; color:#1E293B;">${escapeHtml(b.topStubouts)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-            <div style="margin-top:10px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.4;">
-              <strong>Consumer Outage Observations:</strong> Persistent complaint clustering in San Miguel, San Pedro, and Sta. Monica reflects hydraulic stress across downstream spurs. Field operations prioritize mobile water tanker augmentation and localized gate valve throttling during peak usage periods.
+            <div class="comp-note-box">
+              <strong>Consumer Outage Observations:</strong> Persistent complaint clustering in downstream barangays reflects hydraulic stress during peak hours. Field operations prioritize mobile water tanker augmentation and localized gate valve throttling across affected stubout spurs.
             </div>
           </div>
         `;
@@ -9208,29 +9251,26 @@
     // ─────────────────────────────────────────────────────────────
     if (topicRiver) {
       curPage++;
-      const riverMatrix = computeRiverDepletionMatrix(startDt, endDt);
-
       let p4Content = '';
 
       if (subRiverDepletion) {
         const currentGauges = riverMatrix.filter(r => !r.isStale);
         const staleGauges = riverMatrix.filter(r => r.isStale);
-
         const renderRiverRow = (r) => {
           const pDateStr = r.prevDate || '—';
           const lDateStr = r.latestDate || '—';
           const changeColor = r.netChange < 0 ? '#DC2626' : (r.netChange > 0 ? '#0D9488' : '#64748B');
-          const staleBadge = r.isStale ? ` <span style="display:inline-block; font-size:7px; font-weight:700; color:#B45309; background:#FEF3C7; border:1px solid #FDE68A; padding:0 4px; border-radius:3px; vertical-align:middle;">[Last Gauged: ${lDateStr}]</span>` : '';
+          const staleBadge = r.isStale ? ` <span style="display:inline-block; font-size:8px; font-weight:700; color:#B45309; background:#FEF3C7; border:1px solid #FDE68A; padding:1px 5px; border-radius:3px; vertical-align:middle;">[Last Gauged: ${lDateStr}]</span>` : '';
           return `
             <tr ${r.isStale ? 'style="background:#F8FAFC;"' : ''}>
-              <td style="font-weight:700;">${escapeHtml(r.station.name)}${staleBadge}</td>
-              <td style="font-size:8.5px; color:#64748B;">${escapeHtml(r.station.group)}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
-              <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
-              <td style="font-size:8.5px; font-family:'IBM Plex Mono', monospace; font-weight:600;">${lDateStr}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
-              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:700; color:${changeColor};">${r.pctLabel}</td>
+              <td style="font-weight:800;">${escapeHtml(r.station.name)}${staleBadge}</td>
+              <td style="font-size:9.5px; font-weight:600; color:#475569;">${escapeHtml(r.station.group)}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:600;">${r.hasReadings && r.prevVal !== null ? fmt(r.prevVal, 2) : '—'}</td>
+              <td style="font-size:9.5px; font-family:'IBM Plex Mono', monospace; color:#64748B;">${pDateStr}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800;">${r.hasReadings && r.latestVal !== null ? fmt(r.latestVal, 2) : '—'}</td>
+              <td style="font-size:9.5px; font-family:'IBM Plex Mono', monospace; font-weight:700;">${lDateStr}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${changeColor};">${r.hasReadings && r.prevVal !== null ? (r.netChange >= 0 ? '+' : '') + fmt(r.netChange, 2) : '—'}</td>
+              <td style="text-align:right; font-family:'IBM Plex Mono', monospace; font-weight:800; color:${changeColor};">${r.pctLabel}</td>
             </tr>
           `;
         };
@@ -9238,11 +9278,18 @@
         p4Content += `
           <div style="margin-bottom:14px;">
             <div class="comp-section-title">
-              <span>WATERSHED RIVER FLOW TELEMETRY MATRIX (PREVIOUS VS. LATEST GAUGED DISCHARGE)</span>
+              <span>4A. WATERSHED RIVER FLOW TELEMETRY MATRIX (PREVIOUS VS. LATEST GAUGED DISCHARGE)</span>
+              <span style="font-size:9.5px; font-weight:700; color:#475569;">Discharge in m&sup3;/day</span>
             </div>
 
             <table class="comp-table">
               <thead>
+                <tr class="comp-th-group-row">
+                  <th colspan="2" style="text-align:left;">Catchment &amp; Intake Station</th>
+                  <th colspan="2">Baseline / Preceding Measurement</th>
+                  <th colspan="2">Latest Gauged Telemetry</th>
+                  <th colspan="2">Hydrological Depletion / Variance</th>
+                </tr>
                 <tr>
                   <th>River Station Name</th>
                   <th>Watershed Zone</th>
@@ -9258,7 +9305,7 @@
                 ${currentGauges.map(renderRiverRow).join('')}
                 ${staleGauges.length > 0 ? `
                   <tr style="background:#F1F5F9; border-top:2px solid #CBD5E1; border-bottom:1px solid #CBD5E1;">
-                    <td colspan="8" style="font-size:8px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.5px; padding:5px 8px;">
+                    <td colspan="8" style="font-size:9px; font-weight:800; color:#334155; text-transform:uppercase; letter-spacing:0.5px; padding:6px 9px;">
                       Historical / Non-Current Gauge Readings (&gt;14 Days Old &bull; Baseline Reference &bull; Not Reflective of Current-Week Collapse)
                     </td>
                   </tr>
@@ -9267,7 +9314,7 @@
               </tbody>
             </table>
 
-            <div style="margin-top:12px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:6px; line-height:1.45;">
+            <div class="comp-note-box">
               <strong>Hydrological Telemetry Notes:</strong> Surface river discharge observations reflect raw intake gauging across primary infiltration galleries and northern satellite catchments. Comparative metrics monitor seasonal recession rates against preceding gauge dates to assess aquifer recharge and river baseflow stability.
             </div>
           </div>

@@ -23,13 +23,11 @@ const tests = [
           html.includes("${sMonth} ${sDay} – ${eDay}, ${sYear}")
   },
   {
-    name: "1.3 Automated 3-column Executive Takeaways banner dynamically synthesizes yield, hotspot, and watershed alerts",
-    pass: html.includes("1. Production Yield &amp; LWUA Trigger") &&
-          html.includes("2. Hydraulic Hotspot &amp; Low-Pressure Risk") &&
-          html.includes("3. Watershed Hydrology &amp; Source Depletion") &&
-          html.includes("execProdSummary") &&
-          html.includes("execPressSummary") &&
-          html.includes("execRiverSummary")
+    name: "1.3 Page 1 opens directly into clean 3-card Monthly KPI grid and expanded Weekly 1B rows (top banner clutter removed)",
+    pass: !html.includes("1. Production Yield &amp; LWUA Trigger") &&
+          html.includes("1A. MONTHLY PRODUCTION CAPACITY &amp; LWUA TRIGGER STATUS") &&
+          html.includes("1B. WEEKLY PRODUCTION, SW/GW SPLIT &amp; CRISIS MONITORING") &&
+          html.includes("comp-table-weekly")
   },
 
   // 2. Page 2: System Pressure & Diurnal Table Alignment

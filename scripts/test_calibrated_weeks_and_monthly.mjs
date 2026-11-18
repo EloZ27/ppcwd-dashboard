@@ -51,9 +51,10 @@ const checks = [
           html.includes("await ensurePressureRangeLoaded(earliestLoadDt, endDt")
   },
   {
-    name: "6. Executive Takeaways banner handles unsubmitted monthly report gracefully",
+    name: "6. Recent Month LWUA Status card handles unsubmitted monthly report gracefully",
     pass: html.includes("recentMonth.hasData") &&
-          html.includes("`${recentMonth.month_year}: ${recentMonth.lwuaStatus}`")
+          html.includes("recentMonth.lwuaStatus") &&
+          html.includes("No Report Yet submitted")
   }
 ];
 
