@@ -21,11 +21,11 @@
       --sidebar-text-active: #FFFFFF;
       --sidebar-border: rgba(255, 255, 255, 0.08);
 
-      --app-bg: #F4F6F9;
+      --app-bg: #F8FAFC;
       --card-bg: #FFFFFF;
       --card-border: #E2E8F0;
-      --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
-      --card-shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.07);
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+      --card-shadow-hover: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
 
       --text-main: #0F172A;
       --text-muted: #64748B;
@@ -180,12 +180,16 @@
       background: var(--app-bg);
     }
     .app-header {
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--card-border);
-      padding: 16px 28px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      padding: 14px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -487,6 +491,35 @@
       .app-header { padding: 12px 16px; }
       .page-content { padding: 14px 12px; }
     }
+    @media (max-width: 640px) {
+      .header-titles h1 { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .header-titles p { display: none; }
+      .card { padding: 14px 16px; border-radius: 12px; }
+      #edit-genset-modal .form-grid { grid-template-columns: 1fr !important; }
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid rgba(37, 99, 235, 0.55);
+      outline-offset: 2px;
+    }
+
+    .app-sidebar::-webkit-scrollbar,
+    .table-responsive::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .app-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 3px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
@@ -495,7 +528,7 @@
   <div id="portal-auth-gate" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
     <div style="background:#FFFFFF; border-radius:18px; width:440px; max-width:95vw; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); border:1px solid rgba(226,232,240,0.8); text-align:center;">
       <div style="width:68px; height:68px; border-radius:50%; background:#EFF6FF; border:2px solid #BFDBFE; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
-        <img src="logo.png" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;">
+        <img src="logo-sm.png" alt="PPCWD Logo" style="width:44px; height:44px; object-fit:contain;">
       </div>
       <h2 style="font-size:17px; font-weight:800; color:var(--text-main); margin-bottom:4px;">PPCWD Operations Portal</h2>
       <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">
@@ -534,7 +567,7 @@
     <aside class="app-sidebar" id="app-sidebar">
       <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Collapse sidebar" title="Hide Sidebar (Collapse)">✕</button>
       <div class="sidebar-brand">
-        <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img">
+        <img src="logo-sm.png" alt="PPCWD Logo" class="brand-logo-img">
         <div>
           <span class="brand-title">PUERTO PRINCESA</span>
           <span class="brand-sub">City Water District</span>
@@ -597,17 +630,17 @@
     <!-- ── MAIN CONTENT ── -->
     <div class="app-main">
       <header class="app-header">
-        <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto;">
           <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation sidebar" title="Toggle Sidebar (Hide / Show)">☰</button>
-          <img src="logo.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 32px; height: 32px;">
-          <div class="header-titles">
+          <img src="logo-sm.png" alt="PPCWD Logo" class="brand-logo-img" style="width: 30px; height: 30px;">
+          <div class="header-titles" style="min-width: 0; flex: 1 1 auto;">
             <h1 id="portal-title">Operations &amp; Asset Portal</h1>
             <p id="portal-subtitle"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> Standby Generator Fleet Management &bull; Maintenance Audit</p>
           </div>
         </div>
 
-        <div style="display:flex; align-items:center; gap:8px;">
-          <a href="index.html" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light);">
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink: 0;">
+          <a href="index.html" class="header-btn" style="color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); white-space:nowrap;">
             &larr; Exit to Dashboard
           </a>
         </div>
@@ -4187,11 +4220,13 @@
       fetchGensetFleet();
       setupComplaintFormatters();
       loadRiverStations();
+      const _now = new Date();
+      const _localToday = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}-${String(_now.getDate()).padStart(2, '0')}`;
       const dateInput = document.getElementById("gs-serviced-date");
-      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+      if (dateInput) dateInput.value = _localToday;
 
       const compDateInput = document.getElementById("comp-date");
-      if (compDateInput) compDateInput.value = new Date().toISOString().split('T')[0];
+      if (compDateInput) compDateInput.value = _localToday;
 
       if (window.location.hash === '#complaints') {
         switchPortalSection('complaints');
@@ -4219,8 +4254,12 @@
         }
       } catch(e){}
 
-      // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar
+      // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar, and Escape to close modals
       document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (typeof closeEditModal === 'function') closeEditModal();
+          if (typeof closeAddRiverModal === 'function') closeAddRiverModal();
+        }
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
           const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
           if (tag !== 'input' && tag !== 'textarea') {

@@ -1443,6 +1443,184 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── OVERALL UI/UX POLISH: FORM INPUTS, ACCESSIBILITY, SCROLLBARS & CARDS ── */
+    .form-input {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 8px 11px;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    }
+    .form-input:hover:not(:disabled) {
+      border-color: #94A3B8;
+    }
+    .form-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-input:disabled {
+      background: #F1F5F9;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid rgba(37, 99, 235, 0.55);
+      outline-offset: 2px;
+    }
+
+    .reports-dropdown-menu.show {
+      display: block;
+      animation: dropdownFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: top right;
+    }
+    @keyframes dropdownFadeIn {
+      from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-close-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #64748B;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .modal-close-btn:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+      border-color: #E2E8F0;
+    }
+
+    .ov-node-card {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+    }
+    .ov-node-card:hover {
+      background: #FFFFFF;
+      border-color: #CBD5E1;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    .river-list-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid #F1F5F9;
+      border-left: 3px solid transparent;
+      border-radius: 8px;
+      margin-bottom: 3px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .river-list-item:hover {
+      background: #F8FAFC;
+    }
+    .river-list-item.active {
+      background: var(--teal-light);
+      border-left-color: var(--teal);
+      border-bottom-color: transparent;
+    }
+
+    #page-complaints .kpi-row-layout {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 1024px) {
+      #page-complaints .kpi-row-layout {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    #source-cards:empty,
+    #capacity-cards:empty {
+      display: none;
+    }
+
+    .comp-topic-card {
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      transition: border-color 0.16s ease, background-color 0.16s ease;
+    }
+    .comp-topic-card:hover {
+      border-color: #CBD5E1;
+    }
+    .comp-topic-card.is-disabled .comp-subtopics-list {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .comp-modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .comp-modal-grid {
+        grid-template-columns: 1fr;
+      }
+      #comprehensive-report-modal .comp-modal-footer-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      #comprehensive-report-modal .comp-modal-footer-btns {
+        flex-direction: column;
+      }
+    }
+
+    /* Sleek custom scrollbars */
+    .app-sidebar::-webkit-scrollbar,
+    .table-responsive::-webkit-scrollbar,
+    #river-list-container::-webkit-scrollbar,
+    #complaints-feed::-webkit-scrollbar,
+    .comp-modal-body::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .app-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 3px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb,
+    #river-list-container::-webkit-scrollbar-thumb,
+    #complaints-feed::-webkit-scrollbar-thumb,
+    .comp-modal-body::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 3px;
+    }
+    .table-responsive::-webkit-scrollbar-track,
+    #river-list-container::-webkit-scrollbar-track,
+    #complaints-feed::-webkit-scrollbar-track,
+    .comp-modal-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     .telemetry-beacon {
       width: 7px;
       height: 7px;
@@ -1858,9 +2036,9 @@
               <button onclick="switchNavTab('pressure')" style="background:none;border:none;color:var(--blue);font-family:var(--font-mono);font-size:10px;cursor:pointer;font-weight:700;">View 21 Nodes &rarr;</button>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:4px solid var(--blue); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div class="ov-node-card" style="border-left:4px solid var(--blue);" onclick="switchNavTab('pressure'); setTimeout(() => focusMainMapOnStation(2), 220);" title="Inspect Manalo Booster Station in Network Pressure">
                 <div>
-                  <div style="font-weight:700;">Manalo Booster Station</div>
+                  <div style="font-weight:700; display:flex; align-items:center; gap:6px;">Manalo Booster Station <span style="font-size:10px; color:var(--blue); font-weight:700;">↗</span></div>
                   <div id="ov-press-time-manalo" style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">Connecting...</div>
                 </div>
                 <div style="text-align:right;">
@@ -1868,9 +2046,9 @@
                   <div id="ov-press-st-manalo" style="font-size:9.5px; font-weight:600; color:var(--green);">Normal</div>
                 </div>
               </div>
-              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:4px solid var(--teal); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div class="ov-node-card" style="border-left:4px solid var(--teal);" onclick="switchNavTab('pressure'); setTimeout(() => focusMainMapOnStation(8), 220);" title="Inspect Lapu Lapu Campo Uno Box in Network Pressure">
                 <div>
-                  <div style="font-weight:700;">Lapu Lapu Campo Uno Box</div>
+                  <div style="font-weight:700; display:flex; align-items:center; gap:6px;">Lapu Lapu Campo Uno Box <span style="font-size:10px; color:var(--teal); font-weight:700;">↗</span></div>
                   <div id="ov-press-time-campo" style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">Connecting...</div>
                 </div>
                 <div style="text-align:right;">
@@ -1878,9 +2056,9 @@
                   <div id="ov-press-st-campo" style="font-size:9.5px; font-weight:600; color:var(--green);">Normal (≤90 Alert)</div>
                 </div>
               </div>
-              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-left:4px solid var(--amber); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div class="ov-node-card" style="border-left:4px solid var(--amber);" onclick="switchNavTab('pressure'); setTimeout(() => focusMainMapOnStation(19), 220);" title="Inspect UV Treatment Facility in Network Pressure">
                 <div>
-                  <div style="font-weight:700;">UV Treatment Facility</div>
+                  <div style="font-weight:700; display:flex; align-items:center; gap:6px;">UV Treatment Facility <span style="font-size:10px; color:var(--amber); font-weight:700;">↗</span></div>
                   <div id="ov-press-time-uv" style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">Connecting...</div>
                 </div>
                 <div style="text-align:right;">
@@ -2226,16 +2404,16 @@
 
 
   <!-- Genset Fleet Modal -->
-  <div id="genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-    <div style="background:#FFFFFF; border-radius:14px; width:880px; max-width:95vw; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.15);">
-      <div style="padding:18px 24px; border-bottom:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
+  <div id="genset-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:2000; align-items:center; justify-content:center; padding:20px;" onclick="if(event.target===this)closeGensetModal()">
+    <div style="background:#FFFFFF; border-radius:14px; width:880px; max-width:95vw; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--card-border);">
+      <div style="padding:16px 24px; border-bottom:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
         <div>
           <h3 style="font-size:15px; font-weight:800; color:var(--text-main);">Standby Generator Fleet</h3>
           <p style="font-size:11px; color:var(--text-muted);">Active equipment deployment and maintenance log status</p>
         </div>
-        <button onclick="closeGensetModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted);">✕</button>
+        <button onclick="closeGensetModal()" class="modal-close-btn" aria-label="Close modal">✕</button>
       </div>
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:14px 24px; background:#F8FAFC; border-bottom:1px solid var(--card-border);">
+      <div class="grid-genset-summary">
         <div><div style="font-size:10px; color:var(--text-muted);">Total Fleet</div><div id="gs-total-count" style="font-size:20px; font-weight:800;">—</div></div>
         <div><div style="font-size:10px; color:var(--green);">Operational</div><div id="gs-op-count" style="font-size:20px; font-weight:800; color:var(--green);">—</div></div>
         <div><div style="font-size:10px; color:var(--amber);">Maintenance</div><div id="gs-warn-count" style="font-size:20px; font-weight:800; color:var(--amber);">—</div></div>
@@ -2246,9 +2424,9 @@
   </div>
 
   <!-- ── SECURITY AUTHENTICATION MODAL FOR REPORT GENERATION ── -->
-  <div id="report-auth-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
+  <div id="report-auth-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeReportAuthModal()">
     <div style="background:#FFFFFF; border-radius:18px; width:440px; max-width:95vw; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); border:1px solid rgba(226,232,240,0.8); text-align:center; position:relative;">
-      <button type="button" onclick="closeReportAuthModal()" style="position:absolute; right:16px; top:16px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);" title="Cancel">✕</button>
+      <button type="button" onclick="closeReportAuthModal()" class="modal-close-btn" style="position:absolute; right:14px; top:14px;" title="Cancel">✕</button>
       
       <div style="width:68px; height:68px; border-radius:50%; background:#EFF6FF; border:2px solid #BFDBFE; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
         <img src="logo-sm.png" alt="PPCWD Logo" style="width:42px; height:42px; object-fit:contain;">
@@ -2290,26 +2468,40 @@
   </div>
 
   <!-- Pressure Report Modal -->
-  <div id="report-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:#FFFFFF; border-radius:12px; padding:24px; width:500px; max-width:90vw;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h4 style="font-weight:700;">Export Pressure Report</h4>
-        <button onclick="closeReportModal()" style="background:none;border:none;cursor:pointer;">✕</button>
+  <div id="report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:2000; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeReportModal()">
+    <div style="background:#FFFFFF; border-radius:14px; width:520px; max-width:94vw; overflow:hidden; border:1px solid var(--card-border);">
+      <div style="padding:16px 22px; border-bottom:1px solid var(--card-border); background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h4 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Export Network Pressure Report</h4>
+          <p style="font-size:11px; color:var(--text-muted); margin:2px 0 0 0;">Multi-station SCADA telemetry chart export</p>
+        </div>
+        <button onclick="closeReportModal()" class="modal-close-btn" aria-label="Close modal">✕</button>
       </div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:10px; font-family:var(--font-mono); color:var(--text-muted);">SELECT STATIONS (UP TO 4)</label>
-        <div id="report-station-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:180px; overflow-y:auto; margin-top:6px;"></div>
+      <div style="padding:18px 22px;">
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:10px; font-weight:700; font-family:var(--font-mono); color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">Select Stations (Up to 4)</label>
+          <div id="report-station-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:180px; overflow-y:auto; padding:8px; background:#F8FAFC; border:1px solid var(--card-border); border-radius:8px;"></div>
+        </div>
+        <div class="comp-modal-grid" style="margin-bottom:14px;">
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; font-family:var(--font-mono); color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">From Date</label>
+            <input type="date" id="report-date-from" class="form-input" style="width:100%; font-family:var(--font-mono);">
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; font-family:var(--font-mono); color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">To Date</label>
+            <input type="date" id="report-date-to" class="form-input" style="width:100%; font-family:var(--font-mono);">
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; margin-bottom:12px; font-size:12px; font-weight:600; color:var(--text-main);">
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;"><input type="radio" name="report-format" value="pdf" checked> PDF Document</label>
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;"><input type="radio" name="report-format" value="png"> High-Res PNG</label>
+        </div>
+        <div id="report-status" style="font-size:11px; color:var(--amber); min-height:16px; margin-bottom:10px; font-weight:600;"></div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" onclick="closeReportModal()" class="header-btn" style="flex:1; justify-content:center;">Cancel</button>
+          <button onclick="generatePressureReport()" class="header-btn btn-primary-action" style="flex:2; justify-content:center;">Generate Download</button>
+        </div>
       </div>
-      <div style="display:flex; gap:10px; margin-bottom:14px;">
-        <input type="date" id="report-date-from" class="header-btn" style="flex:1;">
-        <input type="date" id="report-date-to" class="header-btn" style="flex:1;">
-      </div>
-      <div style="display:flex; gap:10px; margin-bottom:14px; font-size:11px;">
-        <label><input type="radio" name="report-format" value="pdf" checked> PDF Document</label>
-        <label><input type="radio" name="report-format" value="png"> High-Res PNG</label>
-      </div>
-      <div id="report-status" style="font-size:11px; color:var(--amber); min-height:16px;"></div>
-      <button onclick="generatePressureReport()" class="header-btn" style="width:100%; justify-content:center; background:var(--blue); color:white;">Generate Download</button>
     </div>
   </div>
 
@@ -2402,26 +2594,34 @@
   </div>
 
   <!-- Crisis Report Modal -->
-  <div id="crisis-report-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:#FFFFFF; border-radius:12px; padding:24px; width:440px; max-width:90vw;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h4 style="font-weight:700;">Internal Crisis Report PDF</h4>
-        <button onclick="closeCrisisReportModal()" style="background:none;border:none;cursor:pointer;">✕</button>
+  <div id="crisis-report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:2000; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeCrisisReportModal()">
+    <div style="background:#FFFFFF; border-radius:14px; width:460px; max-width:94vw; overflow:hidden; border:1px solid var(--card-border);">
+      <div style="padding:16px 22px; border-bottom:1px solid var(--card-border); background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h4 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Internal Crisis Report PDF</h4>
+          <p style="font-size:11px; color:var(--text-muted); margin:2px 0 0 0;">A4 drought &amp; system deficit risk assessment</p>
+        </div>
+        <button onclick="closeCrisisReportModal()" class="modal-close-btn" aria-label="Close modal">✕</button>
       </div>
-      <div style="display:flex; gap:8px; margin-bottom:12px;">
-        <button type="button" onclick="quickSelectCrisisRange('week')" class="header-btn" style="flex:1;">Single Week</button>
-        <button type="button" onclick="quickSelectCrisisRange('month')" class="header-btn" style="flex:1;">4-Week Month</button>
+      <div style="padding:18px 22px;">
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <button type="button" onclick="quickSelectCrisisRange('week')" class="header-btn" style="flex:1; justify-content:center;">Single Week</button>
+          <button type="button" onclick="quickSelectCrisisRange('month')" class="header-btn" style="flex:1; justify-content:center;">4-Week Month</button>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:10px; font-weight:700; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:4px;">START WEEK</label>
+          <select id="crisis-start-week" class="week-dropdown" style="width:100%;"></select>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:10px; font-weight:700; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:4px;">END WEEK</label>
+          <select id="crisis-end-week" class="week-dropdown" style="width:100%;"></select>
+        </div>
+        <div id="crisis-report-status" style="font-size:11px; color:var(--amber); min-height:16px; margin-bottom:10px; font-weight:600;"></div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" onclick="closeCrisisReportModal()" class="header-btn" style="flex:1; justify-content:center;">Cancel</button>
+          <button onclick="generateCrisisReport()" class="header-btn btn-primary-action" style="flex:2; justify-content:center;">Download A4 PDF</button>
+        </div>
       </div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:10px; font-family:var(--font-mono); color:var(--text-muted);">START WEEK</label>
-        <select id="crisis-start-week" class="week-dropdown" style="width:100%;"></select>
-      </div>
-      <div style="margin-bottom:14px;">
-        <label style="font-size:10px; font-family:var(--font-mono); color:var(--text-muted);">END WEEK</label>
-        <select id="crisis-end-week" class="week-dropdown" style="width:100%;"></select>
-      </div>
-      <div id="crisis-report-status" style="font-size:11px; color:var(--amber); min-height:16px;"></div>
-      <button onclick="generateCrisisReport()" class="header-btn" style="width:100%; justify-content:center; background:var(--blue); color:white;">Download A4 PDF</button>
     </div>
   </div>
 
@@ -2477,11 +2677,11 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
   <!-- ── PPCWD DASHBOARD COMPREHENSIVE REPORT BUILDER MODAL ── -->
   <!-- ══════════════════════════════════════════════════════════════════ -->
-  <div id="comprehensive-report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:#FFFFFF; border-radius:14px; width:860px; max-width:96vw; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.3); font-family:'Inter',sans-serif;">
+  <div id="comprehensive-report-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:3000; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeComprehensiveReportModal()">
+    <div style="background:#FFFFFF; border-radius:14px; width:860px; max-width:96vw; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.3); font-family:'Inter',sans-serif; border:1px solid var(--card-border);">
       
       <!-- Header -->
-      <div style="padding:18px 24px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+      <div style="padding:16px 24px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="padding:4px 8px; border-radius:6px; background:var(--blue-light); border:1px solid var(--blue-border); font-size:10px; font-weight:800; font-family:var(--font-mono); color:var(--blue); letter-spacing:0.5px;">
             REPORT
@@ -2491,22 +2691,22 @@
             <p style="margin:2px 0 0 0; font-size:11px; color:#64748B;">Multi-Page A4 Portrait Telemetry Engine &bull; Historical Backtracking &bull; 0.5-inch Margins</p>
           </div>
         </div>
-        <button onclick="closeComprehensiveReportModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#94A3B8; padding:4px 8px; border-radius:4px;" title="Close modal">✕</button>
+        <button onclick="closeComprehensiveReportModal()" class="modal-close-btn" title="Close modal" aria-label="Close modal">✕</button>
       </div>
 
       <!-- Scrollable Form Body -->
-      <div style="flex:1; overflow-y:auto; padding:20px 24px; display:flex; flex-direction:column; gap:20px;">
+      <div class="comp-modal-body" style="flex:1; overflow-y:auto; padding:20px 24px; display:flex; flex-direction:column; gap:18px;">
         
         <!-- Metadata Inputs -->
         <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px 18px; display:flex; flex-direction:column; gap:12px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Document Branding &amp; Metadata</span>
             <div style="display:flex; gap:6px;">
-              <button type="button" onclick="setCompReportTitlePreset('default')" class="header-btn" style="font-size:10px; padding:2px 10px; background:#F1F5F9; color:#475569; border-color:#CBD5E1; font-weight:600;">Reset Default</button>
+              <button type="button" onclick="setCompReportTitlePreset('default')" class="header-btn" style="font-size:10px; padding:3px 10px; background:#FFFFFF; color:#475569; border-color:#CBD5E1; font-weight:600;">Reset Default</button>
             </div>
           </div>
           
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="comp-modal-grid">
             <div>
               <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Report Title</label>
               <input id="comp-rep-title" type="text" class="form-input" style="width:100%; font-size:12px; font-weight:700; padding:7px 10px; box-sizing:border-box;" value="PPCWD Dashboard Comprehensive Report" />
@@ -2539,126 +2739,141 @@
             </div>
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="comp-modal-grid">
             <div>
               <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Start Date</label>
-              <input id="comp-rep-start-date" type="date" onchange="updateCompPresetActive(null)" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
+              <input id="comp-rep-start-date" type="date" onchange="onCompReportDateInputChange()" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:7px 10px; box-sizing:border-box;" />
             </div>
             <div>
-              <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">End Date</label>
-              <input id="comp-rep-end-date" type="date" onchange="updateCompPresetActive(null)" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:6px 10px; box-sizing:border-box;" />
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <label style="font-size:10px; font-weight:700; color:#64748B; text-transform:uppercase; display:inline-flex; align-items:center; gap:6px;">
+                  <span>End Date</span>
+                  <span id="comp-rep-today-badge" class="kpi-badge-pill pill-green" style="font-size:9px; padding:1px 6px;">As of Today</span>
+                </label>
+                <button type="button" id="btn-comp-end-today" onclick="resetCompReportEndToToday()" class="header-btn" style="font-size:9.5px; padding:1px 7px; border-radius:5px; color:var(--blue); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;" title="Snap End Date to today's date">
+                  Today
+                </button>
+              </div>
+              <input id="comp-rep-end-date" type="date" onchange="onCompReportDateInputChange()" class="form-input" style="width:100%; font-size:12px; font-family:var(--font-mono); padding:7px 10px; box-sizing:border-box;" />
             </div>
+          </div>
+
+          <div id="comp-rep-range-summary" style="font-size:11px; font-family:var(--font-mono); color:#1E293B; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:7px; padding:7px 11px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+            <span>Active Window: —</span>
           </div>
 
           <div>
             <label style="display:block; font-size:10px; font-weight:700; color:#64748B; margin-bottom:4px; text-transform:uppercase;">Or Select Specific Operational Week</label>
-            <select id="comp-rep-quick-week" onchange="selectCompReportOperationalWeek(this.value)" class="form-input" style="width:100%; font-size:11px; font-weight:600; padding:6px 10px; box-sizing:border-box; color:#1E293B;">
+            <select id="comp-rep-quick-week" onchange="selectCompReportOperationalWeek(this.value)" class="form-input" style="width:100%; font-size:11px; font-weight:600; padding:7px 10px; box-sizing:border-box; color:#1E293B;">
               <option value="">-- Jump to Specific Operational Week --</option>
             </select>
           </div>
 
           <div style="font-size:10.5px; color:#64748B; line-height:1.4;">
-            <span style="color:var(--blue); font-weight:600;">Automatic Backfill &amp; Independent Monthly Evaluation:</span> If your date range starts earlier than cached telemetry, missing records are automatically queried from Supabase. Monthly production reports are evaluated unprorated against the full 1,705,700 m&sup3; baseline, completely separate from weekly production schedules.
+            <span style="color:var(--blue); font-weight:600;">Automatic Backfill &amp; Independent Monthly Evaluation:</span> End Date automatically defaults to today's date for immediate generation as of today. Missing historical telemetry is automatically queried from Supabase, and monthly production is evaluated unprorated against the 1,705,700 m&sup3; baseline.
           </div>
         </div>
 
         <!-- Topics & Subtopics Checklist -->
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Report Topics &amp; Subtopics (1 Dedicated A4 Page per Topic)</span>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:11px; font-weight:700; color:#1E293B; text-transform:uppercase; letter-spacing:0.5px;">Report Topics &amp; Subtopics</span>
+              <span id="comp-rep-pages-badge" class="kpi-badge-pill pill-blue" style="font-size:9.5px; padding:2px 8px;">4 Topics Selected</span>
+            </div>
             <div style="display:flex; gap:6px;">
-              <button type="button" onclick="toggleAllCompTopics(true)" class="header-btn" style="font-size:10px; padding:2px 8px;">Select All</button>
-              <button type="button" onclick="toggleAllCompTopics(false)" class="header-btn" style="font-size:10px; padding:2px 8px;">Clear All</button>
+              <button type="button" onclick="toggleAllCompTopics(true)" class="header-btn" style="font-size:10px; padding:3px 9px;">Select All</button>
+              <button type="button" onclick="toggleAllCompTopics(false)" class="header-btn" style="font-size:10px; padding:3px 9px;">Clear All</button>
             </div>
           </div>
 
           <!-- Topic 1 -->
-          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+          <div class="comp-topic-card" id="comp-card-prod">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
               <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
-                <input type="checkbox" id="comp-topic-prod" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <input type="checkbox" id="comp-topic-prod" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1); accent-color:var(--blue);" />
                 <span>Page 1: Production Weekly &amp; Monthly Summary</span>
               </label>
               <span style="font-size:10px; background:#EEF2FF; color:#4F46E5; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 1</span>
             </div>
-            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+            <div class="comp-subtopics-list" style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-prod-monthly" checked />
+                <input type="checkbox" id="comp-sub-prod-monthly" checked style="accent-color:var(--blue);" />
                 <span>Monthly Production &amp; LWUA Trigger Summary (KPI cards + Monthly Table)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-prod-weekly" checked />
+                <input type="checkbox" id="comp-sub-prod-weekly" checked style="accent-color:var(--blue);" />
                 <span>Weekly Production, SW/GW Split &amp; Crisis Monitoring (Descending Operational Weeks + Weekly Average)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-prod-subsystems" />
+                <input type="checkbox" id="comp-sub-prod-subsystems" style="accent-color:var(--blue);" />
                 <span>LWUA Crisis Subsystem Breakdown &amp; Logged Operational Remarks</span>
               </label>
             </div>
           </div>
 
           <!-- Topic 2 -->
-          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+          <div class="comp-topic-card" id="comp-card-press">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
               <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
-                <input type="checkbox" id="comp-topic-press" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <input type="checkbox" id="comp-topic-press" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1); accent-color:var(--blue);" />
                 <span>Page 2: Pressure Network Summary &amp; Low-Pressure Sensors</span>
               </label>
               <span style="font-size:10px; background:#F0FDF4; color:#15803D; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 2</span>
             </div>
-            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+            <div class="comp-subtopics-list" style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-press-monthly" checked />
+                <input type="checkbox" id="comp-sub-press-monthly" checked style="accent-color:var(--blue);" />
                 <span>Monthly / Period Pressure Compliance Summary (KPIs + Compliance Table)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-press-diurnal" checked />
+                <input type="checkbox" id="comp-sub-press-diurnal" checked style="accent-color:var(--blue);" />
                 <span>Diurnal Pressure Distribution Profile (Peak &amp; Off-Peak Zone Graph + Summary Table)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-press-weekly-major" checked />
+                <input type="checkbox" id="comp-sub-press-weekly-major" checked style="accent-color:var(--blue);" />
                 <span>Weekly Major Pressure Monitoring Points (MBS, UV Facility, Campo Uno Chamber Box, AVG System, Peak/Off-Peak)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-press-lowest5" checked />
+                <input type="checkbox" id="comp-sub-press-lowest5" checked style="accent-color:var(--blue);" />
                 <span>Top 5 Lowest-Pressure Sensors Ranking (18 Distribution Stations, Daily Hours &lt; 6.5 psi)</span>
               </label>
             </div>
           </div>
 
           <!-- Topic 3 -->
-          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+          <div class="comp-topic-card" id="comp-card-comp">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
               <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
-                <input type="checkbox" id="comp-topic-comp" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <input type="checkbox" id="comp-topic-comp" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1); accent-color:var(--blue);" />
                 <span>Page 3: Customer Complaints Summary &amp; Top 10 Affected Barangays</span>
               </label>
               <span style="font-size:10px; background:#FEF3C7; color:#B45309; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 3</span>
             </div>
-            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+            <div class="comp-subtopics-list" style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-comp-summary" checked />
+                <input type="checkbox" id="comp-sub-comp-summary" checked style="accent-color:var(--blue);" />
                 <span>Customer Complaints Summary by Incident Type (No Water, Low Pressure, Turbid Water, etc.)</span>
               </label>
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-comp-hotspots" checked />
+                <input type="checkbox" id="comp-sub-comp-hotspots" checked style="accent-color:var(--blue);" />
                 <span>Top 10 Affected Barangays &amp; Hotspot Stubouts (SO-xxxx) Cross-Correlated with Low-Pressure Sensors</span>
               </label>
             </div>
           </div>
 
           <!-- Topic 4 -->
-          <div style="border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; background:#FFFFFF;">
+          <div class="comp-topic-card" id="comp-card-river">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
               <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#0F172A; cursor:pointer;">
-                <input type="checkbox" id="comp-topic-river" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1);" />
+                <input type="checkbox" id="comp-topic-river" checked onchange="updateCompTopicsUI()" style="transform:scale(1.1); accent-color:var(--blue);" />
                 <span>Page 4: Watershed Hydrology &amp; River Flow Depletion</span>
               </label>
               <span style="font-size:10px; background:#F1F5F9; color:#475569; padding:2px 8px; border-radius:12px; font-weight:700;">A4 Page 4</span>
             </div>
-            <div style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
+            <div class="comp-subtopics-list" style="padding-left:26px; display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:#475569;">
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="comp-sub-river-depletion" checked />
+                <input type="checkbox" id="comp-sub-river-depletion" checked style="accent-color:var(--blue);" />
                 <span>Watershed River Flow Depletion Matrix (Period Peak vs. Latest Discharge, % Depletion / Recharge)</span>
               </label>
             </div>
@@ -2673,18 +2888,20 @@
 
       <!-- Footer Action Buttons -->
       <div style="padding:14px 24px; border-top:1px solid #E2E8F0; background:#F8FAFC; display:flex; flex-direction:column; gap:8px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="comp-modal-footer-actions" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
           <button type="button" onclick="closeComprehensiveReportModal()" class="header-btn" style="font-size:11.5px;">Cancel</button>
-          <div style="display:flex; gap:10px;">
-            <button type="button" id="btn-comp-print" onclick="printComprehensiveReport()" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; gap:6px; box-shadow:0 1px 3px rgba(37,99,235,0.3);">
-              <span>🖨️ Save as Vector PDF (Recommended)</span>
+          <div class="comp-modal-footer-btns" style="display:flex; gap:10px;">
+            <button type="button" id="btn-comp-print" onclick="printComprehensiveReport()" class="header-btn btn-primary-action" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:7px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              <span>Save as Vector PDF (Recommended)</span>
             </button>
-            <button type="button" id="btn-comp-download" onclick="downloadComprehensiveReportPDF()" class="header-btn" style="background:#FFFFFF; color:#334155; border-color:#CBD5E1; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-              <span>📥 Direct PDF Download</span>
+            <button type="button" id="btn-comp-download" onclick="downloadComprehensiveReportPDF()" class="header-btn btn-secondary-action" style="background:#FFFFFF; color:#334155; border-color:#CBD5E1; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:7px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Direct PDF Download</span>
             </button>
           </div>
         </div>
-        <div style="font-size:9px; color:#64748B; line-height:1.35; text-align:right;">
+        <div style="font-size:9.5px; color:#64748B; line-height:1.35; text-align:right;">
           <strong style="color:var(--blue);">Vector PDF vs. Image PDF:</strong> Click <strong>"Save as Vector PDF"</strong> and select <em>"Save as PDF"</em> in your browser dialog for 100% searchable text, selectable tables, and pure vector graphics at any zoom level. <strong>"Direct PDF Download"</strong> outputs a pre-rendered high-res canvas file.
         </div>
       </div>
@@ -3672,7 +3889,7 @@
           <tr>
             <td style="font-weight:700; color:var(--text-main);">${s.name}</td>
             <td style="color:var(--text-muted); font-size:11px;">${s.type}</td>
-            <td style="font-family:var(--font-mono); font-weight:700; color:var(--blue);">${flow}</td>
+            <td class="right mono" style="font-weight:700; color:var(--blue);">${flow}</td>
             <td><span class="status-dot-cell"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> ${status}</span></td>
             <td style="color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${timeStr}</td>
           </tr>
@@ -4936,13 +5153,18 @@
   function buildRiverSidebar(){
     const container = document.getElementById("river-list-container");
     if(!container) return;
+    const activeCol = selectedRiverCol || RIVER_STATIONS[0]?.col;
     container.innerHTML = RIVER_STATIONS.map(s => {
       const valid = riverRaw.filter(r => r.vals && r.vals[s.col] !== null);
       const last = valid[valid.length - 1];
+      const dateStr = last && last.dt ? last.dt.toLocaleDateString('en-PH', { month:'short', day:'numeric' }) : '';
       return `
-        <div style="padding:10px 12px; border-bottom:1px solid var(--card-border); cursor:pointer;" onclick="showRiverDetails(${s.col})">
-          <div style="font-weight:700; color:var(--text-main); font-size:12px;">${escapeHtml(s.name)}</div>
-          <div style="font-family:var(--font-mono); font-size:11px; color:var(--teal); font-weight:700;">
+        <div class="river-list-item ${s.col === activeCol ? 'active' : ''}" data-river-col="${s.col}" onclick="showRiverDetails(${s.col})">
+          <div style="min-width:0;">
+            <div style="font-weight:700; color:var(--text-main); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(s.name)}</div>
+            <div style="font-size:10px; color:var(--text-muted);">${escapeHtml(s.group)}${dateStr ? ' &bull; ' + dateStr : ''}</div>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--teal); font-weight:700; white-space:nowrap;">
             ${last ? fmt(last.vals[s.col], 0) + ' m³/d' : '—'}
           </div>
         </div>
@@ -4952,6 +5174,9 @@
 
   function showRiverDetails(col){
     selectedRiverCol = col;
+    document.querySelectorAll('#river-list-container .river-list-item').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.riverCol) === col);
+    });
     const s = RIVER_STATIONS.find(i => i.col === col);
     if (!s) return;
     document.getElementById("river-chart-title").textContent = `${s.name} Discharge Trend (m³/day)`;
@@ -5200,13 +5425,17 @@
     }
 
     const feedCountEl = document.getElementById('comp-feed-count');
-    if (feedCountEl) feedCountEl.textContent = `${filtered.length} recorded`;
+    if (feedCountEl) {
+      feedCountEl.textContent = filtered.length > 50
+        ? `Showing 50 of ${filtered.length} recorded`
+        : `${filtered.length} recorded`;
+    }
 
     if (filtered.length === 0) {
       document.getElementById('complaints-feed').innerHTML = `
         <div style="padding: 36px 20px; text-align: center; border: 1px dashed var(--card-border); border-radius: 12px; background: #FAFBFD;">
-          <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 10px;">
-            📋
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
           </div>
           <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">No Verified Complaints Found</div>
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; max-width: 380px; margin-left: auto; margin-right: auto; line-height: 1.4;">
@@ -6568,8 +6797,8 @@
         <tr>
           <td colspan="6" style="padding: 36px 20px; text-align: center;">
             <div style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-              <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                📊
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
               </div>
               <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">No Monthly Volumes Logged for ${monthLabel}</div>
               <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
@@ -6767,6 +6996,17 @@
     ensureReportAuthorized(() => _doOpenComprehensiveReportModal(), "PPCWD Dashboard Comprehensive Report");
   }
 
+  function formatLocalYMD(d) {
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  function parseLocalYMD(str) {
+    const p = (str || '').split('-');
+    if (p.length === 3) return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+    return new Date(str);
+  }
+
   function _doOpenComprehensiveReportModal() {
     const modal = document.getElementById("comprehensive-report-modal");
     if (!modal) return;
@@ -6776,10 +7016,17 @@
 
     const startInp = document.getElementById("comp-rep-start-date");
     const endInp = document.getElementById("comp-rep-end-date");
-    if (startInp && endInp && (!startInp.value || !endInp.value)) {
-      setCompReportDatePreset("16weeks");
+    const weekSelect = document.getElementById("comp-rep-quick-week");
+    if (weekSelect) weekSelect.value = "";
+    if (startInp && endInp) {
+      // Always default End Date to today's date for easy generation as of today
+      endInp.value = formatLocalYMD(new Date());
+      const activeBtn = document.querySelector('.comp-preset-btn[data-active="1"]');
+      const presetToUse = activeBtn ? activeBtn.dataset.compPreset : "16weeks";
+      setCompReportDatePreset(presetToUse);
     }
     updateCompTopicsUI();
+    updateCompDateRangeSummary();
     const statusEl = document.getElementById("comp-rep-status");
     if (statusEl) statusEl.textContent = "";
   }
@@ -6805,22 +7052,6 @@
   }
 
   function getCompReportAnchorDate() {
-    if (Array.isArray(allProdData) && allProdData.length > 0) {
-      for (let i = allProdData.length - 1; i >= 0; i--) {
-        const row = allProdData[i];
-        const { eDate } = parsePeriodDates(row[COL.period], row[COL.date]);
-        if (eDate && !isNaN(eDate.getTime())) return eDate;
-        if (row[COL.date]) {
-          const d = new Date(row[COL.date]);
-          if (!isNaN(d.getTime())) return d;
-        }
-      }
-    }
-    if (Array.isArray(pressureRaw) && pressureRaw.length > 0) {
-      for (let i = pressureRaw.length - 1; i >= 0; i--) {
-        if (pressureRaw[i].dt && !isNaN(pressureRaw[i].dt.getTime())) return pressureRaw[i].dt;
-      }
-    }
     return new Date();
   }
 
@@ -6844,11 +7075,84 @@
   function updateCompPresetActive(activePreset) {
     document.querySelectorAll('.comp-preset-btn').forEach(btn => {
       const isMatch = activePreset && btn.dataset.compPreset === activePreset;
+      btn.dataset.active = isMatch ? '1' : '0';
       btn.style.background = isMatch ? 'var(--blue-light)' : '';
       btn.style.color = isMatch ? 'var(--blue)' : (btn.dataset.compPreset === 'all' ? '#475569' : '');
       btn.style.borderColor = isMatch ? 'var(--blue-border)' : '';
       btn.style.fontWeight = isMatch ? '700' : '';
     });
+  }
+
+  function updateCompDateRangeSummary() {
+    const startInp = document.getElementById("comp-rep-start-date");
+    const endInp = document.getElementById("comp-rep-end-date");
+    const badgeEl = document.getElementById("comp-rep-today-badge");
+    const todayBtn = document.getElementById("btn-comp-end-today");
+    const summaryEl = document.getElementById("comp-rep-range-summary");
+    if (!startInp || !endInp) return;
+
+    const todayStr = formatLocalYMD(new Date());
+    const isToday = endInp.value === todayStr;
+
+    if (badgeEl) {
+      if (isToday) {
+        badgeEl.textContent = "As of Today";
+        badgeEl.className = "kpi-badge-pill pill-green";
+      } else {
+        badgeEl.textContent = "Custom End";
+        badgeEl.className = "kpi-badge-pill pill-amber";
+      }
+    }
+    if (todayBtn) {
+      todayBtn.disabled = isToday;
+      todayBtn.style.opacity = isToday ? "0.5" : "1";
+    }
+
+    if (summaryEl) {
+      if (startInp.value && endInp.value) {
+        const sDt = parseLocalYMD(startInp.value);
+        const eDt = parseLocalYMD(endInp.value);
+        if (!isNaN(sDt.getTime()) && !isNaN(eDt.getTime())) {
+          const days = Math.max(1, Math.round((eDt.getTime() - sDt.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+          const sFmt = sDt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const eFmt = eDt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          summaryEl.innerHTML = `
+            <span>Active Window: <strong style="color:#0F172A;">${escapeHtml(sFmt)} &ndash; ${escapeHtml(eFmt)}</strong></span>
+            <span style="color:#64748B;">${days} day${days !== 1 ? 's' : ''}${isToday ? ' &bull; <strong style="color:var(--green);">Up to Today</strong>' : ''}</span>
+          `;
+          return;
+        }
+      }
+      summaryEl.innerHTML = '<span>Active Window: —</span>';
+    }
+  }
+
+  function onCompReportDateInputChange() {
+    const weekSelect = document.getElementById("comp-rep-quick-week");
+    if (weekSelect) weekSelect.value = "";
+    updateCompPresetActive(null);
+    updateCompDateRangeSummary();
+  }
+
+  function resetCompReportEndToToday() {
+    const startInp = document.getElementById("comp-rep-start-date");
+    const endInp = document.getElementById("comp-rep-end-date");
+    const weekSelect = document.getElementById("comp-rep-quick-week");
+    if (weekSelect) weekSelect.value = "";
+    if (!endInp) return;
+
+    const todayStr = formatLocalYMD(new Date());
+    endInp.value = todayStr;
+
+    const activeBtn = document.querySelector('.comp-preset-btn[data-active="1"]');
+    if (activeBtn && activeBtn.dataset.compPreset) {
+      setCompReportDatePreset(activeBtn.dataset.compPreset);
+    } else {
+      if (startInp && startInp.value && startInp.value > todayStr) {
+        startInp.value = todayStr;
+      }
+      updateCompDateRangeSummary();
+    }
   }
 
   function selectCompReportOperationalWeek(periodStr) {
@@ -6857,14 +7161,12 @@
     const endInp = document.getElementById("comp-rep-end-date");
     if (!startInp || !endInp) return;
 
-    const pad = n => String(n).padStart(2, '0');
-    const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
     const { sDate, eDate } = parsePeriodDates(periodStr, null);
     if (sDate && eDate) {
-      startInp.value = fmtDate(sDate);
-      endInp.value = fmtDate(eDate);
+      startInp.value = formatLocalYMD(sDate);
+      endInp.value = formatLocalYMD(eDate);
       updateCompPresetActive(null);
+      updateCompDateRangeSummary();
     }
   }
 
@@ -6872,22 +7174,20 @@
     const startInp = document.getElementById("comp-rep-start-date");
     const endInp = document.getElementById("comp-rep-end-date");
     const weekSelect = document.getElementById("comp-rep-quick-week");
+    const hadQuickWeek = !!(weekSelect && weekSelect.value);
     if (weekSelect) weekSelect.value = "";
     if (!startInp || !endInp) return;
     updateCompPresetActive(preset);
 
-    const pad = n => String(n).padStart(2, '0');
-    const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const fmtDate = formatLocalYMD;
+    const parseYMD = parseLocalYMD;
 
-    const parseYMD = str => {
-      const p = (str || '').split('-');
-      if (p.length === 3) return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
-      return new Date(str);
-    };
-
-    // If End Date is selected, anchor from that selected End Date! Otherwise fall back to anchor date.
+    // Anchor Current Month, All History, or transitions away from a specific past week to Today's date.
     let targetEnd = null;
-    if (endInp.value) {
+    if (preset === 'month' || preset === 'all' || hadQuickWeek || !endInp.value) {
+      targetEnd = getCompReportAnchorDate();
+      endInp.value = fmtDate(targetEnd);
+    } else {
       const parsed = parseYMD(endInp.value);
       if (!isNaN(parsed.getTime())) targetEnd = parsed;
     }
@@ -6930,6 +7230,7 @@
       }
       startInp.value = fmtDate(earliest);
     }
+    updateCompDateRangeSummary();
   }
 
   function toggleAllCompTopics(select) {
@@ -6945,6 +7246,18 @@
     const pressCh = document.getElementById("comp-topic-press")?.checked;
     const compCh = document.getElementById("comp-topic-comp")?.checked;
     const riverCh = document.getElementById("comp-topic-river")?.checked;
+
+    document.getElementById("comp-card-prod")?.classList.toggle("is-disabled", !prodCh);
+    document.getElementById("comp-card-press")?.classList.toggle("is-disabled", !pressCh);
+    document.getElementById("comp-card-comp")?.classList.toggle("is-disabled", !compCh);
+    document.getElementById("comp-card-river")?.classList.toggle("is-disabled", !riverCh);
+
+    const selectedCount = [prodCh, pressCh, compCh, riverCh].filter(Boolean).length;
+    const pagesBadge = document.getElementById("comp-rep-pages-badge");
+    if (pagesBadge) {
+      pagesBadge.textContent = `${selectedCount} / 4 Topics Selected`;
+      pagesBadge.className = selectedCount > 0 ? "kpi-badge-pill pill-blue" : "kpi-badge-pill pill-red";
+    }
 
     ['comp-sub-prod-monthly', 'comp-sub-prod-weekly', 'comp-sub-prod-subsystems'].forEach(id => {
       const el = document.getElementById(id);
@@ -6967,9 +7280,16 @@
   // Backfill historical pressure telemetry on demand with sliding cursor pagination
   async function ensurePressureRangeLoaded(startDt, endDt, onProgress) {
     const oldestInRaw = (pressureRaw && pressureRaw.length > 0) ? pressureRaw[0].dt : null;
+    const newestInRaw = (pressureRaw && pressureRaw.length > 0) ? pressureRaw[pressureRaw.length - 1].dt : null;
+    const targetCapMs = Math.min(endDt.getTime(), Date.now());
+    const needsHeadSync = newestInRaw && (targetCapMs - newestInRaw.getTime() > 60 * 60 * 1000);
+
     if (!pressureRaw || !pressureRaw.length || (oldestInRaw && startDt < oldestInRaw)) {
       if (typeof onProgress === 'function') onProgress('Backtracking historical pressure telemetry from server...');
       await fetchPressureRange(startDt, endDt, onProgress);
+    } else if (needsHeadSync) {
+      if (typeof onProgress === 'function') onProgress('Syncing latest pressure telemetry up to end date...');
+      await fetchPressureRange(newestInRaw, endDt, onProgress);
     }
   }
 
@@ -7641,8 +7961,8 @@
 
   // Customer Complaints Analytics
   function computeComplaintsAnalytics(startDt, endDt) {
-    const sIso = startDt.toISOString().slice(0, 10);
-    const eIso = endDt.toISOString().slice(0, 10);
+    const sIso = formatLocalYMD(startDt);
+    const eIso = formatLocalYMD(endDt);
     const inRange = (complaintsRaw || []).filter(c => {
       const d = c.date || (c.created_at ? c.created_at.slice(0, 10) : '');
       return d >= sIso && d <= eIso;
@@ -9225,8 +9545,16 @@
       }
     } catch(e){}
 
-    // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar
+    // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar, and Escape to close open modals
     document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeComprehensiveReportModal();
+        if (typeof closeCrisisRemarksModal === 'function') closeCrisisRemarksModal();
+        if (typeof closeReportModal === 'function') closeReportModal();
+        if (typeof closeCrisisReportModal === 'function') closeCrisisReportModal();
+        if (typeof closeGensetModal === 'function') closeGensetModal();
+        if (typeof closeReportAuthModal === 'function') closeReportAuthModal();
+      }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
         const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
         if (tag !== 'input' && tag !== 'textarea') {
