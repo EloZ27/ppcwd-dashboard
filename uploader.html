@@ -691,6 +691,11 @@
           <span>River Hydrology</span>
         </button>
 
+        <button type="button" class="nav-btn" id="sidebar-btn-waterlevel" onclick="switchPortalSection('waterlevel')">
+          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><line x1="8" y1="15" x2="16" y2="15"/></svg></span>
+          <span>Booster Water Level</span>
+        </button>
+
         <div class="sidebar-section-label">Production Reporting</div>
 
         <button type="button" class="nav-btn" id="sidebar-btn-production" onclick="switchPortalSection('production')">
@@ -1263,6 +1268,268 @@
             </div>
           </div>
         </div> <!-- end #section-riverflow -->
+
+        <!-- ── BOOSTER WATER LEVEL SECTION ── -->
+        <div id="section-waterlevel" style="display:none;">
+
+          <!-- Card 1: Water Level Intake & Configuration -->
+          <div class="card">
+            <div class="card-header-bar">
+              <div class="card-heading">
+                <h2>Manalo Booster &amp; Reservoir Water Level Intake</h2>
+                <p>Field Operator Telemetry &bull; Log water height readings from group chat, spreadsheets, or on-site gauge reports</p>
+              </div>
+              <div class="segment-pills" role="tablist" aria-label="Water level intake modes">
+                <button type="button" class="seg-pill active" id="wl-pill-single" onclick="switchWaterLevelMode('single')">Quick Single Entry</button>
+                <button type="button" class="seg-pill" id="wl-pill-bulk" onclick="switchWaterLevelMode('bulk')">Group Chat / Bulk Paste</button>
+                <button type="button" class="seg-pill" id="wl-pill-config" onclick="switchWaterLevelMode('config')">Normal Level &amp; Milestones</button>
+              </div>
+            </div>
+
+            <div id="wl-alert-box" class="alert-box" role="alert"></div>
+
+            <!-- MODE 1: QUICK SINGLE ENTRY -->
+            <form id="form-wl-single" onsubmit="submitSingleWaterLevel(event)">
+              <input type="hidden" id="wl-edit-id" value="">
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <label for="wl-station" class="form-lbl">Booster / Reservoir Station *</label>
+                  <select id="wl-station" class="form-input" required onchange="onWaterLevelStationChange()"></select>
+                </div>
+                <div class="field-group">
+                  <label for="wl-date" class="form-lbl">Reading Date *</label>
+                  <input type="date" id="wl-date" class="form-input" required>
+                </div>
+                <div class="field-group">
+                  <label for="wl-time" class="form-lbl">Reading Time (PST) *</label>
+                  <div style="display:flex; gap:6px;">
+                    <input type="time" id="wl-time" class="form-input" style="flex:1; font-family:var(--font-mono); font-weight:600;" required>
+                    <button type="button" class="header-btn" onclick="setWaterLevelTimeOffset(0)" style="padding:4px 9px; font-size:11px;" title="Set to current PH time">Now</button>
+                    <button type="button" class="header-btn" onclick="setWaterLevelTimeOffset(-1)" style="padding:4px 9px; font-size:11px;" title="Set to 1 hour ago">-1h</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <label for="wl-value" class="form-lbl">Current Water Level (<span id="wl-unit-label">m</span>) *</label>
+                  <input type="number" id="wl-value" step="0.01" min="0" max="9999" required placeholder="e.g. 2.15" class="form-input" style="font-family:var(--font-mono); font-weight:700; font-size:14px;" oninput="updateWaterLevelPreview()">
+                </div>
+                <div class="field-group">
+                  <label for="wl-normal" class="form-lbl">Normal Water Height (<span id="wl-normal-unit-label">m</span>) *</label>
+                  <input type="number" id="wl-normal" step="0.01" min="0.01" max="9999" required placeholder="e.g. 3.00" class="form-input" style="font-family:var(--font-mono); font-weight:600;" oninput="updateWaterLevelPreview()">
+                </div>
+                <div class="field-group">
+                  <label for="wl-context" class="form-lbl">Operational / Source Context</label>
+                  <input type="text" id="wl-context" list="wl-context-list" placeholder="e.g. Montible Active (El Niño)" class="form-input">
+                  <datalist id="wl-context-list">
+                    <option value="Montible Active (El Niño)">
+                    <option value="El Niño Dry Spell">
+                    <option value="Montible Active • 2 Pumps Running">
+                    <option value="Montible Active • 1 Pump Running">
+                    <option value="Montible Off / Standby">
+                    <option value="Power Interruption / Genset Mode">
+                    <option value="Night Recharge Window">
+                  </datalist>
+                </div>
+              </div>
+
+              <!-- Live Status Preview Strip -->
+              <div id="wl-live-preview" style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:12px 16px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span id="wl-preview-badge" style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; background:#E2E8F0; color:var(--text-muted);">Awaiting Input</span>
+                  <div style="font-size:12px; color:var(--text-muted);" id="wl-preview-text">Enter water level to preview variance vs. normal height.</div>
+                </div>
+                <div style="width:180px; height:8px; background:#E2E8F0; border-radius:99px; overflow:hidden;">
+                  <div id="wl-preview-bar" style="height:100%; width:0%; background:var(--blue); transition:width 0.2s ease, background 0.2s ease;"></div>
+                </div>
+              </div>
+
+              <div class="form-grid" style="grid-template-columns: 1fr 2fr;">
+                <div class="field-group">
+                  <label for="wl-operator" class="form-lbl">Field Operator Name</label>
+                  <input type="text" id="wl-operator" placeholder="e.g. Manalo Booster Operator" class="form-input">
+                </div>
+                <div class="field-group">
+                  <label for="wl-remarks" class="form-lbl">Field Remarks / Group Chat Notes</label>
+                  <input type="text" id="wl-remarks" placeholder="e.g. Slow recovery after morning peak; dry spell low inflow" class="form-input">
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                <button type="button" id="btn-wl-cancel-edit" class="header-btn" style="display:none; color:var(--red-text);" onclick="cancelWaterLevelEdit()">Cancel Edit</button>
+                <div style="margin-left:auto; display:flex; gap:8px;">
+                  <button type="button" class="header-btn" onclick="resetWaterLevelForm()">Clear</button>
+                  <button type="submit" id="btn-save-wl-single" class="btn-submit" style="background:var(--blue); border-color:var(--blue);">
+                    + Save Water Level to Supabase
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- MODE 2: GROUP CHAT & BULK PASTE PARSER -->
+            <div id="wl-bulk-panel" style="display:none;">
+              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:14px;">
+                <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">Smart Group-Chat &amp; Spreadsheet Importer:</div>
+                <div style="font-size:11.5px; color:var(--text-muted); line-height:1.6;">
+                  Paste operator messages directly from Messenger / Viber / WhatsApp <strong>or</strong> copy-paste rows from Excel/CSV:<br>
+                  <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">Nov 22, 2026 6:00 AM - Water Level: 2.15m (Montible active)</code> &nbsp;or&nbsp;
+                  <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">2026-11-22 | 06:00 | 2.15 | 3.00 | Remarks</code>
+                </div>
+              </div>
+
+              <div class="form-grid" style="margin-bottom:12px;">
+                <div class="field-group">
+                  <label for="wl-bulk-station" class="form-lbl">Target Station</label>
+                  <select id="wl-bulk-station" class="form-input" onchange="syncBulkWaterLevelDefaults()"></select>
+                </div>
+                <div class="field-group">
+                  <label for="wl-bulk-default-date" class="form-lbl">Fallback Date (if chat omits date)</label>
+                  <input type="date" id="wl-bulk-default-date" class="form-input">
+                </div>
+                <div class="field-group">
+                  <label for="wl-bulk-context" class="form-lbl">Default Context Tag</label>
+                  <input type="text" id="wl-bulk-context" list="wl-context-list" value="Montible Active (El Niño)" class="form-input">
+                </div>
+              </div>
+
+              <label for="wl-bulk-input" class="sr-only">Paste group chat updates or spreadsheet rows</label>
+              <textarea id="wl-bulk-input" class="form-input" style="font-family:var(--font-mono); font-size:11.5px; min-height:150px; resize:vertical; margin-bottom:12px;" placeholder="Example group chat paste:&#10;Nov 22, 2026&#10;6:00 AM - Manalo Booster WL: 2.15m (morning peak drawdown)&#10;9:00 AM - 2.35m&#10;12:00 PM - 2.50m&#10;6:00 PM - 1.95m (low inflow)"></textarea>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+                <button type="button" class="header-btn" onclick="populateSampleWaterLevelPaste()">Fill Sample Chat Log</button>
+                <button type="button" id="btn-wl-parse" class="btn-submit" onclick="parseBulkWaterLevels()">
+                  Parse &amp; Preview Readings
+                </button>
+              </div>
+
+              <!-- Editable Preview Table -->
+              <div id="wl-preview-container" style="display:none; border-top:1px solid var(--card-border); padding-top:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                  <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Parsed Readings Preview (<span id="wl-preview-count">0</span> valid rows)</h4>
+                  <button type="button" id="btn-wl-upload-bulk" onclick="uploadBulkWaterLevels()" class="btn-submit" style="background:var(--green-text); border-color:var(--green-text);">
+                    Upload All to Supabase
+                  </button>
+                </div>
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto; border:1px solid var(--card-border); border-radius:8px;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th style="text-align:right;">Water Level</th>
+                        <th style="text-align:right;">Normal Height</th>
+                        <th>Remarks</th>
+                        <th style="text-align:right;">Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody id="wl-bulk-preview-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODE 3: BENCHMARKS & OPERATIONAL MILESTONES -->
+            <div id="wl-config-panel" style="display:none;">
+              <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:16px;">
+                <div style="font-weight:700; font-size:12px; color:var(--text-main); margin-bottom:4px;">Station Height Benchmarks &amp; El Niño / Source Milestones</div>
+                <div style="font-size:11.5px; color:var(--text-muted);">
+                  Configure the <strong>Normal Water Height</strong>, <strong>Warning (Watch)</strong>, and <strong>Critical (Low)</strong> levels for Manalo Booster Station (and optional additional reservoirs), plus milestone dates shown on dashboard charts.
+                </div>
+              </div>
+
+              <div class="form-grid" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr;">
+                <div class="field-group">
+                  <label for="wl-cfg-station-select" class="form-lbl">Configure Station</label>
+                  <select id="wl-cfg-station-select" class="form-input" onchange="loadSelectedStationIntoConfigForm()"></select>
+                </div>
+                <div class="field-group">
+                  <label for="wl-cfg-unit" class="form-lbl">Unit</label>
+                  <select id="wl-cfg-unit" class="form-input">
+                    <option value="m">Meters (m)</option>
+                    <option value="ft">Feet (ft)</option>
+                    <option value="cm">Centimeters (cm)</option>
+                    <option value="%">Percent (%)</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="wl-cfg-normal" class="form-lbl">Normal Height *</label>
+                  <input type="number" id="wl-cfg-normal" step="0.01" min="0.01" class="form-input" style="font-family:var(--font-mono); font-weight:700;">
+                </div>
+                <div class="field-group">
+                  <label for="wl-cfg-warning" class="form-lbl">Watch / Low</label>
+                  <input type="number" id="wl-cfg-warning" step="0.01" min="0" class="form-input" style="font-family:var(--font-mono);">
+                </div>
+                <div class="field-group">
+                  <label for="wl-cfg-critical" class="form-lbl">Critical Level</label>
+                  <input type="number" id="wl-cfg-critical" step="0.01" min="0" class="form-input" style="font-family:var(--font-mono);">
+                </div>
+              </div>
+
+              <div class="form-grid" style="grid-template-columns: 2fr 1fr 1fr;">
+                <div class="field-group">
+                  <label for="wl-cfg-milestone-label" class="form-lbl">Chart Event Marker Label</label>
+                  <input type="text" id="wl-cfg-milestone-label" placeholder="e.g. Montible Source Activated" class="form-input">
+                </div>
+                <div class="field-group">
+                  <label for="wl-cfg-milestone-date" class="form-lbl">Event Marker Date</label>
+                  <input type="date" id="wl-cfg-milestone-date" class="form-input">
+                </div>
+                <div class="field-group">
+                  <label for="wl-cfg-new-station" class="form-lbl">Add Another Reservoir (Optional)</label>
+                  <div style="display:flex; gap:6px;">
+                    <input type="text" id="wl-cfg-new-station" placeholder="e.g. Irawan Reservoir" class="form-input" style="flex:1;">
+                    <button type="button" class="header-btn" onclick="addWaterLevelStationToConfig()">+ Add</button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                <button type="button" id="btn-wl-save-config" class="btn-submit" onclick="saveWaterLevelConfig()">
+                  Save Benchmarks &amp; Milestones
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Live Water Level Ledger Table -->
+          <div class="table-container">
+            <div class="table-head-bar">
+              <div>
+                <div class="table-head-title">Recorded Booster Water Levels (Supabase Live Feed)</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Chronological ledger of field operator gauge readings</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <select id="wl-ledger-station-filter" class="form-input" style="width:190px; padding:6px 10px; font-size:11.5px;" onchange="renderWaterLevelLedger()">
+                  <option value="ALL">All Stations</option>
+                </select>
+                <input type="text" id="wl-ledger-search" placeholder="Filter remarks, operator, context..." class="form-input" style="width:210px; padding:6px 10px; font-size:11.5px;" oninput="renderWaterLevelLedger()">
+                <button type="button" class="header-btn" onclick="fetchWaterLevelPortalData()" style="padding:6px 12px; font-size:11.5px;">Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date &amp; Time (PST)</th>
+                    <th>Station</th>
+                    <th style="text-align:right;">Water Level</th>
+                    <th style="text-align:right;">Normal Height</th>
+                    <th style="text-align:right;">Variance</th>
+                    <th>Status</th>
+                    <th>Context / Remarks</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="wl-ledger-tbody">
+                  <tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Connecting to Supabase...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div> <!-- end #section-waterlevel -->
 
         <!-- ── WEEKLY PRODUCTION MONITORING SECTION ── -->
         <div id="section-production" style="display:none;">
@@ -2059,11 +2326,13 @@
       const gensetsSec = document.getElementById('section-gensets');
       const complaintsSec = document.getElementById('section-complaints');
       const riverflowSec = document.getElementById('section-riverflow');
+      const waterlevelSec = document.getElementById('section-waterlevel');
       const productionSec = document.getElementById('section-production');
       const monthlySec = document.getElementById('section-monthly');
       const btnGensets = document.getElementById('sidebar-btn-gensets');
       const btnComplaints = document.getElementById('sidebar-btn-complaints');
       const btnRiverflow = document.getElementById('sidebar-btn-riverflow');
+      const btnWaterlevel = document.getElementById('sidebar-btn-waterlevel');
       const btnProduction = document.getElementById('sidebar-btn-production');
       const btnMonthly = document.getElementById('sidebar-btn-monthly');
       const pTitle = document.getElementById('portal-title');
@@ -2073,14 +2342,16 @@
       gensetsSec.style.display = 'none';
       complaintsSec.style.display = 'none';
       if (riverflowSec) riverflowSec.style.display = 'none';
+      if (waterlevelSec) waterlevelSec.style.display = 'none';
       if (productionSec) productionSec.style.display = 'none';
       if (monthlySec) monthlySec.style.display = 'none';
       btnGensets.classList.remove('active');
       btnComplaints.classList.remove('active');
       if (btnRiverflow) btnRiverflow.classList.remove('active');
+      if (btnWaterlevel) btnWaterlevel.classList.remove('active');
       if (btnProduction) btnProduction.classList.remove('active');
       if (btnMonthly) btnMonthly.classList.remove('active');
-      [btnGensets, btnComplaints, btnRiverflow, btnProduction, btnMonthly].forEach(b => b && b.removeAttribute('aria-current'));
+      [btnGensets, btnComplaints, btnRiverflow, btnWaterlevel, btnProduction, btnMonthly].forEach(b => b && b.removeAttribute('aria-current'));
 
       if (sec === 'monthly') {
         if (monthlySec) monthlySec.style.display = 'block';
@@ -2112,6 +2383,13 @@
         if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Environment & Water Resources &bull; Weekly Streamflow (m³/day)`;
         window.location.hash = 'riverflow';
         initRiverflowPortal();
+      } else if (sec === 'waterlevel') {
+        if (waterlevelSec) waterlevelSec.style.display = 'block';
+        if (btnWaterlevel) { btnWaterlevel.classList.add('active'); btnWaterlevel.setAttribute('aria-current', 'page'); }
+        if (pTitle) pTitle.textContent = "Booster Water Level Portal";
+        if (pSub) pSub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;"></span> Field Operator Gauge Reports &bull; Manalo Booster &amp; Reservoir Telemetry`;
+        window.location.hash = 'waterlevel';
+        initWaterLevelPortal();
       } else {
         gensetsSec.style.display = 'block';
         btnGensets.classList.add('active');
@@ -4386,6 +4664,721 @@
       }
     }
 
+    // ── BOOSTER WATER LEVEL MANAGEMENT ──
+    let wlConfig = {
+      default_station: "Manalo Booster Station",
+      stations: [
+        { name: "Manalo Booster Station", unit: "m", normal_level: 3.0, warning_level: 2.2, critical_level: 1.5, pressure_col: 2 }
+      ],
+      milestones: [
+        { label: "Montible Source Activated", date: "", color: "#0D9488" }
+      ]
+    };
+    let wlReadings = [];
+    let wlParsedBulkRows = [];
+    let wlPortalInitialized = false;
+
+    function wlEscapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getWlStationMeta(stationName) {
+      const list = Array.isArray(wlConfig.stations) ? wlConfig.stations : [];
+      return list.find(s => s.name === stationName) || list[0] || {
+        name: stationName || 'Manalo Booster Station',
+        unit: 'm',
+        normal_level: 3.0,
+        warning_level: 2.2,
+        critical_level: 1.5,
+        pressure_col: 2
+      };
+    }
+
+    function computeWlStatus(level, normal, warn, crit) {
+      const lv = Number(level);
+      const nm = Number(normal);
+      const wn = (warn !== null && warn !== undefined && warn !== '') ? Number(warn) : (nm * 0.75);
+      const cr = (crit !== null && crit !== undefined && crit !== '') ? Number(crit) : (nm * 0.50);
+      if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
+        return { label: 'Unknown', cls: 'pill-muted', color: 'var(--text-muted)', bg: '#F1F5F9', border: '#CBD5E1' };
+      }
+      if (lv <= cr) {
+        return { label: 'Critical', cls: 'pill-red', color: 'var(--red-text)', bg: 'var(--red-light)', border: 'var(--red-border)' };
+      }
+      if (lv <= wn) {
+        return { label: 'Watch / Low', cls: 'pill-amber', color: 'var(--amber-text)', bg: 'var(--amber-light)', border: 'var(--amber-border)' };
+      }
+      if (lv < nm) {
+        return { label: 'Below Normal', cls: 'pill-blue', color: 'var(--blue-text)', bg: 'var(--blue-light)', border: 'var(--blue-border)' };
+      }
+      return { label: 'Normal', cls: 'pill-green', color: 'var(--green-text)', bg: 'var(--green-light)', border: 'var(--green-border)' };
+    }
+
+    function showWaterLevelAlert(msg, isError = false) {
+      const box = document.getElementById('wl-alert-box');
+      if (!box) return;
+      box.className = 'alert-box ' + (isError ? 'alert-error' : 'alert-success');
+      box.textContent = msg;
+      box.style.display = 'block';
+    }
+
+    function clearWaterLevelAlert() {
+      const box = document.getElementById('wl-alert-box');
+      if (box) box.style.display = 'none';
+    }
+
+    function switchWaterLevelMode(mode) {
+      clearWaterLevelAlert();
+      const singleForm = document.getElementById('form-wl-single');
+      const bulkPanel = document.getElementById('wl-bulk-panel');
+      const cfgPanel = document.getElementById('wl-config-panel');
+      const pSingle = document.getElementById('wl-pill-single');
+      const pBulk = document.getElementById('wl-pill-bulk');
+      const pCfg = document.getElementById('wl-pill-config');
+
+      [singleForm, bulkPanel, cfgPanel].forEach(el => { if (el) el.style.display = 'none'; });
+      [pSingle, pBulk, pCfg].forEach(el => { if (el) el.classList.remove('active'); });
+
+      if (mode === 'bulk') {
+        if (bulkPanel) bulkPanel.style.display = 'block';
+        if (pBulk) pBulk.classList.add('active');
+      } else if (mode === 'config') {
+        if (cfgPanel) cfgPanel.style.display = 'block';
+        if (pCfg) pCfg.classList.add('active');
+        loadSelectedStationIntoConfigForm();
+      } else {
+        if (singleForm) singleForm.style.display = 'block';
+        if (pSingle) pSingle.classList.add('active');
+      }
+    }
+
+    function setWaterLevelTimeOffset(hoursOffset = 0) {
+      const d = new Date(Date.now() + hoursOffset * 3600 * 1000);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const hh = String(d.getHours()).padStart(2, '0');
+      const min = String(d.getMinutes()).padStart(2, '0');
+      const dateEl = document.getElementById('wl-date');
+      const timeEl = document.getElementById('wl-time');
+      if (dateEl) dateEl.value = `${yyyy}-${mm}-${dd}`;
+      if (timeEl) timeEl.value = `${hh}:${min}`;
+    }
+
+    function populateWaterLevelStationDropdowns() {
+      const stations = wlConfig.stations || [];
+      const opts = stations.map(s => `<option value="${wlEscapeHtml(s.name)}">${wlEscapeHtml(s.name)} (Normal: ${s.normal_level} ${wlEscapeHtml(s.unit)})</option>`).join('');
+      const singleSel = document.getElementById('wl-station');
+      const bulkSel = document.getElementById('wl-bulk-station');
+      const cfgSel = document.getElementById('wl-cfg-station-select');
+      const filterSel = document.getElementById('wl-ledger-station-filter');
+
+      if (singleSel) {
+        const prev = singleSel.value;
+        singleSel.innerHTML = opts;
+        singleSel.value = stations.some(s => s.name === prev) ? prev : (wlConfig.default_station || stations[0]?.name || '');
+      }
+      if (bulkSel) {
+        const prev = bulkSel.value;
+        bulkSel.innerHTML = opts;
+        bulkSel.value = stations.some(s => s.name === prev) ? prev : (wlConfig.default_station || stations[0]?.name || '');
+      }
+      if (cfgSel) {
+        const prev = cfgSel.value;
+        cfgSel.innerHTML = stations.map(s => `<option value="${wlEscapeHtml(s.name)}">${wlEscapeHtml(s.name)}</option>`).join('');
+        cfgSel.value = stations.some(s => s.name === prev) ? prev : (wlConfig.default_station || stations[0]?.name || '');
+      }
+      if (filterSel) {
+        const prev = filterSel.value || 'ALL';
+        filterSel.innerHTML = `<option value="ALL">All Stations</option>` + stations.map(s => `<option value="${wlEscapeHtml(s.name)}">${wlEscapeHtml(s.name)}</option>`).join('');
+        filterSel.value = prev;
+      }
+
+      onWaterLevelStationChange();
+      loadSelectedStationIntoConfigForm();
+    }
+
+    function onWaterLevelStationChange() {
+      const stationName = document.getElementById('wl-station')?.value;
+      const meta = getWlStationMeta(stationName);
+      const editId = document.getElementById('wl-edit-id')?.value;
+      if (!editId) {
+        const normEl = document.getElementById('wl-normal');
+        if (normEl) normEl.value = meta.normal_level;
+      }
+      const u1 = document.getElementById('wl-unit-label');
+      const u2 = document.getElementById('wl-normal-unit-label');
+      if (u1) u1.textContent = meta.unit || 'm';
+      if (u2) u2.textContent = meta.unit || 'm';
+      updateWaterLevelPreview();
+    }
+
+    function syncBulkWaterLevelDefaults() {
+      // Keeps dropdown synced when user changes target station in bulk mode
+    }
+
+    function updateWaterLevelPreview() {
+      const stationName = document.getElementById('wl-station')?.value;
+      const meta = getWlStationMeta(stationName);
+      const val = parseFloat(document.getElementById('wl-value')?.value);
+      const norm = parseFloat(document.getElementById('wl-normal')?.value || meta.normal_level);
+      const badge = document.getElementById('wl-preview-badge');
+      const text = document.getElementById('wl-preview-text');
+      const bar = document.getElementById('wl-preview-bar');
+      if (!badge || !text || !bar) return;
+
+      if (!Number.isFinite(val) || !Number.isFinite(norm) || norm <= 0) {
+        badge.textContent = 'Awaiting Input';
+        badge.style.background = '#E2E8F0';
+        badge.style.color = 'var(--text-muted)';
+        text.textContent = 'Enter water level to preview variance vs. normal height.';
+        bar.style.width = '0%';
+        return;
+      }
+
+      const delta = val - norm;
+      const pct = (val / norm) * 100;
+      const st = computeWlStatus(val, norm, meta.warning_level, meta.critical_level);
+      const sign = delta >= 0 ? '+' : '';
+      badge.textContent = st.label;
+      badge.style.background = st.bg;
+      badge.style.color = st.color;
+      badge.style.border = `1px solid ${st.border}`;
+      text.innerHTML = `<strong>${val.toFixed(2)} ${wlEscapeHtml(meta.unit)}</strong> (${pct.toFixed(1)}% of Normal) &bull; Variance: <strong>${sign}${delta.toFixed(2)} ${wlEscapeHtml(meta.unit)}</strong>`;
+      bar.style.width = `${Math.min(100, Math.max(0, pct)).toFixed(1)}%`;
+      bar.style.background = st.color;
+    }
+
+    function resetWaterLevelForm() {
+      const editEl = document.getElementById('wl-edit-id');
+      if (editEl) editEl.value = '';
+      const valEl = document.getElementById('wl-value');
+      const remEl = document.getElementById('wl-remarks');
+      if (valEl) valEl.value = '';
+      if (remEl) remEl.value = '';
+      const cancelBtn = document.getElementById('btn-wl-cancel-edit');
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      const saveBtn = document.getElementById('btn-save-wl-single');
+      if (saveBtn) saveBtn.textContent = '+ Save Water Level to Supabase';
+      setWaterLevelTimeOffset(0);
+      onWaterLevelStationChange();
+    }
+
+    function cancelWaterLevelEdit() {
+      resetWaterLevelForm();
+      clearWaterLevelAlert();
+    }
+
+    async function initWaterLevelPortal() {
+      if (!wlPortalInitialized) {
+        setWaterLevelTimeOffset(0);
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const bulkDate = document.getElementById('wl-bulk-default-date');
+        if (bulkDate && !bulkDate.value) bulkDate.value = todayStr;
+        wlPortalInitialized = true;
+      }
+      await fetchWaterLevelPortalData();
+    }
+
+    async function fetchWaterLevelPortalData() {
+      const tbody = document.getElementById('wl-ledger-tbody');
+      try {
+        const res = await fetch('/api/getWaterLevel?include_config=1&limit=1000');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const payload = await res.json();
+        if (payload && payload.config && Array.isArray(payload.config.stations)) {
+          wlConfig = payload.config;
+        }
+        wlReadings = Array.isArray(payload?.readings) ? payload.readings : (Array.isArray(payload) ? payload : []);
+        populateWaterLevelStationDropdowns();
+        renderWaterLevelLedger();
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="8" style="padding:20px; text-align:center; color:var(--red-text);">Failed to load water levels: ${wlEscapeHtml(err.message)}</td></tr>`;
+        }
+      }
+    }
+
+    function buildPstIso(dateStr, timeStr) {
+      if (!dateStr || !timeStr) return null;
+      const cleanTime = timeStr.length === 5 ? `${timeStr}:00` : timeStr;
+      const dt = new Date(`${dateStr}T${cleanTime}+08:00`);
+      return isNaN(dt.getTime()) ? null : dt.toISOString();
+    }
+
+    async function submitSingleWaterLevel(e) {
+      e.preventDefault();
+      clearWaterLevelAlert();
+      const btn = document.getElementById('btn-save-wl-single');
+      const editId = document.getElementById('wl-edit-id')?.value;
+      const stationName = document.getElementById('wl-station')?.value;
+      const dateStr = document.getElementById('wl-date')?.value;
+      const timeStr = document.getElementById('wl-time')?.value;
+      const val = parseFloat(document.getElementById('wl-value')?.value);
+      const norm = parseFloat(document.getElementById('wl-normal')?.value);
+      const context = document.getElementById('wl-context')?.value?.trim() || '';
+      const operator = document.getElementById('wl-operator')?.value?.trim() || '';
+      const remarks = document.getElementById('wl-remarks')?.value?.trim() || '';
+      const meta = getWlStationMeta(stationName);
+
+      const isoTime = buildPstIso(dateStr, timeStr);
+      if (!isoTime) {
+        showWaterLevelAlert('Please provide a valid date and time.', true);
+        return;
+      }
+      if (!Number.isFinite(val) || !Number.isFinite(norm) || norm <= 0) {
+        showWaterLevelAlert('Please enter valid numeric water level and normal height values.', true);
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+      try {
+        const res = await fetch('/api/saveWaterLevel', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            type: 'water_level',
+            action: editId ? 'update' : 'save',
+            id: editId ? Number(editId) : undefined,
+            record: {
+              station_name: stationName,
+              reading_time: isoTime,
+              water_level: val,
+              normal_level: norm,
+              unit: meta.unit || 'm',
+              warning_level: meta.warning_level,
+              critical_level: meta.critical_level,
+              source_context: context || null,
+              operator_name: operator || null,
+              remarks: remarks || null
+            }
+          })
+        });
+        const data = await res.json();
+        if (res.status === 401) { lockPortal(); throw new Error('Unauthorized: Invalid passkey.'); }
+        if (!res.ok) throw new Error(data.error || 'Failed to save water level reading.');
+
+        showWaterLevelAlert(editId ? 'Water level reading updated in Supabase!' : 'Water level reading saved to Supabase!');
+        resetWaterLevelForm();
+        await fetchWaterLevelPortalData();
+      } catch (err) {
+        showWaterLevelAlert('Error: ' + err.message, true);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = document.getElementById('wl-edit-id')?.value ? 'Update Water Level Reading' : '+ Save Water Level to Supabase';
+        }
+      }
+    }
+
+    function editWaterLevelRecord(id) {
+      const rec = wlReadings.find(r => Number(r.id) === Number(id));
+      if (!rec) return;
+      switchWaterLevelMode('single');
+      document.getElementById('wl-edit-id').value = rec.id;
+      const stSel = document.getElementById('wl-station');
+      if (stSel) stSel.value = rec.station_name;
+
+      const dt = new Date(rec.reading_time);
+      // Format into Asia/Manila (+08:00) local components
+      const ph = new Date(dt.getTime() + 8 * 3600 * 1000);
+      document.getElementById('wl-date').value = ph.toISOString().slice(0, 10);
+      document.getElementById('wl-time').value = ph.toISOString().slice(11, 16);
+      document.getElementById('wl-value').value = rec.water_level;
+      document.getElementById('wl-normal').value = rec.normal_level;
+      document.getElementById('wl-context').value = rec.source_context || '';
+      document.getElementById('wl-operator').value = rec.operator_name || '';
+      document.getElementById('wl-remarks').value = rec.remarks || '';
+
+      document.getElementById('btn-wl-cancel-edit').style.display = 'inline-flex';
+      document.getElementById('btn-save-wl-single').textContent = 'Update Water Level Reading';
+      updateWaterLevelPreview();
+      document.getElementById('section-waterlevel')?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function deleteWaterLevelRecord(id) {
+      if (!confirm('Delete this water level reading permanently from Supabase?')) return;
+      clearWaterLevelAlert();
+      try {
+        const res = await fetch('/api/saveWaterLevel', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ type: 'water_level', action: 'delete', id: Number(id) })
+        });
+        const data = await res.json();
+        if (res.status === 401) { lockPortal(); throw new Error('Unauthorized: Invalid passkey.'); }
+        if (!res.ok) throw new Error(data.error || 'Delete failed.');
+        showWaterLevelAlert('Reading deleted from Supabase.');
+        await fetchWaterLevelPortalData();
+      } catch (err) {
+        showWaterLevelAlert('Error: ' + err.message, true);
+      }
+    }
+
+    // Smart Group-Chat & CSV/TSV Water Level Parser
+    function parseDateFragment(text, fallbackDateStr) {
+      // 1. YYYY-MM-DD
+      let m = text.match(/\b(20\d{2})[-\/](\d{1,2})[-\/](\d{1,2})\b/);
+      if (m) return `${m[1]}-${String(m[2]).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}`;
+
+      // 2. MM/DD/YYYY or MM-DD-YYYY
+      m = text.match(/\b(\d{1,2})[-\/](\d{1,2})[-\/](20\d{2})\b/);
+      if (m) return `${m[3]}-${String(m[1]).padStart(2, '0')}-${String(m[2]).padStart(2, '0')}`;
+
+      // 3. Month Name DD(, YYYY) e.g., Nov 22, 2026 or Nov 22
+      const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, sept:9, oct:10, nov:11, dec:12 };
+      m = text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(20\d{2}))?\b/i);
+      if (m) {
+        const monKey = m[1].slice(0, 3).toLowerCase();
+        const year = m[3] || (fallbackDateStr ? fallbackDateStr.slice(0, 4) : String(new Date().getFullYear()));
+        return `${year}-${String(months[monKey]).padStart(2, '0')}-${String(m[2]).padStart(2, '0')}`;
+      }
+      return null;
+    }
+
+    function parseTimeFragment(text) {
+      // 12-hour e.g. 6:00 AM, 6:30pm, 6am, 12nn, 12mn
+      let m = text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm|nn|mn)\b/i);
+      if (m) {
+        let h = parseInt(m[1], 10);
+        const min = parseInt(m[2] || '0', 10);
+        const suf = m[3].toLowerCase();
+        if (suf === 'pm' || suf === 'nn') {
+          if (h < 12) h += 12;
+        } else if (suf === 'am' || suf === 'mn') {
+          if (h === 12) h = 0;
+        }
+        if (h >= 0 && h <= 23 && min >= 0 && min <= 59) {
+          return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+        }
+      }
+      // 24-hour HH:MM
+      m = text.match(/\b([01]?\d|2[0-3]):([0-5]\d)(?::[0-5]\d)?\b/);
+      if (m) {
+        return `${String(parseInt(m[1], 10)).padStart(2, '0')}:${m[2]}`;
+      }
+      // Military 4-digit HRs e.g. 0800H / 1400 hrs
+      m = text.match(/\b([01]\d|2[0-3])([0-5]\d)\s*(?:h|hrs|hr)\b/i);
+      if (m) {
+        return `${m[1]}:${m[2]}`;
+      }
+      return null;
+    }
+
+    function parseBulkWaterLevels() {
+      clearWaterLevelAlert();
+      const raw = document.getElementById('wl-bulk-input')?.value || '';
+      const stationName = document.getElementById('wl-bulk-station')?.value || wlConfig.default_station;
+      const meta = getWlStationMeta(stationName);
+      const fallbackDate = document.getElementById('wl-bulk-default-date')?.value || new Date().toISOString().slice(0, 10);
+      const defaultCtx = document.getElementById('wl-bulk-context')?.value?.trim() || '';
+
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const parsed = [];
+      let activeDate = fallbackDate;
+
+      for (const line of lines) {
+        // Skip obvious header rows
+        if (/^(date|reading|timestamp|station)\b/i.test(line) && !/\d/.test(line)) continue;
+
+        // Check if line is a standalone date header (e.g., "Nov 22, 2026")
+        const foundDate = parseDateFragment(line, activeDate);
+        const foundTime = parseTimeFragment(line);
+
+        // Structured TSV / Pipe / CSV row: Date | Time | Level | [Normal] | [Remarks]
+        const delimCols = line.includes('\t')
+          ? line.split('\t').map(s => s.trim())
+          : (line.includes('|') ? line.split('|').map(s => s.trim()) : null);
+
+        if (delimCols && delimCols.length >= 3) {
+          const dStr = parseDateFragment(delimCols[0], activeDate) || activeDate;
+          const tStr = parseTimeFragment(delimCols[1]) || parseTimeFragment(delimCols[0]);
+          const lv = parseFloat(String(delimCols[2]).replace(/[^0-9.\-]/g, ''));
+          const nm = delimCols[3] && !isNaN(parseFloat(delimCols[3])) ? parseFloat(delimCols[3]) : meta.normal_level;
+          const rem = delimCols[4] || (delimCols[3] && isNaN(parseFloat(delimCols[3])) ? delimCols[3] : '');
+          if (dStr && tStr && Number.isFinite(lv)) {
+            activeDate = dStr;
+            parsed.push({
+              station_name: stationName,
+              date: dStr,
+              time: tStr,
+              water_level: Number(lv.toFixed(2)),
+              normal_level: Number(nm.toFixed(2)),
+              unit: meta.unit || 'm',
+              warning_level: meta.warning_level,
+              critical_level: meta.critical_level,
+              source_context: defaultCtx,
+              remarks: rem
+            });
+            continue;
+          }
+        }
+
+        if (foundDate && !foundTime) {
+          activeDate = foundDate;
+          continue;
+        }
+        if (foundDate) activeDate = foundDate;
+
+        // Free-form group chat line extraction
+        if (!foundTime) continue;
+
+        // Strip date and time tokens before hunting for water level value
+        let stripped = line
+          .replace(/\b(20\d{2})[-\/](\d{1,2})[-\/](\d{1,2})\b/g, ' ')
+          .replace(/\b(\d{1,2})[-\/](\d{1,2})[-\/](20\d{2})\b/g, ' ')
+          .replace(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*20\d{2})?\b/ig, ' ')
+          .replace(/\b\d{1,2}(?::\d{2})?\s*(?:am|pm|nn|mn)\b/ig, ' ')
+          .replace(/\b(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?\b/g, ' ')
+          .replace(/\b(?:[01]\d|2[0-3])[0-5]\d\s*(?:h|hrs|hr)\b/ig, ' ');
+
+        // Prefer number with explicit unit (m/ft/cm/%) or following WL/level/height/:
+        let lvMatch = stripped.match(/(\d+(?:\.\d+)?)\s*(?:meters?|mtrs?|m|feet|ft|cm|%)\b/i)
+          || stripped.match(/(?:wl|water\s*level|level|height|gauge|reading)\s*[:=\-]?\s*(\d+(?:\.\d+)?)/i)
+          || stripped.match(/\b(\d+\.\d+)\b/)
+          || stripped.match(/(?:[-–@:]\s*)(\d+(?:\.\d+)?)/);
+
+        if (!lvMatch) continue;
+        const lv = parseFloat(lvMatch[1]);
+        if (!Number.isFinite(lv) || lv < 0 || lv > 9999) continue;
+
+        // Extract optional parenthetical or trailing remarks
+        let remMatch = line.match(/\(([^)]+)\)/);
+        let remarks = remMatch ? remMatch[1].trim() : '';
+
+        parsed.push({
+          station_name: stationName,
+          date: activeDate,
+          time: foundTime,
+          water_level: Number(lv.toFixed(2)),
+          normal_level: Number(meta.normal_level),
+          unit: meta.unit || 'm',
+          warning_level: meta.warning_level,
+          critical_level: meta.critical_level,
+          source_context: defaultCtx,
+          remarks
+        });
+      }
+
+      wlParsedBulkRows = parsed;
+      const container = document.getElementById('wl-preview-container');
+      const countEl = document.getElementById('wl-preview-count');
+      if (countEl) countEl.textContent = parsed.length;
+
+      if (parsed.length === 0) {
+        if (container) container.style.display = 'none';
+        showWaterLevelAlert('Could not extract any valid time + water level rows. Try including a time (e.g. 6:00 AM) and level (e.g. 2.15m) per line.', true);
+        return;
+      }
+
+      if (container) container.style.display = 'block';
+      renderBulkWaterLevelPreview();
+    }
+
+    function renderBulkWaterLevelPreview() {
+      const tbody = document.getElementById('wl-bulk-preview-tbody');
+      const countEl = document.getElementById('wl-preview-count');
+      if (countEl) countEl.textContent = wlParsedBulkRows.length;
+      if (!tbody) return;
+
+      tbody.innerHTML = wlParsedBulkRows.map((row, idx) => `
+        <tr>
+          <td><input type="date" class="form-input" style="padding:4px 6px; min-height:30px; font-size:11.5px;" value="${wlEscapeHtml(row.date)}" onchange="wlParsedBulkRows[${idx}].date=this.value"></td>
+          <td><input type="time" class="form-input" style="padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono);" value="${wlEscapeHtml(row.time)}" onchange="wlParsedBulkRows[${idx}].time=this.value"></td>
+          <td style="text-align:right;"><input type="number" step="0.01" class="form-input" style="width:92px; padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono); text-align:right;" value="${row.water_level}" onchange="wlParsedBulkRows[${idx}].water_level=parseFloat(this.value)"></td>
+          <td style="text-align:right;"><input type="number" step="0.01" class="form-input" style="width:92px; padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono); text-align:right;" value="${row.normal_level}" onchange="wlParsedBulkRows[${idx}].normal_level=parseFloat(this.value)"></td>
+          <td><input type="text" class="form-input" style="padding:4px 6px; min-height:30px; font-size:11.5px;" value="${wlEscapeHtml(row.remarks || '')}" onchange="wlParsedBulkRows[${idx}].remarks=this.value"></td>
+          <td style="text-align:right;"><button type="button" class="header-btn" style="padding:3px 8px; min-height:28px; color:var(--red-text);" onclick="wlParsedBulkRows.splice(${idx},1); renderBulkWaterLevelPreview();">✕</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function populateSampleWaterLevelPaste() {
+      const d = document.getElementById('wl-bulk-default-date')?.value || new Date().toISOString().slice(0, 10);
+      const ta = document.getElementById('wl-bulk-input');
+      if (ta) {
+        ta.value = `${d}\n6:00 AM - Manalo Booster WL: 2.10m (Morning peak drawdown)\n9:00 AM - Manalo Booster WL: 2.35m (Montible steady inflow)\n12:00 PM - Water Level: 2.48m\n5:00 PM - Water Level: 1.92m (Evening peak drop)\n9:00 PM - Water Level: 2.65m (Night recharge starting)`;
+      }
+    }
+
+    async function uploadBulkWaterLevels() {
+      clearWaterLevelAlert();
+      if (!wlParsedBulkRows.length) return;
+      const btn = document.getElementById('btn-wl-upload-bulk');
+      if (btn) { btn.disabled = true; btn.textContent = 'Uploading...'; }
+
+      const records = wlParsedBulkRows.map(r => ({
+        station_name: r.station_name,
+        reading_time: buildPstIso(r.date, r.time),
+        water_level: r.water_level,
+        normal_level: r.normal_level,
+        unit: r.unit,
+        warning_level: r.warning_level,
+        critical_level: r.critical_level,
+        source_context: r.source_context || null,
+        remarks: r.remarks || null
+      })).filter(r => r.reading_time && Number.isFinite(r.water_level));
+
+      try {
+        const res = await fetch('/api/saveWaterLevel', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ type: 'water_level', action: 'bulk_save', records })
+        });
+        const data = await res.json();
+        if (res.status === 401) { lockPortal(); throw new Error('Unauthorized: Invalid passkey.'); }
+        if (!res.ok) throw new Error(data.error || 'Bulk upload failed.');
+
+        showWaterLevelAlert(data.message || `Saved ${records.length} readings to Supabase!`);
+        wlParsedBulkRows = [];
+        document.getElementById('wl-bulk-input').value = '';
+        document.getElementById('wl-preview-container').style.display = 'none';
+        await fetchWaterLevelPortalData();
+      } catch (err) {
+        showWaterLevelAlert('Error: ' + err.message, true);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Upload All to Supabase'; }
+      }
+    }
+
+    function loadSelectedStationIntoConfigForm() {
+      const selName = document.getElementById('wl-cfg-station-select')?.value || wlConfig.default_station;
+      const meta = getWlStationMeta(selName);
+      const uEl = document.getElementById('wl-cfg-unit');
+      const nEl = document.getElementById('wl-cfg-normal');
+      const wEl = document.getElementById('wl-cfg-warning');
+      const cEl = document.getElementById('wl-cfg-critical');
+      const mLabel = document.getElementById('wl-cfg-milestone-label');
+      const mDate = document.getElementById('wl-cfg-milestone-date');
+
+      if (uEl) uEl.value = meta.unit || 'm';
+      if (nEl) nEl.value = meta.normal_level ?? 3.0;
+      if (wEl) wEl.value = meta.warning_level ?? 2.2;
+      if (cEl) cEl.value = meta.critical_level ?? 1.5;
+
+      const ms = (wlConfig.milestones && wlConfig.milestones[0]) || { label: 'Montible Source Activated', date: '' };
+      if (mLabel) mLabel.value = ms.label || 'Montible Source Activated';
+      if (mDate) mDate.value = ms.date || '';
+    }
+
+    function addWaterLevelStationToConfig() {
+      const inp = document.getElementById('wl-cfg-new-station');
+      const name = inp?.value?.trim();
+      if (!name) return;
+      if (wlConfig.stations.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+        showWaterLevelAlert(`Station "${name}" already exists.`, true);
+        return;
+      }
+      wlConfig.stations.push({
+        name,
+        unit: 'm',
+        normal_level: 3.0,
+        warning_level: 2.2,
+        critical_level: 1.5,
+        pressure_col: 2
+      });
+      inp.value = '';
+      populateWaterLevelStationDropdowns();
+      const cfgSel = document.getElementById('wl-cfg-station-select');
+      if (cfgSel) cfgSel.value = name;
+      loadSelectedStationIntoConfigForm();
+      showWaterLevelAlert(`Added "${name}". Click "Save Benchmarks & Milestones" to persist to Supabase.`);
+    }
+
+    async function saveWaterLevelConfig() {
+      clearWaterLevelAlert();
+      const selName = document.getElementById('wl-cfg-station-select')?.value;
+      const target = wlConfig.stations.find(s => s.name === selName);
+      if (target) {
+        target.unit = document.getElementById('wl-cfg-unit')?.value || 'm';
+        target.normal_level = parseFloat(document.getElementById('wl-cfg-normal')?.value) || 3.0;
+        target.warning_level = parseFloat(document.getElementById('wl-cfg-warning')?.value) || 2.2;
+        target.critical_level = parseFloat(document.getElementById('wl-cfg-critical')?.value) || 1.5;
+      }
+      const mLabel = document.getElementById('wl-cfg-milestone-label')?.value?.trim() || 'Montible Source Activated';
+      const mDate = document.getElementById('wl-cfg-milestone-date')?.value || '';
+      wlConfig.milestones = [{ label: mLabel, date: mDate, color: '#0D9488' }];
+
+      const btn = document.getElementById('btn-wl-save-config');
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+      try {
+        const res = await fetch('/api/saveWaterLevel', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ type: 'water_level', action: 'save_config', config: wlConfig })
+        });
+        const data = await res.json();
+        if (res.status === 401) { lockPortal(); throw new Error('Unauthorized: Invalid passkey.'); }
+        if (!res.ok) throw new Error(data.error || 'Failed to save configuration.');
+        if (data.config) wlConfig = data.config;
+        populateWaterLevelStationDropdowns();
+        showWaterLevelAlert('Benchmarks & operational milestones saved to Supabase!');
+      } catch (err) {
+        showWaterLevelAlert('Error: ' + err.message, true);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Save Benchmarks & Milestones'; }
+      }
+    }
+
+    function renderWaterLevelLedger() {
+      const tbody = document.getElementById('wl-ledger-tbody');
+      if (!tbody) return;
+      const stFilter = document.getElementById('wl-ledger-station-filter')?.value || 'ALL';
+      const q = (document.getElementById('wl-ledger-search')?.value || '').trim().toLowerCase();
+
+      const filtered = wlReadings.filter(r => {
+        if (stFilter !== 'ALL' && r.station_name !== stFilter) return false;
+        if (q) {
+          const hay = `${r.station_name} ${r.source_context || ''} ${r.operator_name || ''} ${r.remarks || ''}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">No water level readings recorded yet. Use the form above to log your first operator reading.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.slice(0, 300).map(r => {
+        const dt = new Date(r.reading_time);
+        const dtLabel = dt.toLocaleString('en-PH', {
+          timeZone: 'Asia/Manila',
+          month: 'short', day: 'numeric', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        const lv = Number(r.water_level);
+        const nm = Number(r.normal_level);
+        const unit = r.unit || 'm';
+        const delta = lv - nm;
+        const pct = nm > 0 ? (lv / nm) * 100 : 0;
+        const st = computeWlStatus(lv, nm, r.warning_level, r.critical_level);
+        const noteParts = [r.source_context, r.operator_name ? `Op: ${r.operator_name}` : '', r.remarks].filter(Boolean).join(' • ');
+
+        return `
+          <tr>
+            <td style="font-family:var(--font-mono); font-size:11.5px; white-space:nowrap;">${wlEscapeHtml(dtLabel)}</td>
+            <td style="font-weight:700;">${wlEscapeHtml(r.station_name)}</td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:800; color:${st.color};">${lv.toFixed(2)} ${wlEscapeHtml(unit)}</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">${nm.toFixed(2)} ${wlEscapeHtml(unit)}</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:${delta < 0 ? 'var(--red-text)' : 'var(--green-text)'};">${delta >= 0 ? '+' : ''}${delta.toFixed(2)} (${pct.toFixed(0)}%)</td>
+            <td><span style="display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:99px; background:${st.bg}; color:${st.color}; border:1px solid ${st.border}; white-space:nowrap;">${st.label}</span></td>
+            <td style="font-size:11.5px; color:var(--text-muted); max-width:260px;">${wlEscapeHtml(noteParts || '—')}</td>
+            <td style="text-align:right; white-space:nowrap;">
+              <button type="button" class="header-btn" style="padding:4px 9px; min-height:28px; font-size:11px; margin-right:4px;" onclick="editWaterLevelRecord(${Number(r.id)})">Edit</button>
+              <button type="button" class="header-btn" style="padding:4px 9px; min-height:28px; font-size:11px; color:var(--red-text);" onclick="deleteWaterLevelRecord(${Number(r.id)})">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     window.addEventListener("DOMContentLoaded", async () => {
       await checkPortalAuth();
       populateStations();
@@ -4404,6 +5397,8 @@
         switchPortalSection('complaints');
       } else if (window.location.hash === '#riverflow') {
         switchPortalSection('riverflow');
+      } else if (window.location.hash === '#waterlevel') {
+        switchPortalSection('waterlevel');
       } else if (window.location.hash === '#production') {
         switchPortalSection('production');
       } else if (window.location.hash === '#monthly') {
@@ -4415,6 +5410,7 @@
         if (h === '#monthly') switchPortalSection('monthly');
         else if (h === '#production') switchPortalSection('production');
         else if (h === '#riverflow') switchPortalSection('riverflow');
+        else if (h === '#waterlevel') switchPortalSection('waterlevel');
         else if (h === '#complaints') switchPortalSection('complaints');
         else if (h === '#gensets') switchPortalSection('gensets');
       });

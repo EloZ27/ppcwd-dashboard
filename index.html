@@ -1269,6 +1269,67 @@
       }
     }
 
+    /* ── BOOSTER WATER LEVEL ANALYTICS LAYOUT ── */
+    .grid-wl-charts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .wl-diagnostic-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .wl-diag-tile {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+    .wl-diag-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+    .wl-diag-val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-top: 3px;
+    }
+    .wl-diag-sub {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .ov-wl-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      background: var(--blue-light);
+      color: var(--blue-text);
+      border: 1px solid var(--blue-border);
+      cursor: pointer;
+    }
+    .ov-wl-chip:hover { filter: brightness(0.96); }
+    @media (max-width: 1020px) {
+      .grid-wl-charts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .wl-diagnostic-grid { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 820px) {
       .app-sidebar {
         position: fixed;
@@ -2005,6 +2066,7 @@
         <div class="sidebar-section-label">Monitoring</div>
         <button type="button" class="nav-btn active" aria-current="page" onclick="switchNavTab('overview')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span><span>Dashboard</span></button>
         <button type="button" class="nav-btn" onclick="switchNavTab('pressure')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span><span>Network Pressure</span></button>
+        <button type="button" class="nav-btn" onclick="switchNavTab('waterlevel')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><line x1="8" y1="15" x2="16" y2="15"></line></svg></span><span>Booster Water Level</span></button>
         <button type="button" class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span><span>Crisis Monitor</span></button>
 
         <div class="sidebar-section-label">Production &amp; Hydrology</div>
@@ -2211,6 +2273,40 @@
             </a>
           </div>
         </div>
+
+        <!-- 5. Booster Water Level Sticky Bar -->
+        <div id="bar-period-waterlevel" class="period-bar-wrap" style="display:none;">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Booster / Reservoir Telemetry</div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+                <label for="wl-dash-station" class="sr-only">Select Booster Station</label>
+                <select id="wl-dash-station" class="week-dropdown" style="min-width:190px;" onchange="renderWaterLevelDashboard()"></select>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Pressure Overlay (Hourly Avg)</div>
+              <div style="margin-top:2px;">
+                <label for="wl-dash-pressure-source" class="sr-only">Select Pressure Overlay Source</label>
+                <select id="wl-dash-pressure-source" class="week-dropdown" style="min-width:210px;" onchange="renderWaterLevelDashboard()"></select>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <div style="display:inline-flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#FFFFFF;">
+              <button type="button" class="header-btn wl-range-btn" data-range="24h" onclick="setWaterLevelRange('24h')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700;">24h</button>
+              <button type="button" class="header-btn wl-range-btn active" data-range="7d" onclick="setWaterLevelRange('7d')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700; background:var(--blue-light); color:var(--blue-text);">7D</button>
+              <button type="button" class="header-btn wl-range-btn" data-range="14d" onclick="setWaterLevelRange('14d')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700;">14D</button>
+              <button type="button" class="header-btn wl-range-btn" data-range="30d" onclick="setWaterLevelRange('30d')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700;">30D</button>
+              <button type="button" class="header-btn wl-range-btn" data-range="all" onclick="setWaterLevelRange('all')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700;">All</button>
+            </div>
+            <button type="button" class="header-btn" onclick="loadWaterLevel(true)" title="Refresh live water levels from Supabase" style="font-size:11px; font-weight:700;">↻ Sync</button>
+            <button type="button" class="header-btn" onclick="exportWaterLevelCsv()" style="font-size:11px; font-weight:700;">Export CSV</button>
+            <a href="uploader.html#waterlevel" class="header-btn btn-secondary-action" style="color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
+              Log Operator Reading ↗
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- ── TAB 1: OVERVIEW ── -->   
@@ -2264,6 +2360,9 @@
                 <div>
                   <div style="font-weight:700; display:flex; align-items:center; gap:6px;">Manalo Booster Station <span style="font-size:10px; color:var(--blue-text); font-weight:700;" aria-hidden="true">↗</span></div>
                   <div id="ov-press-time-manalo" style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">Connecting...</div>
+                  <button type="button" id="ov-manalo-wl-chip" class="ov-wl-chip" style="display:none;" onclick="event.stopPropagation(); switchNavTab('waterlevel');" title="Open Booster Water Level Analysis">
+                    <span id="ov-manalo-wl-text">WL: —</span>
+                  </button>
                 </div>
                 <div style="text-align:right;">
                   <div id="ov-press-val-manalo" style="font-size:20px; font-weight:800; font-family:var(--font-mono); color:var(--green-text);">—<span style="font-size:10px;">PSI</span></div>
@@ -2618,6 +2717,148 @@
               </thead>
               <tbody id="monthly-station-tbody">
                 <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No records found for this month.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── TAB 8: BOOSTER WATER LEVEL & PRESSURE CORRELATION ── -->
+      <div class="page-content" id="page-waterlevel">
+
+        <!-- Executive KPI Strip -->
+        <div class="kpi-row-layout">
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Latest Reported Level</div>
+            <div class="kpi-card-num" id="wl-kpi-latest">—<span class="unit">m</span></div>
+            <div class="kpi-card-foot" id="wl-kpi-latest-sub" style="color:var(--text-muted);">Awaiting operator logs</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Variance vs. Normal Height</div>
+            <div class="kpi-card-num" id="wl-kpi-variance">—</div>
+            <div style="height:4px; background:#F1F5F9; border-radius:2px; overflow:hidden; margin:4px 0 6px;">
+              <div id="wl-kpi-bar" style="height:100%; width:0%; background:var(--blue); border-radius:2px; transition:width 0.35s ease;"></div>
+            </div>
+            <div class="kpi-card-foot" id="wl-kpi-normal-sub" style="color:var(--text-muted);">Normal Benchmark: —</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Period Min / Max / Avg</div>
+            <div class="kpi-card-num" id="wl-kpi-range" style="font-size:18px;">—</div>
+            <div class="kpi-card-foot" id="wl-kpi-below-sub" style="color:var(--text-muted);">—% below normal height</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Drawdown / Recovery Rate</div>
+            <div class="kpi-card-num" id="wl-kpi-rate" style="font-size:19px;">—</div>
+            <div class="kpi-card-foot" id="wl-kpi-rate-sub" style="color:var(--text-muted);">Recent level velocity</div>
+          </div>
+
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Same-Hour Avg Pressure</div>
+            <div class="kpi-card-num" id="wl-kpi-psi">—<span class="unit">PSI</span></div>
+            <div class="kpi-card-foot" id="wl-kpi-psi-sub" style="color:var(--text-muted);">Correlated telemetry hour</div>
+          </div>
+        </div>
+
+        <!-- Primary Dual-Axis Line Chart: Water Level vs Normal Height & Hourly Avg Pressure -->
+        <div class="card" style="margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div>
+              <h2 class="card-title" style="margin-bottom:2px;" id="wl-trend-title">Manalo Booster Water Level vs. Normal Height &amp; Hourly Avg Pressure</h2>
+              <div style="font-size:11px; color:var(--text-muted);" id="wl-trend-sub">Operator-reported gauge height paired with same-hour telemetry pressure average</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <label style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--text-muted); cursor:pointer;">
+                <input type="checkbox" id="wl-toggle-psi-overlay" checked onchange="renderWaterLevelDashboard()"> Show Hourly Avg PSI
+              </label>
+              <label style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--text-muted); cursor:pointer;">
+                <input type="checkbox" id="wl-toggle-thresholds" checked onchange="renderWaterLevelDashboard()"> Show Normal / Threshold Lines
+              </label>
+              <button type="button" class="header-btn" onclick="resetWlTrendZoom()" style="padding:5px 10px; min-height:30px; font-size:11px;">Reset Zoom</button>
+            </div>
+          </div>
+          <div class="chart-container-wrap" style="height: 340px;">
+            <canvas id="chart-wl-trend"></canvas>
+          </div>
+          <div id="wl-empty-banner" style="display:none; margin-top:12px; padding:14px 16px; border-radius:10px; background:var(--blue-light); border:1px solid var(--blue-border); color:var(--blue-text); font-size:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <span><strong>No operator water level readings recorded in this window yet.</strong> Log single reports or paste directly from your Manalo Booster group chat to populate live trend and pressure correlation charts.</span>
+            <a href="uploader.html#waterlevel" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; text-decoration:none;">Open Water Level Intake ↗</a>
+          </div>
+        </div>
+
+        <!-- Secondary Analytics Grid: 24-Hour Diurnal Profile + Hydraulic Correlation -->
+        <div class="grid-wl-charts">
+          <!-- Chart 2: 24-Hour Diurnal Water Level vs Average Pressure -->
+          <div class="card" style="margin-bottom:0;">
+            <div style="margin-bottom:10px;">
+              <h2 class="card-title" style="margin-bottom:2px;">24-Hour Diurnal Profile: Level vs. Hourly Avg Pressure</h2>
+              <div style="font-size:11px; color:var(--text-muted);">Average water height &amp; PSI by hour of day (PST) &bull; Shaded zones mark 5–8 AM &amp; 5–8 PM Peak Demand</div>
+            </div>
+            <div class="chart-container-wrap" style="height: 290px;">
+              <canvas id="chart-wl-diurnal"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: Hydraulic Correlation Scatter & El Niño / Montible Diagnostics -->
+          <div class="card" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
+              <div>
+                <h2 class="card-title" style="margin-bottom:2px;">Hydraulic Correlation: Water Level vs. Same-Hour PSI</h2>
+                <div style="font-size:11px; color:var(--text-muted);">Quantifies how booster drawdown translates into network pressure drops</div>
+              </div>
+              <span id="wl-corr-badge" class="kpi-badge-pill pill-blue" style="white-space:nowrap;">r = —</span>
+            </div>
+            <div class="chart-container-wrap" style="height: 210px;">
+              <canvas id="chart-wl-scatter"></canvas>
+            </div>
+            <div class="wl-diagnostic-grid" id="wl-diagnostic-tiles">
+              <div class="wl-diag-tile">
+                <div class="wl-diag-lbl">Avg PSI @ Normal Level</div>
+                <div class="wl-diag-val" id="wl-diag-psi-normal">—</div>
+                <div class="wl-diag-sub" id="wl-diag-cnt-normal">0 readings</div>
+              </div>
+              <div class="wl-diag-tile">
+                <div class="wl-diag-lbl">Avg PSI Below Normal</div>
+                <div class="wl-diag-val" id="wl-diag-psi-below" style="color:var(--amber-text);">—</div>
+                <div class="wl-diag-sub" id="wl-diag-cnt-below">0 readings</div>
+              </div>
+              <div class="wl-diag-tile">
+                <div class="wl-diag-lbl" id="wl-diag-milestone-lbl">Montible / Dry-Spell Impact</div>
+                <div class="wl-diag-val" id="wl-diag-milestone-val">—</div>
+                <div class="wl-diag-sub" id="wl-diag-milestone-sub">Set activation date in Portal</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Correlated Hourly Readings Ledger -->
+        <div class="table-container">
+          <div class="table-head-bar">
+            <div>
+              <div class="table-head-title">Field-Reported Water Levels &amp; Correlated Hourly Pressure Log</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Each operator report is automatically paired with the average pressure logged during that exact hour</div>
+            </div>
+            <span id="wl-table-count" style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">0 records</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table table-sticky-first">
+              <thead>
+                <tr>
+                  <th>Date &amp; Time (PST)</th>
+                  <th class="right">Reported Level</th>
+                  <th class="right">Normal Height</th>
+                  <th class="right">Variance (Δ / %)</th>
+                  <th>Status</th>
+                  <th class="right">Manalo Avg PSI (Hr)</th>
+                  <th class="right">City Dist. Avg PSI (Hr)</th>
+                  <th>Context &amp; Field Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="wl-analysis-tbody">
+                <tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">Loading water level telemetry...</td></tr>
               </tbody>
             </table>
           </div>
@@ -3987,7 +4228,8 @@
 
     const titles = {
       overview: "Monitoring Dashboard", production: "Production Yield Analysis",
-      pressure: "Distribution Network Pressure", crisis: "LWUA Drought & Crisis Monitoring",
+      pressure: "Distribution Network Pressure", waterlevel: "Booster Water Level & Pressure Correlation",
+      crisis: "LWUA Drought & Crisis Monitoring",
       riverflow: "River Hydrology & Watershed Yield", complaints: "Customer Care Complaints Triage",
       monthly: "Production Monthly Report"
     };
@@ -3999,6 +4241,7 @@
     const monthlyBar = document.getElementById("bar-period-monthly");
     const pressureBar = document.getElementById("bar-period-pressure");
     const complaintsBar = document.getElementById("bar-period-complaints");
+    const waterlevelBar = document.getElementById("bar-period-waterlevel");
 
     if (globalPeriodBar) {
       globalPeriodBar.style.display = (tab === 'overview' || tab === 'production' || tab === 'crisis') ? 'flex' : 'none';
@@ -4011,6 +4254,9 @@
     }
     if (complaintsBar) {
       complaintsBar.style.display = (tab === 'complaints') ? 'flex' : 'none';
+    }
+    if (waterlevelBar) {
+      waterlevelBar.style.display = (tab === 'waterlevel') ? 'flex' : 'none';
     }
 
     if (window.innerWidth <= 820) {
@@ -4065,6 +4311,13 @@
         loadMonthlyData();
       } else {
         renderMonthlyDashboard();
+      }
+    }
+    if(tab === 'waterlevel') {
+      if (!waterLevelLoaded) {
+        loadWaterLevel();
+      } else {
+        renderWaterLevelDashboard();
       }
     }
 
@@ -4159,6 +4412,7 @@
     updatePress(2, "ov-press-val-manalo", "ov-press-time-manalo", "ov-press-st-manalo", null);
     updatePress(8, "ov-press-val-campo", "ov-press-time-campo", "ov-press-st-campo", 90);
     updatePress(19, "ov-press-val-uv", "ov-press-time-uv", "ov-press-st-uv", 110);
+    if (typeof updateOverviewManaloWaterLevelChip === 'function') updateOverviewManaloWaterLevelChip();
 
     const tbody = document.getElementById("ov-source-tbody");
     if (tbody) {
@@ -6265,6 +6519,9 @@
       if (document.getElementById("page-pressure")?.classList.contains("active")) {
         if (typeof refreshPressureViewComponents === 'function') refreshPressureViewComponents();
       }
+      if (document.getElementById("page-waterlevel")?.classList.contains("active")) {
+        if (typeof renderWaterLevelDashboard === 'function') renderWaterLevelDashboard();
+      }
       if (typeof renderOverview === 'function') renderOverview();
       return true;
     } catch(e) { 
@@ -6913,7 +7170,8 @@
         loadPressure(),
         loadRiverFlow(),
         loadComplaints(),
-        loadMonthlyData()
+        loadMonthlyData(),
+        loadWaterLevel()
       ]);
       renderOverview();
       if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
@@ -9796,6 +10054,963 @@
     document.querySelectorAll('.press-table-wrap').forEach(el => {
       makeScrollableDrag(el, { horizontal: true, vertical: true });
     });
+
+    // 5. Booster Water Level Correlated Hourly Table
+    document.querySelectorAll('#page-waterlevel .table-responsive').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: false });
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // ── BOOSTER WATER LEVEL & HOURLY PRESSURE CORRELATION ENGINE ──
+  // ══════════════════════════════════════════════════════════════
+  let waterLevelRaw = [];
+  let waterLevelConfig = {
+    default_station: "Manalo Booster Station",
+    stations: [
+      { name: "Manalo Booster Station", unit: "m", normal_level: 3.0, warning_level: 2.2, critical_level: 1.5, pressure_col: 2 }
+    ],
+    milestones: [
+      { label: "Montible Source Activated", date: "", color: "#0D9488" }
+    ]
+  };
+  let waterLevelLoaded = false;
+  let wlActiveRange = '7d';
+  let wlChartTrend = null;
+  let wlChartDiurnal = null;
+  let wlChartScatter = null;
+  let wlLastCorrelatedRows = [];
+
+  function wlGetPstParts(dt) {
+    // Convert any Date to exact Asia/Manila (UTC+8) components without browser TZ drift
+    const ph = new Date(dt.getTime() + 8 * 3600 * 1000);
+    const y = ph.getUTCFullYear();
+    const m = String(ph.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(ph.getUTCDate()).padStart(2, '0');
+    const hr = ph.getUTCHours();
+    const min = String(ph.getUTCMinutes()).padStart(2, '0');
+    return {
+      dateKey: `${y}-${m}-${d}`,
+      hourKey: `${y}-${m}-${d}T${String(hr).padStart(2, '0')}`,
+      hour: hr,
+      timeLabel: `${String(hr).padStart(2, '0')}:${min}`
+    };
+  }
+
+  function wlGetStationMeta(stationName) {
+    const list = Array.isArray(waterLevelConfig?.stations) ? waterLevelConfig.stations : [];
+    return list.find(s => s.name === stationName) || list[0] || {
+      name: stationName || 'Manalo Booster Station',
+      unit: 'm',
+      normal_level: 3.0,
+      warning_level: 2.2,
+      critical_level: 1.5,
+      pressure_col: 2
+    };
+  }
+
+  function wlGetStatusInfo(level, normal, warn, crit) {
+    const lv = Number(level);
+    const nm = Number(normal);
+    const wn = (warn !== null && warn !== undefined && warn !== '') ? Number(warn) : nm * 0.75;
+    const cr = (crit !== null && crit !== undefined && crit !== '') ? Number(crit) : nm * 0.50;
+    if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
+      return { label: 'Unknown', color: '#64748B', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
+    }
+    if (lv <= cr) {
+      return { label: 'Critical', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
+    }
+    if (lv <= wn) {
+      return { label: 'Watch / Low', color: '#A14506', dot: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', tier: 'watch' };
+    }
+    if (lv < nm) {
+      return { label: 'Below Normal', color: '#1D4ED8', dot: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', tier: 'below' };
+    }
+    return { label: 'Normal', color: '#047857', dot: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', tier: 'normal' };
+  }
+
+  function wlPopulateControls() {
+    const stSel = document.getElementById('wl-dash-station');
+    if (stSel) {
+      const stationsFromCfg = (waterLevelConfig?.stations || []).map(s => s.name);
+      const stationsFromRows = Array.from(new Set((waterLevelRaw || []).map(r => r.station_name).filter(Boolean)));
+      const allStations = Array.from(new Set([...stationsFromCfg, ...stationsFromRows]));
+      if (allStations.length === 0) allStations.push('Manalo Booster Station');
+      const prev = stSel.value;
+      stSel.innerHTML = allStations.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+      stSel.value = allStations.includes(prev) ? prev : (waterLevelConfig?.default_station || allStations[0]);
+    }
+
+    const pSel = document.getElementById('wl-dash-pressure-source');
+    if (pSel && pSel.options.length === 0) {
+      const distOpts = [
+        `<option value="col:2">Manalo Booster Station (PSI)</option>`,
+        `<option value="dist_avg">Urban Core Distribution Avg (15 Nodes)</option>`,
+        ...PRESSURE_STATIONS.filter(s => s.col !== 2).map(s => `<option value="col:${s.col}">${escapeHtml(s.name)} (PSI)</option>`)
+      ];
+      pSel.innerHTML = distOpts.join('');
+    }
+  }
+
+  function setWaterLevelRange(rangeKey) {
+    wlActiveRange = rangeKey;
+    document.querySelectorAll('.wl-range-btn').forEach(btn => {
+      const active = btn.dataset.range === rangeKey;
+      btn.classList.toggle('active', active);
+      btn.style.background = active ? 'var(--blue-light)' : '#FFFFFF';
+      btn.style.color = active ? 'var(--blue-text)' : 'var(--text-muted)';
+    });
+    renderWaterLevelDashboard();
+  }
+
+  async function loadWaterLevel(forceRefresh = false) {
+    try {
+      const url = `/api/getWaterLevel?include_config=1&limit=2000${forceRefresh ? '&_t=' + Date.now() : ''}`;
+      const res = await fetch(url, { cache: forceRefresh ? 'no-store' : 'default' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const payload = await res.json();
+      if (payload && payload.config && Array.isArray(payload.config.stations)) {
+        waterLevelConfig = payload.config;
+      }
+      const rows = Array.isArray(payload?.readings) ? payload.readings : (Array.isArray(payload) ? payload : []);
+      waterLevelRaw = rows
+        .map(r => ({
+          ...r,
+          dt: new Date(r.reading_time),
+          water_level: parseFloat(r.water_level),
+          normal_level: parseFloat(r.normal_level),
+          warning_level: r.warning_level !== null && r.warning_level !== undefined ? parseFloat(r.warning_level) : null,
+          critical_level: r.critical_level !== null && r.critical_level !== undefined ? parseFloat(r.critical_level) : null
+        }))
+        .filter(r => !isNaN(r.dt.getTime()) && Number.isFinite(r.water_level))
+        .sort((a, b) => a.dt - b.dt);
+
+      waterLevelLoaded = true;
+      wlPopulateControls();
+      updateOverviewManaloWaterLevelChip();
+
+      if (document.getElementById('page-waterlevel')?.classList.contains('active')) {
+        await ensurePressureCoversWaterLevel(waterLevelRaw);
+        renderWaterLevelDashboard();
+      }
+    } catch (err) {
+      console.warn('Water level fetch error:', err);
+      waterLevelLoaded = true;
+      wlPopulateControls();
+      if (document.getElementById('page-waterlevel')?.classList.contains('active')) {
+        renderWaterLevelDashboard();
+      }
+    }
+  }
+
+  async function ensurePressureCoversWaterLevel(rows) {
+    if (!rows || rows.length === 0 || typeof fetchPressureRange !== 'function') return;
+    const minWlDt = rows[0].dt;
+    const maxWlDt = rows[rows.length - 1].dt;
+    if (!pressureRaw || pressureRaw.length === 0) {
+      await fetchPressureRange(new Date(minWlDt.getTime() - 3600 * 1000), new Date(maxWlDt.getTime() + 3600 * 1000));
+      return;
+    }
+    const oldestPress = pressureRaw[0]?.dt;
+    if (oldestPress && minWlDt < oldestPress) {
+      // Cap backfill to 45 days so UI remains snappy
+      const safeStart = new Date(Math.max(minWlDt.getTime() - 3600 * 1000, Date.now() - 45 * 24 * 3600 * 1000));
+      if (safeStart < oldestPress) {
+        await fetchPressureRange(safeStart, oldestPress);
+      }
+    }
+  }
+
+  function updateOverviewManaloWaterLevelChip() {
+    const chip = document.getElementById('ov-manalo-wl-chip');
+    const txt = document.getElementById('ov-manalo-wl-text');
+    if (!chip || !txt) return;
+
+    const manaloRows = (waterLevelRaw || []).filter(r =>
+      String(r.station_name || '').toLowerCase().includes('manalo')
+    );
+    const pool = manaloRows.length > 0 ? manaloRows : (waterLevelRaw || []);
+    if (pool.length === 0) {
+      chip.style.display = 'none';
+      return;
+    }
+
+    const latest = pool[pool.length - 1];
+    const unit = latest.unit || 'm';
+    const delta = latest.water_level - latest.normal_level;
+    const st = wlGetStatusInfo(latest.water_level, latest.normal_level, latest.warning_level, latest.critical_level);
+    const sign = delta >= 0 ? '+' : '';
+    txt.textContent = `Water Level: ${latest.water_level.toFixed(2)}${unit} / ${latest.normal_level.toFixed(2)}${unit} (${sign}${delta.toFixed(2)}) • ${st.label}`;
+    chip.style.display = 'inline-flex';
+    chip.style.background = st.bg;
+    chip.style.color = st.color;
+    chip.style.borderColor = st.border;
+  }
+
+  function buildHourlyPressureLookup(startDt, endDt) {
+    // Returns Map<hourKey, { manaloAvg, distAvg, colAvg: Map<col, avg> }> and 24-hour diurnal averages
+    const distCols = PRESSURE_STATIONS
+      .filter(s => !s.customAlertPsi && s.col !== 2 && s.col !== 3 && s.col !== 5 && s.col !== 10)
+      .map(s => s.col);
+
+    const byHourKey = new Map();
+    const byHourOfDay = Array.from({ length: 24 }, (_, hr) => ({
+      hour: hr,
+      colSums: {},
+      colCounts: {},
+      distSum: 0,
+      distCount: 0
+    }));
+
+    (pressureRaw || []).forEach(r => {
+      if (!r || !r.dt || !r.vals) return;
+      if (startDt && r.dt < startDt) return;
+      if (endDt && r.dt > endDt) return;
+      const p = wlGetPstParts(r.dt);
+
+      let bucket = byHourKey.get(p.hourKey);
+      if (!bucket) {
+        bucket = { colSums: {}, colCounts: {}, distSum: 0, distCount: 0 };
+        byHourKey.set(p.hourKey, bucket);
+      }
+      const dBucket = byHourOfDay[p.hour];
+
+      PRESSURE_STATIONS.forEach(s => {
+        const v = r.vals[s.col];
+        if (v !== null && v !== undefined && Number.isFinite(v) && v >= 0) {
+          bucket.colSums[s.col] = (bucket.colSums[s.col] || 0) + v;
+          bucket.colCounts[s.col] = (bucket.colCounts[s.col] || 0) + 1;
+          dBucket.colSums[s.col] = (dBucket.colSums[s.col] || 0) + v;
+          dBucket.colCounts[s.col] = (dBucket.colCounts[s.col] || 0) + 1;
+        }
+      });
+
+      distCols.forEach(col => {
+        const v = r.vals[col];
+        if (v !== null && v !== undefined && Number.isFinite(v) && v >= 0 && v <= 40) {
+          bucket.distSum += v;
+          bucket.distCount += 1;
+          dBucket.distSum += v;
+          dBucket.distCount += 1;
+        }
+      });
+    });
+
+    const getSourceAvg = (bucket, sourceKey) => {
+      if (!bucket) return null;
+      if (sourceKey === 'dist_avg') {
+        return bucket.distCount > 0 ? bucket.distSum / bucket.distCount : null;
+      }
+      const col = parseInt(String(sourceKey || 'col:2').replace('col:', ''), 10) || 2;
+      const cnt = bucket.colCounts[col] || 0;
+      return cnt > 0 ? bucket.colSums[col] / cnt : null;
+    };
+
+    return { byHourKey, byHourOfDay, getSourceAvg };
+  }
+
+  function computePearsonR(points) {
+    if (!points || points.length < 3) return null;
+    const n = points.length;
+    let sx = 0, sy = 0, sxx = 0, syy = 0, sxy = 0;
+    points.forEach(pt => {
+      sx += pt.x; sy += pt.y;
+      sxx += pt.x * pt.x; syy += pt.y * pt.y;
+      sxy += pt.x * pt.y;
+    });
+    const num = n * sxy - sx * sy;
+    const den = Math.sqrt((n * sxx - sx * sx) * (n * syy - sy * sy));
+    if (!Number.isFinite(den) || den === 0) return null;
+    const r = num / den;
+    const slope = (n * sxx - sx * sx) !== 0 ? (n * sxy - sx * sy) / (n * sxx - sx * sx) : 0;
+    const intercept = (sy - slope * sx) / n;
+    return { r, slope, intercept };
+  }
+
+  function resetWlTrendZoom() {
+    if (wlChartTrend && typeof wlChartTrend.resetZoom === 'function') {
+      wlChartTrend.resetZoom();
+    }
+  }
+
+  // Inline Chart.js plugin for vertical operational milestone lines (e.g. Montible Source Activation)
+  const wlMilestonePlugin = {
+    id: 'wlMilestoneLines',
+    afterDatasetsDraw(chart) {
+      const lines = chart.options?.plugins?.wlMilestoneLines?.lines;
+      if (!Array.isArray(lines) || lines.length === 0) return;
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea || !scales?.x) return;
+
+      ctx.save();
+      lines.forEach(line => {
+        if (line.index === null || line.index === undefined || line.index < 0) return;
+        const xPos = scales.x.getPixelForValue(line.index);
+        if (!Number.isFinite(xPos) || xPos < chartArea.left || xPos > chartArea.right) return;
+
+        ctx.beginPath();
+        ctx.setLineDash([5, 4]);
+        ctx.strokeStyle = line.color || '#0D9488';
+        ctx.lineWidth = 1.6;
+        ctx.moveTo(xPos, chartArea.top);
+        ctx.lineTo(xPos, chartArea.bottom);
+        ctx.stroke();
+
+        // Label pill at top
+        ctx.setLineDash([]);
+        ctx.font = '700 10px Inter, sans-serif';
+        const txt = line.label || 'Milestone';
+        const w = ctx.measureText(txt).width + 12;
+        const bx = Math.min(Math.max(xPos - w / 2, chartArea.left + 2), chartArea.right - w - 2);
+        const by = chartArea.top + 4;
+        ctx.fillStyle = line.color || '#0D9488';
+        ctx.beginPath();
+        ctx.roundRect(bx, by, w, 18, 4);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(txt, bx + 6, by + 9);
+      });
+      ctx.restore();
+    }
+  };
+
+  // Inline Chart.js plugin to shade PPCWD Peak Demand Windows (5-8 AM & 5-8 PM) on 24h Diurnal chart
+  const wlDiurnalBandsPlugin = {
+    id: 'wlDiurnalBands',
+    beforeDatasetsDraw(chart) {
+      if (!chart.options?.plugins?.wlDiurnalBands?.enabled) return;
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea || !scales?.x) return;
+      const bands = [
+        { from: 5, to: 8, label: 'AM Peak' },
+        { from: 17, to: 20, label: 'PM Peak' }
+      ];
+      ctx.save();
+      bands.forEach(b => {
+        const x1 = scales.x.getPixelForValue(b.from);
+        const x2 = scales.x.getPixelForValue(b.to);
+        if (!Number.isFinite(x1) || !Number.isFinite(x2)) return;
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.09)';
+        ctx.fillRect(x1, chartArea.top, x2 - x1, chartArea.bottom - chartArea.top);
+        ctx.fillStyle = '#A14506';
+        ctx.font = '700 9.5px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.label, (x1 + x2) / 2, chartArea.top + 11);
+      });
+      ctx.restore();
+    }
+  };
+
+  function renderWaterLevelDashboard() {
+    wlPopulateControls();
+    const stationName = document.getElementById('wl-dash-station')?.value || waterLevelConfig.default_station || 'Manalo Booster Station';
+    const pressSource = document.getElementById('wl-dash-pressure-source')?.value || 'col:2';
+    const pressSourceLabel = document.getElementById('wl-dash-pressure-source')?.selectedOptions?.[0]?.textContent || 'Manalo Booster Station (PSI)';
+    const showPsi = document.getElementById('wl-toggle-psi-overlay')?.checked !== false;
+    const showThresholds = document.getElementById('wl-toggle-thresholds')?.checked !== false;
+    const meta = wlGetStationMeta(stationName);
+
+    const stationRows = (waterLevelRaw || []).filter(r => r.station_name === stationName);
+
+    // Determine range window relative to latest reading (or now if empty)
+    const anchorMs = stationRows.length > 0 ? Math.max(Date.now(), stationRows[stationRows.length - 1].dt.getTime()) : Date.now();
+    const rangeDaysMap = { '24h': 1, '7d': 7, '14d': 14, '30d': 30 };
+    let cutoffDt = null;
+    if (rangeDaysMap[wlActiveRange]) {
+      cutoffDt = new Date(anchorMs - rangeDaysMap[wlActiveRange] * 24 * 3600 * 1000);
+    }
+
+    const filtered = cutoffDt ? stationRows.filter(r => r.dt >= cutoffDt) : [...stationRows];
+    const windowStart = filtered.length > 0 ? new Date(filtered[0].dt.getTime() - 3600 * 1000) : cutoffDt;
+    const windowEnd = filtered.length > 0 ? new Date(filtered[filtered.length - 1].dt.getTime() + 3600 * 1000) : new Date();
+    const pressLookup = buildHourlyPressureLookup(windowStart, windowEnd);
+
+    // Enrich each reading with same-hour average pressures
+    const enriched = filtered.map(r => {
+      const p = wlGetPstParts(r.dt);
+      const bucket = pressLookup.byHourKey.get(p.hourKey);
+      const selectedPsi = pressLookup.getSourceAvg(bucket, pressSource);
+      const manaloPsi = pressLookup.getSourceAvg(bucket, 'col:2');
+      const distPsi = pressLookup.getSourceAvg(bucket, 'dist_avg');
+      const st = wlGetStatusInfo(r.water_level, r.normal_level, r.warning_level ?? meta.warning_level, r.critical_level ?? meta.critical_level);
+      return { ...r, pst: p, selectedPsi, manaloPsi, distPsi, statusInfo: st };
+    });
+    wlLastCorrelatedRows = enriched;
+
+    const unit = enriched[enriched.length - 1]?.unit || meta.unit || 'm';
+    const emptyBanner = document.getElementById('wl-empty-banner');
+    if (emptyBanner) emptyBanner.style.display = enriched.length === 0 ? 'flex' : 'none';
+
+    // Update Titles
+    const trendTitle = document.getElementById('wl-trend-title');
+    if (trendTitle) trendTitle.textContent = `${stationName} Water Level vs. Normal Height & Hourly Avg Pressure`;
+
+    // ── 1. UPDATE KPI CARDS ──
+    const kpiLatest = document.getElementById('wl-kpi-latest');
+    const kpiLatestSub = document.getElementById('wl-kpi-latest-sub');
+    const kpiVar = document.getElementById('wl-kpi-variance');
+    const kpiBar = document.getElementById('wl-kpi-bar');
+    const kpiNormSub = document.getElementById('wl-kpi-normal-sub');
+    const kpiRange = document.getElementById('wl-kpi-range');
+    const kpiBelowSub = document.getElementById('wl-kpi-below-sub');
+    const kpiRate = document.getElementById('wl-kpi-rate');
+    const kpiRateSub = document.getElementById('wl-kpi-rate-sub');
+    const kpiPsi = document.getElementById('wl-kpi-psi');
+    const kpiPsiSub = document.getElementById('wl-kpi-psi-sub');
+
+    if (enriched.length === 0) {
+      if (kpiLatest) kpiLatest.innerHTML = `—<span class="unit">${escapeHtml(unit)}</span>`;
+      if (kpiLatestSub) kpiLatestSub.textContent = 'No readings in selected window';
+      if (kpiVar) { kpiVar.textContent = '—'; kpiVar.style.color = 'var(--text-main)'; }
+      if (kpiBar) kpiBar.style.width = '0%';
+      if (kpiNormSub) kpiNormSub.textContent = `Normal Benchmark: ${Number(meta.normal_level).toFixed(2)} ${unit}`;
+      if (kpiRange) kpiRange.textContent = '—';
+      if (kpiBelowSub) kpiBelowSub.textContent = '0 operator reports logged';
+      if (kpiRate) { kpiRate.textContent = '—'; kpiRate.style.color = 'var(--text-main)'; }
+      if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 readings';
+      if (kpiPsi) kpiPsi.innerHTML = `—<span class="unit">PSI</span>`;
+      if (kpiPsiSub) kpiPsiSub.textContent = pressSourceLabel;
+    } else {
+      const latest = enriched[enriched.length - 1];
+      const delta = latest.water_level - latest.normal_level;
+      const pct = latest.normal_level > 0 ? (latest.water_level / latest.normal_level) * 100 : 0;
+      const sign = delta >= 0 ? '+' : '';
+      const latestStr = latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      if (kpiLatest) {
+        kpiLatest.innerHTML = `${latest.water_level.toFixed(2)}<span class="unit">${escapeHtml(unit)}</span>`;
+        kpiLatest.style.color = latest.statusInfo.color;
+      }
+      if (kpiLatestSub) {
+        kpiLatestSub.innerHTML = `<span class="kpi-badge-pill" style="background:${latest.statusInfo.bg}; color:${latest.statusInfo.color}; border:1px solid ${latest.statusInfo.border};">${latest.statusInfo.label}</span> &bull; ${escapeHtml(latestStr)}`;
+      }
+      if (kpiVar) {
+        kpiVar.textContent = `${sign}${delta.toFixed(2)} ${unit} (${pct.toFixed(0)}%)`;
+        kpiVar.style.color = delta < 0 ? 'var(--red-text)' : 'var(--green-text)';
+      }
+      if (kpiBar) {
+        kpiBar.style.width = `${Math.min(100, Math.max(0, pct)).toFixed(1)}%`;
+        kpiBar.style.background = latest.statusInfo.dot || latest.statusInfo.color;
+      }
+      if (kpiNormSub) {
+        kpiNormSub.textContent = `Normal Height: ${latest.normal_level.toFixed(2)} ${unit}`;
+      }
+
+      const vals = enriched.map(r => r.water_level);
+      const minV = Math.min(...vals);
+      const maxV = Math.max(...vals);
+      const avgV = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const belowCount = enriched.filter(r => r.water_level < r.normal_level).length;
+      const belowPct = (belowCount / enriched.length) * 100;
+
+      if (kpiRange) kpiRange.textContent = `${minV.toFixed(2)} – ${maxV.toFixed(2)} ${unit}`;
+      if (kpiBelowSub) kpiBelowSub.textContent = `Avg: ${avgV.toFixed(2)} ${unit} • ${belowPct.toFixed(0)}% below normal (${enriched.length} logs)`;
+
+      // Rate of change between last 2 readings (or last 3 readings span)
+      if (enriched.length >= 2) {
+        const prev = enriched[enriched.length - 2];
+        const hrs = (latest.dt.getTime() - prev.dt.getTime()) / 3600000;
+        if (hrs > 0.05) {
+          const rate = (latest.water_level - prev.water_level) / hrs;
+          const rSign = rate >= 0 ? '+' : '';
+          if (kpiRate) {
+            kpiRate.textContent = `${rSign}${rate.toFixed(2)} ${unit}/hr`;
+            kpiRate.style.color = rate < -0.02 ? 'var(--red-text)' : (rate > 0.02 ? 'var(--green-text)' : 'var(--text-main)');
+          }
+          if (kpiRateSub) {
+            kpiRateSub.textContent = rate < -0.02 ? 'Active drawdown trend' : (rate > 0.02 ? 'Recharging / recovering' : 'Level stable');
+          }
+        } else {
+          if (kpiRate) kpiRate.textContent = '0.00 ' + unit + '/hr';
+          if (kpiRateSub) kpiRateSub.textContent = 'Readings too close in time';
+        }
+      } else {
+        if (kpiRate) kpiRate.textContent = '—';
+        if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 readings';
+      }
+
+      // Same-hour average pressure for latest reading (or most recent matched reading)
+      const latestWithPsi = [...enriched].reverse().find(r => r.selectedPsi !== null);
+      if (latestWithPsi && latestWithPsi.selectedPsi !== null) {
+        if (kpiPsi) {
+          kpiPsi.innerHTML = `${latestWithPsi.selectedPsi.toFixed(1)}<span class="unit">PSI</span>`;
+          kpiPsi.style.color = latestWithPsi.selectedPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
+        }
+        if (kpiPsiSub) kpiPsiSub.textContent = `${pressSourceLabel.replace(' (PSI)', '')} @ ${latestWithPsi.pst.timeLabel}`;
+      } else {
+        if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
+        if (kpiPsiSub) kpiPsiSub.textContent = 'No pressure telemetry for this hour';
+      }
+    }
+
+    // ── 2. CHART 1: DUAL-AXIS WATER LEVEL VS NORMAL & HOURLY AVG PRESSURE ──
+    const trendCanvas = document.getElementById('chart-wl-trend');
+    if (trendCanvas) {
+      if (wlChartTrend) { try { wlChartTrend.destroy(); } catch (e) {} wlChartTrend = null; }
+
+      const labels = enriched.map(r =>
+        r.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      );
+      const levelData = enriched.map(r => r.water_level);
+      const normalData = enriched.map(r => r.normal_level);
+      const warnData = enriched.map(r => r.warning_level ?? meta.warning_level ?? (r.normal_level * 0.75));
+      const critData = enriched.map(r => r.critical_level ?? meta.critical_level ?? (r.normal_level * 0.50));
+      const psiData = enriched.map(r => r.selectedPsi !== null ? Number(r.selectedPsi.toFixed(2)) : null);
+      const pointColors = enriched.map(r => r.statusInfo.dot || '#2563EB');
+
+      // Find vertical milestone index (e.g. Montible Source Activated)
+      const milestoneLines = [];
+      (waterLevelConfig?.milestones || []).forEach(ms => {
+        if (!ms || !ms.date || enriched.length === 0) return;
+        const targetMs = new Date(`${ms.date}T00:00:00+08:00`).getTime();
+        if (isNaN(targetMs)) return;
+        const firstIdx = enriched.findIndex(r => r.dt.getTime() >= targetMs);
+        if (firstIdx >= 0) {
+          milestoneLines.push({ index: firstIdx, label: ms.label || 'Milestone', color: ms.color || '#0D9488' });
+        }
+      });
+
+      const datasets = [
+        {
+          label: `Reported Water Level (${unit})`,
+          data: levelData,
+          borderColor: '#2563EB',
+          backgroundColor: 'rgba(37, 99, 235, 0.10)',
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.25,
+          pointRadius: 4.5,
+          pointHoverRadius: 6.5,
+          pointBackgroundColor: pointColors,
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 1.5,
+          yAxisID: 'y'
+        }
+      ];
+
+      if (showThresholds) {
+        datasets.push({
+          label: `Normal Water Height (${unit})`,
+          data: normalData,
+          borderColor: '#10B981',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          yAxisID: 'y'
+        });
+        datasets.push({
+          label: `Watch / Low Threshold (${unit})`,
+          data: warnData,
+          borderColor: '#F59E0B',
+          borderWidth: 1.3,
+          borderDash: [4, 4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          yAxisID: 'y'
+        });
+        datasets.push({
+          label: `Critical Threshold (${unit})`,
+          data: critData,
+          borderColor: '#EF4444',
+          borderWidth: 1.3,
+          borderDash: [3, 3],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          yAxisID: 'y'
+        });
+      }
+
+      if (showPsi) {
+        datasets.push({
+          label: `Hourly Avg ${pressSourceLabel}`,
+          data: psiData,
+          borderColor: '#0D9488',
+          backgroundColor: 'rgba(13, 148, 136, 0.18)',
+          borderWidth: 2,
+          borderDash: [2, 2],
+          pointRadius: 3.5,
+          pointBackgroundColor: '#0D9488',
+          pointStyle: 'rectRot',
+          spanGaps: true,
+          tension: 0.25,
+          yAxisID: 'y1'
+        });
+      }
+
+      wlChartTrend = new Chart(trendCanvas.getContext('2d'), {
+        type: 'line',
+        data: { labels, datasets },
+        plugins: [wlMilestonePlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            datalabels: { display: false },
+            wlMilestoneLines: { lines: milestoneLines },
+            legend: {
+              position: 'top',
+              labels: { usePointStyle: true, boxWidth: 10, font: { size: 11, family: 'Inter, sans-serif' } }
+            },
+            tooltip: {
+              callbacks: {
+                afterBody(items) {
+                  const idx = items[0]?.dataIndex;
+                  const row = enriched[idx];
+                  if (!row) return '';
+                  const linesOut = [];
+                  const dlt = row.water_level - row.normal_level;
+                  linesOut.push(`Variance vs Normal: ${dlt >= 0 ? '+' : ''}${dlt.toFixed(2)} ${unit} (${row.statusInfo.label})`);
+                  if (row.source_context) linesOut.push(`Context: ${row.source_context}`);
+                  if (row.remarks) linesOut.push(`Note: ${row.remarks}`);
+                  return linesOut;
+                }
+              }
+            },
+            zoom: {
+              pan: { enabled: true, mode: 'x' },
+              zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { maxRotation: 35, autoSkip: true, maxTicksLimit: 12, font: { size: 10, family: 'IBM Plex Mono, monospace' } },
+              grid: { color: 'rgba(15, 23, 42, 0.05)' }
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+              beginAtZero: true,
+              title: { display: true, text: `Water Level (${unit})`, font: { size: 11, weight: '700' }, color: '#1D4ED8' },
+              ticks: { font: { size: 10.5, family: 'IBM Plex Mono, monospace' } },
+              grid: { color: 'rgba(15, 23, 42, 0.06)' }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              display: showPsi,
+              beginAtZero: true,
+              title: { display: true, text: 'Hourly Avg Pressure (PSI)', font: { size: 11, weight: '700' }, color: '#0F766E' },
+              ticks: { font: { size: 10.5, family: 'IBM Plex Mono, monospace' } },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ── 3. CHART 2: 24-HOUR DIURNAL WATER LEVEL VS AVG PRESSURE ──
+    const diurnalCanvas = document.getElementById('chart-wl-diurnal');
+    if (diurnalCanvas) {
+      if (wlChartDiurnal) { try { wlChartDiurnal.destroy(); } catch (e) {} wlChartDiurnal = null; }
+
+      const hrWlSums = new Array(24).fill(0);
+      const hrWlCnts = new Array(24).fill(0);
+      enriched.forEach(r => {
+        hrWlSums[r.pst.hour] += r.water_level;
+        hrWlCnts[r.pst.hour] += 1;
+      });
+
+      const hourLabels = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
+      const hrWlAvg = hrWlSums.map((s, h) => hrWlCnts[h] > 0 ? Number((s / hrWlCnts[h]).toFixed(2)) : null);
+      const hrPsiAvg = pressLookup.byHourOfDay.map(b => {
+        const v = pressLookup.getSourceAvg(b, pressSource);
+        return v !== null ? Number(v.toFixed(2)) : null;
+      });
+      const normalRef = enriched.length > 0 ? enriched[enriched.length - 1].normal_level : Number(meta.normal_level || 3.0);
+
+      wlChartDiurnal = new Chart(diurnalCanvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: hourLabels,
+          datasets: [
+            {
+              type: 'line',
+              label: `Avg Water Level (${unit})`,
+              data: hrWlAvg,
+              borderColor: '#2563EB',
+              backgroundColor: 'rgba(37, 99, 235, 0.14)',
+              borderWidth: 2.5,
+              pointRadius: 3.5,
+              pointBackgroundColor: '#2563EB',
+              spanGaps: true,
+              tension: 0.3,
+              yAxisID: 'y',
+              order: 1
+            },
+            {
+              type: 'line',
+              label: `Normal Height (${normalRef.toFixed(2)} ${unit})`,
+              data: new Array(24).fill(normalRef),
+              borderColor: '#10B981',
+              borderWidth: 1.5,
+              borderDash: [5, 4],
+              pointRadius: 0,
+              fill: false,
+              yAxisID: 'y',
+              order: 2
+            },
+            {
+              type: 'bar',
+              label: `Hourly Avg PSI`,
+              data: hrPsiAvg,
+              backgroundColor: 'rgba(13, 148, 136, 0.28)',
+              borderColor: '#0D9488',
+              borderWidth: 1,
+              borderRadius: 4,
+              yAxisID: 'y1',
+              order: 3
+            }
+          ]
+        },
+        plugins: [wlDiurnalBandsPlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            datalabels: { display: false },
+            wlDiurnalBands: { enabled: true },
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10.5 } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 9.5, family: 'IBM Plex Mono, monospace' }, maxTicksLimit: 12 }, grid: { display: false } },
+            y: {
+              position: 'left',
+              beginAtZero: true,
+              title: { display: true, text: `Avg Level (${unit})`, font: { size: 10.5, weight: '700' }, color: '#1D4ED8' },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              title: { display: true, text: 'Avg PSI', font: { size: 10.5, weight: '700' }, color: '#0F766E' },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ── 4. CHART 3: HYDRAULIC CORRELATION SCATTER & DIAGNOSTICS ──
+    const scatterCanvas = document.getElementById('chart-wl-scatter');
+    const paired = enriched.filter(r => r.selectedPsi !== null);
+    const scatterPts = paired.map(r => ({
+      x: r.water_level,
+      y: Number(r.selectedPsi.toFixed(2)),
+      color: r.statusInfo.dot || '#2563EB',
+      label: r.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    }));
+    const pearson = computePearsonR(scatterPts);
+
+    const corrBadge = document.getElementById('wl-corr-badge');
+    if (corrBadge) {
+      if (pearson && Number.isFinite(pearson.r)) {
+        const strength = Math.abs(pearson.r) >= 0.7 ? 'Strong' : (Math.abs(pearson.r) >= 0.4 ? 'Moderate' : 'Weak');
+        corrBadge.textContent = `r = ${pearson.r.toFixed(2)} (${strength})`;
+        corrBadge.className = 'kpi-badge-pill ' + (pearson.r >= 0.4 ? 'pill-green' : 'pill-blue');
+      } else {
+        corrBadge.textContent = `r = — (${scatterPts.length} pairs)`;
+        corrBadge.className = 'kpi-badge-pill pill-blue';
+      }
+    }
+
+    if (scatterCanvas) {
+      if (wlChartScatter) { try { wlChartScatter.destroy(); } catch (e) {} wlChartScatter = null; }
+
+      const scDatasets = [
+        {
+          label: 'Operator Reading vs. Same-Hour Avg PSI',
+          data: scatterPts,
+          backgroundColor: scatterPts.map(p => p.color),
+          borderColor: '#FFFFFF',
+          borderWidth: 1,
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }
+      ];
+
+      if (pearson && scatterPts.length >= 3) {
+        const xs = scatterPts.map(p => p.x);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        if (maxX > minX) {
+          scDatasets.push({
+            type: 'line',
+            label: 'Linear Trend',
+            data: [
+              { x: minX, y: Number((pearson.slope * minX + pearson.intercept).toFixed(2)) },
+              { x: maxX, y: Number((pearson.slope * maxX + pearson.intercept).toFixed(2)) }
+            ],
+            borderColor: '#475569',
+            borderWidth: 1.8,
+            borderDash: [5, 4],
+            pointRadius: 0,
+            fill: false
+          });
+        }
+      }
+
+      wlChartScatter = new Chart(scatterCanvas.getContext('2d'), {
+        type: 'scatter',
+        data: { datasets: scDatasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            datalabels: { display: false },
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  const pt = ctx.raw;
+                  if (!pt) return '';
+                  return `${pt.label || ''}: ${pt.x} ${unit} → ${pt.y} PSI`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: `Water Level (${unit})`, font: { size: 10.5, weight: '700' } },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
+            },
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Same-Hour Avg PSI', font: { size: 10.5, weight: '700' } },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
+            }
+          }
+        }
+      });
+    }
+
+    // Update Diagnostic Summary Tiles
+    const normPairs = paired.filter(r => r.water_level >= r.normal_level);
+    const belowPairs = paired.filter(r => r.water_level < r.normal_level);
+    const avgOf = arr => arr.length > 0 ? arr.reduce((s, r) => s + r.selectedPsi, 0) / arr.length : null;
+    const normPsiAvg = avgOf(normPairs);
+    const belowPsiAvg = avgOf(belowPairs);
+
+    const elNormPsi = document.getElementById('wl-diag-psi-normal');
+    const elNormCnt = document.getElementById('wl-diag-cnt-normal');
+    const elBelowPsi = document.getElementById('wl-diag-psi-below');
+    const elBelowCnt = document.getElementById('wl-diag-cnt-below');
+    if (elNormPsi) elNormPsi.textContent = normPsiAvg !== null ? `${normPsiAvg.toFixed(1)} PSI` : '—';
+    if (elNormCnt) elNormCnt.textContent = `${normPairs.length} matched reading${normPairs.length === 1 ? '' : 's'}`;
+    if (elBelowPsi) elBelowPsi.textContent = belowPsiAvg !== null ? `${belowPsiAvg.toFixed(1)} PSI` : '—';
+    if (elBelowCnt) elBelowCnt.textContent = `${belowPairs.length} matched reading${belowPairs.length === 1 ? '' : 's'}`;
+
+    // Milestone Pre vs Post comparison (Montible Source Activated)
+    const ms = (waterLevelConfig?.milestones || []).find(m => m && m.date);
+    const elMsLbl = document.getElementById('wl-diag-milestone-lbl');
+    const elMsVal = document.getElementById('wl-diag-milestone-val');
+    const elMsSub = document.getElementById('wl-diag-milestone-sub');
+    if (ms && ms.date && stationRows.length > 0) {
+      const msTime = new Date(`${ms.date}T00:00:00+08:00`).getTime();
+      const pre = stationRows.filter(r => r.dt.getTime() < msTime);
+      const post = stationRows.filter(r => r.dt.getTime() >= msTime);
+      const avgLv = arr => arr.length ? arr.reduce((s, r) => s + r.water_level, 0) / arr.length : null;
+      const preAvg = avgLv(pre);
+      const postAvg = avgLv(post);
+      if (elMsLbl) elMsLbl.textContent = ms.label || 'Source Milestone';
+      if (preAvg !== null && postAvg !== null) {
+        const diff = postAvg - preAvg;
+        if (elMsVal) {
+          elMsVal.textContent = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
+          elMsVal.style.color = diff >= 0 ? 'var(--green-text)' : 'var(--red-text)';
+        }
+        if (elMsSub) elMsSub.textContent = `Pre: ${preAvg.toFixed(2)} → Post: ${postAvg.toFixed(2)} ${unit}`;
+      } else if (postAvg !== null) {
+        if (elMsVal) { elMsVal.textContent = `${postAvg.toFixed(2)} ${unit}`; elMsVal.style.color = 'var(--teal-text)'; }
+        if (elMsSub) elMsSub.textContent = `Avg since ${ms.date} (${post.length} logs)`;
+      } else {
+        if (elMsVal) elMsVal.textContent = '—';
+        if (elMsSub) elMsSub.textContent = `Milestone set: ${ms.date}`;
+      }
+    } else {
+      if (elMsLbl) elMsLbl.textContent = 'Montible / Dry-Spell Impact';
+      if (elMsVal) { elMsVal.textContent = '—'; elMsVal.style.color = 'var(--text-main)'; }
+      if (elMsSub) elMsSub.textContent = 'Set activation date in Portal';
+    }
+
+    // ── 5. CORRELATED HOURLY READINGS TABLE ──
+    const tbody = document.getElementById('wl-analysis-tbody');
+    const countEl = document.getElementById('wl-table-count');
+    if (countEl) countEl.textContent = `${enriched.length} record${enriched.length === 1 ? '' : 's'}`;
+    if (tbody) {
+      if (enriched.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">No water level records in this period. Click "Log Operator Reading ↗" above to add data.</td></tr>`;
+      } else {
+        tbody.innerHTML = [...enriched].reverse().map(r => {
+          const dtStr = r.dt.toLocaleString('en-PH', {
+            timeZone: 'Asia/Manila',
+            month: 'short', day: 'numeric', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: true
+          });
+          const dlt = r.water_level - r.normal_level;
+          const pct = r.normal_level > 0 ? (r.water_level / r.normal_level) * 100 : 0;
+          const u = r.unit || unit;
+          const notes = [r.source_context, r.operator_name ? `Op: ${r.operator_name}` : '', r.remarks].filter(Boolean).join(' • ');
+
+          return `
+            <tr>
+              <td class="mono" style="white-space:nowrap; font-size:11.5px;">${escapeHtml(dtStr)}</td>
+              <td class="right mono" style="font-weight:800; color:${r.statusInfo.color};">${r.water_level.toFixed(2)} ${escapeHtml(u)}</td>
+              <td class="right mono" style="color:var(--text-muted);">${r.normal_level.toFixed(2)} ${escapeHtml(u)}</td>
+              <td class="right mono" style="color:${dlt < 0 ? 'var(--red-text)' : 'var(--green-text)'};">${dlt >= 0 ? '+' : ''}${dlt.toFixed(2)} (${pct.toFixed(0)}%)</td>
+              <td><span class="kpi-badge-pill" style="background:${r.statusInfo.bg}; color:${r.statusInfo.color}; border:1px solid ${r.statusInfo.border};">${r.statusInfo.label}</span></td>
+              <td class="right mono" style="font-weight:700; color:${r.manaloPsi !== null && r.manaloPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--text-main)'};">${r.manaloPsi !== null ? r.manaloPsi.toFixed(1) + ' PSI' : '—'}</td>
+              <td class="right mono" style="color:var(--text-muted);">${r.distPsi !== null ? r.distPsi.toFixed(1) + ' PSI' : '—'}</td>
+              <td style="font-size:11.5px; color:var(--text-muted); max-width:280px;">${escapeHtml(notes || '—')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+  }
+
+  function exportWaterLevelCsv() {
+    if (!wlLastCorrelatedRows || wlLastCorrelatedRows.length === 0) {
+      alert('No water level readings available to export in the current view.');
+      return;
+    }
+    const headers = [
+      'Date_Time_PST', 'Station', 'Water_Level', 'Normal_Height', 'Unit',
+      'Variance', 'Pct_of_Normal', 'Status', 'Manalo_Hourly_Avg_PSI',
+      'City_Dist_Hourly_Avg_PSI', 'Source_Context', 'Operator', 'Remarks'
+    ];
+    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const csvRows = [headers.join(',')];
+    wlLastCorrelatedRows.forEach(r => {
+      const dtStr = `${r.pst.dateKey} ${r.pst.timeLabel}`;
+      const dlt = (r.water_level - r.normal_level).toFixed(2);
+      const pct = r.normal_level > 0 ? ((r.water_level / r.normal_level) * 100).toFixed(1) : '';
+      csvRows.push([
+        esc(dtStr), esc(r.station_name), r.water_level.toFixed(2), r.normal_level.toFixed(2),
+        esc(r.unit || 'm'), dlt, pct, esc(r.statusInfo.label),
+        r.manaloPsi !== null ? r.manaloPsi.toFixed(2) : '',
+        r.distPsi !== null ? r.distPsi.toFixed(2) : '',
+        esc(r.source_context || ''), esc(r.operator_name || ''), esc(r.remarks || '')
+      ].join(','));
+    });
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `PPCWD_Water_Level_Analysis_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   window.addEventListener('DOMContentLoaded', () => {

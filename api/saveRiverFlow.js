@@ -1,6 +1,40 @@
 // api/saveRiverFlow.js
 import crypto from 'crypto';
-import { DEFAULT_RIVER_STATIONS } from './getRiverFlow.js';
+import { DEFAULT_RIVER_STATIONS, DEFAULT_WATER_LEVEL_CONFIG, WATER_LEVEL_CONFIG_STATION } from './getRiverFlow.js';
+
+function sanitizeWaterLevelRecord(rec, fallbackStation = 'Manalo Booster Station') {
+  if (!rec || typeof rec !== 'object') return null;
+  const stationName = String(rec.station_name || fallbackStation).trim();
+  if (!stationName || stationName === WATER_LEVEL_CONFIG_STATION) return null;
+
+  const rawTime = rec.reading_time;
+  const parsedDt = rawTime ? new Date(rawTime) : null;
+  if (!parsedDt || isNaN(parsedDt.getTime())) return null;
+
+  const waterLevel = parseFloat(rec.water_level);
+  const normalLevel = parseFloat(rec.normal_level);
+  if (!Number.isFinite(waterLevel) || waterLevel < 0 || waterLevel > 9999) return null;
+  if (!Number.isFinite(normalLevel) || normalLevel <= 0 || normalLevel > 9999) return null;
+
+  const warnParsed = rec.warning_level !== undefined && rec.warning_level !== null && rec.warning_level !== '' ? parseFloat(rec.warning_level) : null;
+  const critParsed = rec.critical_level !== undefined && rec.critical_level !== null && rec.critical_level !== '' ? parseFloat(rec.critical_level) : null;
+
+  const allowedUnits = ['m', 'ft', 'cm', '%'];
+  const unit = allowedUnits.includes(String(rec.unit || 'm').trim()) ? String(rec.unit || 'm').trim() : 'm';
+
+  return {
+    station_name: stationName.slice(0, 120),
+    reading_time: parsedDt.toISOString(),
+    water_level: Number(waterLevel.toFixed(2)),
+    normal_level: Number(normalLevel.toFixed(2)),
+    unit,
+    warning_level: Number.isFinite(warnParsed) ? Number(warnParsed.toFixed(2)) : null,
+    critical_level: Number.isFinite(critParsed) ? Number(critParsed.toFixed(2)) : null,
+    source_context: rec.source_context ? String(rec.source_context).trim().slice(0, 160) : null,
+    operator_name: rec.operator_name ? String(rec.operator_name).trim().slice(0, 100) : null,
+    remarks: rec.remarks ? String(rec.remarks).trim().slice(0, 500) : null
+  };
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -42,9 +76,185 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized: Invalid or missing administrator passkey.' });
   }
 
-  const { action, id, recorded_date, readings, readings_map, name, group, col, stations } = req.body;
+  const { type: bodyType, action, id, recorded_date, readings, readings_map, name, group, col, stations } = req.body || {};
+  const requestType = bodyType || req.query?.type;
 
   try {
+    // ── 0. BOOSTER / RESERVOIR WATER LEVEL OPERATIONS ──
+    if (requestType === 'water_level') {
+      // A. Save station thresholds & operational milestones config
+      if (action === 'save_config') {
+        const incoming = req.body.config || {};
+        const rawStations = Array.isArray(incoming.stations) && incoming.stations.length > 0
+          ? incoming.stations
+          : DEFAULT_WATER_LEVEL_CONFIG.stations;
+
+        const allowedUnits = ['m', 'ft', 'cm', '%'];
+        const cleanStations = rawStations
+          .filter(s => s && String(s.name || '').trim() && String(s.name).trim() !== WATER_LEVEL_CONFIG_STATION)
+          .map(s => {
+            const norm = parseFloat(s.normal_level);
+            const warn = parseFloat(s.warning_level);
+            const crit = parseFloat(s.critical_level);
+            const pCol = parseInt(s.pressure_col, 10);
+            const unit = allowedUnits.includes(String(s.unit || 'm').trim()) ? String(s.unit || 'm').trim() : 'm';
+            return {
+              name: String(s.name).trim().slice(0, 120),
+              unit,
+              normal_level: Number.isFinite(norm) && norm > 0 ? Number(norm.toFixed(2)) : 3.0,
+              warning_level: Number.isFinite(warn) && warn >= 0 ? Number(warn.toFixed(2)) : 2.2,
+              critical_level: Number.isFinite(crit) && crit >= 0 ? Number(crit.toFixed(2)) : 1.5,
+              pressure_col: Number.isFinite(pCol) && pCol >= 2 ? pCol : 2
+            };
+          });
+
+        if (cleanStations.length === 0) {
+          return res.status(400).json({ error: 'At least one valid station configuration is required.' });
+        }
+
+        const cleanMilestones = Array.isArray(incoming.milestones)
+          ? incoming.milestones
+              .filter(m => m && String(m.label || '').trim())
+              .slice(0, 12)
+              .map(m => ({
+                label: String(m.label).trim().slice(0, 100),
+                date: m.date ? String(m.date).trim().slice(0, 30) : '',
+                color: /^#[0-9a-fA-F]{6}$/.test(String(m.color || '')) ? String(m.color) : '#0D9488'
+              }))
+          : DEFAULT_WATER_LEVEL_CONFIG.milestones;
+
+        const cleanConfig = {
+          default_station: cleanStations.some(s => s.name === incoming.default_station)
+            ? incoming.default_station
+            : cleanStations[0].name,
+          stations: cleanStations,
+          milestones: cleanMilestones
+        };
+
+        const cfgRow = {
+          station_name: WATER_LEVEL_CONFIG_STATION,
+          reading_time: '1970-01-01T00:00:00.000Z',
+          water_level: 0,
+          normal_level: 0,
+          unit: 'cfg',
+          remarks: JSON.stringify(cleanConfig)
+        };
+
+        const upsertRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/water_level_readings?on_conflict=station_name,reading_time`,
+          {
+            method: 'POST',
+            headers: { ...headers, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+            body: JSON.stringify([cfgRow])
+          }
+        );
+        if (!upsertRes.ok) throw new Error(await upsertRes.text());
+        return res.status(200).json({ success: true, message: 'Water level configuration saved.', config: cleanConfig });
+      }
+
+      // B. Delete a single water level reading by ID
+      if (action === 'delete') {
+        const targetId = parseInt(id, 10);
+        if (!Number.isFinite(targetId) || targetId <= 0) {
+          return res.status(400).json({ error: 'Valid numeric record id is required for deletion.' });
+        }
+        const delRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/water_level_readings?id=eq.${targetId}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}`,
+          { method: 'DELETE', headers }
+        );
+        if (!delRes.ok) throw new Error(await delRes.text());
+        return res.status(200).json({ success: true, message: 'Water level reading deleted.' });
+      }
+
+      // C. Bulk save / upsert (from Group Chat or Excel/CSV import)
+      if (action === 'bulk_save') {
+        const rawRecords = Array.isArray(req.body.records) ? req.body.records : [];
+        if (rawRecords.length === 0) {
+          return res.status(400).json({ error: 'records array must contain at least one valid reading.' });
+        }
+
+        // Deduplicate by (station_name, reading_time) so PostgreSQL upsert never collides within one batch
+        const dedupMap = new Map();
+        const rejected = [];
+        rawRecords.forEach((r, idx) => {
+          const clean = sanitizeWaterLevelRecord(r);
+          if (clean) {
+            dedupMap.set(`${clean.station_name}__${clean.reading_time}`, clean);
+          } else {
+            rejected.push(idx + 1);
+          }
+        });
+
+        const validRows = Array.from(dedupMap.values());
+        if (validRows.length === 0) {
+          return res.status(400).json({ error: 'No valid water level records found in payload.' });
+        }
+
+        let savedCount = 0;
+        const CHUNK_SIZE = 200;
+        for (let i = 0; i < validRows.length; i += CHUNK_SIZE) {
+          const chunk = validRows.slice(i, i + CHUNK_SIZE);
+          const upRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/water_level_readings?on_conflict=station_name,reading_time`,
+            {
+              method: 'POST',
+              headers: { ...headers, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+              body: JSON.stringify(chunk)
+            }
+          );
+          if (!upRes.ok) throw new Error(await upRes.text());
+          const savedChunk = await upRes.json();
+          savedCount += Array.isArray(savedChunk) ? savedChunk.length : chunk.length;
+        }
+
+        return res.status(200).json({
+          success: true,
+          count: savedCount,
+          rejectedCount: rejected.length,
+          message: `Successfully saved ${savedCount} water level reading${savedCount === 1 ? '' : 's'}.`
+        });
+      }
+
+      // D. Save / Update single water level reading
+      if (action === 'save' || action === 'update') {
+        const clean = sanitizeWaterLevelRecord(req.body.record || req.body);
+        if (!clean) {
+          return res.status(400).json({ error: 'Invalid water level payload. Required: reading_time, water_level, normal_level.' });
+        }
+
+        let saveRes;
+        const numericId = parseInt(id || req.body.record?.id, 10);
+        if (action === 'update' && Number.isFinite(numericId) && numericId > 0) {
+          saveRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/water_level_readings?id=eq.${numericId}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}`,
+            {
+              method: 'PATCH',
+              headers,
+              body: JSON.stringify(clean)
+            }
+          );
+        } else {
+          saveRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/water_level_readings?on_conflict=station_name,reading_time`,
+            {
+              method: 'POST',
+              headers: { ...headers, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+              body: JSON.stringify([clean])
+            }
+          );
+        }
+
+        if (!saveRes.ok) throw new Error(await saveRes.text());
+        const savedData = await saveRes.json();
+        return res.status(200).json({
+          success: true,
+          message: action === 'update' ? 'Water level reading updated.' : 'Water level reading saved.',
+          data: Array.isArray(savedData) ? savedData[0] : savedData
+        });
+      }
+
+      return res.status(400).json({ error: 'Invalid water_level action. Supported: save, update, bulk_save, delete, save_config' });
+    }
     // ── 1. ADD / DELETE / SYNC MONITORED RIVER STATIONS ──
     if (action === 'add_station' || action === 'delete_station' || action === 'sync_stations') {
       let currentCustom = [];

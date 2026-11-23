@@ -21,6 +21,29 @@ export const DEFAULT_RIVER_STATIONS = [
   { name: "Maranat II", col: 20, group: "Satellite South" }
 ];
 
+export const DEFAULT_WATER_LEVEL_CONFIG = {
+  default_station: "Manalo Booster Station",
+  stations: [
+    {
+      name: "Manalo Booster Station",
+      unit: "m",
+      normal_level: 3.0,
+      warning_level: 2.2,
+      critical_level: 1.5,
+      pressure_col: 2
+    }
+  ],
+  milestones: [
+    {
+      label: "Montible Source Activated",
+      date: "",
+      color: "#0D9488"
+    }
+  ]
+};
+
+export const WATER_LEVEL_CONFIG_STATION = "__WATER_LEVEL_CONFIG__";
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -30,6 +53,88 @@ export default async function handler(req, res) {
   const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
   const { type } = req.query;
+
+  // ── 0. BOOSTER / RESERVOIR WATER LEVEL CONFIG & READINGS ──
+  if (type === 'water_level_config' || type === 'water_level') {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      if (type === 'water_level_config') {
+        return res.status(200).json(DEFAULT_WATER_LEVEL_CONFIG);
+      }
+      return res.status(500).json({ error: 'Missing Supabase environment variables.' });
+    }
+
+    const headers = { 'apikey': SUPABASE_KEY, 'Accept': 'application/json' };
+    if (SUPABASE_KEY && SUPABASE_KEY.startsWith('ey')) {
+      headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+    }
+
+    const fetchWaterLevelConfig = async () => {
+      try {
+        const cfgUrl = `${SUPABASE_URL}/rest/v1/water_level_readings?station_name=eq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}&select=id,remarks&limit=1`;
+        const cfgRes = await fetch(cfgUrl, { headers });
+        if (cfgRes.ok) {
+          const cfgRows = await cfgRes.json();
+          if (Array.isArray(cfgRows) && cfgRows.length > 0 && cfgRows[0].remarks) {
+            const parsed = JSON.parse(cfgRows[0].remarks);
+            if (parsed && Array.isArray(parsed.stations) && parsed.stations.length > 0) {
+              return {
+                default_station: parsed.default_station || parsed.stations[0].name || DEFAULT_WATER_LEVEL_CONFIG.default_station,
+                stations: parsed.stations,
+                milestones: Array.isArray(parsed.milestones) ? parsed.milestones : DEFAULT_WATER_LEVEL_CONFIG.milestones
+              };
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('getWaterLevelConfig fallback:', e.message);
+      }
+      return DEFAULT_WATER_LEVEL_CONFIG;
+    };
+
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
+    if (type === 'water_level_config') {
+      const config = await fetchWaterLevelConfig();
+      return res.status(200).json(config);
+    }
+
+    // Fetch water_level_readings
+    try {
+      const { station, start, end, order, include_config } = req.query;
+      const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 2000, 1), 5000);
+      const sortOrder = String(order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+      const cols = 'id,station_name,reading_time,water_level,normal_level,unit,warning_level,critical_level,source_context,operator_name,remarks,created_at';
+      let query = `select=${cols}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}`;
+      if (station && station !== 'ALL') {
+        query += `&station_name=eq.${encodeURIComponent(station)}`;
+      }
+      if (start) {
+        query += `&reading_time=gte.${encodeURIComponent(start)}`;
+      }
+      if (end) {
+        query += `&reading_time=lte.${encodeURIComponent(end)}`;
+      }
+      query += `&order=reading_time.${sortOrder}&limit=${limit}`;
+
+      const url = `${SUPABASE_URL}/rest/v1/water_level_readings?${query}`;
+      const response = await fetch(url, { headers });
+      if (!response.ok) {
+        const errText = await response.text();
+        return res.status(response.status).json({ error: `Supabase returned ${response.status}`, details: errText });
+      }
+      const rows = await response.json();
+      const cleanRows = (Array.isArray(rows) ? rows : []).filter(r => r.station_name !== WATER_LEVEL_CONFIG_STATION);
+
+      if (include_config === '1' || include_config === 'true') {
+        const config = await fetchWaterLevelConfig();
+        return res.status(200).json({ readings: cleanRows, config });
+      }
+      return res.status(200).json(cleanRows);
+    } catch (error) {
+      return res.status(500).json({ error: 'Failed to fetch water level readings: ' + error.message });
+    }
+  }
 
   // ── A. GET MONITORED RIVER STATIONS ──
   if (type === 'stations') {

@@ -19,6 +19,9 @@
   "rewrites": [
     { "source": "/uploader", "destination": "/uploader.html" },
     { "source": "/api/getRiverStations", "destination": "/api/getRiverFlow?type=stations" },
-    { "source": "/api/saveRiverStations", "destination": "/api/saveRiverFlow" }
+    { "source": "/api/saveRiverStations", "destination": "/api/saveRiverFlow" },
+    { "source": "/api/getWaterLevel", "destination": "/api/getRiverFlow?type=water_level" },
+    { "source": "/api/getWaterLevelConfig", "destination": "/api/getRiverFlow?type=water_level_config" },
+    { "source": "/api/saveWaterLevel", "destination": "/api/saveRiverFlow?type=water_level" }
   ]
 }
