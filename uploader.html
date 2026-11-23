@@ -1364,8 +1364,8 @@
               <div style="background:#F8FAFC; border:1px solid var(--card-border); border-radius:10px; padding:14px 18px; margin-bottom:14px;">
                 <div style="font-weight:700; font-size:12px; margin-bottom:4px; color:var(--text-main);">Smart MBS Group-Chat &amp; Spreadsheet Importer:</div>
                 <div style="font-size:11.5px; color:var(--text-muted); line-height:1.6;">
-                  Paste operator reports straight from your MBS group chat (Messenger / Viber / WhatsApp) <strong>or</strong> Excel/CSV rows. The parser automatically detects <strong>Campo Uno / Irawan</strong>, <strong>Lapu-Lapu</strong>, and <strong>Montible</strong> on each line:<br>
-                  <code style="background:#E2E8F0; padding:2px 6px; border-radius:4px; font-family:var(--font-mono); font-size:10.5px;">Nov 22, 2026 6:00 AM — Montible 60 cm | Lapu Lapu 156 cm | Campo Uno 191 cm</code>
+                  Paste full multi-line MBS group-chat templates (including <strong>Campo Uno</strong>, <strong>Montible</strong>, <strong>Lapu2x / Lapu-Lapu</strong>, <code>Current WL-</code>, <code>WL- 60Cm</code>, etc.) <strong>or</strong> Excel/CSV rows.<br>
+                  <span style="color:var(--teal-text); font-weight:600;">&#10003; Unrecorded entries like <code>WL-</code> or <code>WL-cm</code> are safely skipped without misreading FR/Dp/NTU numbers, while operational notes (<code>Drain @Mbs</code>, <code>Bypass Optn</code>, <code>FR</code>, <code>NTU</code>) are saved as remarks.</span>
                 </div>
               </div>
 
@@ -1397,7 +1397,10 @@
               <!-- Editable Preview Table -->
               <div id="wl-preview-container" style="display:none; border-top:1px solid var(--card-border); padding-top:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                  <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Parsed Readings Preview (<span id="wl-preview-count">0</span> valid rows)</h4>
+                  <div>
+                    <h4 style="font-size:13px; font-weight:700; color:var(--text-main);">Parsed Readings Preview (<span id="wl-preview-count">0</span> valid rows)</h4>
+                    <div id="wl-preview-skipped-note" style="display:none; font-size:11px; color:var(--amber-text); margin-top:2px; font-weight:600;"></div>
+                  </div>
                   <button type="button" id="btn-wl-upload-bulk" onclick="uploadBulkWaterLevels()" class="btn-submit" style="background:var(--green-text); border-color:var(--green-text);">
                     Upload All to Supabase
                   </button>
@@ -1453,15 +1456,15 @@
               <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr 1.4fr;">
                 <div class="field-group">
                   <label for="wl-cfg-normal" class="form-lbl">Normal Level *</label>
-                  <input type="number" id="wl-cfg-normal" step="0.5" min="0.01" class="form-input" style="font-family:var(--font-mono); font-weight:700;">
+                  <input type="number" id="wl-cfg-normal" step="any" min="0.01" class="form-input" style="font-family:var(--font-mono); font-weight:700;">
                 </div>
                 <div class="field-group">
                   <label for="wl-cfg-warning" class="form-lbl">Watch Level (-50 cm)</label>
-                  <input type="number" id="wl-cfg-warning" step="0.5" min="0" class="form-input" style="font-family:var(--font-mono);">
+                  <input type="number" id="wl-cfg-warning" step="any" min="0" class="form-input" style="font-family:var(--font-mono);">
                 </div>
                 <div class="field-group">
                   <label for="wl-cfg-critical" class="form-lbl">Critical Level (-80 cm)</label>
-                  <input type="number" id="wl-cfg-critical" step="0.5" min="0" class="form-input" style="font-family:var(--font-mono); font-weight:700;">
+                  <input type="number" id="wl-cfg-critical" step="any" min="0" class="form-input" style="font-family:var(--font-mono); font-weight:700;">
                 </div>
                 <div class="field-group">
                   <label for="wl-cfg-pressure-col" class="form-lbl">Primary Linked Pressure Node</label>
@@ -4746,6 +4749,11 @@
       const lower = String(text || '').toLowerCase();
       const stations = Array.isArray(wlConfig.stations) ? wlConfig.stations : DEFAULT_RIVER_WL_STATIONS;
 
+      // Explicitly ignore non-river auxiliary sections in MBS template
+      if (/\birawan\s+infiltration\b|\binfiltration\s+well\b|\bm\.?b\.?s\.?\s*pressure\b/i.test(lower)) {
+        return '__IGNORE__';
+      }
+
       // Exact/substring match against configured station names
       for (const s of stations) {
         const nm = s.name.toLowerCase();
@@ -4758,12 +4766,12 @@
         }
       }
 
-      // Keyword aliases for the 3 primary PPCWD river sources
-      if (/\b(campo\s*uno|campo\s*1|irawan)\b/i.test(lower)) {
+      // Keyword aliases for the 3 primary PPCWD river sources (including Lapu2x & C1 shorthand)
+      if (/\b(campo\s*uno|campo\s*1|c1\s*source|irawan)\b/i.test(lower)) {
         const hit = stations.find(s => /campo\s*uno|irawan/i.test(s.name));
         return hit ? hit.name : DEFAULT_RIVER_WL_STATIONS[0].name;
       }
-      if (/\b(lapu[\s\-]?lapu|lapulapu)\b/i.test(lower)) {
+      if (/\b(lapu\s*2x|lapu2x|lapu[\s\-]?lapu|lapulapu)\b/i.test(lower)) {
         const hit = stations.find(s => /lapu/i.test(s.name));
         return hit ? hit.name : DEFAULT_RIVER_WL_STATIONS[1].name;
       }
@@ -4863,7 +4871,6 @@
         const curVal = editRec ? Number(editRec.water_level) : '';
         const remVal = editRec ? (editRec.remarks || '') : '';
         const mpLabel = s.measuring_point || 'Intake Staff Gauge';
-        const stepAttr = unit === 'cm' ? '0.5' : '0.01';
         const sampleHint = /campo/i.test(stName) ? '191' : (/lapu/i.test(stName) ? '156' : (/montible/i.test(stName) ? '60' : fmtWlVal(normVal, unit)));
 
         return `
@@ -4873,14 +4880,14 @@
               <div style="font-size:10.5px; color:var(--text-muted);">${wlEscapeHtml(mpLabel)}</div>
             </td>
             <td style="text-align:right;">
-              <input type="number" step="${stepAttr}" min="0.01" class="form-input wl-q-normal" data-idx="${idx}" value="${fmtWlVal(normVal, unit)}" style="width:94px; padding:5px 8px; min-height:32px; font-family:var(--font-mono); text-align:right;" oninput="updateQuickRowStatus(${idx})">
+              <input type="number" step="any" min="0.01" class="form-input wl-q-normal" data-idx="${idx}" value="${fmtWlVal(normVal, unit)}" style="width:94px; padding:5px 8px; min-height:32px; font-family:var(--font-mono); text-align:right;" oninput="updateQuickRowStatus(${idx})">
             </td>
             <td style="text-align:right; font-family:var(--font-mono); font-size:11.5px; color:var(--red-text); font-weight:700;">
               &le; ${fmtWlVal(critVal, unit)} ${wlEscapeHtml(unit)}
             </td>
             <td>
               <div style="display:flex; align-items:center; gap:5px;">
-                <input type="number" step="${stepAttr}" min="0" max="9999" class="form-input wl-q-value" data-idx="${idx}" value="${curVal !== '' ? fmtWlVal(curVal, unit) : ''}" placeholder="e.g. ${sampleHint}" style="width:105px; padding:5px 8px; min-height:32px; font-family:var(--font-mono); font-weight:700;" oninput="updateQuickRowStatus(${idx})">
+                <input type="number" step="any" min="0" max="9999" class="form-input wl-q-value" data-idx="${idx}" value="${curVal !== '' ? fmtWlVal(curVal, unit) : ''}" placeholder="e.g. ${sampleHint}" style="width:105px; padding:5px 8px; min-height:32px; font-family:var(--font-mono); font-weight:700;" oninput="updateQuickRowStatus(${idx})">
                 <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${wlEscapeHtml(unit)}</span>
               </div>
             </td>
@@ -4919,7 +4926,7 @@
 
     function populateWaterLevelStationDropdowns() {
       const stations = wlConfig.stations || DEFAULT_RIVER_WL_STATIONS;
-      const opts = stations.map(s => `<option value="${wlEscapeHtml(s.name)}">${wlEscapeHtml(s.name)} (Normal: ${Number(s.normal_level).toFixed(2)} ${wlEscapeHtml(s.unit || 'm')})</option>`).join('');
+      const opts = stations.map(s => `<option value="${wlEscapeHtml(s.name)}">${wlEscapeHtml(s.name)} (Normal: ${fmtWlVal(s.normal_level, s.unit || 'cm')} ${wlEscapeHtml(s.unit || 'cm')})</option>`).join('');
       const bulkSel = document.getElementById('wl-bulk-station');
       const cfgSel = document.getElementById('wl-cfg-station-select');
       const filterSel = document.getElementById('wl-ledger-station-filter');
@@ -5144,7 +5151,7 @@
       if (m) return `${m[3]}-${String(m[1]).padStart(2, '0')}-${String(m[2]).padStart(2, '0')}`;
 
       const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, sept:9, oct:10, nov:11, dec:12 };
-      m = text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(20\d{2}))?\b/i);
+      m = text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(20\d{2}))?\b/i);
       if (m) {
         const monKey = m[1].slice(0, 3).toLowerCase();
         const year = m[3] || (fallbackDateStr ? fallbackDateStr.slice(0, 4) : String(new Date().getFullYear()));
@@ -5183,14 +5190,15 @@
       let stripped = segment
         .replace(/\b(20\d{2})[-\/](\d{1,2})[-\/](\d{1,2})\b/g, ' ')
         .replace(/\b(\d{1,2})[-\/](\d{1,2})[-\/](20\d{2})\b/g, ' ')
-        .replace(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*20\d{2})?\b/ig, ' ')
+        .replace(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*20\d{2})?\b/ig, ' ')
         .replace(/\b\d{1,2}(?::\d{2})?\s*(?:am|pm|nn|mn)\b/ig, ' ')
         .replace(/\b(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?\b/g, ' ')
         .replace(/\b(?:[01]\d|2[0-3])[0-5]\d\s*(?:h|hrs|hr)\b/ig, ' ')
-        .replace(/\bcampo\s*1\b/ig, 'campo uno');
+        .replace(/\bcampo\s*1\b/ig, 'campo uno')
+        .replace(/\blapu\s*2x\b/ig, 'lapulapu');
 
-      const lvMatch = stripped.match(/(\d+(?:\.\d+)?)\s*(?:centimeters?|cms?|cm|meters?|mtrs?|m|feet|ft|%)\b/i)
-        || stripped.match(/(?:wl|water\s*level|level|height|gauge|reading)\s*[:=\-]?\s*(\d+(?:\.\d+)?)/i)
+      const lvMatch = stripped.match(/(?:current\s*)?(?:w\.?\s*l\.?|water\s*level|gauge|level|height)\s*[:=\-–]+\s*(\d+(?:\.\d+)?)/i)
+        || stripped.match(/(\d+(?:\.\d+)?)\s*(?:centimeters?|cms?|cm|meters?|mtrs?|m|feet|ft|%)\b/i)
         || stripped.match(/(?:campo\s*uno|irawan|lapu[\s\-]?lapu|lapulapu|montible|teruvian)(?:\s*(?:source|river))?\s*[:=\-–@]?\s*(\d+(?:\.\d+)?)\b/i)
         || stripped.match(/\b(\d+\.\d+)\b/)
         || stripped.match(/(?:[-–@:]\s*)(\d+(?:\.\d+)?)/);
@@ -5209,11 +5217,45 @@
 
       const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       const parsed = [];
+      const skippedUnrecorded = [];
       let activeDate = fallbackDate;
       let activeTime = null;
+      let activeSection = null; // Multi-line MBS template section context
+      let activeMbsHeaderNote = '';
+      let activeC1OptNote = '';
+      const sectionRecordsBySlot = new Map(); // `${date}_${time}_${station}` -> parsed record
+      const sectionNotesBySlot = new Map();
+
+      const addOrAppendNote = (slotKey, noteText) => {
+        const clean = String(noteText || '').replace(/\s+/g, ' ').trim();
+        if (!clean) return;
+        const arr = sectionNotesBySlot.get(slotKey) || [];
+        if (!arr.includes(clean)) arr.push(clean);
+        sectionNotesBySlot.set(slotKey, arr);
+        const existingRec = sectionRecordsBySlot.get(slotKey);
+        if (existingRec) {
+          existingRec.remarks = arr.join(' | ').slice(0, 480);
+        }
+      };
+
+      const isSectionHeaderLine = (ln) => {
+        if (/^(?:m\.?b\.?s\.?\s*pressure)\s*:/i.test(ln)) return 'MBS_PRESSURE';
+        if (/^(?:irawan\s+infiltration|infiltration\s+well)\b/i.test(ln)) return '__IGNORE__';
+        if (/^(?:c1\s*source)\s*:/i.test(ln)) return 'C1_AUX';
+        if (/^(?:campo\s*uno|campo\s*1)\s*:/i.test(ln)) return detectRiverSourceFromText(ln, fallbackStation);
+        if (/^(?:montible)\s*:/i.test(ln)) return detectRiverSourceFromText(ln, fallbackStation);
+        if (/^(?:lapu\s*2x|lapu[\s\-]?lapu|lapulapu)(?:\s+source)?\s*:/i.test(ln)) return detectRiverSourceFromText(ln, fallbackStation);
+        return null;
+      };
 
       for (const line of lines) {
         if (/^(date|reading|timestamp|station|source)\b/i.test(line) && !/\d/.test(line)) continue;
+        if (/^good\s+(?:morning|afternoon|evening|day)\b/i.test(line)) {
+          activeSection = null;
+          activeMbsHeaderNote = '';
+          activeC1OptNote = '';
+          continue;
+        }
 
         const foundDate = parseDateFragment(line, activeDate);
         const foundTime = parseTimeFragment(line);
@@ -5224,7 +5266,6 @@
           if (cols.length >= 3) {
             const dStr = parseDateFragment(cols[0], activeDate) || activeDate;
             const tStr = parseTimeFragment(cols[1]) || parseTimeFragment(cols[0]) || activeTime;
-            // Check if col[2] is a station name (Date | Time | Station | Level | [Normal] | [Remarks])
             const col2IsNum = !isNaN(parseFloat(cols[2].replace(/[^0-9.\-]/g, ''))) && !/[a-z]{3,}/i.test(cols[2]);
             let stName, lv, nm, rem;
             if (!col2IsNum && cols.length >= 4) {
@@ -5240,7 +5281,7 @@
               nm = cols[3] && !isNaN(parseFloat(cols[3])) ? parseFloat(cols[3]) : meta.normal_level;
               rem = cols[4] || (cols[3] && isNaN(parseFloat(cols[3])) ? cols[3] : '');
             }
-            if (dStr && tStr && Number.isFinite(lv)) {
+            if (stName !== '__IGNORE__' && dStr && tStr && Number.isFinite(lv)) {
               activeDate = dStr;
               activeTime = tStr;
               const meta = getWlStationMeta(stName);
@@ -5250,7 +5291,7 @@
                 time: tStr,
                 water_level: Number(lv.toFixed(2)),
                 normal_level: Number(nm.toFixed(2)),
-                unit: meta.unit || 'm',
+                unit: meta.unit || 'cm',
                 warning_level: meta.warning_level,
                 critical_level: meta.critical_level,
                 source_context: defaultCtx,
@@ -5261,32 +5302,129 @@
           }
         }
 
+        // Report timestamp header line (e.g. "Nov. 23,2026 (8:00am)")
+        if (foundDate && foundTime && !/\b(?:wl|water\s*level|campo|lapu|montible)\b/i.test(line)) {
+          activeDate = foundDate;
+          activeTime = foundTime;
+          activeSection = null;
+          activeMbsHeaderNote = '';
+          activeC1OptNote = '';
+          continue;
+        }
         if (foundDate) activeDate = foundDate;
         if (foundTime) activeTime = foundTime;
 
-        // Check if line is a header line containing only date and/or time (e.g., "Nov 22, 2026 6:00 AM")
+        // Multi-line template section header detection
+        const headerTarget = isSectionHeaderLine(line);
+        if (headerTarget) {
+          activeSection = headerTarget;
+          if (headerTarget === 'MBS_PRESSURE') {
+            activeMbsHeaderNote = line.replace(/\s+/g, ' ').trim();
+            continue;
+          }
+          if (headerTarget === 'C1_AUX') {
+            const c1Paren = line.match(/\(([^)]+)\)/);
+            if (c1Paren) activeC1OptNote = `C1 ${c1Paren[1].trim()}`;
+            if (activeDate && activeTime) {
+              const c1Key = `${activeDate}_${activeTime}_${DEFAULT_RIVER_WL_STATIONS[0].name}`;
+              if (activeC1OptNote) addOrAppendNote(c1Key, activeC1OptNote);
+            }
+            continue;
+          }
+          if (headerTarget === '__IGNORE__') continue;
+
+          // Extract any inline mode/note on the header line (e.g. "Lapu2x Source: (Bypass Optn.)" or "Montible: (Teruvian Optn.")
+          const afterColon = line.split(':').slice(1).join(':').replace(/[()]/g, '').trim();
+          if (afterColon && !/\b(?:wl|water\s*level)\b/i.test(afterColon) && activeDate && activeTime) {
+            addOrAppendNote(`${activeDate}_${activeTime}_${headerTarget}`, afterColon);
+          }
+          // Continue in case header ALSO has an inline WL value (rare, checked below if WL appears)
+          if (!/\b(?:wl|water\s*level)\b/i.test(line)) continue;
+        }
+
+        // Handle continuation lines inside active multi-line template blocks
+        if (activeSection === 'MBS_PRESSURE') {
+          if (/drain|mbs/i.test(line)) {
+            activeMbsHeaderNote = [activeMbsHeaderNote, line.replace(/[()]/g, '').trim()].filter(Boolean).join(' • ');
+          }
+          continue;
+        }
+        if (activeSection === '__IGNORE__') continue;
+        if (activeSection === 'C1_AUX') {
+          if (activeDate && activeTime && /^(?:dp|fr|inlet|prod)/i.test(line)) {
+            addOrAppendNote(`${activeDate}_${activeTime}_${DEFAULT_RIVER_WL_STATIONS[0].name}`, line.replace(/\s+/g, ' '));
+          }
+          continue;
+        }
+
+        // Check if line is a dedicated Water Level line (e.g. "Current WL- 191", "WL- 60Cm", "WL-156", "WL-cm", "WL-")
+        const isExplicitWlLine = /\b(?:current\s*)?w\.?\s*l\.?\b|\bwater\s*level\b/i.test(line);
+        if (activeSection && isExplicitWlLine && !line.includes('|')) {
+          const lv = extractLevelFromSegment(line);
+          if (lv === null) {
+            skippedUnrecorded.push(`${activeSection.split('(')[0].trim()} @ ${activeTime || '—'}`);
+            continue;
+          }
+          if (activeTime) {
+            const meta = getWlStationMeta(activeSection);
+            const slotKey = `${activeDate}_${activeTime}_${activeSection}`;
+            const existingNotes = sectionNotesBySlot.get(slotKey) || [];
+            if (activeMbsHeaderNote && !existingNotes.includes(activeMbsHeaderNote)) {
+              existingNotes.push(activeMbsHeaderNote);
+            }
+            const rec = {
+              station_name: activeSection,
+              date: activeDate,
+              time: activeTime,
+              water_level: Number(lv.toFixed(2)),
+              normal_level: Number(meta.normal_level),
+              unit: meta.unit || 'cm',
+              warning_level: meta.warning_level,
+              critical_level: meta.critical_level,
+              source_context: defaultCtx,
+              remarks: existingNotes.join(' | ').slice(0, 480)
+            };
+            sectionRecordsBySlot.set(slotKey, rec);
+            sectionNotesBySlot.set(slotKey, existingNotes);
+            parsed.push(rec);
+          }
+          continue;
+        }
+
+        // Capture auxiliary telemetry lines inside a river section (Dp-, FR-, NTU-, PPM-, Operational mode) without misreading them as WL
+        if (activeSection && /^(?:thru|1rp|\(|dp\b|fr\b|raw\s*ntu|inlet\s*ntu|prod\.?\s*ntu|ntu|ppm|#\d)/i.test(line)) {
+          if (activeDate && activeTime) {
+            const cleanedNote = line.replace(/^\(|\)$/g, '').replace(/\s+/g, ' ').trim();
+            addOrAppendNote(`${activeDate}_${activeTime}_${activeSection}`, cleanedNote);
+          }
+          continue;
+        }
+
+        // Fallback: Flat single-line or pipe-separated chat format (e.g. "Montible 60 cm | Lapu Lapu 156 cm | Campo Uno 191 cm")
         const levelCheck = extractLevelFromSegment(line);
         if ((foundDate || foundTime) && levelCheck === null) {
           continue;
         }
 
-        // Support pipe-separated multi-source single line:
-        // e.g. "Nov 22, 2026 6:00 AM — Campo Uno: 1.15m | Lapu-Lapu: 0.95m | Montible: 1.40m"
         const segments = line.includes('|') ? line.split('|').map(s => s.trim()).filter(Boolean) : [line];
-
         for (const seg of segments) {
           const segDate = parseDateFragment(seg, activeDate) || activeDate;
           const segTime = parseTimeFragment(seg) || activeTime;
           if (!segTime) continue;
 
+          const segWlExplicit = /\b(?:current\s*)?w\.?\s*l\.?\b|\bwater\s*level\b/i.test(seg);
           const lv = extractLevelFromSegment(seg);
-          if (lv === null) continue;
+          const stName = activeSection || detectRiverSourceFromText(seg, fallbackStation);
+          if (stName === '__IGNORE__') continue;
 
-          const stName = detectRiverSourceFromText(seg, fallbackStation);
+          if (lv === null) {
+            if (segWlExplicit) skippedUnrecorded.push(`${stName.split('(')[0].trim()} @ ${segTime}`);
+            continue;
+          }
+
           const meta = getWlStationMeta(stName);
           const remMatch = seg.match(/\(([^)]+)\)/);
           let remarks = remMatch ? remMatch[1].trim() : '';
-          // Don't repeat river name as remarks if parentheses just held "(Irawan River)"
           if (/^(irawan|lapu[\s\-]?lapu|montible)\s*river$/i.test(remarks)) remarks = '';
 
           parsed.push({
@@ -5295,7 +5433,7 @@
             time: segTime,
             water_level: Number(lv.toFixed(2)),
             normal_level: Number(meta.normal_level),
-            unit: meta.unit || 'm',
+            unit: meta.unit || 'cm',
             warning_level: meta.warning_level,
             critical_level: meta.critical_level,
             source_context: defaultCtx,
@@ -5307,11 +5445,21 @@
       wlParsedBulkRows = parsed;
       const container = document.getElementById('wl-preview-container');
       const countEl = document.getElementById('wl-preview-count');
+      const skipEl = document.getElementById('wl-preview-skipped-note');
       if (countEl) countEl.textContent = parsed.length;
+      if (skipEl) {
+        if (skippedUnrecorded.length > 0) {
+          skipEl.style.display = 'block';
+          skipEl.textContent = `Safely skipped ${skippedUnrecorded.length} unrecorded WL entry(s): ${skippedUnrecorded.join(', ')}`;
+        } else {
+          skipEl.style.display = 'none';
+          skipEl.textContent = '';
+        }
+      }
 
       if (parsed.length === 0) {
         if (container) container.style.display = 'none';
-        showWaterLevelAlert('Could not extract any valid time + water level rows. Include a time (e.g. 6:00 AM) and level (e.g. Campo Uno: 1.15m).', true);
+        showWaterLevelAlert('Could not extract any valid time + water level rows. Include a timestamp (e.g. Nov. 23,2026 (8:00am)) and numeric WL lines.', true);
         return;
       }
 
@@ -5337,8 +5485,8 @@
             </td>
             <td><input type="date" class="form-input" style="padding:4px 6px; min-height:30px; font-size:11.5px;" value="${wlEscapeHtml(row.date)}" onchange="wlParsedBulkRows[${idx}].date=this.value"></td>
             <td><input type="time" class="form-input" style="padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono);" value="${wlEscapeHtml(row.time)}" onchange="wlParsedBulkRows[${idx}].time=this.value"></td>
-            <td style="text-align:right;"><input type="number" step="0.01" class="form-input" style="width:86px; padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono); text-align:right;" value="${row.water_level}" onchange="wlParsedBulkRows[${idx}].water_level=parseFloat(this.value)"></td>
-            <td style="text-align:right;"><input type="number" step="0.01" class="form-input" style="width:86px; padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono); text-align:right;" value="${row.normal_level}" onchange="wlParsedBulkRows[${idx}].normal_level=parseFloat(this.value)"></td>
+            <td style="text-align:right;"><input type="number" step="any" min="0" max="9999" class="form-input" style="width:86px; padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono); text-align:right;" value="${row.water_level}" onchange="wlParsedBulkRows[${idx}].water_level=parseFloat(this.value)"></td>
+            <td style="text-align:right;"><input type="number" step="any" min="0.01" max="9999" class="form-input" style="width:86px; padding:4px 6px; min-height:30px; font-size:11.5px; font-family:var(--font-mono); text-align:right;" value="${row.normal_level}" onchange="wlParsedBulkRows[${idx}].normal_level=parseFloat(this.value)"></td>
             <td><input type="text" class="form-input" style="padding:4px 6px; min-height:30px; font-size:11.5px;" value="${wlEscapeHtml(row.remarks || '')}" onchange="wlParsedBulkRows[${idx}].remarks=this.value"></td>
             <td style="text-align:right;"><button type="button" class="header-btn" style="padding:3px 8px; min-height:28px; color:var(--red-text);" onclick="wlParsedBulkRows.splice(${idx},1); renderBulkWaterLevelPreview();">✕</button></td>
           </tr>
@@ -5359,10 +5507,9 @@
     }
 
     function populateSampleWaterLevelPaste() {
-      const d = document.getElementById('wl-bulk-default-date')?.value || new Date().toISOString().slice(0, 10);
       const ta = document.getElementById('wl-bulk-input');
       if (ta) {
-        ta.value = `${d} 6:00 AM\nMontible 60 cm (Montible active)\nLapu Lapu 156 cm (Dry spell drawdown)\nCampo Uno 191 cm (Near normal)\n\n${d} 12:00 PM\nMontible 58 cm | Lapu Lapu 152 cm | Campo Uno 189 cm`;
+        ta.value = `Good morning po.\nNov. 23,2026 (8:00am)\n\nM.B.S Pressure: 9.2psi\n(Drain @Mbs.)\n\nCampo Uno:\nCurrent WL- 191\nRaw NTU- 1.16\n\nC1 Source: (Normal Optn.)\nDp- 93psi\nFR- 672\n\nMontible: (Teruvian Optn.\nThru Lapu2x R.S.F)\n(1RP#2 Operational)\nDp- 140psi\nNTU- 0.50\nWL- 60Cm\n\nLapu2x Source: (Bypass Optn.)\nWL-156\nFR- 1270`;
       }
     }
 
