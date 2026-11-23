@@ -1273,23 +1273,20 @@
     .grid-wl-sources {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-bottom: 18px;
     }
     .wl-source-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 18px 20px;
+      border-radius: 12px;
+      padding: 14px 16px;
       box-shadow: var(--card-shadow);
       cursor: pointer;
-      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+      transition: all 0.16s ease;
       text-align: left;
       width: 100%;
       font-family: inherit;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
     }
     .wl-source-card:hover {
       border-color: #93C5FD;
@@ -1300,87 +1297,120 @@
       border-color: var(--blue);
       box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
     }
-    .wl-card-top {
+    /* Visual Vertical Tank Bar Card */
+    .wl-tank-card-inner {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
+      gap: 14px;
+      align-items: stretch;
     }
-    .wl-card-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-    }
-    .wl-card-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-    .wl-card-metric {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .wl-card-hero {
-      font-family: var(--font-mono);
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.02em;
-    }
-    .wl-card-hero-unit {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-left: 3px;
-    }
-    .wl-card-normal {
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .wl-meter-wrap {
+    .wl-tank-vessel {
+      position: relative;
+      width: 58px;
+      min-height: 126px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      border: 2px solid #CBD5E1;
+      background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      justify-content: flex-end;
     }
-    .wl-meter-track {
+    .wl-tank-crit-zone {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(239, 68, 68, 0.10),
+        rgba(239, 68, 68, 0.10) 4px,
+        rgba(239, 68, 68, 0.18) 4px,
+        rgba(239, 68, 68, 0.18) 8px
+      );
+      border-top: 1.5px dashed #EF4444;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .wl-tank-fill {
       position: relative;
-      height: 10px;
       width: 100%;
-      background: #F1F5F9;
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid #E2E8F0;
+      transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 2;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 5px;
     }
-    .wl-meter-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .wl-meter-norm-tick {
+    .wl-tank-fill::before {
+      content: "";
       position: absolute;
       top: 0;
-      bottom: 0;
-      width: 2px;
-      background: #0F172A;
-      opacity: 0.45;
-      z-index: 2;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.65);
     }
-    .wl-card-foot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding-top: 10px;
-      border-top: 1px solid #F1F5F9;
-      font-size: 11.5px;
+    .wl-tank-norm-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 2px dashed #047857;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .wl-tank-norm-tag {
+      position: absolute;
+      right: 3px;
+      top: -14px;
+      font-size: 8.5px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #047857;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 0 3px;
+      border-radius: 3px;
+    }
+    .wl-tank-crit-tag {
+      position: absolute;
+      left: 3px;
+      bottom: 2px;
+      font-size: 8px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #B91C1C;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0 3px;
+      border-radius: 3px;
+      z-index: 4;
+    }
+    .wl-layman-facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 7px 0;
+      padding: 6px 8px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+    }
+    .wl-layman-fact-lbl {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
       color: var(--text-muted);
+    }
+    .wl-layman-fact-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    @media (max-width: 480px) {
+      .wl-tank-card-inner { gap: 10px; }
+      .wl-tank-vessel { width: 48px; }
+      .wl-layman-facts { grid-template-columns: 1fr 1fr; }
     }
     #page-waterlevel .kpi-row-layout {
       grid-template-columns: repeat(4, 1fr);
@@ -2463,20 +2493,18 @@
           </div>
         </div>
 
-        <!-- Dashboard Snapshot: River Water Levels Bar Graph (Current vs. Normal) -->
+        <!-- Dashboard Snapshot: Visual River Water Level Cards -->
         <div class="card" id="ov-wl-board-card" style="margin-bottom:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div>
               <h2 class="card-title" style="margin-bottom:2px; font-size:15px;">River Water Levels &bull; Current vs. Normal Water Level</h2>
-              <div style="font-size:11.5px; color:var(--text-muted);">Latest field operator reading compared against Normal Water Level (cm)</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">Green: Normal (within -10%) &bull; Yellow: Below Normal (&ge;11% drop) &bull; Red: Almost Critical / Critical</div>
             </div>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <button type="button" class="header-btn" onclick="switchNavTab('waterlevel')" style="font-size:11px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">Full Water Analysis &rarr;</button>
             </div>
           </div>
-          <div style="position:relative; height:245px; width:100%;">
-            <canvas id="ov-chart-waterlevel"></canvas>
-          </div>
+          <div class="grid-wl-sources" id="ov-wl-visual-grid" style="margin-bottom:0;"></div>
         </div>
 
         <div class="table-container">
@@ -10222,19 +10250,26 @@
   function wlGetStatusInfo(level, normal, warn, crit) {
     const lv = Number(level);
     const nm = Number(normal);
-    const wn = (warn !== null && warn !== undefined && warn !== '') ? Number(warn) : Math.max(0, nm - 50);
     const cr = (crit !== null && crit !== undefined && crit !== '') ? Number(crit) : Math.max(0, nm - 80);
     if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
       return { label: 'Unknown', color: '#64748B', dot: '#64748B', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
     }
+    // Boundary rules:
+    // - Decrease <= 10% from Normal (lv >= 0.90 * nm): Normal (Green)
+    // - Decrease >= 11% below Normal (lv < 0.90 * nm): Below Normal (Yellow)
+    // - Within 10% nearer Critical (lv <= cr * 1.10) or <= cr: Almost Critical / Critical (Red)
+    const normalFloor = nm * 0.90;
+    const rawNearCrit = cr > 0 ? cr * 1.10 : nm * 0.10;
+    const almostCritCutoff = Math.min(rawNearCrit, Math.max(cr, normalFloor - 0.01));
+
     if (lv <= cr) {
       return { label: 'Critical', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
     }
-    if (lv <= wn) {
-      return { label: 'Watch / Low', color: '#A14506', dot: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', tier: 'watch' };
+    if (lv <= almostCritCutoff) {
+      return { label: 'Almost Critical', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
     }
-    if (lv < nm) {
-      return { label: 'Below Normal', color: '#1D4ED8', dot: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', tier: 'below' };
+    if (lv < normalFloor) {
+      return { label: 'Below Normal', color: '#A14506', dot: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', tier: 'watch' };
     }
     return { label: 'Normal', color: '#047857', dot: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', tier: 'normal' };
   }
@@ -10359,11 +10394,9 @@
     const isProvisional = /montible/i.test(s.name) && norm <= 25;
     if (!latest) {
       return {
-        verdictShort: 'No Report Yet',
-        plainExplain: isProvisional
-          ? `Provisional intake baseline is ${wlFmt(norm, unit)} ${unit} (official full & critical levels pending survey).`
-          : `Full level is ${wlFmt(norm, unit)} ${unit}. Critical starts at ${wlFmt(crit, unit)} ${unit} (-80 ${unit} drop).`,
-        bufferText: 'Awaiting operator log',
+        verdictShort: 'No Reading',
+        plainExplain: `Normal level is ${wlFmt(norm, unit)} ${unit}. Critical starts at ${wlFmt(crit, unit)} ${unit}.`,
+        bufferText: 'Awaiting reading',
         isProvisional
       };
     }
@@ -10372,44 +10405,42 @@
     const st = wlGetStatusInfo(cur, norm, warn, crit);
     const deltaNorm = cur - norm;
     const bufferToCrit = cur - crit;
-
-    if (isProvisional) {
-      return {
-        verdictShort: 'Operational (Above Design)',
-        plainExplain: `Currently ${wlFmt(cur, unit)} ${unit} (+${wlFmt(deltaNorm, unit)} ${unit} above ${wlFmt(norm, unit)} ${unit} design). Official full & dry levels pending declaration.`,
-        bufferText: `+${wlFmt(deltaNorm, unit)} ${unit} vs baseline`,
-        isProvisional
-      };
-    }
+    const dropPct = norm > 0 ? Math.round(((norm - cur) / norm) * 100) : 0;
 
     if (st.tier === 'critical') {
-      const pastCrit = Math.abs(bufferToCrit);
+      const pastCrit = bufferToCrit <= 0;
       return {
-        verdictShort: 'CRITICAL — Action Needed',
-        plainExplain: `Now ${wlFmt(Math.abs(deltaNorm), unit)} ${unit} below normal (${wlFmt(norm, unit)} ${unit}) and ${pastCrit > 0 ? wlFmt(pastCrit, unit) + ' ' + unit + ' past' : 'at'} the ${wlFmt(crit, unit)} ${unit} critical limit.`,
-        bufferText: pastCrit > 0 ? `${wlFmt(pastCrit, unit)} ${unit} BELOW critical` : 'At critical cutoff',
+        verdictShort: st.label,
+        plainExplain: pastCrit
+          ? `${wlFmt(Math.abs(bufferToCrit), unit)} ${unit} past the ${wlFmt(crit, unit)} ${unit} critical limit.`
+          : `Within 10% of critical (${wlFmt(crit, unit)} ${unit}) — ${wlFmt(bufferToCrit, unit)} ${unit} left.`,
+        bufferText: pastCrit
+          ? `${wlFmt(Math.abs(bufferToCrit), unit)} ${unit} below critical`
+          : `+${wlFmt(bufferToCrit, unit)} ${unit} above critical`,
         isProvisional
       };
     }
     if (st.tier === 'watch') {
       return {
-        verdictShort: 'Getting Low — Watch Closely',
-        plainExplain: `Dropped ${wlFmt(Math.abs(deltaNorm), unit)} ${unit} below full (${wlFmt(norm, unit)} ${unit}). Still operating, with ${wlFmt(bufferToCrit, unit)} ${unit} left before critical (${wlFmt(crit, unit)} ${unit}).`,
-        bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} before critical`,
+        verdictShort: 'Below Normal',
+        plainExplain: `Down ${dropPct}% from normal (${wlFmt(norm, unit)} ${unit}), with +${wlFmt(bufferToCrit, unit)} ${unit} above critical.`,
+        bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} above critical`,
         isProvisional
       };
     }
-    if (st.tier === 'below') {
+    if (isProvisional) {
       return {
-        verdictShort: 'Still Safe — Near Full',
-        plainExplain: `Only ${wlFmt(Math.abs(deltaNorm), unit)} ${unit} below full (${wlFmt(norm, unit)} ${unit}). Healthy buffer of +${wlFmt(bufferToCrit, unit)} ${unit} above critical (${wlFmt(crit, unit)} ${unit}).`,
-        bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} safe buffer`,
+        verdictShort: 'Normal',
+        plainExplain: `${deltaNorm >= 0 ? '+' : ''}${wlFmt(deltaNorm, unit)} ${unit} vs. ${wlFmt(norm, unit)} ${unit} design base.`,
+        bufferText: `Official survey pending`,
         isProvisional
       };
     }
     return {
-      verdictShort: 'Full / Normal — Safe',
-      plainExplain: `At or above full level (${wlFmt(norm, unit)} ${unit}) with +${wlFmt(bufferToCrit, unit)} ${unit} buffer above critical (${wlFmt(crit, unit)} ${unit}).`,
+      verdictShort: 'Normal',
+      plainExplain: deltaNorm >= 0
+        ? `At or above normal (${wlFmt(norm, unit)} ${unit}) with +${wlFmt(bufferToCrit, unit)} ${unit} buffer.`
+        : `Within normal margin (-${Math.max(1, dropPct)}% of ${wlFmt(norm, unit)} ${unit}), +${wlFmt(bufferToCrit, unit)} ${unit} safe buffer.`,
       bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} safe buffer`,
       isProvisional
     };
@@ -10429,72 +10460,86 @@
       const accent = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
 
       const cur = latest ? latest.water_level : 0;
-      const scaleMax = Math.max(norm * 1.15, cur * 1.12, 1);
+      const scaleMax = Math.max(norm * 1.15, cur * 1.15, 1);
       const fillPct = latest ? Math.min(100, Math.max(4, (cur / scaleMax) * 100)) : 0;
-      const normTickPct = Math.min(95, Math.max(8, (norm / scaleMax) * 100));
+      const normBottomPct = Math.min(92, Math.max(8, (norm / scaleMax) * 100));
+      const critBottomPct = Math.min(85, Math.max(6, (crit / scaleMax) * 100));
 
       const st = latest
         ? wlGetStatusInfo(cur, norm, warn, crit)
         : { label: 'No Log', color: '#64748B', dot: '#94A3B8', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
+      const layman = wlBuildLaymanSummary(s, latest, norm, warn, crit, unit);
+
+      const waterGradient = st.tier === 'critical'
+        ? 'linear-gradient(180deg, #F87171 0%, #DC2626 100%)'
+        : (st.tier === 'watch'
+            ? 'linear-gradient(180deg, #FBBF24 0%, #D97706 100%)'
+            : 'linear-gradient(180deg, #34D399 0%, #059669 100%)');
 
       const shortTitle = s.name.split('(')[0].trim();
-      const riverSub = s.name.includes('(')
-        ? s.name.slice(s.name.indexOf('(') + 1, s.name.indexOf(')'))
-        : (s.river_name || '');
-      const isProvisional = s.name.toLowerCase().includes('montible');
-      const delta = latest ? (cur - norm) : null;
-      const deltaStr = delta === null ? '' : `${delta >= 0 ? '+' : ''}${wlFmt(delta, unit)} ${unit}`;
+      const riverSub = s.name.includes('(') ? s.name.slice(s.name.indexOf('(')) : (s.river_name ? `(${s.river_name})` : '');
+      const pctOfFull = norm > 0 && latest ? ((cur / norm) * 100).toFixed(0) : '—';
       const dtStr = latest
         ? latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
         : 'No reading yet';
 
-      const statusLabelClean = !latest
-        ? 'No Reading'
-        : (st.tier === 'critical'
-            ? 'Critical'
-            : (st.tier === 'watch'
-                ? 'Watch / Low'
-                : (st.tier === 'below' ? 'Safe' : 'Normal')));
-
-      const fillColor = st.tier === 'critical'
-        ? '#EF4444'
-        : (st.tier === 'watch'
-            ? '#F59E0B'
-            : (st.tier === 'normal' ? '#10B981' : '#2563EB'));
-
-      const critFootnote = isProvisional
-        ? `Design base: ${wlFmt(norm, unit)} ${unit} (Provisional)`
-        : `Critical: &le;${wlFmt(crit, unit)} ${unit}`;
+      const clickAttr = mode === 'overview'
+        ? `onclick="const stName=this.dataset.station; switchNavTab('waterlevel'); setTimeout(() => selectWaterLevelSource(stName), 80);"`
+        : `onclick="selectWaterLevelSource(this.dataset.station)"`;
 
       return `
-        <button type="button" class="wl-source-card ${isActive ? 'active' : ''}" data-station="${escapeHtml(s.name)}" style="border-top:3px solid ${st.dot || accent};" onclick="selectWaterLevelSource(this.dataset.station)">
-          <div class="wl-card-top">
-            <div>
-              <div class="wl-card-title">${escapeHtml(shortTitle)}</div>
-              <div class="wl-card-sub">${escapeHtml(riverSub)}</div>
+        <button type="button" class="wl-source-card ${isActive ? 'active' : ''}" data-station="${escapeHtml(s.name)}" style="border-top:3px solid ${st.dot || accent};" ${clickAttr}>
+          <div class="wl-tank-card-inner">
+            <!-- Visual Vertical Tank Gauge -->
+            <div class="wl-tank-vessel" aria-hidden="true">
+              ${!layman.isProvisional ? `<div class="wl-tank-crit-zone" style="height:${critBottomPct.toFixed(1)}%;"></div>` : ''}
+              <div class="wl-tank-norm-line" style="bottom:${normBottomPct.toFixed(1)}%;">
+                <span class="wl-tank-norm-tag">${layman.isProvisional ? 'Base' : 'Norm'}: ${wlFmt(norm, unit)}</span>
+              </div>
+              ${!layman.isProvisional ? `<span class="wl-tank-crit-tag">Crit &le;${wlFmt(crit, unit)}</span>` : ''}
+              ${latest ? `
+                <div class="wl-tank-fill" style="height:${fillPct.toFixed(1)}%; background:${waterGradient};">
+                  <span style="font-size:10px; font-weight:800; font-family:var(--font-mono); color:#FFFFFF; text-shadow:0 1px 2px rgba(0,0,0,0.45);">${pctOfFull}%</span>
+                </div>
+              ` : ''}
             </div>
-            <span class="kpi-badge-pill" style="background:${st.bg}; color:${st.color}; border:1px solid ${st.border}; white-space:nowrap; font-size:11px;">${escapeHtml(statusLabelClean)}</span>
-          </div>
 
-          <div class="wl-card-metric">
-            <div>
-              <span class="wl-card-hero" style="color:${latest ? st.color : 'var(--text-muted)'};">${latest ? wlFmt(cur, unit) : '—'}</span><span class="wl-card-hero-unit">${escapeHtml(unit)}</span>
-            </div>
-            <div class="wl-card-normal">
-              / ${wlFmt(norm, unit)} ${escapeHtml(unit)} normal${deltaStr ? ` &bull; <span style="color:${delta < 0 ? st.color : 'var(--green-text)'};">${escapeHtml(deltaStr)}</span>` : ''}
-            </div>
-          </div>
+            <!-- Concise Executive Card Body -->
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
+                  <div style="min-width:0;">
+                    <div style="font-size:14px; font-weight:800; color:var(--text-main); line-height:1.2;">${escapeHtml(shortTitle)}</div>
+                    <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(riverSub)}</div>
+                  </div>
+                  <span class="kpi-badge-pill" style="background:${st.bg}; color:${st.color}; border:1px solid ${st.border}; white-space:nowrap; font-size:10.5px;">${escapeHtml(layman.verdictShort)}</span>
+                </div>
 
-          <div class="wl-meter-wrap" aria-hidden="true">
-            <div class="wl-meter-track">
-              <div class="wl-meter-fill" style="width:${fillPct.toFixed(1)}%; background:${fillColor};"></div>
-              <div class="wl-meter-norm-tick" style="left:${normTickPct.toFixed(1)}%;" title="Normal Level: ${wlFmt(norm, unit)} ${escapeHtml(unit)}"></div>
-            </div>
-          </div>
+                <div class="wl-layman-facts">
+                  <div>
+                    <div class="wl-layman-fact-lbl">Current</div>
+                    <div class="wl-layman-fact-val" style="color:${st.color};">${latest ? wlFmt(cur, unit) + ' ' + escapeHtml(unit) : '—'}</div>
+                  </div>
+                  <div>
+                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Design Base' : 'Normal Level'}</div>
+                    <div class="wl-layman-fact-val">${wlFmt(norm, unit)} ${escapeHtml(unit)}</div>
+                  </div>
+                  <div>
+                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Survey' : 'Critical'}</div>
+                    <div class="wl-layman-fact-val" style="color:${layman.isProvisional ? 'var(--text-muted)' : 'var(--red-text)'};">${layman.isProvisional ? 'Pending' : '&le;' + wlFmt(crit, unit) + ' ' + escapeHtml(unit)}</div>
+                  </div>
+                </div>
 
-          <div class="wl-card-foot">
-            <span>${critFootnote}</span>
-            <span style="font-family:var(--font-mono); font-size:11px;">${escapeHtml(dtStr)}</span>
+                <div style="font-size:11.5px; color:var(--text-main); line-height:1.35;">
+                  ${escapeHtml(layman.plainExplain)}
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px dashed #E2E8F0; font-size:10.5px; font-family:var(--font-mono); color:var(--text-muted);">
+                <span style="font-weight:700; color:${st.color};">${escapeHtml(layman.bufferText)}</span>
+                <span>${escapeHtml(dtStr)}</span>
+              </div>
+            </div>
           </div>
         </button>
       `;
@@ -10558,203 +10603,10 @@
   }
 
   function renderWaterLevelBoardOverview() {
-    const canvas = document.getElementById('ov-chart-waterlevel');
-    if (!canvas) return;
-
-    const stations = wlGetAllStationsList();
-    const isNarrow = window.innerWidth <= 560;
-    const yLabels = [];
-    const curValues = [];
-    const normValues = [];
-    const curBgColors = [];
-    const curBorderColors = [];
-    const rowMeta = [];
-
-    stations.forEach((s) => {
-      const sRows = (waterLevelRaw || []).filter(r => r.station_name === s.name);
-      const latest = sRows.length > 0 ? sRows[sRows.length - 1] : null;
-      const unit = latest?.unit || s.unit || 'cm';
-      const norm = latest ? Number(latest.normal_level) : Number(s.normal_level || 195);
-      const crit = latest?.critical_level ?? s.critical_level ?? Math.max(0, norm - 80);
-      const warn = latest?.warning_level ?? s.warning_level ?? Math.max(0, norm - 50);
-      const cur = latest ? Number(latest.water_level) : 0;
-
-      const st = latest
-        ? wlGetStatusInfo(cur, norm, warn, crit)
-        : { label: 'No Reading', color: '#64748B', dot: '#94A3B8', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
-
-      const shortTitle = s.name.split('(')[0].trim();
-      const riverSub = s.name.includes('(') ? s.name.slice(s.name.indexOf('(')) : (s.river_name ? `(${s.river_name})` : '');
-      yLabels.push(riverSub ? [shortTitle, riverSub] : shortTitle);
-
-      curValues.push(latest ? cur : 0);
-      normValues.push(norm);
-      curBgColors.push(st.dot || '#2563EB');
-      curBorderColors.push(st.color || '#1D4ED8');
-
-      const curStr = latest ? wlFmt(cur, unit) : '—';
-      const normStr = wlFmt(norm, unit);
-      const isProv = s.name.toLowerCase().includes('montible');
-      const delta = latest ? (cur - norm) : null;
-      const deltaStr = delta === null ? 'No reading' : `${delta >= 0 ? '+' : ''}${wlFmt(delta, unit)} ${unit}`;
-      const dtStr = latest
-        ? latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-        : 'No reading logged';
-
-      rowMeta.push({
-        fullName: s.name,
-        hasReading: Boolean(latest),
-        cur,
-        norm,
-        crit,
-        warn,
-        unit,
-        curStr,
-        normStr,
-        isProv,
-        deltaStr,
-        statusLabel: st.label,
-        dtStr
-      });
-    });
-
-    const maxVal = Math.max(100, ...curValues, ...normValues);
-    const axisMax = Math.ceil((maxVal * (isNarrow ? 1.38 : 1.28)) / 50) * 50;
-
-    if (ovWaterLevelChart) {
-      ovWaterLevelChart.destroy();
-      ovWaterLevelChart = null;
+    const grid = document.getElementById('ov-wl-visual-grid');
+    if (grid) {
+      grid.innerHTML = wlRenderTankCardsHtml(null, 'overview');
     }
-
-    const pluginsList = (typeof ChartDataLabels !== 'undefined') ? [ChartDataLabels] : [];
-
-    ovWaterLevelChart = new Chart(canvas.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: yLabels,
-        datasets: [
-          {
-            label: 'Current Water Level (cm)',
-            data: curValues,
-            backgroundColor: curBgColors,
-            borderColor: curBorderColors,
-            borderWidth: 1.5,
-            borderRadius: 6,
-            barPercentage: 0.78,
-            categoryPercentage: 0.72
-          },
-          {
-            label: 'Normal Water Level (cm)',
-            data: normValues,
-            backgroundColor: 'rgba(148, 163, 184, 0.35)',
-            borderColor: '#64748B',
-            borderWidth: 1.2,
-            borderRadius: 6,
-            barPercentage: 0.78,
-            categoryPercentage: 0.72
-          }
-        ]
-      },
-      plugins: pluginsList,
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        onClick(evt, elements) {
-          if (elements && elements.length > 0) {
-            const m = rowMeta[elements[0].index];
-            if (m) {
-              switchNavTab('waterlevel');
-              setTimeout(() => selectWaterLevelSource(m.fullName), 80);
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            position: 'top',
-            align: 'start',
-            labels: {
-              boxWidth: 12,
-              font: { family: 'Inter, sans-serif', size: 11, weight: '600' },
-              color: '#334155'
-            }
-          },
-          tooltip: {
-            callbacks: {
-              title(items) {
-                const idx = items[0]?.dataIndex ?? 0;
-                return rowMeta[idx]?.fullName || '';
-              },
-              label(ctx) {
-                const m = rowMeta[ctx.dataIndex];
-                if (!m) return '';
-                if (ctx.datasetIndex === 0) {
-                  return ` Current / Normal: ${m.curStr} / ${m.normStr} ${m.unit} (${m.statusLabel})`;
-                }
-                return ` Normal${m.isProv ? ' (Provisional Design)' : ''}: ${m.normStr} ${m.unit} • Critical: ≤${wlFmt(m.crit, m.unit)} ${m.unit}`;
-              },
-              afterBody(items) {
-                const m = rowMeta[items[0]?.dataIndex];
-                if (!m) return '';
-                return [` Variance vs Normal: ${m.deltaStr}`, ` Last Reported: ${m.dtStr}`];
-              }
-            }
-          },
-          datalabels: {
-            anchor: 'end',
-            align: 'end',
-            offset: 5,
-            clamp: true,
-            font: {
-              family: 'JetBrains Mono, monospace',
-              size: isNarrow ? 10 : 11,
-              weight: '700'
-            },
-            color(ctx) {
-              if (ctx.datasetIndex === 0) {
-                return rowMeta[ctx.dataIndex]?.hasReading ? '#0F172A' : '#64748B';
-              }
-              return '#475569';
-            },
-            formatter(value, ctx) {
-              const m = rowMeta[ctx.dataIndex];
-              if (!m) return '';
-              if (ctx.datasetIndex === 0) {
-                if (isNarrow) return `${m.curStr} / ${m.normStr} ${m.unit}`;
-                return `${m.curStr} / ${m.normStr} ${m.unit} (${m.statusLabel})`;
-              }
-              return m.isProv ? `${m.normStr} ${m.unit} (Base)` : `${m.normStr} ${m.unit} (Normal)`;
-            }
-          }
-        },
-        scales: {
-          x: {
-            beginAtZero: true,
-            suggestedMax: axisMax,
-            grid: { color: 'rgba(148, 163, 184, 0.2)' },
-            ticks: {
-              font: { family: 'JetBrains Mono, monospace', size: 11 },
-              color: '#475569',
-              callback(v) { return `${v} cm`; }
-            },
-            title: {
-              display: true,
-              text: 'Water Level Height (cm) — Current Water Level vs. Normal Water Level',
-              font: { family: 'Inter, sans-serif', size: 11, weight: '600' },
-              color: '#475569'
-            }
-          },
-          y: {
-            grid: { display: false },
-            ticks: {
-              font: { family: 'Inter, sans-serif', size: isNarrow ? 11 : 12, weight: '700' },
-              color: '#0F172A',
-              padding: 6
-            }
-          }
-        }
-      }
-    });
   }
 
   async function copyWaterLevelBoardSummary(btnEl) {
@@ -11097,7 +10949,7 @@
         kpiVar.textContent = isProv
           ? 'Provisional'
           : (bufferCrit >= 0 ? `+${wlFmt(bufferCrit, unit)} ${unit}` : `${wlFmt(bufferCrit, unit)} ${unit}`);
-        kpiVar.style.color = isProv ? 'var(--text-muted)' : (bufferCrit <= 0 ? 'var(--red-text)' : 'var(--green-text)');
+        kpiVar.style.color = isProv ? 'var(--text-muted)' : latest.statusInfo.color;
       }
       if (kpiNormSub) {
         kpiNormSub.textContent = isProv
@@ -11157,7 +11009,7 @@
         yBeginAtZero = compareMode !== 'delta';
 
         allStations.forEach((s, idx) => {
-          const color = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
+          const lineColor = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
           const dataSeries = slots.map(slot => {
             const rec = slot.byStation[s.name];
             if (!rec) return null;
@@ -11165,16 +11017,17 @@
             if (compareMode === 'pct') return Number((rec.pctOfNormal || 0).toFixed(1));
             return rec.water_level;
           });
+          const pointStatusColors = slots.map(slot => slot.byStation[s.name]?.statusInfo?.dot || '#10B981');
           if (dataSeries.some(v => v !== null)) {
             datasets.push({
               label: s.name.split('(')[0].trim(),
               data: dataSeries,
-              borderColor: color,
-              backgroundColor: color + '18',
-              borderWidth: 2.5,
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              pointBackgroundColor: color,
+              borderColor: lineColor,
+              backgroundColor: lineColor + '18',
+              borderWidth: 2.2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointBackgroundColor: pointStatusColors,
               pointBorderColor: '#FFFFFF',
               pointBorderWidth: 1.5,
               spanGaps: true,
@@ -11188,7 +11041,7 @@
 
         if (slots.length > 0 && compareMode === 'delta') {
           datasets.push({
-            label: `Normal (0 ${unit})`,
+            label: `Normal (-10% floor)`,
             data: new Array(slots.length).fill(0),
             borderColor: '#10B981',
             borderWidth: 1.6,
@@ -11197,21 +11050,11 @@
             fill: false,
             yAxisID: 'y'
           });
-          datasets.push({
-            label: `Critical (-80 ${unit})`,
-            data: new Array(slots.length).fill(-80),
-            borderColor: '#EF4444',
-            borderWidth: 1.5,
-            borderDash: [3, 3],
-            pointRadius: 0,
-            fill: false,
-            yAxisID: 'y'
-          });
         } else if (slots.length > 0 && compareMode === 'pct') {
           datasets.push({
-            label: 'Normal (100%)',
-            data: new Array(slots.length).fill(100),
-            borderColor: '#10B981',
+            label: 'Normal Floor (90%)',
+            data: new Array(slots.length).fill(90),
+            borderColor: '#F59E0B',
             borderWidth: 1.6,
             borderDash: [6, 4],
             pointRadius: 0,
@@ -11240,20 +11083,22 @@
         );
         const levelData = enriched.map(r => r.water_level);
         const normalData = enriched.map(r => r.normal_level);
+        const belowNormalFloorData = enriched.map(r => Number((r.normal_level * 0.90).toFixed(2)));
         const critData = enriched.map(r => r.effCrit ?? Math.max(0, r.normal_level - 80));
         const psiData = enriched.map(r => r.selectedPsi !== null ? Number(r.selectedPsi.toFixed(1)) : null);
-        const pointColors = enriched.map(r => r.statusInfo.dot || '#2563EB');
+        const pointColors = enriched.map(r => r.statusInfo.dot || '#10B981');
+        const activeColor = enriched[enriched.length - 1]?.statusInfo?.dot || '#10B981';
 
         datasets.push({
           label: `Water Level (${unit})`,
           data: levelData,
-          borderColor: '#2563EB',
-          backgroundColor: 'rgba(37, 99, 235, 0.08)',
+          borderColor: activeColor,
+          backgroundColor: activeColor + '14',
           borderWidth: 2.6,
           fill: true,
           tension: 0.25,
-          pointRadius: 4.5,
-          pointHoverRadius: 6.5,
+          pointRadius: 5,
+          pointHoverRadius: 7,
           pointBackgroundColor: pointColors,
           pointBorderColor: '#FFFFFF',
           pointBorderWidth: 1.5,
@@ -11266,6 +11111,18 @@
           borderColor: '#10B981',
           borderWidth: 1.8,
           borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          yAxisID: 'y'
+        });
+
+        datasets.push({
+          label: `Below Normal Threshold (-10%)`,
+          data: belowNormalFloorData,
+          borderColor: '#F59E0B',
+          borderWidth: 1.4,
+          borderDash: [4, 4],
           pointRadius: 0,
           fill: false,
           tension: 0,

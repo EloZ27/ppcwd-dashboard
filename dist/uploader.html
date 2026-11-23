@@ -4185,19 +4185,22 @@
     function computeWlStatus(level, normal, warn, crit) {
       const lv = Number(level);
       const nm = Number(normal);
-      const wn = (warn !== null && warn !== undefined && warn !== '') ? Number(warn) : Math.max(0, nm - 50);
       const cr = (crit !== null && crit !== undefined && crit !== '') ? Number(crit) : Math.max(0, nm - 80);
       if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
         return { label: 'Unknown', cls: 'pill-muted', color: 'var(--text-muted)', bg: '#F1F5F9', border: '#CBD5E1' };
       }
+      const normalFloor = nm * 0.90;
+      const rawNearCrit = cr > 0 ? cr * 1.10 : nm * 0.10;
+      const almostCritCutoff = Math.min(rawNearCrit, Math.max(cr, normalFloor - 0.01));
+
       if (lv <= cr) {
         return { label: 'Critical', cls: 'pill-red', color: 'var(--red-text)', bg: 'var(--red-light)', border: 'var(--red-border)' };
       }
-      if (lv <= wn) {
-        return { label: 'Watch / Low', cls: 'pill-amber', color: 'var(--amber-text)', bg: 'var(--amber-light)', border: 'var(--amber-border)' };
+      if (lv <= almostCritCutoff) {
+        return { label: 'Almost Critical', cls: 'pill-red', color: 'var(--red-text)', bg: 'var(--red-light)', border: 'var(--red-border)' };
       }
-      if (lv < nm) {
-        return { label: 'Below Normal', cls: 'pill-blue', color: 'var(--blue-text)', bg: 'var(--blue-light)', border: 'var(--blue-border)' };
+      if (lv < normalFloor) {
+        return { label: 'Below Normal', cls: 'pill-amber', color: 'var(--amber-text)', bg: 'var(--amber-light)', border: 'var(--amber-border)' };
       }
       return { label: 'Normal', cls: 'pill-green', color: 'var(--green-text)', bg: 'var(--green-light)', border: 'var(--green-border)' };
     }
