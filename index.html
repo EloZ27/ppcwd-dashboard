@@ -10432,7 +10432,7 @@
       return {
         verdictShort: 'Normal',
         plainExplain: `${deltaNorm >= 0 ? '+' : ''}${wlFmt(deltaNorm, unit)} ${unit} vs. ${wlFmt(norm, unit)} ${unit} design base.`,
-        bufferText: `Official survey pending`,
+        bufferText: `+${wlFmt(Math.max(0, bufferToCrit), unit)} ${unit} safe buffer`,
         isProvisional
       };
     }
@@ -10525,8 +10525,8 @@
                     <div class="wl-layman-fact-val">${wlFmt(norm, unit)} ${escapeHtml(unit)}</div>
                   </div>
                   <div>
-                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Survey' : 'Critical'}</div>
-                    <div class="wl-layman-fact-val" style="color:${layman.isProvisional ? 'var(--text-muted)' : 'var(--red-text)'};">${layman.isProvisional ? 'Pending' : '&le;' + wlFmt(crit, unit) + ' ' + escapeHtml(unit)}</div>
+                    <div class="wl-layman-fact-lbl">Critical</div>
+                    <div class="wl-layman-fact-val" style="color:var(--red-text);">&le;${wlFmt(crit, unit)} ${escapeHtml(unit)}</div>
                   </div>
                 </div>
 
@@ -10574,7 +10574,7 @@
       else if (st.tier === 'watch') watchNames.push(shortName);
       else safeNames.push(shortName);
 
-      lines.push(`• ${shortName} [${layman.verdictShort}]: ${wlFmt(latest.water_level, unit)} ${unit} (Full/Normal: ${wlFmt(norm, unit)} ${unit}, ${layman.isProvisional ? 'official critical pending' : 'Critical ≤' + wlFmt(crit, unit) + ' ' + unit}) — ${layman.bufferText} [${dtStr}]`);
+      lines.push(`• ${shortName} [${layman.verdictShort}]: ${wlFmt(latest.water_level, unit)} ${unit} (Normal: ${wlFmt(norm, unit)} ${unit}, Critical ≤${wlFmt(crit, unit)} ${unit}) — ${layman.bufferText} [${dtStr}]`);
     });
 
     let pillText = 'All Sources Operational';
@@ -10584,19 +10584,19 @@
     if (critNames.length + watchNames.length + safeNames.length === 0) {
       pillText = 'Awaiting River Gauge Reports';
       pillClass = 'pill-blue';
-      summarySentence = 'No operator water level readings recorded yet. Normal benchmarks: Campo Uno (195 cm, Critical ≤115 cm), Lapu-Lapu (265 cm, Critical ≤185 cm), Montible (15 cm provisional intake design).';
+      summarySentence = 'No operator water level readings recorded yet. Normal benchmarks: Campo Uno (195 cm, Critical ≤115 cm), Lapu-Lapu (265 cm, Critical ≤185 cm), Montible (15 cm design base, Critical ≤5 cm).';
     } else if (critNames.length > 0) {
       pillText = `BOD / Management Action Needed (${critNames.length} Critical)`;
       pillClass = 'pill-red';
-      summarySentence = `${critNames.join(', ')} ${critNames.length === 1 ? 'is' : 'are'} in CRITICAL level (dropped ≥80 cm below normal). ${safeNames.length > 0 ? safeNames.join(' & ') + ' still within safe operating range.' : ''}`;
+      summarySentence = `${critNames.join(', ')} ${critNames.length === 1 ? 'is' : 'are'} at Critical / Almost Critical level. ${safeNames.length > 0 ? safeNames.join(' & ') + ' within normal range.' : ''}`;
     } else if (watchNames.length > 0) {
-      pillText = `Watch Mode (${watchNames.length} Getting Low)`;
+      pillText = `Watch Mode (${watchNames.length} Below Normal)`;
       pillClass = 'pill-amber';
-      summarySentence = `${watchNames.join(', ')} dropped 50–79 cm below normal (Watch Closely). ${safeNames.length > 0 ? safeNames.join(' & ') + ' still operating safely.' : ''}`;
+      summarySentence = `${watchNames.join(', ')} dropped >10% below normal. ${safeNames.length > 0 ? safeNames.join(' & ') + ' within normal range.' : ''}`;
     } else {
-      pillText = 'All Monitored Sources Safe';
+      pillText = 'All Monitored Sources Normal';
       pillClass = 'pill-green';
-      summarySentence = `All reported river sources (${safeNames.join(', ')}) are operating within safe water height margins.`;
+      summarySentence = `All reported river sources (${safeNames.join(', ')}) are within normal water height margins.`;
     }
 
     return { pillText, pillClass, summarySentence, chatLines: lines };
@@ -10618,14 +10618,14 @@
       ``,
       ...board.chatLines,
       ``,
-      `Note: Engineering guidance allows operation up to 50–80 cm below Normal Water Level (Watch at -50 cm, Critical at -80 cm).`
+      `Note: Green = Normal (within -10%), Yellow = Below Normal (≥11% drop), Red = Almost Critical / Critical (within +10% of critical or below).`
     ].join('\n');
 
     try {
       await navigator.clipboard.writeText(msg);
       if (btnEl) {
         const orig = btnEl.textContent;
-        btnEl.textContent = 'Copied for BOD Chat!';
+        btnEl.textContent = 'COPIED';
         setTimeout(() => { btnEl.textContent = orig; }, 2000);
       }
     } catch {
