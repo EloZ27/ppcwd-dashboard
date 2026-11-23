@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff14;--sidebar-active:#2563eb;--sidebar-text:#cbd5e1;--sidebar-text-muted:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f4f6fa;--card-bg:#fff;--card-border:#e2e8f0;--card-hairline:#0f172a14;--card-shadow:0 1px 3px 0 #0f172a0d, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#475569;--text-subtle:#5b677a;--teal:#0d9488;--teal-text:#0f766e;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-text:#1d4ed8;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-text:#047857;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-text:#a14506;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-text:#b91c1c;--red-light:#fef2f2;--red-border:#fecaca;--font-display:"Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-sans:"Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;font-size:13px;line-height:1.5}h1,h2,h3,h4,.brand-sub,.table-head-title,.crisis-title{font-family:var(--font-display);letter-spacing:-.02em}.sr-only{clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.skip-link{z-index:100000;background:var(--blue-text);color:#fff;font-family:var(--font-sans);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;text-decoration:none;transition:top .15s;position:fixed;top:-100px;left:16px;box-shadow:0 10px 25px #0f172a40}.skip-link:focus{outline-offset:2px;outline:2px solid #fff;top:14px}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:1100;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;position:fixed;top:0;bottom:0;left:0;overflow:hidden auto}.app-sidebar.collapsed{transform:translate(-250px)}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-icon{color:#fff;background:linear-gradient(135deg,#0284c7,#0d9488);border-radius:9px;justify-content:center;align-items:center;width:36px;height:36px;font-size:16px;font-weight:800;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:3px;padding:8px 14px 14px;display:flex;overflow-y:auto}.sidebar-section-label{letter-spacing:.08em;text-transform:uppercase;color:var(--sidebar-text-muted);font-size:10px;font-weight:700;font-family:var(--font-sans);padding:12px 12px 4px}.nav-btn{min-height:36px;color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:8px;align-items:center;gap:10px;width:100%;padding:9px 12px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex;position:relative}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{color:var(--sidebar-text-active);background:#2563eb38;font-weight:600;box-shadow:inset 0 0 0 1px #3b82f673}.nav-btn.active:before{content:"";background:#60a5fa;border-radius:0 3px 3px 0;width:3px;position:absolute;top:7px;bottom:7px;left:0}.nav-icon{text-align:center;justify-content:center;align-items:center;width:20px;display:inline-flex}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;margin-left:250px;transition:margin-left .25s cubic-bezier(.4,0,.2,1);display:flex}.app-sidebar.collapsed~.app-main{margin-left:0}.app-top-sticky-container{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff2;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.app-header{background:0 0;justify-content:space-between;align-items:center;padding:12px 28px;display:flex}.header-mobile-brand{display:none}.app-sidebar.collapsed~.app-main .header-mobile-brand{display:block}.header-titles h1{font-family:var(--font-display);color:var(--text-main);letter-spacing:-.025em;font-size:clamp(15px,2.2vw,20px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11.5px;display:flex}.header-actions{flex-shrink:0;align-items:center;gap:10px;display:flex}.desktop-text,.reports-btn-full{display:inline}.reports-btn-short{display:none}.cycle-status-pill,#global-monthly-pill{white-space:nowrap!important;flex-shrink:0!important;align-items:center!important;display:inline-flex!important}#global-monthly-text{white-space:nowrap!important;flex-shrink:0!important}.reports-dropdown-wrap{position:relative}.reports-dropdown-menu{border:1px solid var(--card-border);z-index:3000;box-sizing:border-box;background:#fff;border-radius:12px;width:320px;padding:6px;display:none;position:absolute;top:calc(100% + 6px);right:0;box-shadow:0 16px 36px #0f172a29}.reports-dropdown-menu.show{display:block}.reports-dropdown-header{color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;padding:8px 12px 6px;font-size:10px;font-weight:800}.report-menu-item{text-align:left;cursor:pointer;box-sizing:border-box;background:0 0;border:none;border-radius:8px;flex-direction:column;gap:2px;width:100%;padding:8px 12px;font-family:inherit;transition:background .15s;display:flex}.report-menu-item:hover{background:#f8fafc}.report-menu-item:focus{background:#eff6ff;outline:none}.report-menu-item-primary{background:#eff6ff;border:1px solid #dbeafe;margin-bottom:4px}.report-menu-item-primary:hover{background:#dbeafe}.report-menu-item-title{color:#0f172a;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;display:flex}.report-menu-item-desc{color:#64748b;font-size:10.5px;line-height:1.3}.report-menu-badge{text-transform:uppercase;letter-spacing:.3px;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700}.report-menu-badge-blue{color:#4338ca;background:#eef2ff}.report-menu-badge-green{color:#166534;background:#dcfce7}.header-btn{border:1px solid var(--card-border);min-height:36px;font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:600;transition:all .16s cubic-bezier(.16,1,.3,1);display:inline-flex;box-shadow:0 1px 2px #0f172a08}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 2px 5px #0f172a0d}.header-btn:active{transform:translateY(0)}.header-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 6px #2563eb4d}.header-btn:disabled{opacity:.65;pointer-events:none;cursor:not-allowed!important;color:var(--text-muted)!important;box-shadow:none!important;background:#f1f5f9!important;border-color:#e2e8f0!important;transform:none!important}.spin-icon{animation:.8s linear infinite spin;display:inline-block}.period-bar-wrap{-webkit-backdrop-filter:blur(10px);background:#f8fafcf0;border-top:1px solid #e2e8f0cc;border-bottom:1px solid #e2e8f0cc;justify-content:space-between;align-items:center;gap:16px;padding:8px 28px;display:flex}.week-dropdown{border:1px solid var(--card-border);min-height:36px;font-family:var(--font-sans);color:var(--text-main);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 12px center no-repeat;border-radius:8px;outline:none;padding:7px 34px 7px 14px;font-size:12.5px;font-weight:600;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px #0f172a08}.week-dropdown:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px;display:none}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:16px;padding:20px}.card-title{letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);font-size:11.5px;font-weight:700;font-family:var(--font-sans);justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;display:flex}.kpi-row-layout{grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;display:grid}.kpi-card-white{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;flex-direction:column;justify-content:space-between;padding:16px 18px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,border-color .18s;display:flex;position:relative}.kpi-card-white:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-2px)}.kpi-card-num,.kpi-card-foot,.mono,table.data-table td.right,table.data-table td.mono,.featured-card .kpi-card-num,.station-card-item .mono,.pressure-status-pill,.data-freshness-pill,.tabular-nums{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}.kpi-card-lbl{text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-size:.75rem;font-weight:700;line-height:1.2}.kpi-card-num{font-family:var(--font-display);color:var(--text-main);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0;font-size:clamp(1.75rem,2.2vw,2.25rem);font-weight:800;line-height:1.1}.kpi-card-num .unit{font-family:var(--font-sans);color:var(--text-subtle);letter-spacing:normal;margin-left:4px;font-size:.85rem;font-weight:600}.kpi-card-foot{color:var(--text-muted);font-size:.75rem;font-weight:500;line-height:1.3}.kpi-badge-pill{font-size:10.5px;font-weight:700;font-family:var(--font-sans);letter-spacing:.01em;border-radius:20px;align-items:center;gap:5px;padding:3px 9px;line-height:1.25;display:inline-flex}.pill-normal,.pill-green{color:var(--green-text);background:#10b98114;border:1px solid #10b98140}.pill-amber{color:var(--amber-text);background:#f59e0b14;border:1px solid #f59e0b47}.pill-red{color:var(--red-text);background:#ef44441a;border:1px solid #ef444459}.pill-blue{color:var(--blue-text);background:#2563eb14;border:1px solid #2563eb40}.alert-dot-pulse{background:#ef4444;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:1.6s cubic-bezier(.4,0,.6,1) infinite alertPulse;display:inline-block;box-shadow:0 0 6px #ef4444cc}.normal-dot-pulse{background:#10b981;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.4s cubic-bezier(.4,0,.6,1) infinite normalPulse;display:inline-block;box-shadow:0 0 6px #10b98199}.amber-dot-pulse{background:#f59e0b;border-radius:50%;flex-shrink:0;width:7px;height:7px;display:inline-block;box-shadow:0 0 6px #f59e0b99}@keyframes alertPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.25)}}@keyframes normalPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 18px;display:flex}.table-head-title{color:var(--text-main);font-size:13.5px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-sans);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 14px;font-size:10px;font-weight:700}table.data-table thead th.right,table.data-table tbody td.right{text-align:right}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:9px 14px}table.data-table tbody td.mono{font-family:var(--font-mono);font-size:11px}.cat-pill{font-size:9.5px;font-family:var(--font-sans);border-radius:5px;padding:2px 7px;font-weight:600;display:inline-block}.cat-sw{background:var(--teal-light);color:var(--teal-text);border:1px solid var(--teal-border)}.cat-gw{background:var(--blue-light);color:var(--blue-text);border:1px solid var(--blue-border)}.cat-aug{color:#6d28d9;background:#faf5ff;border:1px solid #ddd6fe}.bar-cell{align-items:center;gap:6px;display:flex}.mini-bar-bg{background:#e2e8f0;border-radius:3px;flex:1;height:5px;overflow:hidden}.mini-bar{border-radius:3px;height:100%}.press-table-wrap{max-height:520px;position:relative;overflow:auto}.press-table-wrap thead th{z-index:10;background:#f1f5f9;position:sticky;top:0;box-shadow:0 1px 2px #0000000f}.press-table-wrap th:first-child,.press-table-wrap td:first-child{z-index:11;border-right:1px solid var(--card-border);background:#fff;position:sticky;left:0}.press-table-wrap thead th:first-child{z-index:12;background:#f1f5f9}.table-sticky-first th:first-child,.table-sticky-first td:first-child{z-index:10;background:#fff;border-right:1px solid #e2e8f0f2;position:sticky;left:0;box-shadow:3px 0 6px -2px #0f172a14}.table-sticky-first thead th:first-child{z-index:11;background:#f8fafc}.table-sticky-first tbody tr:hover td:first-child{background:#f8fafc}.chart-container-wrap{width:100%;min-height:220px;position:relative}.btn-primary-action{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;font-weight:700!important;box-shadow:0 2px 6px #2563eb47!important}.btn-primary-action:hover{transform:translateY(-1px);background:#1d4ed8!important;border-color:#1d4ed8!important;box-shadow:0 4px 12px #2563eb59!important}.btn-secondary-action{color:var(--text-main)!important;background:#fff!important;border:1px solid #94a3b859!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 1px 2px #0f172a0a!important}.btn-secondary-action:hover{transform:translateY(-1px);color:var(--blue)!important;background:#f8fafc!important;border-color:#cbd5e1!important;box-shadow:0 2px 6px #0f172a14!important}@keyframes shimmer{0%{background-position:-200% 0}to{background-position:200% 0}}.skeleton-shimmer{-webkit-user-select:none;user-select:none;background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%) 0 0/200% 100%;border-radius:4px;animation:1.8s infinite shimmer;display:inline-block;color:#0000!important}.table-responsive,#priority-cards-row,.press-table-wrap{cursor:grab;-webkit-overflow-scrolling:touch}.table-responsive.is-dragging,#priority-cards-row.is-dragging,.press-table-wrap.is-dragging{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}.press-table-wrap th,.press-table-wrap td,table.data-table th,table.data-table td{white-space:nowrap;min-width:72px}.press-table-wrap th:first-child,.press-table-wrap td:first-child{min-width:140px}.map-frame-box{border:1px solid var(--card-border);height:480px;box-shadow:var(--card-shadow);z-index:1;isolation:isolate;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden}#leaflet-map{width:100%;height:100%}.pressure-dot{font-family:var(--font-mono);color:#fff;cursor:pointer;border:2px solid #fff;border-radius:50%;flex-direction:column;justify-content:center;align-items:center;font-weight:700;transition:transform .15s,box-shadow .15s;display:flex}.pressure-dot:hover{transform:scale(1.2);z-index:1000!important}.pressure-dot.dot-ok{background:var(--green);box-shadow:0 2px 8px #10b98180}.pressure-dot.dot-alert{background:var(--red);animation:1.4s ease-in-out infinite dot-pulse;box-shadow:0 0 10px #ef4444cc}.pressure-dot.dot-nodata{background:var(--text-muted)}.pressure-dot.dot-compare-1{outline:3px solid var(--blue);outline-offset:2px}.pressure-dot.dot-compare-2{outline:3px solid var(--teal);outline-offset:2px}@keyframes dot-pulse{0%,to{box-shadow:0 0 6px #ef444480}50%{box-shadow:0 0 18px #ef4444e6}}.leaflet-popup-content-wrapper{background:#fff!important;border-radius:12px!important;padding:0!important;box-shadow:0 10px 30px #0f172a26!important}.leaflet-popup-content{width:220px!important;margin:0!important}.map-header-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;display:flex}.map-view-toggles{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.map-mode-btn{font-family:var(--font-sans);border:1px solid var(--card-border);min-height:36px;color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 13px;font-size:11.5px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.map-mode-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.map-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 6px #2563eb40}.map-outlier-chips{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.outlier-chip{font-family:var(--font-sans);border:1px solid var(--card-border);min-height:36px;color:var(--text-main);cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 12px;font-size:11.5px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.outlier-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue-text)}.outlier-chip span{color:var(--blue-text);font-weight:700;font-family:var(--font-mono)}.section-title-wrap{margin-top:18px;margin-bottom:10px}.section-title-main{text-transform:uppercase;color:var(--text-muted);font-size:11.5px;font-weight:700;font-family:var(--font-sans);letter-spacing:.06em}.section-title-sub{color:var(--text-muted);margin-top:2px;font-size:12px}.grid-featured-cards{grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;display:grid}.featured-card{border-radius:12px;flex-direction:column;justify-content:space-between;min-width:0;padding:0;display:flex;overflow:hidden}.card-mini-map-wrap{border-bottom:1px solid var(--card-border);cursor:pointer;background:#e2e8f0;width:100%;height:68px;position:relative;overflow:hidden}.card-mini-map-wrap:hover .card-map-overlay-btn{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}.card-map-overlay-btn{z-index:400;border:1px solid var(--card-border);color:var(--text-main);font-size:9.5px;font-family:var(--font-sans);cursor:pointer;background:#fffffff0;border-radius:5px;padding:3px 7px;font-weight:700;transition:all .15s;position:absolute;bottom:4px;right:4px;box-shadow:0 1px 4px #0000001f}.crisis-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:24px;display:grid}.crisis-card{border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;background:#fff;border-radius:14px;flex-direction:column;padding:16px 18px;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s;display:flex;position:relative;overflow:hidden}.crisis-card:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-3px)}.crisis-card:before{content:"";border-radius:14px 0 0 14px;width:4px;position:absolute;top:0;bottom:0;left:0}.crisis-card.lvl-normal:before{background:#0b4f6c}.crisis-card.lvl-1:before{background:var(--green)}.crisis-card.lvl-2:before{background:var(--amber)}.crisis-card.lvl-3:before{background:var(--red)}.crisis-header{justify-content:space-between;align-items:flex-start;margin-bottom:8px;display:flex}.crisis-title{color:var(--text-main);font-size:13.5px;font-weight:700}.crisis-pct{font-size:28px;font-weight:800;font-family:var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}.crisis-prog-track{background:#f1f5f9;border-radius:3px;height:5px;margin:8px 0 12px;overflow:hidden}.crisis-prog-fill{border-radius:3px;height:100%;transition:width .4s cubic-bezier(.16,1,.3,1)}.crisis-details{color:var(--text-muted);font-size:11.5px;font-family:var(--font-sans);font-variant-numeric:tabular-nums;flex-direction:column;gap:4px;display:flex}.crisis-details-row{border-bottom:1px dashed #e2e8f0;justify-content:space-between;padding-bottom:3px;display:flex}.crisis-details-row strong,.crisis-details-row span:last-child{font-family:var(--font-mono);font-size:11px}.crisis-details-row:last-child{border-bottom:none}.crisis-remarks-cta{color:var(--blue-text);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;font-size:11.5px;font-weight:600;transition:all .15s;display:flex}.crisis-card:hover .crisis-remarks-cta{color:#1e40af;padding-left:2px}.grid-overview-split{grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-production-charts{grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-priority-cards{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;display:grid}.grid-outlying-cards{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;display:grid}.grid-stations{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px;display:grid}.grid-stations .kpi-card-white{cursor:pointer;flex-direction:column;justify-content:space-between;min-width:0;display:flex}.grid-stations .kpi-card-white:hover{transform:translateY(-2px);border-color:var(--blue)!important;box-shadow:0 4px 12px #0d948826!important}.grid-river-layout{grid-template-columns:280px 1fr;gap:18px;display:grid}.grid-complaints-charts{grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:20px;display:grid}.grid-monthly-charts{grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px;display:grid}.grid-genset-summary{border-bottom:1px solid var(--card-border);background:#f8fafc;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 24px;display:grid}.modal-station-grid{grid-template-columns:1fr 1fr;gap:10px;display:grid}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:36px;height:36px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue-text);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:30px;height:30px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:1200;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}.crisis-legend-bar{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:10px;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px;padding:6px 14px;display:flex}.crisis-legend-title{color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-size:11px;font-weight:800;font-family:var(--font-sans);margin-right:4px}.crisis-legend-item{color:var(--text-main);border:1px solid var(--card-border);background:#f8fafc;border-radius:6px;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;transition:background .15s;display:inline-flex}.crisis-legend-item:hover{background:#f1f5f9}.crisis-legend-dot{border-radius:50%;flex-shrink:0;width:8px;height:8px}.crisis-legend-normal{background:#0b4f6c0d;border-color:#0b4f6c40}.crisis-legend-watch{border-color:var(--green-border);background:var(--green-light)}.crisis-legend-alert{border-color:var(--amber-border);background:var(--amber-light)}.crisis-legend-critical{border-color:var(--red-border);background:var(--red-light)}@media (width<=1180px){.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>*{grid-column:auto!important}}@media (width<=1024px){.kpi-row-layout{grid-template-columns:repeat(2,1fr)}#page-overview .kpi-row-layout>.kpi-card-white:first-child,#page-production .kpi-row-layout>.kpi-card-white:first-child,#page-monthly .kpi-row-layout>.kpi-card-white:first-child{grid-column:1/-1}.grid-production-charts{grid-template-columns:1fr 1fr}.grid-production-charts>:first-child{grid-column:span 2}.grid-featured-cards{-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;box-sizing:border-box;gap:10px;width:100%;max-width:100%;margin-bottom:16px;padding-bottom:8px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.grid-featured-cards .featured-card{scroll-snap-align:start;flex:0 0 185px!important;min-width:185px!important;max-width:185px!important}.grid-featured-cards::-webkit-scrollbar{height:4px}.grid-featured-cards::-webkit-scrollbar-track{background:#f1f5f9;border-radius:4px}.grid-featured-cards::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}.mobile-swipe-hint{display:inline-block!important}}.grid-wl-sources{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px;display:grid}.wl-source-card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;text-align:left;border-radius:12px;width:100%;padding:14px 16px;font-family:inherit;transition:all .16s}.wl-source-card:hover{box-shadow:var(--card-shadow-hover);border-color:#93c5fd;transform:translateY(-1px)}.wl-source-card.active{border-color:var(--blue);box-shadow:0 0 0 2px #2563eb2e}.wl-tank-card-inner{align-items:stretch;gap:14px;display:flex}.wl-tank-vessel{background:linear-gradient(#f8fafc 0%,#f1f5f9 100%);border:2px solid #cbd5e1;border-radius:10px;flex-direction:column;flex-shrink:0;justify-content:flex-end;width:60px;min-height:128px;display:flex;position:relative;overflow:hidden}.wl-tank-crit-zone{pointer-events:none;z-index:1;background:repeating-linear-gradient(-45deg,#ef44441a,#ef44441a 4px,#ef44442e 4px 8px);border-top:1.5px dashed #ef4444;position:absolute;bottom:0;left:0;right:0}.wl-tank-fill{z-index:2;justify-content:center;align-items:flex-start;width:100%;padding-top:5px;transition:height .55s cubic-bezier(.22,1,.36,1);display:flex;position:relative}.wl-tank-fill:before{content:"";background:#ffffffa6;height:3px;position:absolute;top:0;left:0;right:0}.wl-tank-norm-line{z-index:3;pointer-events:none;border-top:2px dashed #047857;position:absolute;left:0;right:0}.wl-tank-norm-tag{font-size:8.5px;font-weight:800;font-family:var(--font-mono);color:#047857;background:#ffffffe6;border-radius:3px;padding:0 3px;position:absolute;top:-14px;right:3px}.wl-tank-crit-tag{font-size:8px;font-weight:800;font-family:var(--font-mono);color:#b91c1c;z-index:4;background:#ffffffe0;border-radius:3px;padding:0 3px;position:absolute;bottom:2px;left:3px}.wl-board-banner{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:12px;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;padding:14px 18px;display:flex}.wl-layman-facts{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:7px 0;padding:6px 8px;display:grid}.wl-layman-fact-lbl{text-transform:uppercase;letter-spacing:.03em;color:var(--text-muted);font-size:9px;font-weight:700}.wl-layman-fact-val{font-family:var(--font-mono);color:var(--text-main);font-size:12px;font-weight:800}@media (width<=480px){.wl-tank-card-inner{gap:10px}.wl-tank-vessel{width:48px}.wl-layman-facts{grid-template-columns:1fr 1fr}}.grid-wl-charts{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px;display:grid}.wl-diagnostic-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;display:grid}.wl-diag-tile{border:1px solid var(--card-border);background:#f8fafc;border-radius:9px;padding:10px 12px}.wl-diag-lbl{text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-size:10px;font-weight:700}.wl-diag-val{font-family:var(--font-mono);color:var(--text-main);margin-top:3px;font-size:14px;font-weight:800}.wl-diag-sub{color:var(--text-muted);margin-top:2px;font-size:10.5px}.ov-wl-chip{font-size:10px;font-weight:700;font-family:var(--font-mono);background:var(--blue-light);color:var(--blue-text);border:1px solid var(--blue-border);cursor:pointer;border-radius:99px;align-items:center;gap:5px;margin-top:3px;padding:2px 8px;display:inline-flex}.ov-wl-chip:hover{filter:brightness(.96)}@media (width<=1020px){.grid-wl-charts,.grid-wl-sources{grid-template-columns:1fr}}@media (width<=680px){.wl-diagnostic-grid{grid-template-columns:1fr}}@media (width<=820px){.app-sidebar{z-index:1300;height:100vh;transition:transform .28s cubic-bezier(.4,0,.2,1);position:fixed;top:0;bottom:0;left:0;transform:translate(-100%);margin-left:0!important}.app-sidebar.open{transform:translate(0);box-shadow:10px 0 30px #0000004d}.app-main,.app-sidebar.collapsed~.app-main{margin-left:0!important}.header-mobile-brand{display:block}.app-top-sticky-container{display:contents}.app-header{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff5;padding:10px 14px;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.menu-toggle-btn{justify-content:center;align-items:center;display:flex}.sidebar-close-btn{display:flex}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:10px}.header-titles h1{font-size:15px}.header-titles p{display:none}#header-auth-status-btn{justify-content:center;min-width:34px;padding:6px 9px}#header-auth-status-icon{justify-content:center;align-items:center;display:inline-flex}.header-actions{gap:6px}.page-content{box-sizing:border-box;width:100%;max-width:100%;padding:14px 12px;overflow-x:hidden}.period-bar-wrap{-webkit-backdrop-filter:none;flex-direction:column;align-items:stretch;gap:8px;padding:10px 14px;position:static}.period-bar-wrap select.week-dropdown{width:100%}.grid-overview-split,.grid-production-charts{grid-template-columns:1fr}.grid-production-charts>:first-child{grid-column:auto}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.grid-river-layout{grid-template-columns:1fr}#river-list-container{max-height:220px!important}.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>:first-child{grid-column:auto}.grid-monthly-charts{grid-template-columns:1fr}.map-frame-box{height:350px}.map-header-toolbar{box-sizing:border-box;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%}.map-view-toggles{box-sizing:border-box;flex-wrap:wrap;gap:6px;width:100%;max-width:100%;display:flex}.map-view-toggles .map-mode-btn{flex:auto;justify-content:center;padding:6px 8px;font-size:11px}.outlier-chip{box-sizing:border-box;flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.desktop-text{display:none!important}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;box-sizing:border-box;width:100%;max-width:100%;padding-bottom:4px;flex-wrap:nowrap!important;gap:8px!important;display:flex!important;overflow-x:auto!important}}@media (width<=640px){.card{border-radius:12px;margin-bottom:12px;padding:14px}.table-container{border-radius:12px;margin-bottom:16px}.table-head-bar{padding:10px 14px}table.data-table th,table.data-table td{padding:7px 10px}.modal-station-grid{grid-template-columns:1fr}.grid-genset-summary{grid-template-columns:repeat(2,1fr);padding:12px 14px}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:1fr}.map-frame-box{height:300px}.kpi-card-white{padding:12px 14px}.kpi-card-num{font-size:20px}.chart-panel-header{flex-direction:column;gap:10px;align-items:flex-start!important}.reports-btn-full{display:none!important}.reports-btn-short{display:inline!important}#btn-reports-menu{padding:6px 10px;font-size:11px}.crisis-legend-title{grid-column:1/-1;margin-bottom:2px}.crisis-legend-item{justify-content:flex-start;padding:4px 6px;font-size:10px;line-height:1.2;white-space:normal!important;min-width:0!important}.crisis-legend-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:8px 10px!important;display:grid!important}}@media (width<=440px){.outlier-chip{flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:8px}.kpi-card-white{padding:10px}.kpi-card-lbl{font-size:9.5px}.kpi-card-num{margin:4px 0;font-size:18px}.grid-stations{grid-template-columns:repeat(2,1fr);gap:6px}.grid-stations .kpi-card-white{padding:8px 10px}.header-btn{padding:6px 10px;font-size:11px}.app-header{padding:10px 12px}.header-actions{gap:5px}#btn-reports-menu{padding:6px 10px;font-size:11px}#header-auth-status-btn{min-width:34px;padding:6px 8px}.reports-dropdown-menu{width:min(290px,100vw - 24px);right:-40px}.crisis-legend-item{gap:4px;padding:3px 5px;font-size:9.5px;line-height:1.2;white-space:normal!important;min-width:0!important}}.loading-overlay{background:linear-gradient(90deg, var(--blue), #38bdf8, #10b981, var(--blue));z-index:99999;pointer-events:none;background-size:200% 100%;height:3px;transition:opacity .4s,visibility .4s;animation:1.5s linear infinite shimmerTopBar;position:fixed;top:0;left:0;right:0}.loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}@keyframes shimmerTopBar{0%{background-position:200% 0}to{background-position:-200% 0}}@keyframes spin{to{transform:rotate(360deg)}}[id$=-modal]{transition:opacity .2s;-webkit-backdrop-filter:blur(8px)!important}[id$=-modal]>div{animation:.24s cubic-bezier(.16,1,.3,1) modalScaleIn;box-shadow:0 25px 50px -12px #0f172a40!important}@keyframes modalScaleIn{0%{opacity:0;transform:scale(.96)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}}.page-content.active{animation:.22s cubic-bezier(.16,1,.3,1) pageFadeIn;display:block}@keyframes pageFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.form-input{color:var(--text-main);font-family:var(--font-sans);background:#fff;border:1px solid #cbd5e1;border-radius:8px;outline:none;padding:8px 11px;font-size:12px;transition:border-color .16s,box-shadow .16s,background-color .16s}.form-input:hover:not(:disabled){border-color:#94a3b8}.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.form-input:disabled{color:var(--text-muted);cursor:not-allowed;background:#f1f5f9}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.ov-node-card:focus-visible,.crisis-card:focus-visible,.station-card-item:focus-visible,.card-mini-map-wrap:focus-visible,.river-list-item:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue-text);outline-offset:2px}@media (prefers-reduced-motion:reduce){*,:before,:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}.reports-dropdown-menu.show{transform-origin:100% 0;animation:.16s cubic-bezier(.16,1,.3,1) dropdownFadeIn;display:block}@keyframes dropdownFadeIn{0%{opacity:0;transform:translateY(-4px)scale(.98)}to{opacity:1;transform:translateY(0)scale(1)}}.modal-close-btn{width:34px;height:34px;color:var(--text-muted);cursor:pointer;background:0 0;border:1px solid #0000;border-radius:8px;justify-content:center;align-items:center;font-size:16px;line-height:1;transition:all .15s;display:inline-flex}.modal-close-btn:hover{color:#0f172a;background:#f1f5f9;border-color:#e2e8f0}.ov-node-card{border:1px solid var(--card-border);cursor:pointer;background:#f8fafc;border-radius:10px;justify-content:space-between;align-items:center;padding:11px 14px;transition:transform .16s,box-shadow .16s,border-color .16s,background-color .16s;display:flex}.ov-node-card:hover{background:#fff;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 4px 12px #0f172a0f}.river-list-item{cursor:pointer;border-bottom:1px solid #f1f5f9;border-left:3px solid #0000;border-radius:8px;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;padding:10px 12px;transition:background-color .15s,border-color .15s,transform .12s;display:flex}.river-list-item:hover{background:#f8fafc}.river-list-item.active{background:var(--teal-light);border-left-color:var(--teal);border-bottom-color:#0000}#page-complaints .kpi-row-layout{grid-template-columns:repeat(4,1fr)}@media (width<=1024px){#page-complaints .kpi-row-layout{grid-template-columns:repeat(2,1fr)}}#source-cards:empty,#capacity-cards:empty{display:none}.comp-topic-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;transition:border-color .16s,background-color .16s}.comp-topic-card:hover{border-color:#cbd5e1}.comp-topic-card.is-disabled .comp-subtopics-list{opacity:.45;pointer-events:none}.comp-modal-grid{grid-template-columns:1fr 1fr;gap:12px;display:grid}@media (width<=640px){.comp-modal-grid{grid-template-columns:1fr}#comprehensive-report-modal .comp-modal-footer-actions{flex-direction:column;align-items:stretch}#comprehensive-report-modal .comp-modal-footer-btns{flex-direction:column}}.app-sidebar::-webkit-scrollbar{width:6px;height:6px}.table-responsive::-webkit-scrollbar{width:6px;height:6px}#river-list-container::-webkit-scrollbar{width:6px;height:6px}#complaints-feed::-webkit-scrollbar{width:6px;height:6px}.comp-modal-body::-webkit-scrollbar{width:6px;height:6px}.app-sidebar::-webkit-scrollbar-thumb{background:#94a3b840;border-radius:3px}.table-responsive::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#river-list-container::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#complaints-feed::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.comp-modal-body::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.table-responsive::-webkit-scrollbar-track{background:0 0}#river-list-container::-webkit-scrollbar-track{background:0 0}#complaints-feed::-webkit-scrollbar-track{background:0 0}.comp-modal-body::-webkit-scrollbar-track{background:0 0}.telemetry-beacon{background:var(--green);border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.2s infinite beaconPulse;display:inline-block;box-shadow:0 0 #10b98166}@keyframes beaconPulse{0%{box-shadow:0 0 #10b981b3}70%{box-shadow:0 0 0 7px #10b98100}to{box-shadow:0 0 #10b98100}}.comp-a4-page{color:#0f172a;box-sizing:border-box;page-break-after:always;background:#fff;border:1px solid #e2e8f0;flex-direction:column;justify-content:space-between;width:210mm;min-height:297mm;margin:0 auto 20px;padding:12.7mm;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:flex;position:relative}.comp-header-banner{border-bottom:2.5px solid #1560bd;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:9px;display:flex}.comp-exec-strip{background:linear-gradient(90deg,#f8fafc 0%,#fff 100%);border:1px solid #cbd5e1;border-left:4px solid #1560bd;border-radius:6px;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;padding:8px 12px;display:grid}.comp-exec-item{min-width:0}.comp-exec-item+.comp-exec-item{border-left:1px solid #e2e8f0;padding-left:12px}.comp-exec-kicker{text-transform:uppercase;letter-spacing:.45px;font-size:8.5px;font-weight:800;line-height:1.2}.comp-exec-main{color:#0f172a;margin-top:2px;font-size:11px;font-weight:800;line-height:1.25}.comp-exec-sub{color:#475569;margin-top:2px;font-size:9px;line-height:1.2}.comp-kpi-grid{gap:10px;margin-bottom:12px;display:flex}.comp-kpi-card{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #1560bd;border-radius:7px;flex:1;padding:9px 11px}.comp-kpi-label{color:#475569;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-size:9px;font-weight:800}.comp-kpi-value{color:#0f172a;font-variant-numeric:tabular-nums;font-family:IBM Plex Mono,monospace;font-size:17px;font-weight:800;line-height:1.15}.comp-kpi-sub{color:#64748b;margin-top:3px;font-size:9px;font-weight:500;line-height:1.2}.comp-section-title{color:#0f172a;text-transform:uppercase;letter-spacing:.45px;border-left:3.5px solid #1560bd;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;padding-left:8px;font-size:11px;font-weight:800;line-height:1.2;display:flex}.comp-table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%;margin-bottom:10px;font-size:10.5px}.comp-table th{color:#fff;text-align:left;text-transform:uppercase;letter-spacing:.3px;background:#1e293b;border:1px solid #1e293b;padding:6px 7px;font-size:9.2px;font-weight:700;line-height:1.2}.comp-table tr.comp-th-group-row th{color:#e2e8f0;text-align:center;letter-spacing:.55px;background:#0f172a;border:1px solid #334155;padding:4px 6px;font-size:8.5px;font-weight:800}.comp-table td{color:#0f172a;border-bottom:1px solid #cbd5e1;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;padding:5.5px 7px;line-height:1.25}.comp-table tbody tr:nth-child(2n) td{background:#f8fafc}.comp-table tr.comp-summary-row td{color:#0f172a;border-top:2px solid #475569;border-bottom:2px solid #475569;padding:6.5px 7px;font-weight:800;background:#e2e8f0!important}.comp-table.comp-table-major th{letter-spacing:.1px;padding:6.5px 4px;font-size:8.4px}.comp-table.comp-table-major td{padding:7.5px 4px;font-size:9.4px;line-height:1.35}.comp-table.comp-table-major tr.comp-summary-row td{padding:8px 4px}.comp-table.comp-table-weekly th{padding:7.5px 7px}.comp-table.comp-table-weekly td{padding:9px 7px;line-height:1.35}.comp-table.comp-table-weekly tr.comp-summary-row td{padding:9.5px 7px}.comp-status-pill{white-space:nowrap;border-radius:4px;padding:1.5px 6px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;display:inline-block}.comp-note-box{color:#334155;background:#f8fafc;border:1px solid #cbd5e1;border-left:3.5px solid #64748b;border-radius:5px;margin-top:6px;padding:7px 10px;font-size:9.2px;line-height:1.4}.comp-footer{color:#475569;border-top:1.5px solid #cbd5e1;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;font-size:9.2px;font-weight:600;display:flex}@media print{@page{size:A4 portrait;margin:.5in}body *{visibility:hidden!important}#comprehensive-report-staging,#comprehensive-report-staging *,.comp-a4-page,.comp-a4-page *{visibility:visible!important}#comprehensive-report-staging{width:100%!important;margin:0!important;padding:0!important;position:absolute!important;top:0!important;left:0!important}.comp-a4-page{width:100%!important;min-height:auto!important;box-shadow:none!important;page-break-after:always!important;border:none!important;margin:0!important;padding:0!important}}</style>
+  <style>:root{--sidebar-bg:#1e293b;--sidebar-hover:#ffffff14;--sidebar-active:#2563eb;--sidebar-text:#cbd5e1;--sidebar-text-muted:#94a3b8;--sidebar-text-active:#fff;--sidebar-border:#ffffff14;--app-bg:#f4f6fa;--card-bg:#fff;--card-border:#e2e8f0;--card-hairline:#0f172a14;--card-shadow:0 1px 3px 0 #0f172a0d, 0 1px 2px -1px #0f172a0a;--card-shadow-hover:0 10px 25px -5px #0f172a14, 0 8px 10px -6px #0f172a08;--text-main:#0f172a;--text-muted:#475569;--text-subtle:#5b677a;--teal:#0d9488;--teal-text:#0f766e;--teal-light:#f0fdfa;--teal-border:#99f6e4;--blue:#2563eb;--blue-text:#1d4ed8;--blue-light:#eff6ff;--blue-border:#bfdbfe;--green:#10b981;--green-text:#047857;--green-light:#ecfdf5;--green-border:#a7f3d0;--amber:#f59e0b;--amber-text:#a14506;--amber-light:#fffbeb;--amber-border:#fde68a;--red:#ef4444;--red-text:#b91c1c;--red-light:#fef2f2;--red-border:#fecaca;--font-display:"Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-sans:"Inter", -apple-system, BlinkMacSystemFont, sans-serif;--font-mono:"IBM Plex Mono", monospace}*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--app-bg);color:var(--text-main);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;font-size:13px;line-height:1.5}h1,h2,h3,h4,.brand-sub,.table-head-title,.crisis-title{font-family:var(--font-display);letter-spacing:-.02em}.sr-only{clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.skip-link{z-index:100000;background:var(--blue-text);color:#fff;font-family:var(--font-sans);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;text-decoration:none;transition:top .15s;position:fixed;top:-100px;left:16px;box-shadow:0 10px 25px #0f172a40}.skip-link:focus{outline-offset:2px;outline:2px solid #fff;top:14px}.app-layout{width:100%;min-height:100vh;display:flex}.app-sidebar{background:var(--sidebar-bg);z-index:1100;border-right:1px solid var(--sidebar-border);flex-direction:column;flex-shrink:0;width:250px;height:100vh;transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;position:fixed;top:0;bottom:0;left:0;overflow:hidden auto}.app-sidebar.collapsed{transform:translate(-250px)}.sidebar-brand{align-items:center;gap:12px;padding:24px 20px 20px;display:flex}.brand-icon{color:#fff;background:linear-gradient(135deg,#0284c7,#0d9488);border-radius:9px;justify-content:center;align-items:center;width:36px;height:36px;font-size:16px;font-weight:800;display:flex}.brand-logo-img{object-fit:contain;border-radius:8px;flex-shrink:0;width:36px;height:36px;display:block}.brand-title{letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;font-size:10px;font-weight:700;line-height:1.2}.brand-sub{color:#fff;font-size:12px;font-weight:700;display:block}.sidebar-nav{flex-direction:column;flex:1;gap:3px;padding:8px 14px 14px;display:flex;overflow-y:auto}.sidebar-section-label{letter-spacing:.08em;text-transform:uppercase;color:var(--sidebar-text-muted);font-size:10px;font-weight:700;font-family:var(--font-sans);padding:12px 12px 4px}.nav-btn{min-height:36px;color:var(--sidebar-text);font-family:var(--font-sans);cursor:pointer;text-align:left;background:0 0;border:none;border-radius:8px;align-items:center;gap:10px;width:100%;padding:9px 12px;font-size:12.5px;font-weight:500;text-decoration:none;transition:all .15s;display:flex;position:relative}.nav-btn:hover{background:var(--sidebar-hover);color:#fff}.nav-btn.active{color:var(--sidebar-text-active);background:#2563eb38;font-weight:600;box-shadow:inset 0 0 0 1px #3b82f673}.nav-btn.active:before{content:"";background:#60a5fa;border-radius:0 3px 3px 0;width:3px;position:absolute;top:7px;bottom:7px;left:0}.nav-icon{text-align:center;justify-content:center;align-items:center;width:20px;display:inline-flex}.sidebar-divider{background:var(--sidebar-border);height:1px;margin:12px 6px}.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:16px 14px}.status-pill-box{border:1px solid var(--sidebar-border);background:#0003;border-radius:9px;align-items:center;gap:10px;padding:10px 12px;display:flex}.status-dot-pulse{background:var(--green);width:8px;height:8px;box-shadow:0 0 8px var(--green);border-radius:50%;flex-shrink:0;animation:2s infinite pulse}@keyframes pulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.app-main{background:var(--app-bg);flex-direction:column;flex:1;min-width:0;margin-left:250px;transition:margin-left .25s cubic-bezier(.4,0,.2,1);display:flex}.app-sidebar.collapsed~.app-main{margin-left:0}.app-top-sticky-container{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff2;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.app-header{background:0 0;justify-content:space-between;align-items:center;padding:12px 28px;display:flex}.header-mobile-brand{display:none}.app-sidebar.collapsed~.app-main .header-mobile-brand{display:block}.header-titles h1{font-family:var(--font-display);color:var(--text-main);letter-spacing:-.025em;font-size:clamp(15px,2.2vw,20px);font-weight:700}.header-titles p{color:var(--text-muted);align-items:center;gap:6px;margin-top:2px;font-size:11.5px;display:flex}.header-actions{flex-shrink:0;align-items:center;gap:10px;display:flex}.desktop-text,.reports-btn-full{display:inline}.reports-btn-short{display:none}.cycle-status-pill,#global-monthly-pill{white-space:nowrap!important;flex-shrink:0!important;align-items:center!important;display:inline-flex!important}#global-monthly-text{white-space:nowrap!important;flex-shrink:0!important}.reports-dropdown-wrap{position:relative}.reports-dropdown-menu{border:1px solid var(--card-border);z-index:3000;box-sizing:border-box;background:#fff;border-radius:12px;width:320px;padding:6px;display:none;position:absolute;top:calc(100% + 6px);right:0;box-shadow:0 16px 36px #0f172a29}.reports-dropdown-menu.show{display:block}.reports-dropdown-header{color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;padding:8px 12px 6px;font-size:10px;font-weight:800}.report-menu-item{text-align:left;cursor:pointer;box-sizing:border-box;background:0 0;border:none;border-radius:8px;flex-direction:column;gap:2px;width:100%;padding:8px 12px;font-family:inherit;transition:background .15s;display:flex}.report-menu-item:hover{background:#f8fafc}.report-menu-item:focus{background:#eff6ff;outline:none}.report-menu-item-primary{background:#eff6ff;border:1px solid #dbeafe;margin-bottom:4px}.report-menu-item-primary:hover{background:#dbeafe}.report-menu-item-title{color:#0f172a;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;display:flex}.report-menu-item-desc{color:#64748b;font-size:10.5px;line-height:1.3}.report-menu-badge{text-transform:uppercase;letter-spacing:.3px;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700}.report-menu-badge-blue{color:#4338ca;background:#eef2ff}.report-menu-badge-green{color:#166534;background:#dcfce7}.header-btn{border:1px solid var(--card-border);min-height:36px;font-family:var(--font-sans);color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:600;transition:all .16s cubic-bezier(.16,1,.3,1);display:inline-flex;box-shadow:0 1px 2px #0f172a08}.header-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 2px 5px #0f172a0d}.header-btn:active{transform:translateY(0)}.header-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 6px #2563eb4d}.header-btn:disabled{opacity:.65;pointer-events:none;cursor:not-allowed!important;color:var(--text-muted)!important;box-shadow:none!important;background:#f1f5f9!important;border-color:#e2e8f0!important;transform:none!important}.spin-icon{animation:.8s linear infinite spin;display:inline-block}.period-bar-wrap{-webkit-backdrop-filter:blur(10px);background:#f8fafcf0;border-top:1px solid #e2e8f0cc;border-bottom:1px solid #e2e8f0cc;justify-content:space-between;align-items:center;gap:16px;padding:8px 28px;display:flex}.week-dropdown{border:1px solid var(--card-border);min-height:36px;font-family:var(--font-sans);color:var(--text-main);cursor:pointer;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 12px center no-repeat;border-radius:8px;outline:none;padding:7px 34px 7px 14px;font-size:12.5px;font-weight:600;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px #0f172a08}.week-dropdown:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.page-content{width:100%;max-width:1440px;margin:0 auto;padding:24px 28px 40px;display:none}.card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);border-radius:14px;margin-bottom:16px;padding:20px}.card-title{letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);font-size:11.5px;font-weight:700;font-family:var(--font-sans);justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;display:flex}.kpi-row-layout{grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;display:grid}.kpi-card-white{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;flex-direction:column;justify-content:space-between;padding:16px 18px;transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,border-color .18s;display:flex;position:relative}.kpi-card-white:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-2px)}.kpi-card-num,.kpi-card-foot,.mono,table.data-table td.right,table.data-table td.mono,.featured-card .kpi-card-num,.station-card-item .mono,.pressure-status-pill,.data-freshness-pill,.tabular-nums{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}.kpi-card-lbl{text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-size:.75rem;font-weight:700;line-height:1.2}.kpi-card-num{font-family:var(--font-display);color:var(--text-main);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0;font-size:clamp(1.75rem,2.2vw,2.25rem);font-weight:800;line-height:1.1}.kpi-card-num .unit{font-family:var(--font-sans);color:var(--text-subtle);letter-spacing:normal;margin-left:4px;font-size:.85rem;font-weight:600}.kpi-card-foot{color:var(--text-muted);font-size:.75rem;font-weight:500;line-height:1.3}.kpi-badge-pill{font-size:10.5px;font-weight:700;font-family:var(--font-sans);letter-spacing:.01em;border-radius:20px;align-items:center;gap:5px;padding:3px 9px;line-height:1.25;display:inline-flex}.pill-normal,.pill-green{color:var(--green-text);background:#10b98114;border:1px solid #10b98140}.pill-amber{color:var(--amber-text);background:#f59e0b14;border:1px solid #f59e0b47}.pill-red{color:var(--red-text);background:#ef44441a;border:1px solid #ef444459}.pill-blue{color:var(--blue-text);background:#2563eb14;border:1px solid #2563eb40}.alert-dot-pulse{background:#ef4444;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:1.6s cubic-bezier(.4,0,.6,1) infinite alertPulse;display:inline-block;box-shadow:0 0 6px #ef4444cc}.normal-dot-pulse{background:#10b981;border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.4s cubic-bezier(.4,0,.6,1) infinite normalPulse;display:inline-block;box-shadow:0 0 6px #10b98199}.amber-dot-pulse{background:#f59e0b;border-radius:50%;flex-shrink:0;width:7px;height:7px;display:inline-block;box-shadow:0 0 6px #f59e0b99}@keyframes alertPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.25)}}@keyframes normalPulse{0%,to{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}.table-container{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:14px;margin-bottom:20px;overflow:hidden}.table-head-bar{border-bottom:1px solid var(--card-border);justify-content:space-between;align-items:center;padding:14px 18px;display:flex}.table-head-title{color:var(--text-main);font-size:13.5px;font-weight:700}.table-responsive{-webkit-overflow-scrolling:touch;width:100%;overflow-x:auto}table.data-table{border-collapse:collapse;text-align:left;width:100%;font-size:12px}table.data-table thead th{color:var(--text-muted);font-family:var(--font-sans);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--card-border);white-space:nowrap;background:#f8fafc;padding:10px 14px;font-size:10px;font-weight:700}table.data-table thead th.right,table.data-table tbody td.right{text-align:right}table.data-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}table.data-table tbody tr:hover{background:#f8fafc}table.data-table tbody td{color:var(--text-main);padding:9px 14px}table.data-table tbody td.mono{font-family:var(--font-mono);font-size:11px}.cat-pill{font-size:9.5px;font-family:var(--font-sans);border-radius:5px;padding:2px 7px;font-weight:600;display:inline-block}.cat-sw{background:var(--teal-light);color:var(--teal-text);border:1px solid var(--teal-border)}.cat-gw{background:var(--blue-light);color:var(--blue-text);border:1px solid var(--blue-border)}.cat-aug{color:#6d28d9;background:#faf5ff;border:1px solid #ddd6fe}.bar-cell{align-items:center;gap:6px;display:flex}.mini-bar-bg{background:#e2e8f0;border-radius:3px;flex:1;height:5px;overflow:hidden}.mini-bar{border-radius:3px;height:100%}.press-table-wrap{max-height:520px;position:relative;overflow:auto}.press-table-wrap thead th{z-index:10;background:#f1f5f9;position:sticky;top:0;box-shadow:0 1px 2px #0000000f}.press-table-wrap th:first-child,.press-table-wrap td:first-child{z-index:11;border-right:1px solid var(--card-border);background:#fff;position:sticky;left:0}.press-table-wrap thead th:first-child{z-index:12;background:#f1f5f9}.table-sticky-first th:first-child,.table-sticky-first td:first-child{z-index:10;background:#fff;border-right:1px solid #e2e8f0f2;position:sticky;left:0;box-shadow:3px 0 6px -2px #0f172a14}.table-sticky-first thead th:first-child{z-index:11;background:#f8fafc}.table-sticky-first tbody tr:hover td:first-child{background:#f8fafc}.chart-container-wrap{width:100%;min-height:220px;position:relative}.btn-primary-action{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;font-weight:700!important;box-shadow:0 2px 6px #2563eb47!important}.btn-primary-action:hover{transform:translateY(-1px);background:#1d4ed8!important;border-color:#1d4ed8!important;box-shadow:0 4px 12px #2563eb59!important}.btn-secondary-action{color:var(--text-main)!important;background:#fff!important;border:1px solid #94a3b859!important;font-weight:600!important;text-decoration:none!important;box-shadow:0 1px 2px #0f172a0a!important}.btn-secondary-action:hover{transform:translateY(-1px);color:var(--blue)!important;background:#f8fafc!important;border-color:#cbd5e1!important;box-shadow:0 2px 6px #0f172a14!important}@keyframes shimmer{0%{background-position:-200% 0}to{background-position:200% 0}}.skeleton-shimmer{-webkit-user-select:none;user-select:none;background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%) 0 0/200% 100%;border-radius:4px;animation:1.8s infinite shimmer;display:inline-block;color:#0000!important}.table-responsive,#priority-cards-row,.press-table-wrap{cursor:grab;-webkit-overflow-scrolling:touch}.table-responsive.is-dragging,#priority-cards-row.is-dragging,.press-table-wrap.is-dragging{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}.press-table-wrap th,.press-table-wrap td,table.data-table th,table.data-table td{white-space:nowrap;min-width:72px}.press-table-wrap th:first-child,.press-table-wrap td:first-child{min-width:140px}.map-frame-box{border:1px solid var(--card-border);height:480px;box-shadow:var(--card-shadow);z-index:1;isolation:isolate;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden}#leaflet-map{width:100%;height:100%}.pressure-dot{font-family:var(--font-mono);color:#fff;cursor:pointer;border:2px solid #fff;border-radius:50%;flex-direction:column;justify-content:center;align-items:center;font-weight:700;transition:transform .15s,box-shadow .15s;display:flex}.pressure-dot:hover{transform:scale(1.2);z-index:1000!important}.pressure-dot.dot-ok{background:var(--green);box-shadow:0 2px 8px #10b98180}.pressure-dot.dot-alert{background:var(--red);animation:1.4s ease-in-out infinite dot-pulse;box-shadow:0 0 10px #ef4444cc}.pressure-dot.dot-nodata{background:var(--text-muted)}.pressure-dot.dot-compare-1{outline:3px solid var(--blue);outline-offset:2px}.pressure-dot.dot-compare-2{outline:3px solid var(--teal);outline-offset:2px}@keyframes dot-pulse{0%,to{box-shadow:0 0 6px #ef444480}50%{box-shadow:0 0 18px #ef4444e6}}.leaflet-popup-content-wrapper{background:#fff!important;border-radius:12px!important;padding:0!important;box-shadow:0 10px 30px #0f172a26!important}.leaflet-popup-content{width:220px!important;margin:0!important}.map-header-toolbar{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;display:flex}.map-view-toggles{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.map-mode-btn{font-family:var(--font-sans);border:1px solid var(--card-border);min-height:36px;color:var(--text-muted);cursor:pointer;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 13px;font-size:11.5px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.map-mode-btn:hover{color:var(--text-main);background:#f8fafc;border-color:#cbd5e1}.map-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 2px 6px #2563eb40}.map-outlier-chips{flex-wrap:wrap;align-items:center;gap:6px;display:flex}.outlier-chip{font-family:var(--font-sans);border:1px solid var(--card-border);min-height:36px;color:var(--text-main);cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums;background:#fff;border-radius:8px;align-items:center;gap:5px;padding:6px 12px;font-size:11.5px;font-weight:600;transition:all .15s;display:inline-flex;box-shadow:0 1px 3px #00000008}.outlier-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue-text)}.outlier-chip span{color:var(--blue-text);font-weight:700;font-family:var(--font-mono)}.section-title-wrap{margin-top:18px;margin-bottom:10px}.section-title-main{text-transform:uppercase;color:var(--text-muted);font-size:11.5px;font-weight:700;font-family:var(--font-sans);letter-spacing:.06em}.section-title-sub{color:var(--text-muted);margin-top:2px;font-size:12px}.grid-featured-cards{grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;display:grid}.featured-card{border-radius:12px;flex-direction:column;justify-content:space-between;min-width:0;padding:0;display:flex;overflow:hidden}.card-mini-map-wrap{border-bottom:1px solid var(--card-border);cursor:pointer;background:#e2e8f0;width:100%;height:68px;position:relative;overflow:hidden}.card-mini-map-wrap:hover .card-map-overlay-btn{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}.card-map-overlay-btn{z-index:400;border:1px solid var(--card-border);color:var(--text-main);font-size:9.5px;font-family:var(--font-sans);cursor:pointer;background:#fffffff0;border-radius:5px;padding:3px 7px;font-weight:700;transition:all .15s;position:absolute;bottom:4px;right:4px;box-shadow:0 1px 4px #0000001f}.crisis-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:24px;display:grid}.crisis-card{border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;background:#fff;border-radius:14px;flex-direction:column;padding:16px 18px;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s;display:flex;position:relative;overflow:hidden}.crisis-card:hover{box-shadow:var(--card-shadow-hover);border-color:#cbd5e1;transform:translateY(-3px)}.crisis-card:before{content:"";border-radius:14px 0 0 14px;width:4px;position:absolute;top:0;bottom:0;left:0}.crisis-card.lvl-normal:before{background:#0b4f6c}.crisis-card.lvl-1:before{background:var(--green)}.crisis-card.lvl-2:before{background:var(--amber)}.crisis-card.lvl-3:before{background:var(--red)}.crisis-header{justify-content:space-between;align-items:flex-start;margin-bottom:8px;display:flex}.crisis-title{color:var(--text-main);font-size:13.5px;font-weight:700}.crisis-pct{font-size:28px;font-weight:800;font-family:var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}.crisis-prog-track{background:#f1f5f9;border-radius:3px;height:5px;margin:8px 0 12px;overflow:hidden}.crisis-prog-fill{border-radius:3px;height:100%;transition:width .4s cubic-bezier(.16,1,.3,1)}.crisis-details{color:var(--text-muted);font-size:11.5px;font-family:var(--font-sans);font-variant-numeric:tabular-nums;flex-direction:column;gap:4px;display:flex}.crisis-details-row{border-bottom:1px dashed #e2e8f0;justify-content:space-between;padding-bottom:3px;display:flex}.crisis-details-row strong,.crisis-details-row span:last-child{font-family:var(--font-mono);font-size:11px}.crisis-details-row:last-child{border-bottom:none}.crisis-remarks-cta{color:var(--blue-text);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;font-size:11.5px;font-weight:600;transition:all .15s;display:flex}.crisis-card:hover .crisis-remarks-cta{color:#1e40af;padding-left:2px}.grid-overview-split{grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-production-charts{grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;display:grid}.grid-priority-cards{grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;display:grid}.grid-outlying-cards{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;display:grid}.grid-stations{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px;display:grid}.grid-stations .kpi-card-white{cursor:pointer;flex-direction:column;justify-content:space-between;min-width:0;display:flex}.grid-stations .kpi-card-white:hover{transform:translateY(-2px);border-color:var(--blue)!important;box-shadow:0 4px 12px #0d948826!important}.grid-river-layout{grid-template-columns:280px 1fr;gap:18px;display:grid}.grid-complaints-charts{grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:20px;display:grid}.grid-monthly-charts{grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px;display:grid}.grid-genset-summary{border-bottom:1px solid var(--card-border);background:#f8fafc;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 24px;display:grid}.modal-station-grid{grid-template-columns:1fr 1fr;gap:10px;display:grid}.menu-toggle-btn{border:1px solid var(--card-border);cursor:pointer;width:36px;height:36px;color:var(--text-main);background:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;font-size:15px;transition:all .15s;display:inline-flex;box-shadow:0 1px 2px #00000008}.menu-toggle-btn:hover{color:var(--blue-text);background:#f8fafc;border-color:#cbd5e1}.sidebar-close-btn{color:#cbd5e1;cursor:pointer;z-index:10;background:#ffffff1a;border:1px solid #ffffff26;border-radius:7px;justify-content:center;align-items:center;width:30px;height:30px;font-size:13px;transition:all .15s;display:flex;position:absolute;top:18px;right:14px}.sidebar-close-btn:hover{color:#fff;background:#fff3}.sidebar-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:1200;opacity:0;pointer-events:none;background:#0f172a8c;transition:opacity .25s;display:none;position:fixed;inset:0}.sidebar-backdrop.active{opacity:1;pointer-events:auto;display:block}.crisis-legend-bar{border:1px solid var(--card-border);box-shadow:var(--card-shadow);background:#fff;border-radius:10px;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px;padding:6px 14px;display:flex}.crisis-legend-title{color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-size:11px;font-weight:800;font-family:var(--font-sans);margin-right:4px}.crisis-legend-item{color:var(--text-main);border:1px solid var(--card-border);background:#f8fafc;border-radius:6px;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;transition:background .15s;display:inline-flex}.crisis-legend-item:hover{background:#f1f5f9}.crisis-legend-dot{border-radius:50%;flex-shrink:0;width:8px;height:8px}.crisis-legend-normal{background:#0b4f6c0d;border-color:#0b4f6c40}.crisis-legend-watch{border-color:var(--green-border);background:var(--green-light)}.crisis-legend-alert{border-color:var(--amber-border);background:var(--amber-light)}.crisis-legend-critical{border-color:var(--red-border);background:var(--red-light)}@media (width<=1180px){.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>*{grid-column:auto!important}}@media (width<=1024px){.kpi-row-layout{grid-template-columns:repeat(2,1fr)}#page-overview .kpi-row-layout>.kpi-card-white:first-child,#page-production .kpi-row-layout>.kpi-card-white:first-child,#page-monthly .kpi-row-layout>.kpi-card-white:first-child{grid-column:1/-1}.grid-production-charts{grid-template-columns:1fr 1fr}.grid-production-charts>:first-child{grid-column:span 2}.grid-featured-cards{-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;box-sizing:border-box;gap:10px;width:100%;max-width:100%;margin-bottom:16px;padding-bottom:8px;flex-wrap:nowrap!important;display:flex!important;overflow-x:auto!important}.grid-featured-cards .featured-card{scroll-snap-align:start;flex:0 0 185px!important;min-width:185px!important;max-width:185px!important}.grid-featured-cards::-webkit-scrollbar{height:4px}.grid-featured-cards::-webkit-scrollbar-track{background:#f1f5f9;border-radius:4px}.grid-featured-cards::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}.mobile-swipe-hint{display:inline-block!important}}.grid-wl-sources{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px;display:grid}.wl-source-card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--card-shadow);cursor:pointer;text-align:left;border-radius:14px;flex-direction:column;gap:14px;width:100%;padding:18px 20px;font-family:inherit;transition:border-color .16s,box-shadow .16s,transform .16s;display:flex}.wl-source-card:hover{box-shadow:var(--card-shadow-hover);border-color:#93c5fd;transform:translateY(-1px)}.wl-source-card.active{border-color:var(--blue);box-shadow:0 0 0 2px #2563eb2e}.wl-card-top{justify-content:space-between;align-items:flex-start;gap:10px;display:flex}.wl-card-title{color:var(--text-main);letter-spacing:-.01em;font-size:15px;font-weight:800;line-height:1.25}.wl-card-sub{color:var(--text-muted);margin-top:2px;font-size:12px}.wl-card-metric{flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px;display:flex}.wl-card-hero{font-family:var(--font-mono);letter-spacing:-.02em;font-size:28px;font-weight:800;line-height:1}.wl-card-hero-unit{color:var(--text-muted);margin-left:3px;font-size:13px;font-weight:600}.wl-card-normal{font-family:var(--font-mono);color:var(--text-muted);font-size:12.5px;font-weight:600}.wl-meter-wrap{flex-direction:column;gap:6px;display:flex}.wl-meter-track{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;width:100%;height:10px;position:relative;overflow:hidden}.wl-meter-fill{border-radius:999px;height:100%;transition:width .45s cubic-bezier(.22,1,.36,1)}.wl-meter-norm-tick{opacity:.45;z-index:2;background:#0f172a;width:2px;position:absolute;top:0;bottom:0}.wl-card-foot{color:var(--text-muted);border-top:1px solid #f1f5f9;justify-content:space-between;align-items:center;gap:8px;padding-top:10px;font-size:11.5px;display:flex}#page-waterlevel .kpi-row-layout{grid-template-columns:repeat(4,1fr)}@media (width<=1024px){#page-waterlevel .kpi-row-layout{grid-template-columns:repeat(2,1fr)}}.ov-wl-chip{font-size:10px;font-weight:700;font-family:var(--font-mono);background:var(--blue-light);color:var(--blue-text);border:1px solid var(--blue-border);cursor:pointer;border-radius:99px;align-items:center;gap:5px;margin-top:3px;padding:2px 8px;display:inline-flex}.ov-wl-chip:hover{filter:brightness(.96)}@media (width<=1020px){.grid-wl-charts,.grid-wl-sources{grid-template-columns:1fr}}@media (width<=680px){.wl-diagnostic-grid{grid-template-columns:1fr}}@media (width<=820px){.app-sidebar{z-index:1300;height:100vh;transition:transform .28s cubic-bezier(.4,0,.2,1);position:fixed;top:0;bottom:0;left:0;transform:translate(-100%);margin-left:0!important}.app-sidebar.open{transform:translate(0);box-shadow:10px 0 30px #0000004d}.app-main,.app-sidebar.collapsed~.app-main{margin-left:0!important}.header-mobile-brand{display:block}.app-top-sticky-container{display:contents}.app-header{z-index:1000;-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);background:#fffffff5;padding:10px 14px;position:sticky;top:0;box-shadow:0 2px 8px #0f172a0a}.menu-toggle-btn{justify-content:center;align-items:center;display:flex}.sidebar-close-btn{display:flex}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:10px}.header-titles h1{font-size:15px}.header-titles p{display:none}#header-auth-status-btn{justify-content:center;min-width:34px;padding:6px 9px}#header-auth-status-icon{justify-content:center;align-items:center;display:inline-flex}.header-actions{gap:6px}.page-content{box-sizing:border-box;width:100%;max-width:100%;padding:14px 12px;overflow-x:hidden}.period-bar-wrap{-webkit-backdrop-filter:none;flex-direction:column;align-items:stretch;gap:8px;padding:10px 14px;position:static}.period-bar-wrap select.week-dropdown{width:100%}.grid-overview-split,.grid-production-charts{grid-template-columns:1fr}.grid-production-charts>:first-child{grid-column:auto}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.grid-river-layout{grid-template-columns:1fr}#river-list-container{max-height:220px!important}.grid-complaints-charts{grid-template-columns:1fr}.grid-complaints-charts>:first-child{grid-column:auto}.grid-monthly-charts{grid-template-columns:1fr}.map-frame-box{height:350px}.map-header-toolbar{box-sizing:border-box;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%}.map-view-toggles{box-sizing:border-box;flex-wrap:wrap;gap:6px;width:100%;max-width:100%;display:flex}.map-view-toggles .map-mode-btn{flex:auto;justify-content:center;padding:6px 8px;font-size:11px}.outlier-chip{box-sizing:border-box;flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.desktop-text{display:none!important}.map-outlier-chips{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;box-sizing:border-box;width:100%;max-width:100%;padding-bottom:4px;flex-wrap:nowrap!important;gap:8px!important;display:flex!important;overflow-x:auto!important}}@media (width<=640px){.card{border-radius:12px;margin-bottom:12px;padding:14px}.table-container{border-radius:12px;margin-bottom:16px}.table-head-bar{padding:10px 14px}table.data-table th,table.data-table td{padding:7px 10px}.modal-station-grid{grid-template-columns:1fr}.grid-genset-summary{grid-template-columns:repeat(2,1fr);padding:12px 14px}.grid-priority-cards,.grid-outlying-cards{grid-template-columns:1fr}.map-frame-box{height:300px}.kpi-card-white{padding:12px 14px}.kpi-card-num{font-size:20px}.chart-panel-header{flex-direction:column;gap:10px;align-items:flex-start!important}.reports-btn-full{display:none!important}.reports-btn-short{display:inline!important}#btn-reports-menu{padding:6px 10px;font-size:11px}.crisis-legend-title{grid-column:1/-1;margin-bottom:2px}.crisis-legend-item{justify-content:flex-start;padding:4px 6px;font-size:10px;line-height:1.2;white-space:normal!important;min-width:0!important}.crisis-legend-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:8px 10px!important;display:grid!important}}@media (width<=440px){.outlier-chip{flex-shrink:0!important;min-height:36px!important;padding:6px 10px!important;font-size:11px!important}.kpi-row-layout{grid-template-columns:repeat(2,1fr);gap:8px}.kpi-card-white{padding:10px}.kpi-card-lbl{font-size:9.5px}.kpi-card-num{margin:4px 0;font-size:18px}.grid-stations{grid-template-columns:repeat(2,1fr);gap:6px}.grid-stations .kpi-card-white{padding:8px 10px}.header-btn{padding:6px 10px;font-size:11px}.app-header{padding:10px 12px}.header-actions{gap:5px}#btn-reports-menu{padding:6px 10px;font-size:11px}#header-auth-status-btn{min-width:34px;padding:6px 8px}.reports-dropdown-menu{width:min(290px,100vw - 24px);right:-40px}.crisis-legend-item{gap:4px;padding:3px 5px;font-size:9.5px;line-height:1.2;white-space:normal!important;min-width:0!important}}.loading-overlay{background:linear-gradient(90deg, var(--blue), #38bdf8, #10b981, var(--blue));z-index:99999;pointer-events:none;background-size:200% 100%;height:3px;transition:opacity .4s,visibility .4s;animation:1.5s linear infinite shimmerTopBar;position:fixed;top:0;left:0;right:0}.loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}@keyframes shimmerTopBar{0%{background-position:200% 0}to{background-position:-200% 0}}@keyframes spin{to{transform:rotate(360deg)}}[id$=-modal]{transition:opacity .2s;-webkit-backdrop-filter:blur(8px)!important}[id$=-modal]>div{animation:.24s cubic-bezier(.16,1,.3,1) modalScaleIn;box-shadow:0 25px 50px -12px #0f172a40!important}@keyframes modalScaleIn{0%{opacity:0;transform:scale(.96)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}}.page-content.active{animation:.22s cubic-bezier(.16,1,.3,1) pageFadeIn;display:block}@keyframes pageFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.form-input{color:var(--text-main);font-family:var(--font-sans);background:#fff;border:1px solid #cbd5e1;border-radius:8px;outline:none;padding:8px 11px;font-size:12px;transition:border-color .16s,box-shadow .16s,background-color .16s}.form-input:hover:not(:disabled){border-color:#94a3b8}.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1f}.form-input:disabled{color:var(--text-muted);cursor:not-allowed;background:#f1f5f9}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.ov-node-card:focus-visible,.crisis-card:focus-visible,.station-card-item:focus-visible,.card-mini-map-wrap:focus-visible,.river-list-item:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue-text);outline-offset:2px}@media (prefers-reduced-motion:reduce){*,:before,:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}.reports-dropdown-menu.show{transform-origin:100% 0;animation:.16s cubic-bezier(.16,1,.3,1) dropdownFadeIn;display:block}@keyframes dropdownFadeIn{0%{opacity:0;transform:translateY(-4px)scale(.98)}to{opacity:1;transform:translateY(0)scale(1)}}.modal-close-btn{width:34px;height:34px;color:var(--text-muted);cursor:pointer;background:0 0;border:1px solid #0000;border-radius:8px;justify-content:center;align-items:center;font-size:16px;line-height:1;transition:all .15s;display:inline-flex}.modal-close-btn:hover{color:#0f172a;background:#f1f5f9;border-color:#e2e8f0}.ov-node-card{border:1px solid var(--card-border);cursor:pointer;background:#f8fafc;border-radius:10px;justify-content:space-between;align-items:center;padding:11px 14px;transition:transform .16s,box-shadow .16s,border-color .16s,background-color .16s;display:flex}.ov-node-card:hover{background:#fff;border-color:#cbd5e1;transform:translateY(-1px);box-shadow:0 4px 12px #0f172a0f}.river-list-item{cursor:pointer;border-bottom:1px solid #f1f5f9;border-left:3px solid #0000;border-radius:8px;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;padding:10px 12px;transition:background-color .15s,border-color .15s,transform .12s;display:flex}.river-list-item:hover{background:#f8fafc}.river-list-item.active{background:var(--teal-light);border-left-color:var(--teal);border-bottom-color:#0000}#page-complaints .kpi-row-layout{grid-template-columns:repeat(4,1fr)}@media (width<=1024px){#page-complaints .kpi-row-layout{grid-template-columns:repeat(2,1fr)}}#source-cards:empty,#capacity-cards:empty{display:none}.comp-topic-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;transition:border-color .16s,background-color .16s}.comp-topic-card:hover{border-color:#cbd5e1}.comp-topic-card.is-disabled .comp-subtopics-list{opacity:.45;pointer-events:none}.comp-modal-grid{grid-template-columns:1fr 1fr;gap:12px;display:grid}@media (width<=640px){.comp-modal-grid{grid-template-columns:1fr}#comprehensive-report-modal .comp-modal-footer-actions{flex-direction:column;align-items:stretch}#comprehensive-report-modal .comp-modal-footer-btns{flex-direction:column}}.app-sidebar::-webkit-scrollbar{width:6px;height:6px}.table-responsive::-webkit-scrollbar{width:6px;height:6px}#river-list-container::-webkit-scrollbar{width:6px;height:6px}#complaints-feed::-webkit-scrollbar{width:6px;height:6px}.comp-modal-body::-webkit-scrollbar{width:6px;height:6px}.app-sidebar::-webkit-scrollbar-thumb{background:#94a3b840;border-radius:3px}.table-responsive::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#river-list-container::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}#complaints-feed::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.comp-modal-body::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}.table-responsive::-webkit-scrollbar-track{background:0 0}#river-list-container::-webkit-scrollbar-track{background:0 0}#complaints-feed::-webkit-scrollbar-track{background:0 0}.comp-modal-body::-webkit-scrollbar-track{background:0 0}.telemetry-beacon{background:var(--green);border-radius:50%;flex-shrink:0;width:7px;height:7px;animation:2.2s infinite beaconPulse;display:inline-block;box-shadow:0 0 #10b98166}@keyframes beaconPulse{0%{box-shadow:0 0 #10b981b3}70%{box-shadow:0 0 0 7px #10b98100}to{box-shadow:0 0 #10b98100}}.comp-a4-page{color:#0f172a;box-sizing:border-box;page-break-after:always;background:#fff;border:1px solid #e2e8f0;flex-direction:column;justify-content:space-between;width:210mm;min-height:297mm;margin:0 auto 20px;padding:12.7mm;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:flex;position:relative}.comp-header-banner{border-bottom:2.5px solid #1560bd;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:9px;display:flex}.comp-exec-strip{background:linear-gradient(90deg,#f8fafc 0%,#fff 100%);border:1px solid #cbd5e1;border-left:4px solid #1560bd;border-radius:6px;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;padding:8px 12px;display:grid}.comp-exec-item{min-width:0}.comp-exec-item+.comp-exec-item{border-left:1px solid #e2e8f0;padding-left:12px}.comp-exec-kicker{text-transform:uppercase;letter-spacing:.45px;font-size:8.5px;font-weight:800;line-height:1.2}.comp-exec-main{color:#0f172a;margin-top:2px;font-size:11px;font-weight:800;line-height:1.25}.comp-exec-sub{color:#475569;margin-top:2px;font-size:9px;line-height:1.2}.comp-kpi-grid{gap:10px;margin-bottom:12px;display:flex}.comp-kpi-card{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #1560bd;border-radius:7px;flex:1;padding:9px 11px}.comp-kpi-label{color:#475569;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-size:9px;font-weight:800}.comp-kpi-value{color:#0f172a;font-variant-numeric:tabular-nums;font-family:IBM Plex Mono,monospace;font-size:17px;font-weight:800;line-height:1.15}.comp-kpi-sub{color:#64748b;margin-top:3px;font-size:9px;font-weight:500;line-height:1.2}.comp-section-title{color:#0f172a;text-transform:uppercase;letter-spacing:.45px;border-left:3.5px solid #1560bd;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;padding-left:8px;font-size:11px;font-weight:800;line-height:1.2;display:flex}.comp-table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%;margin-bottom:10px;font-size:10.5px}.comp-table th{color:#fff;text-align:left;text-transform:uppercase;letter-spacing:.3px;background:#1e293b;border:1px solid #1e293b;padding:6px 7px;font-size:9.2px;font-weight:700;line-height:1.2}.comp-table tr.comp-th-group-row th{color:#e2e8f0;text-align:center;letter-spacing:.55px;background:#0f172a;border:1px solid #334155;padding:4px 6px;font-size:8.5px;font-weight:800}.comp-table td{color:#0f172a;border-bottom:1px solid #cbd5e1;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;padding:5.5px 7px;line-height:1.25}.comp-table tbody tr:nth-child(2n) td{background:#f8fafc}.comp-table tr.comp-summary-row td{color:#0f172a;border-top:2px solid #475569;border-bottom:2px solid #475569;padding:6.5px 7px;font-weight:800;background:#e2e8f0!important}.comp-table.comp-table-major th{letter-spacing:.1px;padding:6.5px 4px;font-size:8.4px}.comp-table.comp-table-major td{padding:7.5px 4px;font-size:9.4px;line-height:1.35}.comp-table.comp-table-major tr.comp-summary-row td{padding:8px 4px}.comp-table.comp-table-weekly th{padding:7.5px 7px}.comp-table.comp-table-weekly td{padding:9px 7px;line-height:1.35}.comp-table.comp-table-weekly tr.comp-summary-row td{padding:9.5px 7px}.comp-status-pill{white-space:nowrap;border-radius:4px;padding:1.5px 6px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;display:inline-block}.comp-note-box{color:#334155;background:#f8fafc;border:1px solid #cbd5e1;border-left:3.5px solid #64748b;border-radius:5px;margin-top:6px;padding:7px 10px;font-size:9.2px;line-height:1.4}.comp-footer{color:#475569;border-top:1.5px solid #cbd5e1;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;font-size:9.2px;font-weight:600;display:flex}@media print{@page{size:A4 portrait;margin:.5in}body *{visibility:hidden!important}#comprehensive-report-staging,#comprehensive-report-staging *,.comp-a4-page,.comp-a4-page *{visibility:visible!important}#comprehensive-report-staging{width:100%!important;margin:0!important;padding:0!important;position:absolute!important;top:0!important;left:0!important}.comp-a4-page{width:100%!important;min-height:auto!important;box-shadow:none!important;page-break-after:always!important;border:none!important;margin:0!important;padding:0!important}}</style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -257,20 +257,9 @@
         <!-- 5. River Source Water Levels Sticky Bar -->
         <div id="bar-period-waterlevel" class="period-bar-wrap" style="display:none;">
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div>
-              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">River Source (MBS Field Reports)</div>
-              <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
-                <label for="wl-dash-station" class="sr-only">Select River Source</label>
-                <select id="wl-dash-station" class="week-dropdown" style="min-width:230px;" onchange="renderWaterLevelDashboard()"></select>
-              </div>
-            </div>
-            <div>
-              <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Pressure Overlay (Hourly Avg)</div>
-              <div style="margin-top:2px;">
-                <label for="wl-dash-pressure-source" class="sr-only">Select Pressure Overlay Source</label>
-                <select id="wl-dash-pressure-source" class="week-dropdown" style="min-width:210px;" onchange="renderWaterLevelDashboard()"></select>
-              </div>
-            </div>
+            <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Source</span>
+            <label for="wl-dash-station" class="sr-only">Select River Source</label>
+            <select id="wl-dash-station" class="week-dropdown" style="min-width:225px;" onchange="renderWaterLevelDashboard()"></select>
           </div>
           <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <div style="display:inline-flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#FFFFFF;">
@@ -280,10 +269,10 @@
               <button type="button" class="header-btn wl-range-btn" data-range="30d" onclick="setWaterLevelRange('30d')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700;">30D</button>
               <button type="button" class="header-btn wl-range-btn" data-range="all" onclick="setWaterLevelRange('all')" style="border:none; border-radius:0; padding:6px 10px; font-size:11px; font-weight:700;">All</button>
             </div>
-            <button type="button" class="header-btn" onclick="loadWaterLevel(true)" title="Refresh live river water levels from Supabase" style="font-size:11px; font-weight:700;">↻ Sync</button>
+            <button type="button" class="header-btn" onclick="loadWaterLevel(true)" title="Refresh water levels" style="font-size:11px; font-weight:700;">&#8635; Sync</button>
             <button type="button" class="header-btn" onclick="exportWaterLevelCsv()" style="font-size:11px; font-weight:700;">Export CSV</button>
             <a href="uploader.html#waterlevel" class="header-btn btn-secondary-action" style="color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
-              Log MBS Report ↗
+              Log Report &nearr;
             </a>
           </div>
         </div>
@@ -370,21 +359,20 @@
           </div>
         </div>
 
-        <!-- Executive Board Visual Snapshot: River Water Sources -->
+        <!-- Dashboard Snapshot: River Water Levels Bar Graph (Current vs. Normal) -->
         <div class="card" id="ov-wl-board-card" style="margin-bottom:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
             <div>
-              <h2 class="card-title" style="margin-bottom:2px; font-size:15px;">River Water Sources &bull; Executive Status Overview</h2>
-              <div id="ov-wl-board-verdict" style="font-size:12px; color:var(--text-muted);">
-                Loading live river source status (Current Height vs. Full/Normal &amp; Critical Thresholds)...
-              </div>
+              <h2 class="card-title" style="margin-bottom:2px; font-size:15px;">River Water Levels &bull; Current vs. Normal Water Level</h2>
+              <div style="font-size:11.5px; color:var(--text-muted);">Latest field operator reading compared against Normal Water Level (cm)</div>
             </div>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <button type="button" class="header-btn" onclick="copyWaterLevelBoardSummary(this)" style="font-size:11px; font-weight:700;" title="Copy a plain-language water source summary for Viber / Messenger group chat">Copy BOD Summary</button>
               <button type="button" class="header-btn" onclick="switchNavTab('waterlevel')" style="font-size:11px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">Full Water Analysis &rarr;</button>
             </div>
           </div>
-          <div class="grid-wl-sources" id="ov-wl-visual-grid" style="margin-bottom:0;"></div>
+          <div style="position:relative; height:245px; width:100%;">
+            <canvas id="ov-chart-waterlevel"></canvas>
+          </div>
         </div>
 
         <div class="table-container">
@@ -718,177 +706,99 @@
 
       </div>
 
-      <!-- ── TAB 8: SURFACE WATER SOURCE LEVELS & PRESSURE CORRELATION ── -->
+      <!-- ── TAB 8: SURFACE WATER SOURCE LEVELS ── -->
       <div class="page-content" id="page-waterlevel">
 
-        <!-- Plain-Language Board / Executive Verdict Banner -->
-        <div class="wl-board-banner" id="wl-board-banner">
-          <div style="flex:1 1 320px;">
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
-              <span id="wl-board-pill" class="kpi-badge-pill pill-blue" style="font-size:11px;">Checking Sources...</span>
-              <h2 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Water Sources Status: Can Our Rivers Still Sustain Supply?</h2>
-            </div>
-            <div id="wl-board-summary-text" style="font-size:12px; color:var(--text-muted); line-height:1.5;">
-              Loading latest gauge readings and comparing against Full (Normal) and Near-Dry (Critical) levels...
-            </div>
-          </div>
+        <!-- Section Header + Clean River Source Cards -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+          <h2 style="font-size:16px; font-weight:800; color:var(--text-main); letter-spacing:-0.01em;">River Sources Status</h2>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <button type="button" class="header-btn" onclick="copyWaterLevelBoardSummary(this)" style="font-size:11.5px; font-weight:700;" title="Copy a plain-language summary for Board / Management group chat">
-              Copy BOD Chat Summary
-            </button>
-            <button type="button" id="btn-wl-compare-all" class="header-btn" onclick="selectWaterLevelSource('ALL_COMPARE')" style="font-size:11.5px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">
-              Compare All River Sources
-            </button>
+            <button type="button" class="header-btn" onclick="copyWaterLevelBoardSummary(this)" style="font-size:11.5px; font-weight:700;">Copy Summary</button>
+            <button type="button" id="btn-wl-compare-all" class="header-btn" onclick="selectWaterLevelSource('ALL_COMPARE')" style="font-size:11.5px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">All Sources</button>
           </div>
         </div>
-
-        <!-- Visual Tank Gauge Cards (Campo Uno, Lapu-Lapu, Montible) -->
         <div class="grid-wl-sources" id="wl-source-cards-grid"></div>
 
-        <!-- Executive KPI Strip -->
+        <!-- Concise Executive KPI Summary (4 Cards) -->
         <div class="kpi-row-layout">
           <div class="kpi-card-white">
-            <div class="kpi-card-lbl" id="wl-kpi-latest-lbl">Latest Reported Level</div>
-            <div class="kpi-card-num" id="wl-kpi-latest">—<span class="unit">m</span></div>
-            <div class="kpi-card-foot" id="wl-kpi-latest-sub" style="color:var(--text-muted);">Awaiting MBS operator logs</div>
+            <div class="kpi-card-lbl" id="wl-kpi-latest-lbl">Current Water Level</div>
+            <div class="kpi-card-num" id="wl-kpi-latest">—<span class="unit">cm</span></div>
+            <div class="kpi-card-foot" id="wl-kpi-latest-sub" style="color:var(--text-muted);">Awaiting reports</div>
           </div>
 
           <div class="kpi-card-white">
-            <div class="kpi-card-lbl">Variance vs. Normal Level</div>
-            <div class="kpi-card-num" id="wl-kpi-variance">—</div>
-            <div style="height:4px; background:#F1F5F9; border-radius:2px; overflow:hidden; margin:4px 0 6px;">
-              <div id="wl-kpi-bar" style="height:100%; width:0%; background:var(--blue); border-radius:2px; transition:width 0.35s ease;"></div>
-            </div>
-            <div class="kpi-card-foot" id="wl-kpi-normal-sub" style="color:var(--text-muted);">Normal Benchmark: —</div>
+            <div class="kpi-card-lbl">Safety Margin vs. Critical</div>
+            <div class="kpi-card-num" id="wl-kpi-variance" style="font-size:20px;">—</div>
+            <div class="kpi-card-foot" id="wl-kpi-normal-sub" style="color:var(--text-muted);">Normal &bull; Critical</div>
           </div>
 
           <div class="kpi-card-white">
-            <div class="kpi-card-lbl">Period Min / Max / Avg</div>
-            <div class="kpi-card-num" id="wl-kpi-range" style="font-size:18px;">—</div>
-            <div class="kpi-card-foot" id="wl-kpi-below-sub" style="color:var(--text-muted);">—% below normal height</div>
+            <div class="kpi-card-lbl">Period Low &ndash; High</div>
+            <div class="kpi-card-num" id="wl-kpi-range" style="font-size:20px;">—</div>
+            <div class="kpi-card-foot" id="wl-kpi-below-sub" style="color:var(--text-muted);">0 reports</div>
           </div>
 
           <div class="kpi-card-white">
-            <div class="kpi-card-lbl">Drawdown / Recovery Rate</div>
-            <div class="kpi-card-num" id="wl-kpi-rate" style="font-size:19px;">—</div>
-            <div class="kpi-card-foot" id="wl-kpi-rate-sub" style="color:var(--text-muted);">Recent river level velocity</div>
-          </div>
-
-          <div class="kpi-card-white">
-            <div class="kpi-card-lbl">Same-Hour Avg Pressure</div>
+            <div class="kpi-card-lbl">MBS Pressure (Same Hour)</div>
             <div class="kpi-card-num" id="wl-kpi-psi">—<span class="unit">PSI</span></div>
-            <div class="kpi-card-foot" id="wl-kpi-psi-sub" style="color:var(--text-muted);">Correlated telemetry hour</div>
+            <div class="kpi-card-foot" id="wl-kpi-psi-sub" style="color:var(--text-muted);">Manalo Booster avg</div>
           </div>
         </div>
 
-        <!-- Primary Dual-Axis Line Chart: River Water Level vs Normal/Critical & Hourly Avg Pressure -->
+        <!-- Primary Trend Chart -->
         <div class="card" style="margin-bottom:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
             <div>
-              <h2 class="card-title" style="margin-bottom:2px;" id="wl-trend-title">River Source Water Level vs. Normal &amp; Critical Thresholds</h2>
-              <div style="font-size:11px; color:var(--text-muted);" id="wl-trend-sub">Field-reported gauge height paired with same-hour telemetry pressure average</div>
+              <h2 class="card-title" style="margin-bottom:2px;" id="wl-trend-title">Water Level Trend</h2>
+              <div style="font-size:12px; color:var(--text-muted);" id="wl-trend-sub">Reported height vs. Normal &amp; Critical limits</div>
             </div>
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <div id="wl-normalize-wrap" style="display:none; align-items:center; gap:5px;">
-                <label for="wl-compare-mode" style="font-size:11px; font-weight:700; color:var(--text-muted);">Y-Axis:</label>
-                <select id="wl-compare-mode" class="week-dropdown" style="padding:4px 8px; min-height:30px; font-size:11px;" onchange="renderWaterLevelDashboard()">
-                  <option value="delta">Variance vs. Normal (Δ cm)</option>
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div id="wl-normalize-wrap" style="display:none; align-items:center; gap:6px;">
+                <label for="wl-compare-mode" style="font-size:11.5px; font-weight:600; color:var(--text-muted);">View:</label>
+                <select id="wl-compare-mode" class="week-dropdown" style="padding:4px 8px; min-height:30px; font-size:11.5px;" onchange="renderWaterLevelDashboard()">
                   <option value="raw">Actual Height (cm)</option>
-                  <option value="pct">% of Normal Height</option>
+                  <option value="delta">vs. Normal (&Delta; cm)</option>
+                  <option value="pct">% of Normal</option>
                 </select>
               </div>
-              <label id="wl-gap-wrap" style="display:none; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--text-muted); cursor:pointer;" title="Draw dashed bridges across hours where a source water level was unrecorded">
-                <input type="checkbox" id="wl-toggle-connect-gaps" checked onchange="renderWaterLevelDashboard()"> Bridge Missing Slots (Dashed)
-              </label>
               <label style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--text-muted); cursor:pointer;">
-                <input type="checkbox" id="wl-toggle-psi-overlay" checked onchange="renderWaterLevelDashboard()"> Show Hourly Avg PSI
+                <input type="checkbox" id="wl-toggle-psi-overlay" onchange="renderWaterLevelDashboard()"> Overlay Pressure (PSI)
               </label>
-              <label id="wl-thresholds-wrap" style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--text-muted); cursor:pointer;">
-                <input type="checkbox" id="wl-toggle-thresholds" checked onchange="renderWaterLevelDashboard()"> Show Normal / -50 &amp; -80 cm Lines
-              </label>
+              <label for="wl-dash-pressure-source" class="sr-only">Select Pressure Station</label>
+              <select id="wl-dash-pressure-source" class="week-dropdown" style="padding:4px 8px; min-height:30px; font-size:11.5px; max-width:190px; display:none;" onchange="renderWaterLevelDashboard()"></select>
               <button type="button" class="header-btn" onclick="resetWlTrendZoom()" style="padding:5px 10px; min-height:30px; font-size:11px;">Reset Zoom</button>
             </div>
           </div>
-          <div class="chart-container-wrap" style="height: 340px;">
+          <div class="chart-container-wrap" style="height: 360px;">
             <canvas id="chart-wl-trend"></canvas>
           </div>
-          <div id="wl-empty-banner" style="display:none; margin-top:12px; padding:14px 16px; border-radius:10px; background:var(--blue-light); border:1px solid var(--blue-border); color:var(--blue-text); font-size:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-            <span><strong>No river source water level readings recorded in this window yet.</strong> Log Campo Uno (Irawan), Lapu-Lapu, or Montible gauge reports — or paste directly from your MBS group chat — to populate trend and pressure correlation charts.</span>
-            <a href="uploader.html#waterlevel" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; text-decoration:none;">Open Source Level Intake ↗</a>
+          <div id="wl-empty-banner" style="display:none; margin-top:12px; padding:12px 16px; border-radius:10px; background:var(--blue-light); border:1px solid var(--blue-border); color:var(--blue-text); font-size:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <span>No river water level readings recorded in this period yet.</span>
+            <a href="uploader.html#waterlevel" class="header-btn" style="background:var(--blue); color:#FFFFFF; border-color:var(--blue); font-weight:700; text-decoration:none;">Log Report &nearr;</a>
           </div>
         </div>
 
-        <!-- Secondary Analytics Grid: 24-Hour Diurnal Profile + Hydraulic Correlation -->
-        <div class="grid-wl-charts">
-          <!-- Chart 2: 24-Hour Diurnal Water Level vs Average Pressure -->
-          <div class="card" style="margin-bottom:0;">
-            <div style="margin-bottom:10px;">
-              <h2 class="card-title" style="margin-bottom:2px;">24-Hour Diurnal Profile: River Level vs. Hourly Avg Pressure</h2>
-              <div style="font-size:11px; color:var(--text-muted);">Average river height &amp; PSI by hour of day (PST) &bull; Shaded zones mark 5–8 AM &amp; 5–8 PM Peak Demand</div>
-            </div>
-            <div class="chart-container-wrap" style="height: 290px;">
-              <canvas id="chart-wl-diurnal"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart 3: Hydraulic Correlation Scatter & El Niño / Montible Diagnostics -->
-          <div class="card" style="margin-bottom:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
-              <div>
-                <h2 class="card-title" style="margin-bottom:2px;">Hydraulic Correlation: Source Level vs. Same-Hour PSI</h2>
-                <div style="font-size:11px; color:var(--text-muted);">Quantifies how river source drawdown impacts downstream network pressure</div>
-              </div>
-              <span id="wl-corr-badge" class="kpi-badge-pill pill-blue" style="white-space:nowrap;">r = —</span>
-            </div>
-            <div class="chart-container-wrap" style="height: 210px;">
-              <canvas id="chart-wl-scatter"></canvas>
-            </div>
-            <div class="wl-diagnostic-grid" id="wl-diagnostic-tiles">
-              <div class="wl-diag-tile">
-                <div class="wl-diag-lbl">Avg PSI @ Normal Level</div>
-                <div class="wl-diag-val" id="wl-diag-psi-normal">—</div>
-                <div class="wl-diag-sub" id="wl-diag-cnt-normal">0 readings</div>
-              </div>
-              <div class="wl-diag-tile">
-                <div class="wl-diag-lbl">Avg PSI Below Normal</div>
-                <div class="wl-diag-val" id="wl-diag-psi-below" style="color:var(--amber-text);">—</div>
-                <div class="wl-diag-sub" id="wl-diag-cnt-below">0 readings</div>
-              </div>
-              <div class="wl-diag-tile">
-                <div class="wl-diag-lbl" id="wl-diag-milestone-lbl">Montible / Dry-Spell Impact</div>
-                <div class="wl-diag-val" id="wl-diag-milestone-val">—</div>
-                <div class="wl-diag-sub" id="wl-diag-milestone-sub">Set activation date in Portal</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Correlated Hourly Readings Ledger -->
+        <!-- Clean Recent Reports Table (6 Scannable Columns) -->
         <div class="table-container">
           <div class="table-head-bar">
-            <div>
-              <div class="table-head-title">Field-Reported River Source Water Levels &amp; Correlated Hourly Pressure Log</div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Each MBS operator report is automatically paired with same-hour average pressure at Manalo Booster and City Distribution</div>
-            </div>
-            <span id="wl-table-count" style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">0 records</span>
+            <div class="table-head-title">Recent Water Level Reports</div>
+            <span id="wl-table-count" style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted);">0 records</span>
           </div>
           <div class="table-responsive">
             <table class="data-table table-sticky-first">
               <thead>
                 <tr>
-                  <th>Date &amp; Time (PST)</th>
+                  <th>Date &amp; Time</th>
                   <th>River Source</th>
-                  <th class="right">Reported Level</th>
+                  <th class="right">Water Level</th>
                   <th class="right">Normal / Critical</th>
-                  <th class="right">Variance (Δ / %)</th>
                   <th>Status</th>
-                  <th class="right">Manalo Avg PSI (Hr)</th>
-                  <th class="right">City Dist. Avg PSI (Hr)</th>
-                  <th>Context &amp; Field Remarks</th>
+                  <th>MBS Pressure &amp; Notes</th>
                 </tr>
               </thead>
               <tbody id="wl-analysis-tbody">
-                <tr><td colspan="9" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">Loading river source water levels...</td></tr>
+                <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">Loading river source water levels...</td></tr>
               </tbody>
             </table>
           </div>
@@ -2471,7 +2381,7 @@
               const latestWl = wlMatches[wlMatches.length - 1];
               const stWl = wlGetStatusInfo(latestWl.water_level, latestWl.normal_level, latestWl.warning_level, latestWl.critical_level);
               const u = latestWl.unit || 'cm';
-              wlBadgeHtml = `<div><button type="button" class="ov-wl-chip" style="background:${stWl.bg}; color:${stWl.color}; border-color:${stWl.border};" onclick="switchNavTab('waterlevel'); setTimeout(() => selectWaterLevelSource(${JSON.stringify(latestWl.station_name)}), 80);" title="Inspect ${escapeHtml(latestWl.station_name)} water level trend">WL: ${wlFmt(latestWl.water_level, u)} / ${wlFmt(latestWl.normal_level, u)} ${escapeHtml(u)} &bull; ${stWl.label}</button></div>`;
+              wlBadgeHtml = `<div><button type="button" class="ov-wl-chip" data-station="${escapeHtml(latestWl.station_name)}" style="background:${stWl.bg}; color:${stWl.color}; border-color:${stWl.border};" onclick="const st=this.dataset.station; switchNavTab('waterlevel'); setTimeout(() => selectWaterLevelSource(st), 80);" title="Inspect ${escapeHtml(latestWl.station_name)} water level trend">WL: ${wlFmt(latestWl.water_level, u)} / ${wlFmt(latestWl.normal_level, u)} ${escapeHtml(u)} &bull; ${stWl.label}</button></div>`;
             }
           }
         } else if (s.isPress) {
@@ -8160,6 +8070,7 @@
   let wlChartTrend = null;
   let wlChartDiurnal = null;
   let wlChartScatter = null;
+  let ovWaterLevelChart = null;
   let wlLastCorrelatedRows = [];
 
   function wlGetPstParts(dt) {
@@ -8402,7 +8313,6 @@
 
   function wlRenderTankCardsHtml(selectedSource, mode = 'waterlevel') {
     const stations = wlGetAllStationsList();
-    const totalSlots = new Set((waterLevelRaw || []).map(r => r.dt.toISOString())).size;
 
     return stations.map((s, idx) => {
       const sRows = (waterLevelRaw || []).filter(r => r.station_name === s.name);
@@ -8413,94 +8323,74 @@
       const warn = latest?.warning_level ?? s.warning_level ?? Math.max(0, norm - 50);
       const isActive = mode === 'waterlevel' && selectedSource === s.name;
       const accent = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
-      const sourceSlots = new Set(sRows.map(r => r.dt.toISOString())).size;
-      const completenessNote = totalSlots > 1 && sourceSlots < totalSlots
-        ? ` • ${sourceSlots}/${totalSlots} reports`
-        : (totalSlots > 0 ? ` • ${sourceSlots} log${sourceSlots === 1 ? '' : 's'}` : '');
 
       const cur = latest ? latest.water_level : 0;
-      const scaleMax = Math.max(norm * 1.15, cur * 1.15, 1);
+      const scaleMax = Math.max(norm * 1.15, cur * 1.12, 1);
       const fillPct = latest ? Math.min(100, Math.max(4, (cur / scaleMax) * 100)) : 0;
-      const normBottomPct = Math.min(92, Math.max(8, (norm / scaleMax) * 100));
-      const critBottomPct = Math.min(85, Math.max(6, (crit / scaleMax) * 100));
+      const normTickPct = Math.min(95, Math.max(8, (norm / scaleMax) * 100));
 
       const st = latest
         ? wlGetStatusInfo(cur, norm, warn, crit)
-        : { label: 'No Logs', color: '#64748B', dot: '#94A3B8', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
-      const layman = wlBuildLaymanSummary(s, latest, norm, warn, crit, unit);
-
-      const waterGradient = st.tier === 'critical'
-        ? 'linear-gradient(180deg, #F87171 0%, #DC2626 100%)'
-        : (st.tier === 'watch'
-            ? 'linear-gradient(180deg, #FBBF24 0%, #D97706 100%)'
-            : (st.tier === 'normal'
-                ? 'linear-gradient(180deg, #34D399 0%, #059669 100%)'
-                : 'linear-gradient(180deg, #60A5FA 0%, #2563EB 100%)'));
+        : { label: 'No Log', color: '#64748B', dot: '#94A3B8', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
 
       const shortTitle = s.name.split('(')[0].trim();
-      const riverSub = s.name.includes('(') ? s.name.slice(s.name.indexOf('(')) : (s.river_name || '');
-      const pctOfFull = norm > 0 && latest ? ((cur / norm) * 100).toFixed(0) : '—';
+      const riverSub = s.name.includes('(')
+        ? s.name.slice(s.name.indexOf('(') + 1, s.name.indexOf(')'))
+        : (s.river_name || '');
+      const isProvisional = s.name.toLowerCase().includes('montible');
+      const delta = latest ? (cur - norm) : null;
+      const deltaStr = delta === null ? '' : `${delta >= 0 ? '+' : ''}${wlFmt(delta, unit)} ${unit}`;
       const dtStr = latest
-        ? latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        ? latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
         : 'No reading yet';
 
-      const clickAction = mode === 'overview'
-        ? `switchNavTab('waterlevel'); setTimeout(() => selectWaterLevelSource(${JSON.stringify(s.name)}), 80);`
-        : `selectWaterLevelSource(${JSON.stringify(s.name)})`;
+      const statusLabelClean = !latest
+        ? 'No Reading'
+        : (st.tier === 'critical'
+            ? 'Critical'
+            : (st.tier === 'watch'
+                ? 'Watch / Low'
+                : (st.tier === 'below' ? 'Safe' : 'Normal')));
+
+      const fillColor = st.tier === 'critical'
+        ? '#EF4444'
+        : (st.tier === 'watch'
+            ? '#F59E0B'
+            : (st.tier === 'normal' ? '#10B981' : '#2563EB'));
+
+      const critFootnote = isProvisional
+        ? `Design base: ${wlFmt(norm, unit)} ${unit} (Provisional)`
+        : `Critical: &le;${wlFmt(crit, unit)} ${unit}`;
 
       return `
-        <button type="button" class="wl-source-card ${isActive ? 'active' : ''}" style="border-top:3px solid ${st.dot || accent};" onclick="${clickAction}">
-          <div class="wl-tank-card-inner">
-            <!-- Visual Water Tank / Gauge -->
-            <div class="wl-tank-vessel" aria-hidden="true">
-              ${!layman.isProvisional ? `<div class="wl-tank-crit-zone" style="height:${critBottomPct.toFixed(1)}%;"></div>` : ''}
-              <div class="wl-tank-norm-line" style="bottom:${normBottomPct.toFixed(1)}%;">
-                <span class="wl-tank-norm-tag">${layman.isProvisional ? 'Base' : 'Full'}: ${wlFmt(norm, unit)}</span>
-              </div>
-              ${!layman.isProvisional ? `<span class="wl-tank-crit-tag">Crit &le;${wlFmt(crit, unit)}</span>` : ''}
-              ${latest ? `
-                <div class="wl-tank-fill" style="height:${fillPct.toFixed(1)}%; background:${waterGradient};">
-                  <span style="font-size:10px; font-weight:800; font-family:var(--font-mono); color:#FFFFFF; text-shadow:0 1px 2px rgba(0,0,0,0.45);">${pctOfFull}%</span>
-                </div>
-              ` : ''}
+        <button type="button" class="wl-source-card ${isActive ? 'active' : ''}" data-station="${escapeHtml(s.name)}" style="border-top:3px solid ${st.dot || accent};" onclick="selectWaterLevelSource(this.dataset.station)">
+          <div class="wl-card-top">
+            <div>
+              <div class="wl-card-title">${escapeHtml(shortTitle)}</div>
+              <div class="wl-card-sub">${escapeHtml(riverSub)}</div>
             </div>
+            <span class="kpi-badge-pill" style="background:${st.bg}; color:${st.color}; border:1px solid ${st.border}; white-space:nowrap; font-size:11px;">${escapeHtml(statusLabelClean)}</span>
+          </div>
 
-            <!-- Layman Executive Summary -->
-            <div style="flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between;">
-              <div>
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
-                  <div style="min-width:0;">
-                    <div style="font-size:13.5px; font-weight:800; color:var(--text-main); line-height:1.2;">${escapeHtml(shortTitle)}</div>
-                    <div style="font-size:10.5px; color:var(--text-muted);">${escapeHtml(riverSub)}</div>
-                  </div>
-                  <span class="kpi-badge-pill" style="background:${st.bg}; color:${st.color}; border:1px solid ${st.border}; white-space:nowrap; font-size:10px;">${escapeHtml(layman.verdictShort)}</span>
-                </div>
-
-                <div class="wl-layman-facts">
-                  <div>
-                    <div class="wl-layman-fact-lbl">Current</div>
-                    <div class="wl-layman-fact-val" style="color:${st.color};">${latest ? wlFmt(cur, unit) + ' ' + escapeHtml(unit) : '—'}</div>
-                  </div>
-                  <div>
-                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Design Base' : 'Full Level'}</div>
-                    <div class="wl-layman-fact-val">${wlFmt(norm, unit)} ${escapeHtml(unit)}</div>
-                  </div>
-                  <div>
-                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Survey' : 'Near-Dry Cutoff'}</div>
-                    <div class="wl-layman-fact-val" style="color:${layman.isProvisional ? 'var(--text-muted)' : 'var(--red-text)'};">${layman.isProvisional ? 'Pending' : '&le;' + wlFmt(crit, unit) + ' ' + escapeHtml(unit)}</div>
-                  </div>
-                </div>
-
-                <div style="font-size:11px; color:var(--text-main); line-height:1.4;">
-                  ${escapeHtml(layman.plainExplain)}
-                </div>
-              </div>
-
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px dashed #E2E8F0; font-size:10px; font-family:var(--font-mono); color:var(--text-muted);">
-                <span style="font-weight:700; color:${st.color};">${escapeHtml(layman.bufferText)}</span>
-                <span>${escapeHtml(dtStr)}${escapeHtml(completenessNote)}</span>
-              </div>
+          <div class="wl-card-metric">
+            <div>
+              <span class="wl-card-hero" style="color:${latest ? st.color : 'var(--text-muted)'};">${latest ? wlFmt(cur, unit) : '—'}</span><span class="wl-card-hero-unit">${escapeHtml(unit)}</span>
             </div>
+            <div class="wl-card-normal">
+              / ${wlFmt(norm, unit)} ${escapeHtml(unit)} normal${deltaStr ? ` &bull; <span style="color:${delta < 0 ? st.color : 'var(--green-text)'};">${escapeHtml(deltaStr)}</span>` : ''}
+            </div>
+          </div>
+
+          <div class="wl-meter-wrap" aria-hidden="true">
+            <div class="wl-meter-track">
+              <div class="wl-meter-fill" style="width:${fillPct.toFixed(1)}%; background:${fillColor};"></div>
+              <div class="wl-meter-norm-tick" style="left:${normTickPct.toFixed(1)}%;" title="Normal Level: ${wlFmt(norm, unit)} ${escapeHtml(unit)}"></div>
+            </div>
+          </div>
+
+          <div class="wl-card-foot">
+            <span>${critFootnote}</span>
+            <span style="font-family:var(--font-mono); font-size:11px;">${escapeHtml(dtStr)}</span>
           </div>
         </button>
       `;
@@ -8564,15 +8454,203 @@
   }
 
   function renderWaterLevelBoardOverview() {
-    const grid = document.getElementById('ov-wl-visual-grid');
-    const verdictEl = document.getElementById('ov-wl-board-verdict');
-    if (grid) {
-      grid.innerHTML = wlRenderTankCardsHtml(null, 'overview');
+    const canvas = document.getElementById('ov-chart-waterlevel');
+    if (!canvas) return;
+
+    const stations = wlGetAllStationsList();
+    const isNarrow = window.innerWidth <= 560;
+    const yLabels = [];
+    const curValues = [];
+    const normValues = [];
+    const curBgColors = [];
+    const curBorderColors = [];
+    const rowMeta = [];
+
+    stations.forEach((s) => {
+      const sRows = (waterLevelRaw || []).filter(r => r.station_name === s.name);
+      const latest = sRows.length > 0 ? sRows[sRows.length - 1] : null;
+      const unit = latest?.unit || s.unit || 'cm';
+      const norm = latest ? Number(latest.normal_level) : Number(s.normal_level || 195);
+      const crit = latest?.critical_level ?? s.critical_level ?? Math.max(0, norm - 80);
+      const warn = latest?.warning_level ?? s.warning_level ?? Math.max(0, norm - 50);
+      const cur = latest ? Number(latest.water_level) : 0;
+
+      const st = latest
+        ? wlGetStatusInfo(cur, norm, warn, crit)
+        : { label: 'No Reading', color: '#64748B', dot: '#94A3B8', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
+
+      const shortTitle = s.name.split('(')[0].trim();
+      const riverSub = s.name.includes('(') ? s.name.slice(s.name.indexOf('(')) : (s.river_name ? `(${s.river_name})` : '');
+      yLabels.push(riverSub ? [shortTitle, riverSub] : shortTitle);
+
+      curValues.push(latest ? cur : 0);
+      normValues.push(norm);
+      curBgColors.push(st.dot || '#2563EB');
+      curBorderColors.push(st.color || '#1D4ED8');
+
+      const curStr = latest ? wlFmt(cur, unit) : '—';
+      const normStr = wlFmt(norm, unit);
+      const isProv = s.name.toLowerCase().includes('montible');
+      const delta = latest ? (cur - norm) : null;
+      const deltaStr = delta === null ? 'No reading' : `${delta >= 0 ? '+' : ''}${wlFmt(delta, unit)} ${unit}`;
+      const dtStr = latest
+        ? latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : 'No reading logged';
+
+      rowMeta.push({
+        fullName: s.name,
+        hasReading: Boolean(latest),
+        cur,
+        norm,
+        crit,
+        warn,
+        unit,
+        curStr,
+        normStr,
+        isProv,
+        deltaStr,
+        statusLabel: st.label,
+        dtStr
+      });
+    });
+
+    const maxVal = Math.max(100, ...curValues, ...normValues);
+    const axisMax = Math.ceil((maxVal * (isNarrow ? 1.38 : 1.28)) / 50) * 50;
+
+    if (ovWaterLevelChart) {
+      ovWaterLevelChart.destroy();
+      ovWaterLevelChart = null;
     }
-    if (verdictEl) {
-      const board = wlComputeOverallBoardStatus();
-      verdictEl.innerHTML = `<span class="kpi-badge-pill ${board.pillClass}" style="margin-right:6px;">${escapeHtml(board.pillText)}</span> ${escapeHtml(board.summarySentence)}`;
-    }
+
+    const pluginsList = (typeof ChartDataLabels !== 'undefined') ? [ChartDataLabels] : [];
+
+    ovWaterLevelChart = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: yLabels,
+        datasets: [
+          {
+            label: 'Current Water Level (cm)',
+            data: curValues,
+            backgroundColor: curBgColors,
+            borderColor: curBorderColors,
+            borderWidth: 1.5,
+            borderRadius: 6,
+            barPercentage: 0.78,
+            categoryPercentage: 0.72
+          },
+          {
+            label: 'Normal Water Level (cm)',
+            data: normValues,
+            backgroundColor: 'rgba(148, 163, 184, 0.35)',
+            borderColor: '#64748B',
+            borderWidth: 1.2,
+            borderRadius: 6,
+            barPercentage: 0.78,
+            categoryPercentage: 0.72
+          }
+        ]
+      },
+      plugins: pluginsList,
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick(evt, elements) {
+          if (elements && elements.length > 0) {
+            const m = rowMeta[elements[0].index];
+            if (m) {
+              switchNavTab('waterlevel');
+              setTimeout(() => selectWaterLevelSource(m.fullName), 80);
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            align: 'start',
+            labels: {
+              boxWidth: 12,
+              font: { family: 'Inter, sans-serif', size: 11, weight: '600' },
+              color: '#334155'
+            }
+          },
+          tooltip: {
+            callbacks: {
+              title(items) {
+                const idx = items[0]?.dataIndex ?? 0;
+                return rowMeta[idx]?.fullName || '';
+              },
+              label(ctx) {
+                const m = rowMeta[ctx.dataIndex];
+                if (!m) return '';
+                if (ctx.datasetIndex === 0) {
+                  return ` Current / Normal: ${m.curStr} / ${m.normStr} ${m.unit} (${m.statusLabel})`;
+                }
+                return ` Normal${m.isProv ? ' (Provisional Design)' : ''}: ${m.normStr} ${m.unit} • Critical: ≤${wlFmt(m.crit, m.unit)} ${m.unit}`;
+              },
+              afterBody(items) {
+                const m = rowMeta[items[0]?.dataIndex];
+                if (!m) return '';
+                return [` Variance vs Normal: ${m.deltaStr}`, ` Last Reported: ${m.dtStr}`];
+              }
+            }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            offset: 5,
+            clamp: true,
+            font: {
+              family: 'JetBrains Mono, monospace',
+              size: isNarrow ? 10 : 11,
+              weight: '700'
+            },
+            color(ctx) {
+              if (ctx.datasetIndex === 0) {
+                return rowMeta[ctx.dataIndex]?.hasReading ? '#0F172A' : '#64748B';
+              }
+              return '#475569';
+            },
+            formatter(value, ctx) {
+              const m = rowMeta[ctx.dataIndex];
+              if (!m) return '';
+              if (ctx.datasetIndex === 0) {
+                if (isNarrow) return `${m.curStr} / ${m.normStr} ${m.unit}`;
+                return `${m.curStr} / ${m.normStr} ${m.unit} (${m.statusLabel})`;
+              }
+              return m.isProv ? `${m.normStr} ${m.unit} (Base)` : `${m.normStr} ${m.unit} (Normal)`;
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            suggestedMax: axisMax,
+            grid: { color: 'rgba(148, 163, 184, 0.2)' },
+            ticks: {
+              font: { family: 'JetBrains Mono, monospace', size: 11 },
+              color: '#475569',
+              callback(v) { return `${v} cm`; }
+            },
+            title: {
+              display: true,
+              text: 'Water Level Height (cm) — Current Water Level vs. Normal Water Level',
+              font: { family: 'Inter, sans-serif', size: 11, weight: '600' },
+              color: '#475569'
+            }
+          },
+          y: {
+            grid: { display: false },
+            ticks: {
+              font: { family: 'Inter, sans-serif', size: isNarrow ? 11 : 12, weight: '700' },
+              color: '#0F172A',
+              padding: 6
+            }
+          }
+        }
+      }
+    });
   }
 
   async function copyWaterLevelBoardSummary(btnEl) {
@@ -8606,17 +8684,6 @@
       const isAll = selectedSource === 'ALL_COMPARE';
       compareBtn.style.background = isAll ? 'var(--blue)' : 'var(--blue-light)';
       compareBtn.style.color = isAll ? '#FFFFFF' : 'var(--blue-text)';
-    }
-
-    const board = wlComputeOverallBoardStatus();
-    const pillEl = document.getElementById('wl-board-pill');
-    const txtEl = document.getElementById('wl-board-summary-text');
-    if (pillEl) {
-      pillEl.textContent = board.pillText;
-      pillEl.className = `kpi-badge-pill ${board.pillClass}`;
-    }
-    if (txtEl) {
-      txtEl.textContent = board.summarySentence + ' Click any tank card below to inspect hourly pressure and drawdown trends.';
     }
 
     if (grid) {
@@ -8782,18 +8849,15 @@
     wlPopulateControls();
     const selectedSource = document.getElementById('wl-dash-station')?.value || 'ALL_COMPARE';
     const isAllMode = selectedSource === 'ALL_COMPARE';
-    const pressSource = document.getElementById('wl-dash-pressure-source')?.value || 'col:2';
-    const pressSourceLabel = document.getElementById('wl-dash-pressure-source')?.selectedOptions?.[0]?.textContent || 'Manalo Booster Station — MBS (PSI)';
-    const showPsi = document.getElementById('wl-toggle-psi-overlay')?.checked !== false;
-    const showThresholds = document.getElementById('wl-toggle-thresholds')?.checked !== false;
-    const connectGaps = document.getElementById('wl-toggle-connect-gaps')?.checked !== false;
-    const compareMode = isAllMode ? (document.getElementById('wl-compare-mode')?.value || 'delta') : 'raw';
+    const pressSourceSel = document.getElementById('wl-dash-pressure-source');
+    const pressSource = pressSourceSel?.value || 'col:2';
+    const pressSourceLabel = pressSourceSel?.selectedOptions?.[0]?.textContent || 'Manalo Booster Station — MBS (PSI)';
+    const showPsi = document.getElementById('wl-toggle-psi-overlay')?.checked === true;
+    const compareMode = isAllMode ? (document.getElementById('wl-compare-mode')?.value || 'raw') : 'raw';
 
-    // Toggle UI helpers for All-Sources vs Single-Source
+    if (pressSourceSel) pressSourceSel.style.display = showPsi ? 'inline-block' : 'none';
     const normWrap = document.getElementById('wl-normalize-wrap');
-    const gapWrap = document.getElementById('wl-gap-wrap');
     if (normWrap) normWrap.style.display = isAllMode ? 'inline-flex' : 'none';
-    if (gapWrap) gapWrap.style.display = isAllMode ? 'inline-flex' : 'none';
 
     renderWaterLevelSourceCards(selectedSource);
 
@@ -8835,181 +8899,129 @@
     const trendTitle = document.getElementById('wl-trend-title');
     const trendSub = document.getElementById('wl-trend-sub');
     if (trendTitle) {
-      const modeTitle = compareMode === 'delta' ? `Variance vs. Normal (Δ ${unit})` : (compareMode === 'pct' ? '% of Normal Height' : `Actual Height (${unit})`);
       trendTitle.textContent = isAllMode
-        ? `All River Sources Comparison — ${modeTitle} vs. Hourly Avg Pressure`
-        : `${selectedSource} — Water Level vs. Normal & Critical Levels`;
+        ? 'Water Level Trend — All River Sources'
+        : `${selectedSource.split('(')[0].trim()} — Water Level Trend`;
     }
     if (trendSub) {
       trendSub.textContent = isAllMode
-        ? 'Engineering operating margin: -50 cm (Watch) to -80 cm (Critical) below Normal Level • Paired with hourly average PSI'
-        : `Measuring Point: ${meta?.measuring_point || 'Intake Staff Gauge'} • Paired with hourly average PSI`;
+        ? 'Comparing reported water levels across monitored sources'
+        : `Reported height (${unit}) compared against Normal (${wlFmt(meta?.normal_level, unit)} ${unit}) & Critical limits`;
     }
 
-    // ── 1. UPDATE KPI CARDS ──
+    // ── 1. UPDATE 4 CONCISE EXECUTIVE KPI CARDS ──
     const kpiLatestLbl = document.getElementById('wl-kpi-latest-lbl');
     const kpiLatest = document.getElementById('wl-kpi-latest');
     const kpiLatestSub = document.getElementById('wl-kpi-latest-sub');
     const kpiVar = document.getElementById('wl-kpi-variance');
-    const kpiBar = document.getElementById('wl-kpi-bar');
     const kpiNormSub = document.getElementById('wl-kpi-normal-sub');
     const kpiRange = document.getElementById('wl-kpi-range');
     const kpiBelowSub = document.getElementById('wl-kpi-below-sub');
-    const kpiRate = document.getElementById('wl-kpi-rate');
-    const kpiRateSub = document.getElementById('wl-kpi-rate-sub');
     const kpiPsi = document.getElementById('wl-kpi-psi');
     const kpiPsiSub = document.getElementById('wl-kpi-psi-sub');
 
     if (enriched.length === 0) {
-      if (kpiLatestLbl) kpiLatestLbl.textContent = isAllMode ? 'Active River Sources' : 'Latest Reported Level';
+      if (kpiLatestLbl) kpiLatestLbl.textContent = isAllMode ? 'Sources Reporting' : 'Current Water Level';
       if (kpiLatest) { kpiLatest.innerHTML = `—<span class="unit">${escapeHtml(unit)}</span>`; kpiLatest.style.color = 'var(--text-main)'; }
-      if (kpiLatestSub) kpiLatestSub.textContent = 'No readings in selected window';
+      if (kpiLatestSub) kpiLatestSub.textContent = 'No readings in selected period';
       if (kpiVar) { kpiVar.textContent = '—'; kpiVar.style.color = 'var(--text-main)'; }
-      if (kpiBar) kpiBar.style.width = '0%';
-      if (kpiNormSub) kpiNormSub.textContent = isAllMode ? 'Engineering margin: -50 to -80 cm' : `Normal: ${wlFmt(meta?.normal_level || 195, unit)} ${unit} • Crit: ≤${wlFmt(meta?.critical_level ?? 115, unit)} ${unit}`;
+      if (kpiNormSub) kpiNormSub.textContent = isAllMode ? 'All monitored sources' : `Normal: ${wlFmt(meta?.normal_level || 195, unit)} ${unit}`;
       if (kpiRange) kpiRange.textContent = '—';
-      if (kpiBelowSub) kpiBelowSub.textContent = '0 MBS operator logs';
-      if (kpiRate) { kpiRate.textContent = '—'; kpiRate.style.color = 'var(--text-main)'; }
-      if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 readings';
+      if (kpiBelowSub) kpiBelowSub.textContent = '0 reports';
       if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
-      if (kpiPsiSub) kpiPsiSub.textContent = pressSourceLabel;
+      if (kpiPsiSub) kpiPsiSub.textContent = 'Manalo Booster avg';
     } else if (isAllMode) {
       const latestBySource = new Map();
       enriched.forEach(r => latestBySource.set(r.station_name, r));
       const latestArr = Array.from(latestBySource.values());
-      const avgDelta = latestArr.reduce((s, r) => s + r.deltaCm, 0) / latestArr.length;
       const critCount = latestArr.filter(r => r.statusInfo.tier === 'critical').length;
       const watchCount = latestArr.filter(r => r.statusInfo.tier === 'watch').length;
-      const worst = [...latestArr].sort((a, b) => a.deltaCm - b.deltaCm)[0];
+      const safeCount = latestArr.length - critCount - watchCount;
+      const worst = [...latestArr].sort((a, b) => (a.water_level - (a.effCrit ?? 0)) - (b.water_level - (b.effCrit ?? 0)))[0];
 
-      if (kpiLatestLbl) kpiLatestLbl.textContent = 'Avg Variance vs. Normal';
+      if (kpiLatestLbl) kpiLatestLbl.textContent = 'Sources Operational';
       if (kpiLatest) {
-        kpiLatest.innerHTML = `${avgDelta >= 0 ? '+' : ''}${wlFmt(avgDelta, unit)}<span class="unit">${escapeHtml(unit)}</span>`;
-        kpiLatest.style.color = critCount > 0 ? 'var(--red-text)' : (watchCount > 0 ? 'var(--amber-text)' : 'var(--blue-text)');
+        kpiLatest.innerHTML = `${safeCount + watchCount}/${allStations.length} <span class="unit">safe</span>`;
+        kpiLatest.style.color = critCount > 0 ? 'var(--red-text)' : (watchCount > 0 ? 'var(--amber-text)' : 'var(--green-text)');
       }
-      if (kpiLatestSub) kpiLatestSub.textContent = `${latestArr.length} source(s) active • ${critCount} critical, ${watchCount} watch`;
-      if (kpiVar) {
-        kpiVar.textContent = worst ? `${worst.deltaCm >= 0 ? '+' : ''}${wlFmt(worst.deltaCm, worst.unit || unit)} ${worst.unit || unit} (${wlFmt(worst.water_level, worst.unit || unit)})` : '—';
-        kpiVar.style.color = worst ? worst.statusInfo.color : 'var(--text-main)';
-      }
-      if (kpiBar) {
-        kpiBar.style.width = `${Math.min(100, Math.max(0, worst?.pctOfNormal || 0)).toFixed(1)}%`;
-        kpiBar.style.background = worst?.statusInfo?.dot || 'var(--blue)';
-      }
-      if (kpiNormSub) kpiNormSub.textContent = worst ? `Deepest Drop: ${worst.station_name.split('(')[0].trim()}` : '—';
+      if (kpiLatestSub) kpiLatestSub.textContent = critCount > 0 ? `${critCount} critical • ${safeCount} safe` : 'All reporting within operating limits';
 
-      const deltas = enriched.map(r => r.deltaCm);
-      const minD = Math.min(...deltas);
-      const maxD = Math.max(...deltas);
-      const belowCnt = enriched.filter(r => r.water_level < r.normal_level).length;
-      if (kpiRange) kpiRange.textContent = `${minD >= 0 ? '+' : ''}${wlFmt(minD, unit)} to ${maxD >= 0 ? '+' : ''}${wlFmt(maxD, unit)} ${unit}`;
-      if (kpiBelowSub) kpiBelowSub.textContent = `${((belowCnt / enriched.length) * 100).toFixed(0)}% of ${enriched.length} logs below normal`;
-
-      const rates = [];
-      allStations.forEach(s => {
-        const sr = enriched.filter(r => r.station_name === s.name);
-        if (sr.length >= 2) {
-          const a = sr[sr.length - 2], b = sr[sr.length - 1];
-          const hrs = (b.dt - a.dt) / 3600000;
-          if (hrs > 0.05) rates.push((b.water_level - a.water_level) / hrs);
+      if (worst) {
+        const critVal = worst.effCrit ?? Math.max(0, worst.normal_level - 80);
+        const buf = worst.water_level - critVal;
+        if (kpiVar) {
+          kpiVar.textContent = buf >= 0 ? `+${wlFmt(buf, unit)} ${unit}` : `${wlFmt(buf, unit)} ${unit}`;
+          kpiVar.style.color = worst.statusInfo.color;
         }
-      });
-      if (rates.length > 0) {
-        const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
-        if (kpiRate) {
-          kpiRate.textContent = `${avgRate >= 0 ? '+' : ''}${avgRate.toFixed(1)} ${unit}/hr`;
-          kpiRate.style.color = avgRate < -0.2 ? 'var(--red-text)' : (avgRate > 0.2 ? 'var(--green-text)' : 'var(--text-main)');
-        }
-        if (kpiRateSub) kpiRateSub.textContent = avgRate < -0.2 ? 'Net watershed drawdown' : (avgRate > 0.2 ? 'Net watershed recovery' : 'Watersheds stable');
-      } else {
-        if (kpiRate) kpiRate.textContent = '—';
-        if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 logs per source';
+        if (kpiNormSub) kpiNormSub.textContent = `${worst.station_name.split('(')[0].trim()} (${buf >= 0 ? 'above' : 'below'} critical)`;
       }
 
-      const latestWithPsi = [...enriched].reverse().find(r => r.selectedPsi !== null);
+      const vals = enriched.map(r => r.water_level);
+      const minV = Math.min(...vals);
+      const maxV = Math.max(...vals);
+      if (kpiRange) kpiRange.textContent = `${wlFmt(minV, unit)} – ${wlFmt(maxV, unit)} ${unit}`;
+      if (kpiBelowSub) kpiBelowSub.textContent = `${enriched.length} total report${enriched.length === 1 ? '' : 's'}`;
+
+      const latestWithPsi = [...enriched].reverse().find(r => r.manaloPsi !== null);
       if (latestWithPsi) {
         if (kpiPsi) {
-          kpiPsi.innerHTML = `${latestWithPsi.selectedPsi.toFixed(1)}<span class="unit">PSI</span>`;
-          kpiPsi.style.color = latestWithPsi.selectedPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
+          kpiPsi.innerHTML = `${latestWithPsi.manaloPsi.toFixed(1)}<span class="unit">PSI</span>`;
+          kpiPsi.style.color = latestWithPsi.manaloPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
         }
-        if (kpiPsiSub) kpiPsiSub.textContent = `${pressSourceLabel.replace(' (PSI)', '')} @ ${latestWithPsi.pst.timeLabel}`;
+        if (kpiPsiSub) kpiPsiSub.textContent = `Manalo Booster @ ${latestWithPsi.pst.timeLabel}`;
       } else {
         if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
-        if (kpiPsiSub) kpiPsiSub.textContent = 'No pressure telemetry for logged hours';
+        if (kpiPsiSub) kpiPsiSub.textContent = 'No same-hour SCADA PSI';
       }
     } else {
       const latest = enriched[enriched.length - 1];
       const delta = latest.deltaCm;
-      const pct = latest.pctOfNormal || 0;
       const sign = delta >= 0 ? '+' : '';
-      const latestStr = latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const latestStr = latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      const critVal = latest.effCrit ?? Math.max(0, latest.normal_level - 80);
+      const bufferCrit = latest.water_level - critVal;
+      const isProv = latest.station_name.toLowerCase().includes('montible');
 
-      if (kpiLatestLbl) kpiLatestLbl.textContent = 'Latest Reported Level';
+      if (kpiLatestLbl) kpiLatestLbl.textContent = 'Current Water Level';
       if (kpiLatest) {
         kpiLatest.innerHTML = `${wlFmt(latest.water_level, unit)}<span class="unit">${escapeHtml(unit)}</span>`;
         kpiLatest.style.color = latest.statusInfo.color;
       }
-      if (kpiLatestSub) {
-        kpiLatestSub.innerHTML = `<span class="kpi-badge-pill" style="background:${latest.statusInfo.bg}; color:${latest.statusInfo.color}; border:1px solid ${latest.statusInfo.border};">${latest.statusInfo.label}</span> &bull; ${escapeHtml(latestStr)}`;
-      }
+      if (kpiLatestSub) kpiLatestSub.textContent = `${sign}${wlFmt(delta, unit)} ${unit} vs. Normal • ${latestStr}`;
+
       if (kpiVar) {
-        kpiVar.textContent = `${sign}${wlFmt(delta, unit)} ${unit} (${pct.toFixed(0)}%)`;
-        kpiVar.style.color = delta < 0 ? 'var(--red-text)' : 'var(--green-text)';
-      }
-      if (kpiBar) {
-        kpiBar.style.width = `${Math.min(100, Math.max(0, pct)).toFixed(1)}%`;
-        kpiBar.style.background = latest.statusInfo.dot || latest.statusInfo.color;
+        kpiVar.textContent = isProv
+          ? 'Provisional'
+          : (bufferCrit >= 0 ? `+${wlFmt(bufferCrit, unit)} ${unit}` : `${wlFmt(bufferCrit, unit)} ${unit}`);
+        kpiVar.style.color = isProv ? 'var(--text-muted)' : (bufferCrit <= 0 ? 'var(--red-text)' : 'var(--green-text)');
       }
       if (kpiNormSub) {
-        kpiNormSub.textContent = `Normal: ${wlFmt(latest.normal_level, unit)} ${unit} • Crit: ≤${wlFmt(latest.effCrit ?? Math.max(0, latest.normal_level - 80), unit)} ${unit}`;
+        kpiNormSub.textContent = isProv
+          ? `Design base: ${wlFmt(latest.normal_level, unit)} ${unit}`
+          : `Normal: ${wlFmt(latest.normal_level, unit)} ${unit} • Crit: ≤${wlFmt(critVal, unit)} ${unit}`;
       }
 
       const vals = enriched.map(r => r.water_level);
       const minV = Math.min(...vals);
       const maxV = Math.max(...vals);
       const avgV = vals.reduce((a, b) => a + b, 0) / vals.length;
-      const belowCount = enriched.filter(r => r.water_level < r.normal_level).length;
-      const belowPct = (belowCount / enriched.length) * 100;
-
       if (kpiRange) kpiRange.textContent = `${wlFmt(minV, unit)} – ${wlFmt(maxV, unit)} ${unit}`;
-      if (kpiBelowSub) kpiBelowSub.textContent = `Avg: ${wlFmt(avgV, unit)} ${unit} • ${belowPct.toFixed(0)}% below normal (${enriched.length} logs)`;
+      if (kpiBelowSub) kpiBelowSub.textContent = `Avg ${wlFmt(avgV, unit)} ${unit} • ${enriched.length} report${enriched.length === 1 ? '' : 's'}`;
 
-      if (enriched.length >= 2) {
-        const prev = enriched[enriched.length - 2];
-        const hrs = (latest.dt.getTime() - prev.dt.getTime()) / 3600000;
-        if (hrs > 0.05) {
-          const rate = (latest.water_level - prev.water_level) / hrs;
-          const rSign = rate >= 0 ? '+' : '';
-          if (kpiRate) {
-            kpiRate.textContent = `${rSign}${rate.toFixed(1)} ${unit}/hr`;
-            kpiRate.style.color = rate < -0.2 ? 'var(--red-text)' : (rate > 0.2 ? 'var(--green-text)' : 'var(--text-main)');
-          }
-          if (kpiRateSub) {
-            kpiRateSub.textContent = rate < -0.2 ? 'Active river drawdown' : (rate > 0.2 ? 'River level recovering' : 'River level stable');
-          }
-        } else {
-          if (kpiRate) kpiRate.textContent = '0 ' + unit + '/hr';
-          if (kpiRateSub) kpiRateSub.textContent = 'Readings too close in time';
-        }
-      } else {
-        if (kpiRate) kpiRate.textContent = '—';
-        if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 readings';
-      }
-
-      const latestWithPsi = [...enriched].reverse().find(r => r.selectedPsi !== null);
-      if (latestWithPsi && latestWithPsi.selectedPsi !== null) {
+      const latestWithPsi = [...enriched].reverse().find(r => r.manaloPsi !== null);
+      if (latestWithPsi) {
         if (kpiPsi) {
-          kpiPsi.innerHTML = `${latestWithPsi.selectedPsi.toFixed(1)}<span class="unit">PSI</span>`;
-          kpiPsi.style.color = latestWithPsi.selectedPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
+          kpiPsi.innerHTML = `${latestWithPsi.manaloPsi.toFixed(1)}<span class="unit">PSI</span>`;
+          kpiPsi.style.color = latestWithPsi.manaloPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
         }
-        if (kpiPsiSub) kpiPsiSub.textContent = `${pressSourceLabel.replace(' (PSI)', '')} @ ${latestWithPsi.pst.timeLabel}`;
+        if (kpiPsiSub) kpiPsiSub.textContent = `Manalo Booster @ ${latestWithPsi.pst.timeLabel}`;
       } else {
         if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
-        if (kpiPsiSub) kpiPsiSub.textContent = 'No pressure telemetry for this hour';
+        if (kpiPsiSub) kpiPsiSub.textContent = 'No same-hour SCADA PSI';
       }
     }
 
-    // ── 2. CHART 1: DUAL-AXIS TREND LINE CHART ──
+    // ── 2. CLEAN TREND LINE CHART ──
     const trendCanvas = document.getElementById('chart-wl-trend');
     if (trendCanvas) {
       if (wlChartTrend) { try { wlChartTrend.destroy(); } catch (e) {} wlChartTrend = null; }
@@ -9037,7 +9049,7 @@
           s.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
         );
 
-        yAxisTitle = compareMode === 'delta' ? `Variance vs. Normal (Δ ${unit})` : (compareMode === 'pct' ? '% of Normal Level' : `Water Level (${unit})`);
+        yAxisTitle = compareMode === 'delta' ? `vs. Normal (Δ ${unit})` : (compareMode === 'pct' ? '% of Normal' : `Water Level (${unit})`);
         yBeginAtZero = compareMode !== 'delta';
 
         allStations.forEach((s, idx) => {
@@ -9051,20 +9063,18 @@
           });
           if (dataSeries.some(v => v !== null)) {
             datasets.push({
-              label: s.name,
+              label: s.name.split('(')[0].trim(),
               data: dataSeries,
               borderColor: color,
               backgroundColor: color + '18',
-              borderWidth: 2.4,
+              borderWidth: 2.5,
               pointRadius: 4,
               pointHoverRadius: 6,
               pointBackgroundColor: color,
               pointBorderColor: '#FFFFFF',
               pointBorderWidth: 1.5,
-              spanGaps: connectGaps,
-              segment: {
-                borderDash: ctx => (ctx.p0.skip || ctx.p1.skip) ? [5, 5] : undefined
-              },
+              spanGaps: true,
+              segment: { borderDash: ctx => (ctx.p0.skip || ctx.p1.skip) ? [5, 5] : undefined },
               tension: 0.25,
               fill: false,
               yAxisID: 'y'
@@ -9072,62 +9082,48 @@
           }
         });
 
-        if (showThresholds && slots.length > 0) {
-          if (compareMode === 'delta') {
-            datasets.push({
-              label: `Normal Level (0 ${unit})`,
-              data: new Array(slots.length).fill(0),
-              borderColor: '#10B981',
-              borderWidth: 1.8,
-              borderDash: [6, 4],
-              pointRadius: 0,
-              fill: false,
-              yAxisID: 'y'
-            });
-            datasets.push({
-              label: `Watch Margin (-50 ${unit})`,
-              data: new Array(slots.length).fill(-50),
-              borderColor: '#F59E0B',
-              borderWidth: 1.4,
-              borderDash: [4, 4],
-              pointRadius: 0,
-              fill: false,
-              yAxisID: 'y'
-            });
-            datasets.push({
-              label: `Critical Limit (-80 ${unit})`,
-              data: new Array(slots.length).fill(-80),
-              borderColor: '#EF4444',
-              borderWidth: 1.6,
-              borderDash: [3, 3],
-              pointRadius: 0,
-              fill: false,
-              yAxisID: 'y'
-            });
-          } else if (compareMode === 'pct') {
-            datasets.push({
-              label: 'Normal Level (100%)',
-              data: new Array(slots.length).fill(100),
-              borderColor: '#10B981',
-              borderWidth: 1.8,
-              borderDash: [6, 4],
-              pointRadius: 0,
-              fill: false,
-              yAxisID: 'y'
-            });
-          }
+        if (slots.length > 0 && compareMode === 'delta') {
+          datasets.push({
+            label: `Normal (0 ${unit})`,
+            data: new Array(slots.length).fill(0),
+            borderColor: '#10B981',
+            borderWidth: 1.6,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+            yAxisID: 'y'
+          });
+          datasets.push({
+            label: `Critical (-80 ${unit})`,
+            data: new Array(slots.length).fill(-80),
+            borderColor: '#EF4444',
+            borderWidth: 1.5,
+            borderDash: [3, 3],
+            pointRadius: 0,
+            fill: false,
+            yAxisID: 'y'
+          });
+        } else if (slots.length > 0 && compareMode === 'pct') {
+          datasets.push({
+            label: 'Normal (100%)',
+            data: new Array(slots.length).fill(100),
+            borderColor: '#10B981',
+            borderWidth: 1.6,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+            yAxisID: 'y'
+          });
         }
 
         if (showPsi) {
           datasets.push({
-            label: `Hourly Avg ${pressSourceLabel}`,
-            data: slots.map(s => s.selectedPsi !== null ? Number(s.selectedPsi.toFixed(2)) : null),
-            borderColor: '#475569',
-            backgroundColor: 'rgba(71, 85, 105, 0.14)',
+            label: pressSourceLabel,
+            data: slots.map(s => s.selectedPsi !== null ? Number(s.selectedPsi.toFixed(1)) : null),
+            borderColor: '#64748B',
             borderWidth: 1.8,
             borderDash: [3, 3],
             pointRadius: 3,
-            pointStyle: 'rectRot',
             spanGaps: true,
             tension: 0.25,
             yAxisID: 'y1'
@@ -9140,17 +9136,16 @@
         );
         const levelData = enriched.map(r => r.water_level);
         const normalData = enriched.map(r => r.normal_level);
-        const warnData = enriched.map(r => r.effWarn ?? Math.max(0, r.normal_level - 50));
         const critData = enriched.map(r => r.effCrit ?? Math.max(0, r.normal_level - 80));
-        const psiData = enriched.map(r => r.selectedPsi !== null ? Number(r.selectedPsi.toFixed(2)) : null);
+        const psiData = enriched.map(r => r.selectedPsi !== null ? Number(r.selectedPsi.toFixed(1)) : null);
         const pointColors = enriched.map(r => r.statusInfo.dot || '#2563EB');
 
         datasets.push({
-          label: `Reported Water Level (${unit})`,
+          label: `Water Level (${unit})`,
           data: levelData,
           borderColor: '#2563EB',
-          backgroundColor: 'rgba(37, 99, 235, 0.10)',
-          borderWidth: 2.5,
+          backgroundColor: 'rgba(37, 99, 235, 0.08)',
+          borderWidth: 2.6,
           fill: true,
           tension: 0.25,
           pointRadius: 4.5,
@@ -9161,31 +9156,21 @@
           yAxisID: 'y'
         });
 
-        if (showThresholds) {
+        datasets.push({
+          label: `Normal (${unit})`,
+          data: normalData,
+          borderColor: '#10B981',
+          borderWidth: 1.8,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          yAxisID: 'y'
+        });
+
+        if (!selectedSource.toLowerCase().includes('montible')) {
           datasets.push({
-            label: `Normal Level (${unit})`,
-            data: normalData,
-            borderColor: '#10B981',
-            borderWidth: 2,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            fill: false,
-            tension: 0,
-            yAxisID: 'y'
-          });
-          datasets.push({
-            label: `Watch Level (${unit})`,
-            data: warnData,
-            borderColor: '#F59E0B',
-            borderWidth: 1.3,
-            borderDash: [4, 4],
-            pointRadius: 0,
-            fill: false,
-            tension: 0,
-            yAxisID: 'y'
-          });
-          datasets.push({
-            label: `Critical Level (${unit})`,
+            label: `Critical (${unit})`,
             data: critData,
             borderColor: '#EF4444',
             borderWidth: 1.6,
@@ -9199,15 +9184,13 @@
 
         if (showPsi) {
           datasets.push({
-            label: `Hourly Avg ${pressSourceLabel}`,
+            label: pressSourceLabel,
             data: psiData,
             borderColor: '#0D9488',
-            backgroundColor: 'rgba(13, 148, 136, 0.18)',
             borderWidth: 2,
             borderDash: [2, 2],
             pointRadius: 3.5,
             pointBackgroundColor: '#0D9488',
-            pointStyle: 'rectRot',
             spanGaps: true,
             tension: 0.25,
             yAxisID: 'y1'
@@ -9239,21 +9222,16 @@
             wlMilestoneLines: { lines: milestoneLines },
             legend: {
               position: 'top',
-              labels: { usePointStyle: true, boxWidth: 10, font: { size: 11, family: 'Inter, sans-serif' } }
+              labels: { usePointStyle: true, boxWidth: 10, font: { size: 11.5, family: 'Inter, sans-serif' } }
             },
             tooltip: {
               callbacks: {
                 afterBody(items) {
                   if (isAllMode) return '';
-                  const idx = items[0]?.dataIndex;
-                  const row = enriched[idx];
+                  const row = enriched[items[0]?.dataIndex];
                   if (!row) return '';
-                  const linesOut = [];
                   const dlt = row.deltaCm;
-                  linesOut.push(`Variance vs Normal: ${dlt >= 0 ? '+' : ''}${wlFmt(dlt, unit)} ${unit} (${row.statusInfo.label})`);
-                  if (row.source_context) linesOut.push(`Context: ${row.source_context}`);
-                  if (row.remarks) linesOut.push(`Note: ${row.remarks}`);
-                  return linesOut;
+                  return `Variance vs. Normal: ${dlt >= 0 ? '+' : ''}${wlFmt(dlt, unit)} ${unit} (${row.statusInfo.label})`;
                 }
               }
             },
@@ -9264,15 +9242,15 @@
           },
           scales: {
             x: {
-              ticks: { maxRotation: 35, autoSkip: true, maxTicksLimit: 12, font: { size: 10, family: 'IBM Plex Mono, monospace' } },
-              grid: { color: 'rgba(15, 23, 42, 0.05)' }
+              ticks: { maxRotation: 30, autoSkip: true, maxTicksLimit: 10, font: { size: 10.5, family: 'JetBrains Mono, monospace' } },
+              grid: { color: 'rgba(15, 23, 42, 0.04)' }
             },
             y: {
               type: 'linear',
               position: 'left',
               beginAtZero: yBeginAtZero,
-              title: { display: true, text: yAxisTitle, font: { size: 11, weight: '700' }, color: '#1D4ED8' },
-              ticks: { font: { size: 10.5, family: 'IBM Plex Mono, monospace' } },
+              title: { display: true, text: yAxisTitle, font: { size: 11.5, weight: '700' }, color: '#1D4ED8' },
+              ticks: { font: { size: 11, family: 'JetBrains Mono, monospace' } },
               grid: { color: 'rgba(15, 23, 42, 0.06)' }
             },
             y1: {
@@ -9280,8 +9258,8 @@
               position: 'right',
               display: showPsi,
               beginAtZero: true,
-              title: { display: true, text: 'Hourly Avg Pressure (PSI)', font: { size: 11, weight: '700' }, color: '#0F766E' },
-              ticks: { font: { size: 10.5, family: 'IBM Plex Mono, monospace' } },
+              title: { display: true, text: 'Pressure (PSI)', font: { size: 11.5, weight: '700' }, color: '#0F766E' },
+              ticks: { font: { size: 11, family: 'JetBrains Mono, monospace' } },
               grid: { drawOnChartArea: false }
             }
           }
@@ -9289,304 +9267,39 @@
       });
     }
 
-    // ── 3. CHART 2: 24-HOUR DIURNAL RIVER LEVEL VS AVG PRESSURE ──
-    const diurnalCanvas = document.getElementById('chart-wl-diurnal');
-    if (diurnalCanvas) {
-      if (wlChartDiurnal) { try { wlChartDiurnal.destroy(); } catch (e) {} wlChartDiurnal = null; }
-
-      const hourLabels = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
-      const hrPsiAvg = pressLookup.byHourOfDay.map(b => {
-        const v = pressLookup.getSourceAvg(b, pressSource);
-        return v !== null ? Number(v.toFixed(2)) : null;
-      });
-
-      const diurnalDatasets = [];
-      if (isAllMode) {
-        allStations.forEach((s, idx) => {
-          const sums = new Array(24).fill(0), cnts = new Array(24).fill(0);
-          enriched.filter(r => r.station_name === s.name).forEach(r => {
-            const val = compareMode === 'delta' ? r.deltaCm : (compareMode === 'pct' ? (r.pctOfNormal || 0) : r.water_level);
-            sums[r.pst.hour] += val;
-            cnts[r.pst.hour] += 1;
-          });
-          if (cnts.some(c => c > 0)) {
-            const color = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
-            diurnalDatasets.push({
-              type: 'line',
-              label: s.name.split('(')[0].trim(),
-              data: sums.map((sm, h) => cnts[h] > 0 ? Number((sm / cnts[h]).toFixed(1)) : null),
-              borderColor: color,
-              borderWidth: 2.2,
-              pointRadius: 3,
-              pointBackgroundColor: color,
-              spanGaps: true,
-              tension: 0.3,
-              yAxisID: 'y',
-              order: 1
-            });
-          }
-        });
-      } else {
-        const hrWlSums = new Array(24).fill(0);
-        const hrWlCnts = new Array(24).fill(0);
-        enriched.forEach(r => {
-          hrWlSums[r.pst.hour] += r.water_level;
-          hrWlCnts[r.pst.hour] += 1;
-        });
-        const hrWlAvg = hrWlSums.map((s, h) => hrWlCnts[h] > 0 ? Number((s / hrWlCnts[h]).toFixed(1)) : null);
-        const normalRef = enriched.length > 0 ? enriched[enriched.length - 1].normal_level : Number(meta?.normal_level || 195);
-
-        diurnalDatasets.push({
-          type: 'line',
-          label: `Avg Level (${unit})`,
-          data: hrWlAvg,
-          borderColor: '#2563EB',
-          backgroundColor: 'rgba(37, 99, 235, 0.14)',
-          borderWidth: 2.5,
-          pointRadius: 3.5,
-          pointBackgroundColor: '#2563EB',
-          spanGaps: true,
-          tension: 0.3,
-          yAxisID: 'y',
-          order: 1
-        });
-        diurnalDatasets.push({
-          type: 'line',
-          label: `Normal (${wlFmt(normalRef, unit)} ${unit})`,
-          data: new Array(24).fill(normalRef),
-          borderColor: '#10B981',
-          borderWidth: 1.5,
-          borderDash: [5, 4],
-          pointRadius: 0,
-          fill: false,
-          yAxisID: 'y',
-          order: 2
-        });
-      }
-
-      diurnalDatasets.push({
-        type: 'bar',
-        label: 'Hourly Avg PSI',
-        data: hrPsiAvg,
-        backgroundColor: 'rgba(13, 148, 136, 0.28)',
-        borderColor: '#0D9488',
-        borderWidth: 1,
-        borderRadius: 4,
-        yAxisID: 'y1',
-        order: 3
-      });
-
-      const dYTitle = isAllMode
-        ? (compareMode === 'delta' ? `Avg Δ (${unit})` : (compareMode === 'pct' ? 'Avg % Normal' : `Avg Level (${unit})`))
-        : `Avg Level (${unit})`;
-
-      wlChartDiurnal = new Chart(diurnalCanvas.getContext('2d'), {
-        type: 'bar',
-        data: { labels: hourLabels, datasets: diurnalDatasets },
-        plugins: [wlDiurnalBandsPlugin],
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          plugins: {
-            datalabels: { display: false },
-            wlDiurnalBands: { enabled: true },
-            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10.5 } } }
-          },
-          scales: {
-            x: { ticks: { font: { size: 9.5, family: 'IBM Plex Mono, monospace' }, maxTicksLimit: 12 }, grid: { display: false } },
-            y: {
-              position: 'left',
-              beginAtZero: !(isAllMode && compareMode === 'delta'),
-              title: { display: true, text: dYTitle, font: { size: 10.5, weight: '700' }, color: '#1D4ED8' },
-              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
-            },
-            y1: {
-              position: 'right',
-              beginAtZero: true,
-              title: { display: true, text: 'Avg PSI', font: { size: 10.5, weight: '700' }, color: '#0F766E' },
-              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } },
-              grid: { drawOnChartArea: false }
-            }
-          }
-        }
-      });
-    }
-
-    // ── 4. CHART 3: HYDRAULIC CORRELATION SCATTER & DIAGNOSTICS ──
-    const scatterCanvas = document.getElementById('chart-wl-scatter');
-    const paired = enriched.filter(r => r.selectedPsi !== null);
-    const scatterPts = paired.map(r => ({
-      x: isAllMode ? r.deltaCm : r.water_level,
-      y: Number(r.selectedPsi.toFixed(2)),
-      color: r.statusInfo.dot || '#2563EB',
-      label: `${r.station_name.split('(')[0].trim()} • ${r.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
-    }));
-    const pearson = computePearsonR(scatterPts);
-
-    const corrBadge = document.getElementById('wl-corr-badge');
-    if (corrBadge) {
-      if (pearson && Number.isFinite(pearson.r)) {
-        const strength = Math.abs(pearson.r) >= 0.7 ? 'Strong' : (Math.abs(pearson.r) >= 0.4 ? 'Moderate' : 'Weak');
-        corrBadge.textContent = `r = ${pearson.r.toFixed(2)} (${strength})`;
-        corrBadge.className = 'kpi-badge-pill ' + (pearson.r >= 0.4 ? 'pill-green' : 'pill-blue');
-      } else {
-        corrBadge.textContent = `r = — (${scatterPts.length} pairs)`;
-        corrBadge.className = 'kpi-badge-pill pill-blue';
-      }
-    }
-
-    if (scatterCanvas) {
-      if (wlChartScatter) { try { wlChartScatter.destroy(); } catch (e) {} wlChartScatter = null; }
-
-      const scDatasets = [
-        {
-          label: 'Source Reading vs. Same-Hour Avg PSI',
-          data: scatterPts,
-          backgroundColor: scatterPts.map(p => p.color),
-          borderColor: '#FFFFFF',
-          borderWidth: 1,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        }
-      ];
-
-      if (pearson && scatterPts.length >= 3) {
-        const xs = scatterPts.map(p => p.x);
-        const minX = Math.min(...xs);
-        const maxX = Math.max(...xs);
-        if (maxX > minX) {
-          scDatasets.push({
-            type: 'line',
-            label: 'Linear Trend',
-            data: [
-              { x: minX, y: Number((pearson.slope * minX + pearson.intercept).toFixed(2)) },
-              { x: maxX, y: Number((pearson.slope * maxX + pearson.intercept).toFixed(2)) }
-            ],
-            borderColor: '#475569',
-            borderWidth: 1.8,
-            borderDash: [5, 4],
-            pointRadius: 0,
-            fill: false
-          });
-        }
-      }
-
-      wlChartScatter = new Chart(scatterCanvas.getContext('2d'), {
-        type: 'scatter',
-        data: { datasets: scDatasets },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: { display: false },
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label(ctx) {
-                  const pt = ctx.raw;
-                  if (!pt) return '';
-                  const prefix = isAllMode && pt.x >= 0 ? '+' : '';
-                  return `${pt.label || ''}: ${prefix}${wlFmt(pt.x, unit)} ${unit} → ${pt.y} PSI`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: isAllMode ? `Variance vs. Normal (Δ ${unit})` : `River Water Level (${unit})`, font: { size: 10.5, weight: '700' } },
-              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
-            },
-            y: {
-              beginAtZero: true,
-              title: { display: true, text: 'Same-Hour Avg PSI', font: { size: 10.5, weight: '700' } },
-              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
-            }
-          }
-        }
-      });
-    }
-
-    // Update Diagnostic Summary Tiles
-    const normPairs = paired.filter(r => r.water_level >= r.normal_level);
-    const belowPairs = paired.filter(r => r.water_level < r.normal_level);
-    const avgOf = arr => arr.length > 0 ? arr.reduce((s, r) => s + r.selectedPsi, 0) / arr.length : null;
-    const normPsiAvg = avgOf(normPairs);
-    const belowPsiAvg = avgOf(belowPairs);
-
-    const elNormPsi = document.getElementById('wl-diag-psi-normal');
-    const elNormCnt = document.getElementById('wl-diag-cnt-normal');
-    const elBelowPsi = document.getElementById('wl-diag-psi-below');
-    const elBelowCnt = document.getElementById('wl-diag-cnt-below');
-    if (elNormPsi) elNormPsi.textContent = normPsiAvg !== null ? `${normPsiAvg.toFixed(1)} PSI` : '—';
-    if (elNormCnt) elNormCnt.textContent = `${normPairs.length} matched reading${normPairs.length === 1 ? '' : 's'}`;
-    if (elBelowPsi) elBelowPsi.textContent = belowPsiAvg !== null ? `${belowPsiAvg.toFixed(1)} PSI` : '—';
-    if (elBelowCnt) elBelowCnt.textContent = `${belowPairs.length} matched reading${belowPairs.length === 1 ? '' : 's'}`;
-
-    const ms = (waterLevelConfig?.milestones || []).find(m => m && m.date);
-    const elMsLbl = document.getElementById('wl-diag-milestone-lbl');
-    const elMsVal = document.getElementById('wl-diag-milestone-val');
-    const elMsSub = document.getElementById('wl-diag-milestone-sub');
-    if (ms && ms.date && baseRows.length > 0) {
-      const msTime = new Date(`${ms.date}T00:00:00+08:00`).getTime();
-      const pre = baseRows.filter(r => r.dt.getTime() < msTime);
-      const post = baseRows.filter(r => r.dt.getTime() >= msTime);
-      const avgMetric = arr => arr.length
-        ? arr.reduce((s, r) => s + (isAllMode ? (r.water_level - r.normal_level) : r.water_level), 0) / arr.length
-        : null;
-      const preAvg = avgMetric(pre);
-      const postAvg = avgMetric(post);
-      if (elMsLbl) elMsLbl.textContent = ms.label || 'Source Milestone';
-      if (preAvg !== null && postAvg !== null) {
-        const diff = postAvg - preAvg;
-        if (elMsVal) {
-          elMsVal.textContent = `${diff >= 0 ? '+' : ''}${wlFmt(diff, unit)} ${unit}`;
-          elMsVal.style.color = diff >= 0 ? 'var(--green-text)' : 'var(--red-text)';
-        }
-        if (elMsSub) elMsSub.textContent = `Pre: ${wlFmt(preAvg, unit)} → Post: ${wlFmt(postAvg, unit)} ${unit}`;
-      } else if (postAvg !== null) {
-        if (elMsVal) { elMsVal.textContent = `${isAllMode && postAvg >= 0 ? '+' : ''}${wlFmt(postAvg, unit)} ${unit}`; elMsVal.style.color = 'var(--teal-text)'; }
-        if (elMsSub) elMsSub.textContent = `Avg since ${ms.date} (${post.length} logs)`;
-      } else {
-        if (elMsVal) elMsVal.textContent = '—';
-        if (elMsSub) elMsSub.textContent = `Milestone set: ${ms.date}`;
-      }
-    } else {
-      if (elMsLbl) elMsLbl.textContent = 'Montible / Dry-Spell Impact';
-      if (elMsVal) { elMsVal.textContent = '—'; elMsVal.style.color = 'var(--text-main)'; }
-      if (elMsSub) elMsSub.textContent = 'Set activation date in Portal';
-    }
-
-    // ── 5. CORRELATED HOURLY READINGS TABLE ──
+    // ── 3. CLEAN 6-COLUMN REPORTS TABLE ──
     const tbody = document.getElementById('wl-analysis-tbody');
     const countEl = document.getElementById('wl-table-count');
     if (countEl) countEl.textContent = `${enriched.length} record${enriched.length === 1 ? '' : 's'}`;
     if (tbody) {
       if (enriched.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">No river source water level records in this period. Click "Log MBS Report ↗" above to add field data.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">No water level reports recorded in this period.</td></tr>`;
       } else {
         tbody.innerHTML = [...enriched].reverse().map(r => {
           const dtStr = r.dt.toLocaleString('en-PH', {
             timeZone: 'Asia/Manila',
-            month: 'short', day: 'numeric', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', hour12: true
+            month: 'short', day: 'numeric',
+            hour: 'numeric', minute: '2-digit', hour12: true
           });
-          const dlt = r.deltaCm;
-          const pct = r.pctOfNormal || 0;
           const u = r.unit || unit;
-          const notes = [r.source_context, r.operator_name ? `Op: ${r.operator_name}` : '', r.remarks].filter(Boolean).join(' • ');
+          const shortSrc = r.station_name.split('(')[0].trim();
+          const riverSub = r.station_name.includes('(') ? r.station_name.slice(r.station_name.indexOf('(') + 1, r.station_name.indexOf(')')) : '';
+          const isProv = r.station_name.toLowerCase().includes('montible');
+          const critDisplay = isProv ? `${wlFmt(r.normal_level, u)} ${escapeHtml(u)} (Base)` : `${wlFmt(r.normal_level, u)} / &le;${wlFmt(r.effCrit ?? Math.max(0, r.normal_level - 80), u)} ${escapeHtml(u)}`;
+          const psiTxt = r.manaloPsi !== null ? `${r.manaloPsi.toFixed(1)} PSI` : '';
+          const noteTxt = [psiTxt, r.source_context, r.remarks].filter(Boolean).join(' • ');
 
           return `
             <tr>
-              <td class="mono" style="white-space:nowrap; font-size:11.5px;">${escapeHtml(dtStr)}</td>
-              <td style="font-weight:700; color:var(--text-main); white-space:nowrap;">${escapeHtml(r.station_name)}</td>
-              <td class="right mono" style="font-weight:800; color:${r.statusInfo.color};">${wlFmt(r.water_level, u)} ${escapeHtml(u)}</td>
-              <td class="right mono" style="color:var(--text-muted); font-size:11px;">${wlFmt(r.normal_level, u)} / &le;${wlFmt(r.effCrit ?? Math.max(0, r.normal_level - 80), u)} ${escapeHtml(u)}</td>
-              <td class="right mono" style="color:${dlt < 0 ? 'var(--red-text)' : 'var(--green-text)'};">${dlt >= 0 ? '+' : ''}${wlFmt(dlt, u)} ${escapeHtml(u)} (${pct.toFixed(0)}%)</td>
+              <td class="mono" style="white-space:nowrap; font-size:12px;">${escapeHtml(dtStr)}</td>
+              <td style="white-space:nowrap;">
+                <div style="font-weight:700; color:var(--text-main);">${escapeHtml(shortSrc)}</div>
+                ${riverSub ? `<div style="font-size:11px; color:var(--text-muted);">${escapeHtml(riverSub)}</div>` : ''}
+              </td>
+              <td class="right mono" style="font-weight:800; font-size:13px; color:${r.statusInfo.color};">${wlFmt(r.water_level, u)} ${escapeHtml(u)}</td>
+              <td class="right mono" style="color:var(--text-muted); font-size:12px;">${critDisplay}</td>
               <td><span class="kpi-badge-pill" style="background:${r.statusInfo.bg}; color:${r.statusInfo.color}; border:1px solid ${r.statusInfo.border};">${r.statusInfo.label}</span></td>
-              <td class="right mono" style="font-weight:700; color:${r.manaloPsi !== null && r.manaloPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--text-main)'};">${r.manaloPsi !== null ? r.manaloPsi.toFixed(1) + ' PSI' : '—'}</td>
-              <td class="right mono" style="color:var(--text-muted);">${r.distPsi !== null ? r.distPsi.toFixed(1) + ' PSI' : '—'}</td>
-              <td style="font-size:11.5px; color:var(--text-muted); max-width:260px;">${escapeHtml(notes || '—')}</td>
+              <td style="font-size:12px; color:var(--text-muted); max-width:260px;">${escapeHtml(noteTxt || '—')}</td>
             </tr>
           `;
         }).join('');
