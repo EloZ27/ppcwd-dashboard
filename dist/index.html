@@ -55,22 +55,23 @@
 
         <div class="sidebar-section-label">Service &amp; Operations</div>
         <button type="button" class="nav-btn" onclick="switchNavTab('complaints')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span><span>Customer Reports</span></button>
-        <button type="button" class="nav-btn" id="sidebar-btn-gensets-modal" onclick="openGensetModal()"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><span>Generator Fleet Status</span></button>
-
-        <div class="sidebar-section-label">Engineering Diagnostics</div>
-        <button type="button" class="nav-btn" onclick="switchNavTab('waterlevel')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><line x1="8" y1="15" x2="16" y2="15"></line></svg></span><span>Source Water Levels</span></button>
 
         <div class="sidebar-divider"></div>
         <a href="uploader.html" class="nav-btn" title="Open restricted Operations & Asset Data Entry Portal"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></span><span>Operations Portal ↗</span></a>
       </nav>
 
       <div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
-        <div class="status-pill-box">
-          <div class="status-dot-pulse"></div>
-          <div>
-            <div style="font-size: 10.5px; font-weight: 700; color: #FFFFFF;">System Status</div>
-            <div style="font-size: 10px; color: #CBD5E1;" id="sidebar-status-note">All systems nominal</div>
+        <div class="status-pill-box" style="justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="status-dot-pulse"></div>
+            <div>
+              <div style="font-size: 10.5px; font-weight: 700; color: #FFFFFF;">System Status</div>
+              <div style="font-size: 10px; color: #CBD5E1;" id="sidebar-status-note">All systems nominal</div>
+            </div>
           </div>
+          <button type="button" id="btn-hidden-waterlevel" onclick="switchNavTab('waterlevel')" aria-label="Open Source Water Level Diagnostics" title="Engineering Diagnostics: Weir Water Levels" style="background:transparent; border:1px solid transparent; border-radius:6px; color:#94A3B8; opacity:0.45; padding:4px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:opacity 0.15s, color 0.15s, border-color 0.15s;" onmouseenter="this.style.opacity='1';this.style.color='#FFFFFF';this.style.borderColor='#475569';" onmouseleave="this.style.opacity='0.45';this.style.color='#94A3B8';this.style.borderColor='transparent';">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><line x1="8" y1="15" x2="16" y2="15"></line></svg>
+          </button>
         </div>
         <div class="status-pill-box" id="sidebar-report-security-pill" style="justify-content:space-between; display:none;">
           <div style="display:flex; align-items:center; gap:8px;">

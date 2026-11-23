@@ -702,13 +702,6 @@
           <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           <span>Monthly Production</span>
         </button>
-
-        <div class="sidebar-section-label">Engineering Diagnostics</div>
-
-        <button type="button" class="nav-btn" id="sidebar-btn-waterlevel" onclick="switchPortalSection('waterlevel')">
-          <span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><line x1="8" y1="15" x2="16" y2="15"/></svg></span>
-          <span>Source Water Levels</span>
-        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -720,9 +713,14 @@
               <div style="font-size: 10px; color: #CBD5E1;">Passkey Verified</div>
             </div>
           </div>
-          <button type="button" onclick="lockPortal()" style="background:#334155; border:1px solid #475569; border-radius:6px; color:#FFFFFF; font-size:10px; font-weight:700; padding:4px 9px; cursor:pointer;" title="Lock Portal & Sign Out">
-            Lock
-          </button>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <button type="button" id="sidebar-btn-waterlevel" onclick="switchPortalSection('waterlevel')" aria-label="Open Source Water Levels Portal" title="Engineering Baseline: Weir Gauge Intake" style="background:transparent; border:1px solid transparent; border-radius:6px; color:#94A3B8; opacity:0.45; padding:4px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;" onmouseenter="this.style.opacity='1';this.style.color='#FFFFFF';this.style.borderColor='#475569';" onmouseleave="this.style.opacity='0.45';this.style.color='#94A3B8';this.style.borderColor='transparent';">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
+            </button>
+            <button type="button" onclick="lockPortal()" style="background:#334155; border:1px solid #475569; border-radius:6px; color:#FFFFFF; font-size:10px; font-weight:700; padding:4px 9px; cursor:pointer;" title="Lock Portal & Sign Out">
+              Lock
+            </button>
+          </div>
         </div>
       </div>
     </aside>
