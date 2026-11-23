@@ -8111,24 +8111,17 @@
     if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
       return { label: 'Unknown', color: '#64748B', dot: '#64748B', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
     }
-    // Boundary rules:
-    // - Decrease <= 10% from Normal (lv >= 0.90 * nm): Normal (Green)
-    // - Decrease >= 11% below Normal (lv < 0.90 * nm): Below Normal (Yellow)
-    // - Within 10% nearer Critical (lv <= cr * 1.10) or <= cr: Almost Critical / Critical (Red)
-    const normalFloor = nm * 0.90;
-    const rawNearCrit = cr > 0 ? cr * 1.10 : nm * 0.10;
-    const almostCritCutoff = Math.min(rawNearCrit, Math.max(cr, normalFloor - 0.01));
-
+    // Diversion Weir Baseline Rules:
+    // - At or above Normal/Overflow crest (lv >= nm): Overflow (Normal) -> Green
+    // - Not overflowing, above -80 cm cutoff (cr < lv < nm): Critical to Low -> Yellow
+    // - Reached low-level cutoff (lv <= cr, i.e., <= nm - 80): Low Level -> Red
     if (lv <= cr) {
-      return { label: 'Critical', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
+      return { label: 'Low Level', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
     }
-    if (lv <= almostCritCutoff) {
-      return { label: 'Almost Critical', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
+    if (lv < nm) {
+      return { label: 'Critical to Low', color: '#A14506', dot: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', tier: 'watch' };
     }
-    if (lv < normalFloor) {
-      return { label: 'Below Normal', color: '#A14506', dot: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', tier: 'watch' };
-    }
-    return { label: 'Normal', color: '#047857', dot: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', tier: 'normal' };
+    return { label: 'Overflow (Normal)', color: '#047857', dot: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', tier: 'normal' };
   }
 
   function wlPopulateControls() {
@@ -8252,7 +8245,7 @@
     if (!latest) {
       return {
         verdictShort: 'No Reading',
-        plainExplain: `Normal level is ${wlFmt(norm, unit)} ${unit}. Critical starts at ${wlFmt(crit, unit)} ${unit}.`,
+        plainExplain: `Overflow level is ${wlFmt(norm, unit)} ${unit}. Low level starts at ${wlFmt(crit, unit)} ${unit}.`,
         bufferText: 'Awaiting reading',
         isProvisional
       };
@@ -8262,43 +8255,32 @@
     const st = wlGetStatusInfo(cur, norm, warn, crit);
     const deltaNorm = cur - norm;
     const bufferToCrit = cur - crit;
-    const dropPct = norm > 0 ? Math.round(((norm - cur) / norm) * 100) : 0;
 
     if (st.tier === 'critical') {
-      const pastCrit = bufferToCrit <= 0;
+      const pastCrit = Math.abs(bufferToCrit);
       return {
         verdictShort: st.label,
-        plainExplain: pastCrit
-          ? `${wlFmt(Math.abs(bufferToCrit), unit)} ${unit} past the ${wlFmt(crit, unit)} ${unit} critical limit.`
-          : `Within 10% of critical (${wlFmt(crit, unit)} ${unit}) — ${wlFmt(bufferToCrit, unit)} ${unit} left.`,
-        bufferText: pastCrit
-          ? `${wlFmt(Math.abs(bufferToCrit), unit)} ${unit} below critical`
-          : `+${wlFmt(bufferToCrit, unit)} ${unit} above critical`,
+        plainExplain: `${wlFmt(Math.abs(deltaNorm), unit)} ${unit} below normal — at or past ${wlFmt(crit, unit)} ${unit} low-level cutoff.`,
+        bufferText: pastCrit > 0
+          ? `${wlFmt(pastCrit, unit)} ${unit} below low limit`
+          : `At low-level cutoff`,
         isProvisional
       };
     }
     if (st.tier === 'watch') {
       return {
-        verdictShort: 'Below Normal',
-        plainExplain: `Down ${dropPct}% from normal (${wlFmt(norm, unit)} ${unit}), with +${wlFmt(bufferToCrit, unit)} ${unit} above critical.`,
-        bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} above critical`,
-        isProvisional
-      };
-    }
-    if (isProvisional) {
-      return {
-        verdictShort: 'Normal',
-        plainExplain: `${deltaNorm >= 0 ? '+' : ''}${wlFmt(deltaNorm, unit)} ${unit} vs. ${wlFmt(norm, unit)} ${unit} design base.`,
-        bufferText: `+${wlFmt(Math.max(0, bufferToCrit), unit)} ${unit} safe buffer`,
+        verdictShort: st.label,
+        plainExplain: `Not overflowing (${wlFmt(Math.abs(deltaNorm), unit)} ${unit} below normal); +${wlFmt(bufferToCrit, unit)} ${unit} above low limit.`,
+        bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} above low limit`,
         isProvisional
       };
     }
     return {
-      verdictShort: 'Normal',
-      plainExplain: deltaNorm >= 0
-        ? `At or above normal (${wlFmt(norm, unit)} ${unit}) with +${wlFmt(bufferToCrit, unit)} ${unit} buffer.`
-        : `Within normal margin (-${Math.max(1, dropPct)}% of ${wlFmt(norm, unit)} ${unit}), +${wlFmt(bufferToCrit, unit)} ${unit} safe buffer.`,
-      bufferText: `+${wlFmt(bufferToCrit, unit)} ${unit} safe buffer`,
+      verdictShort: st.label,
+      plainExplain: deltaNorm > 0
+        ? `Overflowing (+${wlFmt(deltaNorm, unit)} ${unit} above ${wlFmt(norm, unit)} ${unit} normal crest).`
+        : `At overflow crest (${wlFmt(norm, unit)} ${unit}).`,
+      bufferText: `+${wlFmt(Math.max(0, bufferToCrit), unit)} ${unit} safe buffer`,
       isProvisional
     };
   }
@@ -8378,11 +8360,11 @@
                     <div class="wl-layman-fact-val" style="color:${st.color};">${latest ? wlFmt(cur, unit) + ' ' + escapeHtml(unit) : '—'}</div>
                   </div>
                   <div>
-                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Design Base' : 'Normal Level'}</div>
+                    <div class="wl-layman-fact-lbl">${layman.isProvisional ? 'Overflow Base' : 'Overflow'}</div>
                     <div class="wl-layman-fact-val">${wlFmt(norm, unit)} ${escapeHtml(unit)}</div>
                   </div>
                   <div>
-                    <div class="wl-layman-fact-lbl">Critical</div>
+                    <div class="wl-layman-fact-lbl">Low Level</div>
                     <div class="wl-layman-fact-val" style="color:var(--red-text);">&le;${wlFmt(crit, unit)} ${escapeHtml(unit)}</div>
                   </div>
                 </div>
@@ -8419,7 +8401,7 @@
 
       if (!latest) {
         noLogNames.push(shortName);
-        lines.push(`• ${shortName}: No reading yet (Full: ${wlFmt(norm, unit)} ${unit}, Critical: ≤${wlFmt(crit, unit)} ${unit})`);
+        lines.push(`• ${shortName}: No reading yet (Overflow/Normal: ${wlFmt(norm, unit)} ${unit}, Low Level: ≤${wlFmt(crit, unit)} ${unit})`);
         return;
       }
 
@@ -8431,29 +8413,29 @@
       else if (st.tier === 'watch') watchNames.push(shortName);
       else safeNames.push(shortName);
 
-      lines.push(`• ${shortName} [${layman.verdictShort}]: ${wlFmt(latest.water_level, unit)} ${unit} (Normal: ${wlFmt(norm, unit)} ${unit}, Critical ≤${wlFmt(crit, unit)} ${unit}) — ${layman.bufferText} [${dtStr}]`);
+      lines.push(`• ${shortName} [${layman.verdictShort}]: ${wlFmt(latest.water_level, unit)} ${unit} (Normal: ${wlFmt(norm, unit)} ${unit}, Low Level ≤${wlFmt(crit, unit)} ${unit}) — ${layman.bufferText} [${dtStr}]`);
     });
 
-    let pillText = 'All Sources Operational';
+    let pillText = 'All Sources Overflowing';
     let pillClass = 'pill-green';
     let summarySentence = '';
 
     if (critNames.length + watchNames.length + safeNames.length === 0) {
       pillText = 'Awaiting River Gauge Reports';
       pillClass = 'pill-blue';
-      summarySentence = 'No operator water level readings recorded yet. Normal benchmarks: Campo Uno (195 cm, Critical ≤115 cm), Lapu-Lapu (265 cm, Critical ≤185 cm), Montible (15 cm design base, Critical ≤5 cm).';
+      summarySentence = 'No operator water level readings recorded yet.';
     } else if (critNames.length > 0) {
-      pillText = `BOD / Management Action Needed (${critNames.length} Critical)`;
+      pillText = `Low Level (${critNames.length}) & Critical-to-Low (${watchNames.length})`;
       pillClass = 'pill-red';
-      summarySentence = `${critNames.join(', ')} ${critNames.length === 1 ? 'is' : 'are'} at Critical / Almost Critical level. ${safeNames.length > 0 ? safeNames.join(' & ') + ' within normal range.' : ''}`;
+      summarySentence = `${critNames.join(', ')} dropped ≥80 cm below normal (Low Level).${watchNames.length > 0 ? ' ' + watchNames.join(', ') + ' not overflowing (Critical to Low).' : ''}${safeNames.length > 0 ? ' ' + safeNames.join(' & ') + ' overflowing (Normal).' : ''}`;
     } else if (watchNames.length > 0) {
-      pillText = `Watch Mode (${watchNames.length} Below Normal)`;
+      pillText = `Critical to Low (${watchNames.length} Not Overflowing)`;
       pillClass = 'pill-amber';
-      summarySentence = `${watchNames.join(', ')} dropped >10% below normal. ${safeNames.length > 0 ? safeNames.join(' & ') + ' within normal range.' : ''}`;
+      summarySentence = `${watchNames.join(', ')} not overflowing (Critical to Low).${safeNames.length > 0 ? ' ' + safeNames.join(' & ') + ' overflowing (Normal).' : ''}`;
     } else {
-      pillText = 'All Monitored Sources Normal';
+      pillText = 'All Sources Overflowing (Normal)';
       pillClass = 'pill-green';
-      summarySentence = `All reported river sources (${safeNames.join(', ')}) are within normal water height margins.`;
+      summarySentence = `All reported river sources (${safeNames.join(', ')}) are at Overflow (Normal) height.`;
     }
 
     return { pillText, pillClass, summarySentence, chatLines: lines };
@@ -8472,7 +8454,7 @@
       ``,
       ...board.chatLines,
       ``,
-      `Note: Green = Normal (within -10%), Yellow = Below Normal (≥11% drop), Red = Almost Critical / Critical (within +10% of critical or below).`
+      `Note: Green = Overflow / Normal (≥ Normal), Yellow = Critical to Low (not overflowing), Red = Low Level (≥80 cm below Normal).`
     ].join('\n');
 
     try {
@@ -8905,7 +8887,7 @@
 
         if (slots.length > 0 && compareMode === 'delta') {
           datasets.push({
-            label: `Normal (-10% floor)`,
+            label: `Overflow / Normal (0 ${unit})`,
             data: new Array(slots.length).fill(0),
             borderColor: '#10B981',
             borderWidth: 1.6,
@@ -8914,11 +8896,21 @@
             fill: false,
             yAxisID: 'y'
           });
+          datasets.push({
+            label: `Low Level (-80 ${unit})`,
+            data: new Array(slots.length).fill(-80),
+            borderColor: '#EF4444',
+            borderWidth: 1.5,
+            borderDash: [3, 3],
+            pointRadius: 0,
+            fill: false,
+            yAxisID: 'y'
+          });
         } else if (slots.length > 0 && compareMode === 'pct') {
           datasets.push({
-            label: 'Normal Floor (90%)',
-            data: new Array(slots.length).fill(90),
-            borderColor: '#F59E0B',
+            label: 'Overflow Crest (100%)',
+            data: new Array(slots.length).fill(100),
+            borderColor: '#10B981',
             borderWidth: 1.6,
             borderDash: [6, 4],
             pointRadius: 0,
@@ -8947,7 +8939,6 @@
         );
         const levelData = enriched.map(r => r.water_level);
         const normalData = enriched.map(r => r.normal_level);
-        const belowNormalFloorData = enriched.map(r => Number((r.normal_level * 0.90).toFixed(2)));
         const critData = enriched.map(r => r.effCrit ?? Math.max(0, r.normal_level - 80));
         const psiData = enriched.map(r => r.selectedPsi !== null ? Number(r.selectedPsi.toFixed(1)) : null);
         const pointColors = enriched.map(r => r.statusInfo.dot || '#10B981');
@@ -8970,7 +8961,7 @@
         });
 
         datasets.push({
-          label: `Normal (${unit})`,
+          label: `Overflow / Normal (${unit})`,
           data: normalData,
           borderColor: '#10B981',
           borderWidth: 1.8,
@@ -8981,21 +8972,9 @@
           yAxisID: 'y'
         });
 
-        datasets.push({
-          label: `Below Normal Threshold (-10%)`,
-          data: belowNormalFloorData,
-          borderColor: '#F59E0B',
-          borderWidth: 1.4,
-          borderDash: [4, 4],
-          pointRadius: 0,
-          fill: false,
-          tension: 0,
-          yAxisID: 'y'
-        });
-
         if (!selectedSource.toLowerCase().includes('montible')) {
           datasets.push({
-            label: `Critical (${unit})`,
+            label: `Low Level (${unit})`,
             data: critData,
             borderColor: '#EF4444',
             borderWidth: 1.6,

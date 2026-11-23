@@ -4790,20 +4790,13 @@
       if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
         return { label: 'Unknown', cls: 'pill-muted', color: 'var(--text-muted)', bg: '#F1F5F9', border: '#CBD5E1' };
       }
-      const normalFloor = nm * 0.90;
-      const rawNearCrit = cr > 0 ? cr * 1.10 : nm * 0.10;
-      const almostCritCutoff = Math.min(rawNearCrit, Math.max(cr, normalFloor - 0.01));
-
       if (lv <= cr) {
-        return { label: 'Critical', cls: 'pill-red', color: 'var(--red-text)', bg: 'var(--red-light)', border: 'var(--red-border)' };
+        return { label: 'Low Level', cls: 'pill-red', color: 'var(--red-text)', bg: 'var(--red-light)', border: 'var(--red-border)' };
       }
-      if (lv <= almostCritCutoff) {
-        return { label: 'Almost Critical', cls: 'pill-red', color: 'var(--red-text)', bg: 'var(--red-light)', border: 'var(--red-border)' };
+      if (lv < nm) {
+        return { label: 'Critical to Low', cls: 'pill-amber', color: 'var(--amber-text)', bg: 'var(--amber-light)', border: 'var(--amber-border)' };
       }
-      if (lv < normalFloor) {
-        return { label: 'Below Normal', cls: 'pill-amber', color: 'var(--amber-text)', bg: 'var(--amber-light)', border: 'var(--amber-border)' };
-      }
-      return { label: 'Normal', cls: 'pill-green', color: 'var(--green-text)', bg: 'var(--green-light)', border: 'var(--green-border)' };
+      return { label: 'Overflow (Normal)', cls: 'pill-green', color: 'var(--green-text)', bg: 'var(--green-light)', border: 'var(--green-border)' };
     }
 
     function showWaterLevelAlert(msg, isError = false) {
