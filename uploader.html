@@ -5431,10 +5431,10 @@
       const mDate = document.getElementById('wl-cfg-milestone-date');
 
       if (mpEl) mpEl.value = meta.measuring_point || '';
-      if (uEl) uEl.value = meta.unit || 'm';
-      if (nEl) nEl.value = meta.normal_level ?? 1.5;
-      if (wEl) wEl.value = meta.warning_level ?? 1.0;
-      if (cEl) cEl.value = meta.critical_level ?? 0.6;
+      if (uEl) uEl.value = meta.unit || 'cm';
+      if (nEl) nEl.value = meta.normal_level ?? 195;
+      if (wEl) wEl.value = meta.warning_level ?? 145;
+      if (cEl) cEl.value = meta.critical_level ?? 115;
       if (pEl) pEl.value = String(meta.pressure_col || 2);
 
       const ms = (wlConfig.milestones && wlConfig.milestones[0]) || { label: 'Montible Source Activated', date: '' };
@@ -5454,10 +5454,10 @@
         name,
         river_name: name,
         measuring_point: 'Intake Staff Gauge',
-        unit: 'm',
-        normal_level: 1.5,
-        warning_level: 1.0,
-        critical_level: 0.6,
+        unit: 'cm',
+        normal_level: 195,
+        warning_level: 145,
+        critical_level: 115,
         pressure_col: 2
       });
       inp.value = '';
@@ -5481,10 +5481,13 @@
       const target = wlConfig.stations.find(s => s.name === selName);
       if (target) {
         target.measuring_point = document.getElementById('wl-cfg-measuring-point')?.value?.trim() || target.measuring_point || '';
-        target.unit = document.getElementById('wl-cfg-unit')?.value || 'm';
-        target.normal_level = parseFloat(document.getElementById('wl-cfg-normal')?.value) || 1.5;
-        target.warning_level = parseFloat(document.getElementById('wl-cfg-warning')?.value) || 1.0;
-        target.critical_level = parseFloat(document.getElementById('wl-cfg-critical')?.value) || 0.6;
+        target.unit = document.getElementById('wl-cfg-unit')?.value || 'cm';
+        const parsedNorm = parseFloat(document.getElementById('wl-cfg-normal')?.value);
+        const parsedWarn = parseFloat(document.getElementById('wl-cfg-warning')?.value);
+        const parsedCrit = parseFloat(document.getElementById('wl-cfg-critical')?.value);
+        target.normal_level = Number.isFinite(parsedNorm) && parsedNorm > 0 ? parsedNorm : 195;
+        target.warning_level = Number.isFinite(parsedWarn) && parsedWarn >= 0 ? parsedWarn : Math.max(0, target.normal_level - 50);
+        target.critical_level = Number.isFinite(parsedCrit) && parsedCrit >= 0 ? parsedCrit : Math.max(0, target.normal_level - 80);
         target.pressure_col = parseInt(document.getElementById('wl-cfg-pressure-col')?.value, 10) || 2;
       }
       const mLabel = document.getElementById('wl-cfg-milestone-label')?.value?.trim() || 'Montible Source Activated';

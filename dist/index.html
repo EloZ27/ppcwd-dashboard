@@ -8380,8 +8380,10 @@
   }
 
   function buildHourlyPressureLookup(startDt, endDt) {
+    const transCols = [8, 19, 3, 5];
+    const boostedCols = [10];
     const distCols = PRESSURE_STATIONS
-      .filter(s => !s.customAlertPsi && s.col !== 2 && s.col !== 3 && s.col !== 5 && s.col !== 10)
+      .filter(s => !transCols.includes(s.col) && !boostedCols.includes(s.col))
       .map(s => s.col);
 
     const byHourKey = new Map();

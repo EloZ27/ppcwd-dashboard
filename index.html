@@ -9902,4 +9902,1562 @@
 
     printWin.document.open();
     printWin.document.write(`
-... [truncated for diff preview]
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${escapeHtml(titleVal)}</title>
+          <meta charset="utf-8">
+          ${styles}
+          <style>
+            @page { size: A4 portrait; margin: 0.5in; }
+            body { margin: 0; padding: 0; background: #FFF; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body, body * { visibility: visible !important; }
+            #comprehensive-report-staging, #comprehensive-report-staging * { visibility: visible !important; }
+            .comp-a4-page, .comp-a4-page * { visibility: visible !important; }
+            .comp-a4-page { width: 100% !important; min-height: 270mm !important; padding: 0 !important; margin: 0 0 20px 0 !important; box-shadow: none !important; border: none !important; page-break-after: always; break-after: page; }
+            @media print {
+              body, body * { visibility: visible !important; }
+              #comprehensive-report-staging, #comprehensive-report-staging * { visibility: visible !important; }
+              .comp-a4-page, .comp-a4-page * { visibility: visible !important; }
+              .comp-a4-page { margin: 0 !important; page-break-after: always; break-after: page; }
+            }
+          </style>
+        </head>
+        <body>
+          <div id="comprehensive-report-staging">
+            ${staging.innerHTML}
+          </div>
+          <script>
+            window.addEventListener('load', () => {
+              setTimeout(() => {
+                window.focus();
+                window.print();
+              }, 400);
+            });
+          <\/script>
+        </body>
+      </html>
+    `);
+    printWin.document.close();
+    setTimeout(() => {
+      try {
+        printWin.focus();
+        printWin.print();
+      } catch(e) {}
+    }, 600);
+
+    if (statusEl) {
+      statusEl.textContent = "Print window opened successfully.";
+      statusEl.style.color = "var(--green)";
+    }
+  }
+
+  // Multi-page Download Action (jsPDF + html2canvas)
+  async function downloadComprehensiveReportPDF() {
+    const statusEl = document.getElementById("comp-rep-status");
+    const ok = await renderComprehensiveReportStaging();
+    if (!ok) return;
+
+    const staging = document.getElementById("comprehensive-report-staging");
+    const pages = staging ? staging.querySelectorAll(".comp-a4-page") : [];
+    if (!pages.length) {
+      if (statusEl) {
+        statusEl.textContent = "No pages available to download.";
+        statusEl.style.color = "var(--red)";
+      }
+      return;
+    }
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      for (let i = 0; i < pages.length; i++) {
+        if (statusEl) {
+          statusEl.textContent = `Rendering high-definition page ${i + 1} of ${pages.length}...`;
+        }
+        const pageEl = pages[i];
+        const canvas = await html2canvas(pageEl, {
+          scale: 2.6,
+          useCORS: true,
+          backgroundColor: "#FFFFFF",
+          logging: false
+        });
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 210;
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const renderHeight = Math.min(imgHeight, pageHeight);
+
+        if (i > 0) pdf.addPage("a4", "portrait");
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, renderHeight);
+      }
+
+      const startVal = document.getElementById("comp-rep-start-date")?.value || "start";
+      const endVal = document.getElementById("comp-rep-end-date")?.value || "end";
+      const rawTitle = document.getElementById("comp-rep-title")?.value || "PPCWD_Report";
+      const cleanTitle = rawTitle.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+      pdf.save(`${cleanTitle}_${startVal}_to_${endVal}.pdf`);
+
+      if (statusEl) {
+        statusEl.textContent = "Multi-page PDF downloaded successfully!";
+        statusEl.style.color = "var(--green)";
+      }
+    } catch (err) {
+      console.error("downloadComprehensiveReportPDF error:", err);
+      if (statusEl) {
+        statusEl.textContent = "Error generating PDF: " + err.message;
+        statusEl.style.color = "var(--red)";
+      }
+    }
+  }
+
+  // ── REUSABLE DRAG & SWIPE TABLE SCROLL CONTROLLER ──
+  function makeScrollableDrag(containerEl, options = {}) {
+    if (!containerEl) return;
+    const horizontal = options.horizontal !== false;
+    const vertical = options.vertical === true;
+
+    let isDown = false;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let scrollLeft = 0;
+    let scrollTop = 0;
+
+    const onMouseDown = (e) => {
+      if (e.button !== 0) return; // Primary mouse button only
+      isDown = true;
+      isDragging = false;
+      startX = e.pageX - containerEl.offsetLeft;
+      startY = e.pageY - containerEl.offsetTop;
+      scrollLeft = containerEl.scrollLeft;
+      scrollTop = containerEl.scrollTop;
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      const x = e.pageX - containerEl.offsetLeft;
+      const y = e.pageY - containerEl.offsetTop;
+      const deltaX = x - startX;
+      const deltaY = y - startY;
+
+      if (!isDragging && (Math.abs(deltaX) >= 5 || Math.abs(deltaY) >= 5)) {
+        isDragging = true;
+        containerEl.classList.add('is-dragging');
+        document.body.style.userSelect = 'none';
+      }
+
+      if (isDragging) {
+        if (horizontal) {
+          containerEl.scrollLeft = scrollLeft - deltaX;
+        }
+        if (vertical) {
+          containerEl.scrollTop = scrollTop - deltaY;
+        }
+      }
+    };
+
+    const stopDragging = () => {
+      if (!isDown) return;
+      isDown = false;
+      if (isDragging) {
+        containerEl.classList.remove('is-dragging');
+        document.body.style.userSelect = '';
+        const captureClick = (clickEvent) => {
+          clickEvent.preventDefault();
+          clickEvent.stopPropagation();
+          window.removeEventListener('click', captureClick, true);
+        };
+        window.addEventListener('click', captureClick, true);
+        setTimeout(() => {
+          isDragging = false;
+          window.removeEventListener('click', captureClick, true);
+        }, 50);
+      }
+    };
+
+    containerEl.addEventListener('mousedown', onMouseDown);
+    containerEl.addEventListener('mousemove', onMouseMove);
+    containerEl.addEventListener('mouseup', stopDragging);
+    containerEl.addEventListener('mouseleave', stopDragging);
+
+    // Window release recovery
+    window.addEventListener('mouseup', stopDragging);
+    window.addEventListener('pointercancel', stopDragging);
+  }
+
+  function initDashboardTableDragScrolling() {
+    // 1. Station Capacity & Monthly Utilization table
+    document.querySelectorAll('#page-monthly .table-responsive').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: false });
+    });
+
+    // 2. Weekly Production tables
+    document.querySelectorAll('#page-production .table-responsive').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: false });
+    });
+
+    // 3. Primary & Outlying Monitoring Points (#priority-cards-row)
+    const priorityCards = document.getElementById('priority-cards-row');
+    if (priorityCards) {
+      makeScrollableDrag(priorityCards, { horizontal: true, vertical: false });
+    }
+
+    // 4. Recent Readings • All Stations table (Dual-axis)
+    document.querySelectorAll('.press-table-wrap').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: true });
+    });
+
+    // 5. Booster Water Level Correlated Hourly Table
+    document.querySelectorAll('#page-waterlevel .table-responsive').forEach(el => {
+      makeScrollableDrag(el, { horizontal: true, vertical: false });
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── SURFACE WATER SOURCE LEVELS & HOURLY PRESSURE CORRELATION ──
+  // ══════════════════════════════════════════════════════════════════
+  const WL_DEFAULT_RIVER_STATIONS = [
+    {
+      name: "Campo Uno Source (Irawan River)",
+      river_name: "Irawan River",
+      measuring_point: "Campo Uno Intake Staff Gauge (Normal: 195 cm)",
+      unit: "cm",
+      normal_level: 195,
+      warning_level: 145,   // -50 cm engineering watch margin
+      critical_level: 115,  // -80 cm engineering operating limit
+      pressure_col: 8
+    },
+    {
+      name: "Lapu-Lapu Source (Lapu-Lapu River)",
+      river_name: "Lapu-Lapu River",
+      measuring_point: "Lapu-Lapu Intake Weir Gauge (Normal: 265 cm)",
+      unit: "cm",
+      normal_level: 265,
+      warning_level: 215,   // -50 cm engineering watch margin
+      critical_level: 185,  // -80 cm engineering operating limit
+      pressure_col: 8
+    },
+    {
+      name: "Montible Source (Montible River)",
+      river_name: "Montible River",
+      measuring_point: "Montible Intake Gauge (Provisional Design: 15 cm — undeclared)",
+      unit: "cm",
+      normal_level: 15,
+      warning_level: 10,    // Provisional until formally declared
+      critical_level: 5,    // Provisional until formally declared
+      pressure_col: 19
+    }
+  ];
+  const WL_SERIES_PALETTE = ['#2563EB', '#D97706', '#0D9488', '#7C3AED', '#DC2626', '#059669'];
+
+  function wlFmt(val, unit = 'cm') {
+    const n = Number(val);
+    if (!Number.isFinite(n)) return '—';
+    if (unit === 'cm' || unit === '%') {
+      return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(/\.0$/, '');
+    }
+    return n.toFixed(2);
+  }
+
+  let waterLevelRaw = [];
+  let waterLevelConfig = {
+    default_station: WL_DEFAULT_RIVER_STATIONS[0].name,
+    stations: JSON.parse(JSON.stringify(WL_DEFAULT_RIVER_STATIONS)),
+    milestones: [
+      { label: "Montible Source Activated", date: "", color: "#0D9488" }
+    ]
+  };
+  let waterLevelLoaded = false;
+  let wlActiveRange = '7d';
+  let wlChartTrend = null;
+  let wlChartDiurnal = null;
+  let wlChartScatter = null;
+  let wlLastCorrelatedRows = [];
+
+  function wlGetPstParts(dt) {
+    const ph = new Date(dt.getTime() + 8 * 3600 * 1000);
+    const y = ph.getUTCFullYear();
+    const m = String(ph.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(ph.getUTCDate()).padStart(2, '0');
+    const hr = ph.getUTCHours();
+    const min = String(ph.getUTCMinutes()).padStart(2, '0');
+    return {
+      dateKey: `${y}-${m}-${d}`,
+      hourKey: `${y}-${m}-${d}T${String(hr).padStart(2, '0')}`,
+      hour: hr,
+      timeLabel: `${String(hr).padStart(2, '0')}:${min}`
+    };
+  }
+
+  function wlGetAllStationsList() {
+    const cfgList = Array.isArray(waterLevelConfig?.stations) && waterLevelConfig.stations.length > 0
+      ? waterLevelConfig.stations
+      : WL_DEFAULT_RIVER_STATIONS;
+    const map = new Map();
+    cfgList.forEach(s => map.set(s.name, s));
+    (waterLevelRaw || []).forEach(r => {
+      if (r.station_name && !map.has(r.station_name)) {
+        map.set(r.station_name, {
+          name: r.station_name,
+          measuring_point: 'Field Staff Gauge',
+          unit: r.unit || 'm',
+          normal_level: Number(r.normal_level) || 1.5,
+          warning_level: r.warning_level ?? 1.0,
+          critical_level: r.critical_level ?? 0.6,
+          pressure_col: 2
+        });
+      }
+    });
+    return Array.from(map.values());
+  }
+
+  function wlGetStationMeta(stationName) {
+    const list = wlGetAllStationsList();
+    return list.find(s => s.name === stationName) || list[0] || WL_DEFAULT_RIVER_STATIONS[0];
+  }
+
+  function wlGetStatusInfo(level, normal, warn, crit) {
+    const lv = Number(level);
+    const nm = Number(normal);
+    const wn = (warn !== null && warn !== undefined && warn !== '') ? Number(warn) : Math.max(0, nm - 50);
+    const cr = (crit !== null && crit !== undefined && crit !== '') ? Number(crit) : Math.max(0, nm - 80);
+    if (!Number.isFinite(lv) || !Number.isFinite(nm) || nm <= 0) {
+      return { label: 'Unknown', color: '#64748B', dot: '#64748B', bg: '#F1F5F9', border: '#CBD5E1', tier: 'unknown' };
+    }
+    if (lv <= cr) {
+      return { label: 'Critical', color: '#B91C1C', dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', tier: 'critical' };
+    }
+    if (lv <= wn) {
+      return { label: 'Watch / Low', color: '#A14506', dot: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', tier: 'watch' };
+    }
+    if (lv < nm) {
+      return { label: 'Below Normal', color: '#1D4ED8', dot: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', tier: 'below' };
+    }
+    return { label: 'Normal', color: '#047857', dot: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', tier: 'normal' };
+  }
+
+  function wlPopulateControls() {
+    const stSel = document.getElementById('wl-dash-station');
+    if (stSel) {
+      const allStations = wlGetAllStationsList().map(s => s.name);
+      const prev = stSel.value;
+      stSel.innerHTML =
+        `<option value="ALL_COMPARE">All River Sources (Comparison)</option>` +
+        allStations.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+      if (prev === 'ALL_COMPARE' || allStations.includes(prev)) {
+        stSel.value = prev;
+      } else {
+        stSel.value = 'ALL_COMPARE';
+      }
+    }
+
+    const pSel = document.getElementById('wl-dash-pressure-source');
+    if (pSel && pSel.options.length === 0) {
+      const distOpts = [
+        `<option value="col:2">Manalo Booster Station — MBS (PSI)</option>`,
+        `<option value="dist_avg">Urban Core Distribution Avg (15 Nodes)</option>`,
+        `<option value="col:8">Lapu-Lapu Campo Uno Chamber Box (PSI)</option>`,
+        `<option value="col:19">UV Treatment Facility (PSI)</option>`,
+        ...PRESSURE_STATIONS.filter(s => ![2, 8, 19].includes(s.col)).map(s => `<option value="col:${s.col}">${escapeHtml(s.name)} (PSI)</option>`)
+      ];
+      pSel.innerHTML = distOpts.join('');
+    }
+  }
+
+  function selectWaterLevelSource(stationName) {
+    wlPopulateControls();
+    const stSel = document.getElementById('wl-dash-station');
+    if (stSel) {
+      stSel.value = stationName;
+    }
+    renderWaterLevelDashboard();
+  }
+
+  function setWaterLevelRange(rangeKey) {
+    wlActiveRange = rangeKey;
+    document.querySelectorAll('.wl-range-btn').forEach(btn => {
+      const active = btn.dataset.range === rangeKey;
+      btn.classList.toggle('active', active);
+      btn.style.background = active ? 'var(--blue-light)' : '#FFFFFF';
+      btn.style.color = active ? 'var(--blue-text)' : 'var(--text-muted)';
+    });
+    renderWaterLevelDashboard();
+  }
+
+  async function loadWaterLevel(forceRefresh = false) {
+    try {
+      const url = `/api/getWaterLevel?include_config=1&limit=2000${forceRefresh ? '&_t=' + Date.now() : ''}`;
+      const res = await fetch(url, { cache: forceRefresh ? 'no-store' : 'default' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const payload = await res.json();
+      if (payload && payload.config && Array.isArray(payload.config.stations) && payload.config.stations.length > 0) {
+        if (payload.config.stations.length === 1 && payload.config.stations[0].name === 'Manalo Booster Station') {
+          waterLevelConfig.stations = JSON.parse(JSON.stringify(WL_DEFAULT_RIVER_STATIONS));
+          waterLevelConfig.default_station = WL_DEFAULT_RIVER_STATIONS[0].name;
+          waterLevelConfig.milestones = payload.config.milestones || waterLevelConfig.milestones;
+        } else {
+          waterLevelConfig = payload.config;
+        }
+      }
+      const rows = Array.isArray(payload?.readings) ? payload.readings : (Array.isArray(payload) ? payload : []);
+      waterLevelRaw = rows
+        .map(r => ({
+          ...r,
+          dt: new Date(r.reading_time),
+          water_level: parseFloat(r.water_level),
+          normal_level: parseFloat(r.normal_level),
+          warning_level: r.warning_level !== null && r.warning_level !== undefined ? parseFloat(r.warning_level) : null,
+          critical_level: r.critical_level !== null && r.critical_level !== undefined ? parseFloat(r.critical_level) : null
+        }))
+        .filter(r => !isNaN(r.dt.getTime()) && Number.isFinite(r.water_level))
+        .sort((a, b) => a.dt - b.dt);
+
+      waterLevelLoaded = true;
+      wlPopulateControls();
+      if (typeof renderOverview === 'function') renderOverview();
+
+      if (document.getElementById('page-waterlevel')?.classList.contains('active')) {
+        await ensurePressureCoversWaterLevel(waterLevelRaw);
+        renderWaterLevelDashboard();
+      }
+    } catch (err) {
+      console.warn('Water level fetch error:', err);
+      waterLevelLoaded = true;
+      wlPopulateControls();
+      if (document.getElementById('page-waterlevel')?.classList.contains('active')) {
+        renderWaterLevelDashboard();
+      }
+    }
+  }
+
+  async function ensurePressureCoversWaterLevel(rows) {
+    if (!rows || rows.length === 0 || typeof fetchPressureRange !== 'function') return;
+    const minWlDt = rows[0].dt;
+    const maxWlDt = rows[rows.length - 1].dt;
+    if (!pressureRaw || pressureRaw.length === 0) {
+      await fetchPressureRange(new Date(minWlDt.getTime() - 3600 * 1000), new Date(maxWlDt.getTime() + 3600 * 1000));
+      return;
+    }
+    const oldestPress = pressureRaw[0]?.dt;
+    if (oldestPress && minWlDt < oldestPress) {
+      const safeStart = new Date(Math.max(minWlDt.getTime() - 3600 * 1000, Date.now() - 45 * 24 * 3600 * 1000));
+      if (safeStart < oldestPress) {
+        await fetchPressureRange(safeStart, oldestPress);
+      }
+    }
+  }
+
+  function updateOverviewManaloWaterLevelChip() {
+    // Overview river source level badges are rendered directly in the Live Source Monitoring & Yield Matrix
+  }
+
+  function renderWaterLevelSourceCards(selectedSource) {
+    const grid = document.getElementById('wl-source-cards-grid');
+    if (!grid) return;
+    const stations = wlGetAllStationsList();
+    const compareBtn = document.getElementById('btn-wl-compare-all');
+    if (compareBtn) {
+      const isAll = selectedSource === 'ALL_COMPARE';
+      compareBtn.style.background = isAll ? 'var(--blue)' : 'var(--blue-light)';
+      compareBtn.style.color = isAll ? '#FFFFFF' : 'var(--blue-text)';
+    }
+
+    grid.innerHTML = stations.map((s, idx) => {
+      const sRows = (waterLevelRaw || []).filter(r => r.station_name === s.name);
+      const latest = sRows.length > 0 ? sRows[sRows.length - 1] : null;
+      const unit = latest?.unit || s.unit || 'cm';
+      const norm = latest ? latest.normal_level : Number(s.normal_level || 195);
+      const crit = latest?.critical_level ?? s.critical_level ?? Math.max(0, norm - 80);
+      const warn = latest?.warning_level ?? s.warning_level ?? Math.max(0, norm - 50);
+      const isActive = selectedSource === s.name;
+      const accent = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
+
+      if (!latest) {
+        return `
+          <button type="button" class="wl-source-card ${isActive ? 'active' : ''}" style="border-top:3px solid ${accent};" onclick="selectWaterLevelSource(${JSON.stringify(s.name)})">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+              <div>
+                <div style="font-size:13px; font-weight:800; color:var(--text-main);">${escapeHtml(s.name)}</div>
+                <div style="font-size:10.5px; color:var(--text-muted); margin-top:1px;">${escapeHtml(s.measuring_point || 'Intake Staff Gauge')}</div>
+              </div>
+              <span class="kpi-badge-pill" style="background:#F1F5F9; color:var(--text-muted);">No Logs</span>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:6px; margin:10px 0 6px;">
+              <span style="font-size:22px; font-weight:800; font-family:var(--font-mono); color:var(--text-muted);">—</span>
+              <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${escapeHtml(unit)}</span>
+            </div>
+            <div style="font-size:10.5px; color:var(--text-muted); font-family:var(--font-mono);">
+              Normal: ${wlFmt(norm, unit)} ${escapeHtml(unit)} &bull; Crit: &le;${wlFmt(crit, unit)} ${escapeHtml(unit)}
+            </div>
+          </button>
+        `;
+      }
+
+      const st = wlGetStatusInfo(latest.water_level, norm, warn, crit);
+      const delta = latest.water_level - norm;
+      const pct = norm > 0 ? (latest.water_level / norm) * 100 : 0;
+      const dtStr = latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <button type="button" class="wl-source-card ${isActive ? 'active' : ''}" style="border-top:3px solid ${st.dot || accent};" onclick="selectWaterLevelSource(${JSON.stringify(s.name)})">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div>
+              <div style="font-size:13px; font-weight:800; color:var(--text-main);">${escapeHtml(s.name)}</div>
+              <div style="font-size:10.5px; color:var(--text-muted); margin-top:1px;">${escapeHtml(s.measuring_point || 'Intake Staff Gauge')}</div>
+            </div>
+            <span class="kpi-badge-pill" style="background:${st.bg}; color:${st.color}; border:1px solid ${st.border}; white-space:nowrap;">${st.label}</span>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:6px; margin:8px 0 4px;">
+            <span style="font-size:23px; font-weight:800; font-family:var(--font-mono); color:${st.color}; line-height:1;">${wlFmt(latest.water_level, unit)}</span>
+            <span style="font-size:11px; font-weight:600; color:var(--text-muted); font-family:var(--font-mono);">${escapeHtml(unit)}</span>
+            <span style="margin-left:auto; font-size:11px; font-weight:700; font-family:var(--font-mono); color:${delta < 0 ? 'var(--red-text)' : 'var(--green-text)'};">${delta >= 0 ? '+' : ''}${wlFmt(delta, unit)} ${escapeHtml(unit)} (${pct.toFixed(0)}%)</span>
+          </div>
+          <div style="height:5px; background:#F1F5F9; border-radius:99px; overflow:hidden; margin:4px 0 6px;">
+            <div style="height:100%; width:${Math.min(100, Math.max(0, pct)).toFixed(1)}%; background:${st.dot || accent}; border-radius:99px;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">
+            <span>Norm: ${wlFmt(norm, unit)} &bull; Crit: &le;${wlFmt(crit, unit)} ${escapeHtml(unit)}</span>
+            <span>${escapeHtml(dtStr)}</span>
+          </div>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function buildHourlyPressureLookup(startDt, endDt) {
+    const transCols = [8, 19, 3, 5];
+    const boostedCols = [10];
+    const distCols = PRESSURE_STATIONS
+      .filter(s => !transCols.includes(s.col) && !boostedCols.includes(s.col))
+      .map(s => s.col);
+
+    const byHourKey = new Map();
+    const byHourOfDay = Array.from({ length: 24 }, (_, hr) => ({
+      hour: hr,
+      colSums: {},
+      colCounts: {},
+      distSum: 0,
+      distCount: 0
+    }));
+
+    (pressureRaw || []).forEach(r => {
+      if (!r || !r.dt || !r.vals) return;
+      if (startDt && r.dt < startDt) return;
+      if (endDt && r.dt > endDt) return;
+      const p = wlGetPstParts(r.dt);
+
+      let bucket = byHourKey.get(p.hourKey);
+      if (!bucket) {
+        bucket = { colSums: {}, colCounts: {}, distSum: 0, distCount: 0 };
+        byHourKey.set(p.hourKey, bucket);
+      }
+      const dBucket = byHourOfDay[p.hour];
+
+      PRESSURE_STATIONS.forEach(s => {
+        const v = r.vals[s.col];
+        if (v !== null && v !== undefined && Number.isFinite(v) && v >= 0) {
+          bucket.colSums[s.col] = (bucket.colSums[s.col] || 0) + v;
+          bucket.colCounts[s.col] = (bucket.colCounts[s.col] || 0) + 1;
+          dBucket.colSums[s.col] = (dBucket.colSums[s.col] || 0) + v;
+          dBucket.colCounts[s.col] = (dBucket.colCounts[s.col] || 0) + 1;
+        }
+      });
+
+      distCols.forEach(col => {
+        const v = r.vals[col];
+        if (v !== null && v !== undefined && Number.isFinite(v) && v >= 0 && v <= 40) {
+          bucket.distSum += v;
+          bucket.distCount += 1;
+          dBucket.distSum += v;
+          dBucket.distCount += 1;
+        }
+      });
+    });
+
+    const getSourceAvg = (bucket, sourceKey) => {
+      if (!bucket) return null;
+      if (sourceKey === 'dist_avg') {
+        return bucket.distCount > 0 ? bucket.distSum / bucket.distCount : null;
+      }
+      const col = parseInt(String(sourceKey || 'col:2').replace('col:', ''), 10) || 2;
+      const cnt = bucket.colCounts[col] || 0;
+      return cnt > 0 ? bucket.colSums[col] / cnt : null;
+    };
+
+    return { byHourKey, byHourOfDay, getSourceAvg };
+  }
+
+  function computePearsonR(points) {
+    if (!points || points.length < 3) return null;
+    const n = points.length;
+    let sx = 0, sy = 0, sxx = 0, syy = 0, sxy = 0;
+    points.forEach(pt => {
+      sx += pt.x; sy += pt.y;
+      sxx += pt.x * pt.x; syy += pt.y * pt.y;
+      sxy += pt.x * pt.y;
+    });
+    const num = n * sxy - sx * sy;
+    const den = Math.sqrt((n * sxx - sx * sx) * (n * syy - sy * sy));
+    if (!Number.isFinite(den) || den === 0) return null;
+    const r = num / den;
+    const slope = (n * sxx - sx * sx) !== 0 ? (n * sxy - sx * sy) / (n * sxx - sx * sx) : 0;
+    const intercept = (sy - slope * sx) / n;
+    return { r, slope, intercept };
+  }
+
+  function resetWlTrendZoom() {
+    if (wlChartTrend && typeof wlChartTrend.resetZoom === 'function') {
+      wlChartTrend.resetZoom();
+    }
+  }
+
+  const wlMilestonePlugin = {
+    id: 'wlMilestoneLines',
+    afterDatasetsDraw(chart) {
+      const lines = chart.options?.plugins?.wlMilestoneLines?.lines;
+      if (!Array.isArray(lines) || lines.length === 0) return;
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea || !scales?.x) return;
+
+      ctx.save();
+      lines.forEach(line => {
+        if (line.index === null || line.index === undefined || line.index < 0) return;
+        const xPos = scales.x.getPixelForValue(line.index);
+        if (!Number.isFinite(xPos) || xPos < chartArea.left || xPos > chartArea.right) return;
+
+        ctx.beginPath();
+        ctx.setLineDash([5, 4]);
+        ctx.strokeStyle = line.color || '#0D9488';
+        ctx.lineWidth = 1.6;
+        ctx.moveTo(xPos, chartArea.top);
+        ctx.lineTo(xPos, chartArea.bottom);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.font = '700 10px Inter, sans-serif';
+        const txt = line.label || 'Milestone';
+        const w = ctx.measureText(txt).width + 12;
+        const bx = Math.min(Math.max(xPos - w / 2, chartArea.left + 2), chartArea.right - w - 2);
+        const by = chartArea.top + 4;
+        ctx.fillStyle = line.color || '#0D9488';
+        ctx.beginPath();
+        ctx.roundRect(bx, by, w, 18, 4);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(txt, bx + 6, by + 9);
+      });
+      ctx.restore();
+    }
+  };
+
+  const wlDiurnalBandsPlugin = {
+    id: 'wlDiurnalBands',
+    beforeDatasetsDraw(chart) {
+      if (!chart.options?.plugins?.wlDiurnalBands?.enabled) return;
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea || !scales?.x) return;
+      const bands = [
+        { from: 5, to: 8, label: 'AM Peak' },
+        { from: 17, to: 20, label: 'PM Peak' }
+      ];
+      ctx.save();
+      bands.forEach(b => {
+        const x1 = scales.x.getPixelForValue(b.from);
+        const x2 = scales.x.getPixelForValue(b.to);
+        if (!Number.isFinite(x1) || !Number.isFinite(x2)) return;
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.09)';
+        ctx.fillRect(x1, chartArea.top, x2 - x1, chartArea.bottom - chartArea.top);
+        ctx.fillStyle = '#A14506';
+        ctx.font = '700 9.5px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.label, (x1 + x2) / 2, chartArea.top + 11);
+      });
+      ctx.restore();
+    }
+  };
+
+  function renderWaterLevelDashboard() {
+    wlPopulateControls();
+    const selectedSource = document.getElementById('wl-dash-station')?.value || 'ALL_COMPARE';
+    const isAllMode = selectedSource === 'ALL_COMPARE';
+    const pressSource = document.getElementById('wl-dash-pressure-source')?.value || 'col:2';
+    const pressSourceLabel = document.getElementById('wl-dash-pressure-source')?.selectedOptions?.[0]?.textContent || 'Manalo Booster Station — MBS (PSI)';
+    const showPsi = document.getElementById('wl-toggle-psi-overlay')?.checked !== false;
+    const showThresholds = document.getElementById('wl-toggle-thresholds')?.checked !== false;
+    const compareMode = isAllMode ? (document.getElementById('wl-compare-mode')?.value || 'delta') : 'raw';
+
+    // Toggle UI helpers for All-Sources vs Single-Source
+    const normWrap = document.getElementById('wl-normalize-wrap');
+    if (normWrap) normWrap.style.display = isAllMode ? 'inline-flex' : 'none';
+
+    renderWaterLevelSourceCards(selectedSource);
+
+    const allStations = wlGetAllStationsList();
+    const meta = isAllMode ? allStations[0] : wlGetStationMeta(selectedSource);
+    const baseRows = isAllMode
+      ? [...(waterLevelRaw || [])]
+      : (waterLevelRaw || []).filter(r => r.station_name === selectedSource);
+
+    const anchorMs = baseRows.length > 0 ? Math.max(Date.now(), baseRows[baseRows.length - 1].dt.getTime()) : Date.now();
+    const rangeDaysMap = { '24h': 1, '7d': 7, '14d': 14, '30d': 30 };
+    const cutoffDt = rangeDaysMap[wlActiveRange] ? new Date(anchorMs - rangeDaysMap[wlActiveRange] * 24 * 3600 * 1000) : null;
+
+    const filtered = cutoffDt ? baseRows.filter(r => r.dt >= cutoffDt) : [...baseRows];
+    const windowStart = filtered.length > 0 ? new Date(filtered[0].dt.getTime() - 3600 * 1000) : cutoffDt;
+    const windowEnd = filtered.length > 0 ? new Date(filtered[filtered.length - 1].dt.getTime() + 3600 * 1000) : new Date();
+    const pressLookup = buildHourlyPressureLookup(windowStart, windowEnd);
+
+    const enriched = filtered.map(r => {
+      const sMeta = wlGetStationMeta(r.station_name);
+      const p = wlGetPstParts(r.dt);
+      const bucket = pressLookup.byHourKey.get(p.hourKey);
+      const selectedPsi = pressLookup.getSourceAvg(bucket, pressSource);
+      const manaloPsi = pressLookup.getSourceAvg(bucket, 'col:2');
+      const distPsi = pressLookup.getSourceAvg(bucket, 'dist_avg');
+      const warn = r.warning_level ?? sMeta.warning_level;
+      const crit = r.critical_level ?? sMeta.critical_level;
+      const st = wlGetStatusInfo(r.water_level, r.normal_level, warn, crit);
+      const deltaCm = Number((r.water_level - r.normal_level).toFixed(2));
+      const pctOfNormal = r.normal_level > 0 ? (r.water_level / r.normal_level) * 100 : null;
+      return { ...r, pst: p, selectedPsi, manaloPsi, distPsi, statusInfo: st, effWarn: warn, effCrit: crit, deltaCm, pctOfNormal };
+    });
+    wlLastCorrelatedRows = enriched;
+
+    const unit = enriched[enriched.length - 1]?.unit || meta?.unit || 'cm';
+    const emptyBanner = document.getElementById('wl-empty-banner');
+    if (emptyBanner) emptyBanner.style.display = enriched.length === 0 ? 'flex' : 'none';
+
+    const trendTitle = document.getElementById('wl-trend-title');
+    const trendSub = document.getElementById('wl-trend-sub');
+    if (trendTitle) {
+      const modeTitle = compareMode === 'delta' ? `Variance vs. Normal (Δ ${unit})` : (compareMode === 'pct' ? '% of Normal Height' : `Actual Height (${unit})`);
+      trendTitle.textContent = isAllMode
+        ? `All River Sources Comparison — ${modeTitle} vs. Hourly Avg Pressure`
+        : `${selectedSource} — Water Level vs. Normal & Critical Levels`;
+    }
+    if (trendSub) {
+      trendSub.textContent = isAllMode
+        ? 'Engineering operating margin: -50 cm (Watch) to -80 cm (Critical) below Normal Level • Paired with hourly average PSI'
+        : `Measuring Point: ${meta?.measuring_point || 'Intake Staff Gauge'} • Paired with hourly average PSI`;
+    }
+
+    // ── 1. UPDATE KPI CARDS ──
+    const kpiLatestLbl = document.getElementById('wl-kpi-latest-lbl');
+    const kpiLatest = document.getElementById('wl-kpi-latest');
+    const kpiLatestSub = document.getElementById('wl-kpi-latest-sub');
+    const kpiVar = document.getElementById('wl-kpi-variance');
+    const kpiBar = document.getElementById('wl-kpi-bar');
+    const kpiNormSub = document.getElementById('wl-kpi-normal-sub');
+    const kpiRange = document.getElementById('wl-kpi-range');
+    const kpiBelowSub = document.getElementById('wl-kpi-below-sub');
+    const kpiRate = document.getElementById('wl-kpi-rate');
+    const kpiRateSub = document.getElementById('wl-kpi-rate-sub');
+    const kpiPsi = document.getElementById('wl-kpi-psi');
+    const kpiPsiSub = document.getElementById('wl-kpi-psi-sub');
+
+    if (enriched.length === 0) {
+      if (kpiLatestLbl) kpiLatestLbl.textContent = isAllMode ? 'Active River Sources' : 'Latest Reported Level';
+      if (kpiLatest) { kpiLatest.innerHTML = `—<span class="unit">${escapeHtml(unit)}</span>`; kpiLatest.style.color = 'var(--text-main)'; }
+      if (kpiLatestSub) kpiLatestSub.textContent = 'No readings in selected window';
+      if (kpiVar) { kpiVar.textContent = '—'; kpiVar.style.color = 'var(--text-main)'; }
+      if (kpiBar) kpiBar.style.width = '0%';
+      if (kpiNormSub) kpiNormSub.textContent = isAllMode ? 'Engineering margin: -50 to -80 cm' : `Normal: ${wlFmt(meta?.normal_level || 195, unit)} ${unit} • Crit: ≤${wlFmt(meta?.critical_level ?? 115, unit)} ${unit}`;
+      if (kpiRange) kpiRange.textContent = '—';
+      if (kpiBelowSub) kpiBelowSub.textContent = '0 MBS operator logs';
+      if (kpiRate) { kpiRate.textContent = '—'; kpiRate.style.color = 'var(--text-main)'; }
+      if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 readings';
+      if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
+      if (kpiPsiSub) kpiPsiSub.textContent = pressSourceLabel;
+    } else if (isAllMode) {
+      const latestBySource = new Map();
+      enriched.forEach(r => latestBySource.set(r.station_name, r));
+      const latestArr = Array.from(latestBySource.values());
+      const avgDelta = latestArr.reduce((s, r) => s + r.deltaCm, 0) / latestArr.length;
+      const critCount = latestArr.filter(r => r.statusInfo.tier === 'critical').length;
+      const watchCount = latestArr.filter(r => r.statusInfo.tier === 'watch').length;
+      const worst = [...latestArr].sort((a, b) => a.deltaCm - b.deltaCm)[0];
+
+      if (kpiLatestLbl) kpiLatestLbl.textContent = 'Avg Variance vs. Normal';
+      if (kpiLatest) {
+        kpiLatest.innerHTML = `${avgDelta >= 0 ? '+' : ''}${wlFmt(avgDelta, unit)}<span class="unit">${escapeHtml(unit)}</span>`;
+        kpiLatest.style.color = critCount > 0 ? 'var(--red-text)' : (watchCount > 0 ? 'var(--amber-text)' : 'var(--blue-text)');
+      }
+      if (kpiLatestSub) kpiLatestSub.textContent = `${latestArr.length} source(s) active • ${critCount} critical, ${watchCount} watch`;
+      if (kpiVar) {
+        kpiVar.textContent = worst ? `${worst.deltaCm >= 0 ? '+' : ''}${wlFmt(worst.deltaCm, worst.unit || unit)} ${worst.unit || unit} (${wlFmt(worst.water_level, worst.unit || unit)})` : '—';
+        kpiVar.style.color = worst ? worst.statusInfo.color : 'var(--text-main)';
+      }
+      if (kpiBar) {
+        kpiBar.style.width = `${Math.min(100, Math.max(0, worst?.pctOfNormal || 0)).toFixed(1)}%`;
+        kpiBar.style.background = worst?.statusInfo?.dot || 'var(--blue)';
+      }
+      if (kpiNormSub) kpiNormSub.textContent = worst ? `Deepest Drop: ${worst.station_name.split('(')[0].trim()}` : '—';
+
+      const deltas = enriched.map(r => r.deltaCm);
+      const minD = Math.min(...deltas);
+      const maxD = Math.max(...deltas);
+      const belowCnt = enriched.filter(r => r.water_level < r.normal_level).length;
+      if (kpiRange) kpiRange.textContent = `${minD >= 0 ? '+' : ''}${wlFmt(minD, unit)} to ${maxD >= 0 ? '+' : ''}${wlFmt(maxD, unit)} ${unit}`;
+      if (kpiBelowSub) kpiBelowSub.textContent = `${((belowCnt / enriched.length) * 100).toFixed(0)}% of ${enriched.length} logs below normal`;
+
+      const rates = [];
+      allStations.forEach(s => {
+        const sr = enriched.filter(r => r.station_name === s.name);
+        if (sr.length >= 2) {
+          const a = sr[sr.length - 2], b = sr[sr.length - 1];
+          const hrs = (b.dt - a.dt) / 3600000;
+          if (hrs > 0.05) rates.push((b.water_level - a.water_level) / hrs);
+        }
+      });
+      if (rates.length > 0) {
+        const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+        if (kpiRate) {
+          kpiRate.textContent = `${avgRate >= 0 ? '+' : ''}${avgRate.toFixed(1)} ${unit}/hr`;
+          kpiRate.style.color = avgRate < -0.2 ? 'var(--red-text)' : (avgRate > 0.2 ? 'var(--green-text)' : 'var(--text-main)');
+        }
+        if (kpiRateSub) kpiRateSub.textContent = avgRate < -0.2 ? 'Net watershed drawdown' : (avgRate > 0.2 ? 'Net watershed recovery' : 'Watersheds stable');
+      } else {
+        if (kpiRate) kpiRate.textContent = '—';
+        if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 logs per source';
+      }
+
+      const latestWithPsi = [...enriched].reverse().find(r => r.selectedPsi !== null);
+      if (latestWithPsi) {
+        if (kpiPsi) {
+          kpiPsi.innerHTML = `${latestWithPsi.selectedPsi.toFixed(1)}<span class="unit">PSI</span>`;
+          kpiPsi.style.color = latestWithPsi.selectedPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
+        }
+        if (kpiPsiSub) kpiPsiSub.textContent = `${pressSourceLabel.replace(' (PSI)', '')} @ ${latestWithPsi.pst.timeLabel}`;
+      } else {
+        if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
+        if (kpiPsiSub) kpiPsiSub.textContent = 'No pressure telemetry for logged hours';
+      }
+    } else {
+      const latest = enriched[enriched.length - 1];
+      const delta = latest.deltaCm;
+      const pct = latest.pctOfNormal || 0;
+      const sign = delta >= 0 ? '+' : '';
+      const latestStr = latest.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      if (kpiLatestLbl) kpiLatestLbl.textContent = 'Latest Reported Level';
+      if (kpiLatest) {
+        kpiLatest.innerHTML = `${wlFmt(latest.water_level, unit)}<span class="unit">${escapeHtml(unit)}</span>`;
+        kpiLatest.style.color = latest.statusInfo.color;
+      }
+      if (kpiLatestSub) {
+        kpiLatestSub.innerHTML = `<span class="kpi-badge-pill" style="background:${latest.statusInfo.bg}; color:${latest.statusInfo.color}; border:1px solid ${latest.statusInfo.border};">${latest.statusInfo.label}</span> &bull; ${escapeHtml(latestStr)}`;
+      }
+      if (kpiVar) {
+        kpiVar.textContent = `${sign}${wlFmt(delta, unit)} ${unit} (${pct.toFixed(0)}%)`;
+        kpiVar.style.color = delta < 0 ? 'var(--red-text)' : 'var(--green-text)';
+      }
+      if (kpiBar) {
+        kpiBar.style.width = `${Math.min(100, Math.max(0, pct)).toFixed(1)}%`;
+        kpiBar.style.background = latest.statusInfo.dot || latest.statusInfo.color;
+      }
+      if (kpiNormSub) {
+        kpiNormSub.textContent = `Normal: ${wlFmt(latest.normal_level, unit)} ${unit} • Crit: ≤${wlFmt(latest.effCrit ?? Math.max(0, latest.normal_level - 80), unit)} ${unit}`;
+      }
+
+      const vals = enriched.map(r => r.water_level);
+      const minV = Math.min(...vals);
+      const maxV = Math.max(...vals);
+      const avgV = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const belowCount = enriched.filter(r => r.water_level < r.normal_level).length;
+      const belowPct = (belowCount / enriched.length) * 100;
+
+      if (kpiRange) kpiRange.textContent = `${wlFmt(minV, unit)} – ${wlFmt(maxV, unit)} ${unit}`;
+      if (kpiBelowSub) kpiBelowSub.textContent = `Avg: ${wlFmt(avgV, unit)} ${unit} • ${belowPct.toFixed(0)}% below normal (${enriched.length} logs)`;
+
+      if (enriched.length >= 2) {
+        const prev = enriched[enriched.length - 2];
+        const hrs = (latest.dt.getTime() - prev.dt.getTime()) / 3600000;
+        if (hrs > 0.05) {
+          const rate = (latest.water_level - prev.water_level) / hrs;
+          const rSign = rate >= 0 ? '+' : '';
+          if (kpiRate) {
+            kpiRate.textContent = `${rSign}${rate.toFixed(1)} ${unit}/hr`;
+            kpiRate.style.color = rate < -0.2 ? 'var(--red-text)' : (rate > 0.2 ? 'var(--green-text)' : 'var(--text-main)');
+          }
+          if (kpiRateSub) {
+            kpiRateSub.textContent = rate < -0.2 ? 'Active river drawdown' : (rate > 0.2 ? 'River level recovering' : 'River level stable');
+          }
+        } else {
+          if (kpiRate) kpiRate.textContent = '0 ' + unit + '/hr';
+          if (kpiRateSub) kpiRateSub.textContent = 'Readings too close in time';
+        }
+      } else {
+        if (kpiRate) kpiRate.textContent = '—';
+        if (kpiRateSub) kpiRateSub.textContent = 'Need ≥ 2 readings';
+      }
+
+      const latestWithPsi = [...enriched].reverse().find(r => r.selectedPsi !== null);
+      if (latestWithPsi && latestWithPsi.selectedPsi !== null) {
+        if (kpiPsi) {
+          kpiPsi.innerHTML = `${latestWithPsi.selectedPsi.toFixed(1)}<span class="unit">PSI</span>`;
+          kpiPsi.style.color = latestWithPsi.selectedPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--blue-text)';
+        }
+        if (kpiPsiSub) kpiPsiSub.textContent = `${pressSourceLabel.replace(' (PSI)', '')} @ ${latestWithPsi.pst.timeLabel}`;
+      } else {
+        if (kpiPsi) { kpiPsi.innerHTML = `—<span class="unit">PSI</span>`; kpiPsi.style.color = 'var(--text-muted)'; }
+        if (kpiPsiSub) kpiPsiSub.textContent = 'No pressure telemetry for this hour';
+      }
+    }
+
+    // ── 2. CHART 1: DUAL-AXIS TREND LINE CHART ──
+    const trendCanvas = document.getElementById('chart-wl-trend');
+    if (trendCanvas) {
+      if (wlChartTrend) { try { wlChartTrend.destroy(); } catch (e) {} wlChartTrend = null; }
+
+      let labels = [];
+      let datasets = [];
+      let timelineDates = [];
+      let yAxisTitle = `Water Level (${unit})`;
+      let yBeginAtZero = true;
+
+      if (isAllMode) {
+        const timeSlotsMap = new Map();
+        enriched.forEach(r => {
+          const tsKey = r.dt.toISOString();
+          if (!timeSlotsMap.has(tsKey)) {
+            timeSlotsMap.set(tsKey, { dt: r.dt, pst: r.pst, byStation: {}, selectedPsi: r.selectedPsi });
+          }
+          const slot = timeSlotsMap.get(tsKey);
+          slot.byStation[r.station_name] = r;
+          if (slot.selectedPsi === null && r.selectedPsi !== null) slot.selectedPsi = r.selectedPsi;
+        });
+        const slots = Array.from(timeSlotsMap.values()).sort((a, b) => a.dt - b.dt);
+        timelineDates = slots.map(s => s.dt);
+        labels = slots.map(s =>
+          s.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+        );
+
+        yAxisTitle = compareMode === 'delta' ? `Variance vs. Normal (Δ ${unit})` : (compareMode === 'pct' ? '% of Normal Level' : `Water Level (${unit})`);
+        yBeginAtZero = compareMode !== 'delta';
+
+        allStations.forEach((s, idx) => {
+          const color = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
+          const dataSeries = slots.map(slot => {
+            const rec = slot.byStation[s.name];
+            if (!rec) return null;
+            if (compareMode === 'delta') return rec.deltaCm;
+            if (compareMode === 'pct') return Number((rec.pctOfNormal || 0).toFixed(1));
+            return rec.water_level;
+          });
+          if (dataSeries.some(v => v !== null)) {
+            datasets.push({
+              label: s.name,
+              data: dataSeries,
+              borderColor: color,
+              backgroundColor: color + '18',
+              borderWidth: 2.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: color,
+              pointBorderColor: '#FFFFFF',
+              pointBorderWidth: 1.5,
+              spanGaps: true,
+              tension: 0.25,
+              fill: false,
+              yAxisID: 'y'
+            });
+          }
+        });
+
+        if (showThresholds && slots.length > 0) {
+          if (compareMode === 'delta') {
+            datasets.push({
+              label: `Normal Level (0 ${unit})`,
+              data: new Array(slots.length).fill(0),
+              borderColor: '#10B981',
+              borderWidth: 1.8,
+              borderDash: [6, 4],
+              pointRadius: 0,
+              fill: false,
+              yAxisID: 'y'
+            });
+            datasets.push({
+              label: `Watch Margin (-50 ${unit})`,
+              data: new Array(slots.length).fill(-50),
+              borderColor: '#F59E0B',
+              borderWidth: 1.4,
+              borderDash: [4, 4],
+              pointRadius: 0,
+              fill: false,
+              yAxisID: 'y'
+            });
+            datasets.push({
+              label: `Critical Limit (-80 ${unit})`,
+              data: new Array(slots.length).fill(-80),
+              borderColor: '#EF4444',
+              borderWidth: 1.6,
+              borderDash: [3, 3],
+              pointRadius: 0,
+              fill: false,
+              yAxisID: 'y'
+            });
+          } else if (compareMode === 'pct') {
+            datasets.push({
+              label: 'Normal Level (100%)',
+              data: new Array(slots.length).fill(100),
+              borderColor: '#10B981',
+              borderWidth: 1.8,
+              borderDash: [6, 4],
+              pointRadius: 0,
+              fill: false,
+              yAxisID: 'y'
+            });
+          }
+        }
+
+        if (showPsi) {
+          datasets.push({
+            label: `Hourly Avg ${pressSourceLabel}`,
+            data: slots.map(s => s.selectedPsi !== null ? Number(s.selectedPsi.toFixed(2)) : null),
+            borderColor: '#475569',
+            backgroundColor: 'rgba(71, 85, 105, 0.14)',
+            borderWidth: 1.8,
+            borderDash: [3, 3],
+            pointRadius: 3,
+            pointStyle: 'rectRot',
+            spanGaps: true,
+            tension: 0.25,
+            yAxisID: 'y1'
+          });
+        }
+      } else {
+        timelineDates = enriched.map(r => r.dt);
+        labels = enriched.map(r =>
+          r.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+        );
+        const levelData = enriched.map(r => r.water_level);
+        const normalData = enriched.map(r => r.normal_level);
+        const warnData = enriched.map(r => r.effWarn ?? Math.max(0, r.normal_level - 50));
+        const critData = enriched.map(r => r.effCrit ?? Math.max(0, r.normal_level - 80));
+        const psiData = enriched.map(r => r.selectedPsi !== null ? Number(r.selectedPsi.toFixed(2)) : null);
+        const pointColors = enriched.map(r => r.statusInfo.dot || '#2563EB');
+
+        datasets.push({
+          label: `Reported Water Level (${unit})`,
+          data: levelData,
+          borderColor: '#2563EB',
+          backgroundColor: 'rgba(37, 99, 235, 0.10)',
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.25,
+          pointRadius: 4.5,
+          pointHoverRadius: 6.5,
+          pointBackgroundColor: pointColors,
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 1.5,
+          yAxisID: 'y'
+        });
+
+        if (showThresholds) {
+          datasets.push({
+            label: `Normal Level (${unit})`,
+            data: normalData,
+            borderColor: '#10B981',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+            tension: 0,
+            yAxisID: 'y'
+          });
+          datasets.push({
+            label: `Watch Level (${unit})`,
+            data: warnData,
+            borderColor: '#F59E0B',
+            borderWidth: 1.3,
+            borderDash: [4, 4],
+            pointRadius: 0,
+            fill: false,
+            tension: 0,
+            yAxisID: 'y'
+          });
+          datasets.push({
+            label: `Critical Level (${unit})`,
+            data: critData,
+            borderColor: '#EF4444',
+            borderWidth: 1.6,
+            borderDash: [3, 3],
+            pointRadius: 0,
+            fill: false,
+            tension: 0,
+            yAxisID: 'y'
+          });
+        }
+
+        if (showPsi) {
+          datasets.push({
+            label: `Hourly Avg ${pressSourceLabel}`,
+            data: psiData,
+            borderColor: '#0D9488',
+            backgroundColor: 'rgba(13, 148, 136, 0.18)',
+            borderWidth: 2,
+            borderDash: [2, 2],
+            pointRadius: 3.5,
+            pointBackgroundColor: '#0D9488',
+            pointStyle: 'rectRot',
+            spanGaps: true,
+            tension: 0.25,
+            yAxisID: 'y1'
+          });
+        }
+      }
+
+      const milestoneLines = [];
+      (waterLevelConfig?.milestones || []).forEach(ms => {
+        if (!ms || !ms.date || timelineDates.length === 0) return;
+        const targetMs = new Date(`${ms.date}T00:00:00+08:00`).getTime();
+        if (isNaN(targetMs)) return;
+        const firstIdx = timelineDates.findIndex(d => d.getTime() >= targetMs);
+        if (firstIdx >= 0) {
+          milestoneLines.push({ index: firstIdx, label: ms.label || 'Milestone', color: ms.color || '#0D9488' });
+        }
+      });
+
+      wlChartTrend = new Chart(trendCanvas.getContext('2d'), {
+        type: 'line',
+        data: { labels, datasets },
+        plugins: [wlMilestonePlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            datalabels: { display: false },
+            wlMilestoneLines: { lines: milestoneLines },
+            legend: {
+              position: 'top',
+              labels: { usePointStyle: true, boxWidth: 10, font: { size: 11, family: 'Inter, sans-serif' } }
+            },
+            tooltip: {
+              callbacks: {
+                afterBody(items) {
+                  if (isAllMode) return '';
+                  const idx = items[0]?.dataIndex;
+                  const row = enriched[idx];
+                  if (!row) return '';
+                  const linesOut = [];
+                  const dlt = row.deltaCm;
+                  linesOut.push(`Variance vs Normal: ${dlt >= 0 ? '+' : ''}${wlFmt(dlt, unit)} ${unit} (${row.statusInfo.label})`);
+                  if (row.source_context) linesOut.push(`Context: ${row.source_context}`);
+                  if (row.remarks) linesOut.push(`Note: ${row.remarks}`);
+                  return linesOut;
+                }
+              }
+            },
+            zoom: {
+              pan: { enabled: true, mode: 'x' },
+              zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { maxRotation: 35, autoSkip: true, maxTicksLimit: 12, font: { size: 10, family: 'IBM Plex Mono, monospace' } },
+              grid: { color: 'rgba(15, 23, 42, 0.05)' }
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+              beginAtZero: yBeginAtZero,
+              title: { display: true, text: yAxisTitle, font: { size: 11, weight: '700' }, color: '#1D4ED8' },
+              ticks: { font: { size: 10.5, family: 'IBM Plex Mono, monospace' } },
+              grid: { color: 'rgba(15, 23, 42, 0.06)' }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              display: showPsi,
+              beginAtZero: true,
+              title: { display: true, text: 'Hourly Avg Pressure (PSI)', font: { size: 11, weight: '700' }, color: '#0F766E' },
+              ticks: { font: { size: 10.5, family: 'IBM Plex Mono, monospace' } },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ── 3. CHART 2: 24-HOUR DIURNAL RIVER LEVEL VS AVG PRESSURE ──
+    const diurnalCanvas = document.getElementById('chart-wl-diurnal');
+    if (diurnalCanvas) {
+      if (wlChartDiurnal) { try { wlChartDiurnal.destroy(); } catch (e) {} wlChartDiurnal = null; }
+
+      const hourLabels = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
+      const hrPsiAvg = pressLookup.byHourOfDay.map(b => {
+        const v = pressLookup.getSourceAvg(b, pressSource);
+        return v !== null ? Number(v.toFixed(2)) : null;
+      });
+
+      const diurnalDatasets = [];
+      if (isAllMode) {
+        allStations.forEach((s, idx) => {
+          const sums = new Array(24).fill(0), cnts = new Array(24).fill(0);
+          enriched.filter(r => r.station_name === s.name).forEach(r => {
+            const val = compareMode === 'delta' ? r.deltaCm : (compareMode === 'pct' ? (r.pctOfNormal || 0) : r.water_level);
+            sums[r.pst.hour] += val;
+            cnts[r.pst.hour] += 1;
+          });
+          if (cnts.some(c => c > 0)) {
+            const color = WL_SERIES_PALETTE[idx % WL_SERIES_PALETTE.length];
+            diurnalDatasets.push({
+              type: 'line',
+              label: s.name.split('(')[0].trim(),
+              data: sums.map((sm, h) => cnts[h] > 0 ? Number((sm / cnts[h]).toFixed(1)) : null),
+              borderColor: color,
+              borderWidth: 2.2,
+              pointRadius: 3,
+              pointBackgroundColor: color,
+              spanGaps: true,
+              tension: 0.3,
+              yAxisID: 'y',
+              order: 1
+            });
+          }
+        });
+      } else {
+        const hrWlSums = new Array(24).fill(0);
+        const hrWlCnts = new Array(24).fill(0);
+        enriched.forEach(r => {
+          hrWlSums[r.pst.hour] += r.water_level;
+          hrWlCnts[r.pst.hour] += 1;
+        });
+        const hrWlAvg = hrWlSums.map((s, h) => hrWlCnts[h] > 0 ? Number((s / hrWlCnts[h]).toFixed(1)) : null);
+        const normalRef = enriched.length > 0 ? enriched[enriched.length - 1].normal_level : Number(meta?.normal_level || 195);
+
+        diurnalDatasets.push({
+          type: 'line',
+          label: `Avg Level (${unit})`,
+          data: hrWlAvg,
+          borderColor: '#2563EB',
+          backgroundColor: 'rgba(37, 99, 235, 0.14)',
+          borderWidth: 2.5,
+          pointRadius: 3.5,
+          pointBackgroundColor: '#2563EB',
+          spanGaps: true,
+          tension: 0.3,
+          yAxisID: 'y',
+          order: 1
+        });
+        diurnalDatasets.push({
+          type: 'line',
+          label: `Normal (${wlFmt(normalRef, unit)} ${unit})`,
+          data: new Array(24).fill(normalRef),
+          borderColor: '#10B981',
+          borderWidth: 1.5,
+          borderDash: [5, 4],
+          pointRadius: 0,
+          fill: false,
+          yAxisID: 'y',
+          order: 2
+        });
+      }
+
+      diurnalDatasets.push({
+        type: 'bar',
+        label: 'Hourly Avg PSI',
+        data: hrPsiAvg,
+        backgroundColor: 'rgba(13, 148, 136, 0.28)',
+        borderColor: '#0D9488',
+        borderWidth: 1,
+        borderRadius: 4,
+        yAxisID: 'y1',
+        order: 3
+      });
+
+      const dYTitle = isAllMode
+        ? (compareMode === 'delta' ? `Avg Δ (${unit})` : (compareMode === 'pct' ? 'Avg % Normal' : `Avg Level (${unit})`))
+        : `Avg Level (${unit})`;
+
+      wlChartDiurnal = new Chart(diurnalCanvas.getContext('2d'), {
+        type: 'bar',
+        data: { labels: hourLabels, datasets: diurnalDatasets },
+        plugins: [wlDiurnalBandsPlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            datalabels: { display: false },
+            wlDiurnalBands: { enabled: true },
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10.5 } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 9.5, family: 'IBM Plex Mono, monospace' }, maxTicksLimit: 12 }, grid: { display: false } },
+            y: {
+              position: 'left',
+              beginAtZero: !(isAllMode && compareMode === 'delta'),
+              title: { display: true, text: dYTitle, font: { size: 10.5, weight: '700' }, color: '#1D4ED8' },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              title: { display: true, text: 'Avg PSI', font: { size: 10.5, weight: '700' }, color: '#0F766E' },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ── 4. CHART 3: HYDRAULIC CORRELATION SCATTER & DIAGNOSTICS ──
+    const scatterCanvas = document.getElementById('chart-wl-scatter');
+    const paired = enriched.filter(r => r.selectedPsi !== null);
+    const scatterPts = paired.map(r => ({
+      x: isAllMode ? r.deltaCm : r.water_level,
+      y: Number(r.selectedPsi.toFixed(2)),
+      color: r.statusInfo.dot || '#2563EB',
+      label: `${r.station_name.split('(')[0].trim()} • ${r.dt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
+    }));
+    const pearson = computePearsonR(scatterPts);
+
+    const corrBadge = document.getElementById('wl-corr-badge');
+    if (corrBadge) {
+      if (pearson && Number.isFinite(pearson.r)) {
+        const strength = Math.abs(pearson.r) >= 0.7 ? 'Strong' : (Math.abs(pearson.r) >= 0.4 ? 'Moderate' : 'Weak');
+        corrBadge.textContent = `r = ${pearson.r.toFixed(2)} (${strength})`;
+        corrBadge.className = 'kpi-badge-pill ' + (pearson.r >= 0.4 ? 'pill-green' : 'pill-blue');
+      } else {
+        corrBadge.textContent = `r = — (${scatterPts.length} pairs)`;
+        corrBadge.className = 'kpi-badge-pill pill-blue';
+      }
+    }
+
+    if (scatterCanvas) {
+      if (wlChartScatter) { try { wlChartScatter.destroy(); } catch (e) {} wlChartScatter = null; }
+
+      const scDatasets = [
+        {
+          label: 'Source Reading vs. Same-Hour Avg PSI',
+          data: scatterPts,
+          backgroundColor: scatterPts.map(p => p.color),
+          borderColor: '#FFFFFF',
+          borderWidth: 1,
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }
+      ];
+
+      if (pearson && scatterPts.length >= 3) {
+        const xs = scatterPts.map(p => p.x);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        if (maxX > minX) {
+          scDatasets.push({
+            type: 'line',
+            label: 'Linear Trend',
+            data: [
+              { x: minX, y: Number((pearson.slope * minX + pearson.intercept).toFixed(2)) },
+              { x: maxX, y: Number((pearson.slope * maxX + pearson.intercept).toFixed(2)) }
+            ],
+            borderColor: '#475569',
+            borderWidth: 1.8,
+            borderDash: [5, 4],
+            pointRadius: 0,
+            fill: false
+          });
+        }
+      }
+
+      wlChartScatter = new Chart(scatterCanvas.getContext('2d'), {
+        type: 'scatter',
+        data: { datasets: scDatasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            datalabels: { display: false },
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  const pt = ctx.raw;
+                  if (!pt) return '';
+                  const prefix = isAllMode && pt.x >= 0 ? '+' : '';
+                  return `${pt.label || ''}: ${prefix}${wlFmt(pt.x, unit)} ${unit} → ${pt.y} PSI`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: isAllMode ? `Variance vs. Normal (Δ ${unit})` : `River Water Level (${unit})`, font: { size: 10.5, weight: '700' } },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
+            },
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Same-Hour Avg PSI', font: { size: 10.5, weight: '700' } },
+              ticks: { font: { size: 10, family: 'IBM Plex Mono, monospace' } }
+            }
+          }
+        }
+      });
+    }
+
+    // Update Diagnostic Summary Tiles
+    const normPairs = paired.filter(r => r.water_level >= r.normal_level);
+    const belowPairs = paired.filter(r => r.water_level < r.normal_level);
+    const avgOf = arr => arr.length > 0 ? arr.reduce((s, r) => s + r.selectedPsi, 0) / arr.length : null;
+    const normPsiAvg = avgOf(normPairs);
+    const belowPsiAvg = avgOf(belowPairs);
+
+    const elNormPsi = document.getElementById('wl-diag-psi-normal');
+    const elNormCnt = document.getElementById('wl-diag-cnt-normal');
+    const elBelowPsi = document.getElementById('wl-diag-psi-below');
+    const elBelowCnt = document.getElementById('wl-diag-cnt-below');
+    if (elNormPsi) elNormPsi.textContent = normPsiAvg !== null ? `${normPsiAvg.toFixed(1)} PSI` : '—';
+    if (elNormCnt) elNormCnt.textContent = `${normPairs.length} matched reading${normPairs.length === 1 ? '' : 's'}`;
+    if (elBelowPsi) elBelowPsi.textContent = belowPsiAvg !== null ? `${belowPsiAvg.toFixed(1)} PSI` : '—';
+    if (elBelowCnt) elBelowCnt.textContent = `${belowPairs.length} matched reading${belowPairs.length === 1 ? '' : 's'}`;
+
+    const ms = (waterLevelConfig?.milestones || []).find(m => m && m.date);
+    const elMsLbl = document.getElementById('wl-diag-milestone-lbl');
+    const elMsVal = document.getElementById('wl-diag-milestone-val');
+    const elMsSub = document.getElementById('wl-diag-milestone-sub');
+    if (ms && ms.date && baseRows.length > 0) {
+      const msTime = new Date(`${ms.date}T00:00:00+08:00`).getTime();
+      const pre = baseRows.filter(r => r.dt.getTime() < msTime);
+      const post = baseRows.filter(r => r.dt.getTime() >= msTime);
+      const avgMetric = arr => arr.length
+        ? arr.reduce((s, r) => s + (isAllMode ? (r.water_level - r.normal_level) : r.water_level), 0) / arr.length
+        : null;
+      const preAvg = avgMetric(pre);
+      const postAvg = avgMetric(post);
+      if (elMsLbl) elMsLbl.textContent = ms.label || 'Source Milestone';
+      if (preAvg !== null && postAvg !== null) {
+        const diff = postAvg - preAvg;
+        if (elMsVal) {
+          elMsVal.textContent = `${diff >= 0 ? '+' : ''}${wlFmt(diff, unit)} ${unit}`;
+          elMsVal.style.color = diff >= 0 ? 'var(--green-text)' : 'var(--red-text)';
+        }
+        if (elMsSub) elMsSub.textContent = `Pre: ${wlFmt(preAvg, unit)} → Post: ${wlFmt(postAvg, unit)} ${unit}`;
+      } else if (postAvg !== null) {
+        if (elMsVal) { elMsVal.textContent = `${isAllMode && postAvg >= 0 ? '+' : ''}${wlFmt(postAvg, unit)} ${unit}`; elMsVal.style.color = 'var(--teal-text)'; }
+        if (elMsSub) elMsSub.textContent = `Avg since ${ms.date} (${post.length} logs)`;
+      } else {
+        if (elMsVal) elMsVal.textContent = '—';
+        if (elMsSub) elMsSub.textContent = `Milestone set: ${ms.date}`;
+      }
+    } else {
+      if (elMsLbl) elMsLbl.textContent = 'Montible / Dry-Spell Impact';
+      if (elMsVal) { elMsVal.textContent = '—'; elMsVal.style.color = 'var(--text-main)'; }
+      if (elMsSub) elMsSub.textContent = 'Set activation date in Portal';
+    }
+
+    // ── 5. CORRELATED HOURLY READINGS TABLE ──
+    const tbody = document.getElementById('wl-analysis-tbody');
+    const countEl = document.getElementById('wl-table-count');
+    if (countEl) countEl.textContent = `${enriched.length} record${enriched.length === 1 ? '' : 's'}`;
+    if (tbody) {
+      if (enriched.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--text-muted); font-family:var(--font-mono);">No river source water level records in this period. Click "Log MBS Report ↗" above to add field data.</td></tr>`;
+      } else {
+        tbody.innerHTML = [...enriched].reverse().map(r => {
+          const dtStr = r.dt.toLocaleString('en-PH', {
+            timeZone: 'Asia/Manila',
+            month: 'short', day: 'numeric', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: true
+          });
+          const dlt = r.deltaCm;
+          const pct = r.pctOfNormal || 0;
+          const u = r.unit || unit;
+          const notes = [r.source_context, r.operator_name ? `Op: ${r.operator_name}` : '', r.remarks].filter(Boolean).join(' • ');
+
+          return `
+            <tr>
+              <td class="mono" style="white-space:nowrap; font-size:11.5px;">${escapeHtml(dtStr)}</td>
+              <td style="font-weight:700; color:var(--text-main); white-space:nowrap;">${escapeHtml(r.station_name)}</td>
+              <td class="right mono" style="font-weight:800; color:${r.statusInfo.color};">${wlFmt(r.water_level, u)} ${escapeHtml(u)}</td>
+              <td class="right mono" style="color:var(--text-muted); font-size:11px;">${wlFmt(r.normal_level, u)} / &le;${wlFmt(r.effCrit ?? Math.max(0, r.normal_level - 80), u)} ${escapeHtml(u)}</td>
+              <td class="right mono" style="color:${dlt < 0 ? 'var(--red-text)' : 'var(--green-text)'};">${dlt >= 0 ? '+' : ''}${wlFmt(dlt, u)} ${escapeHtml(u)} (${pct.toFixed(0)}%)</td>
+              <td><span class="kpi-badge-pill" style="background:${r.statusInfo.bg}; color:${r.statusInfo.color}; border:1px solid ${r.statusInfo.border};">${r.statusInfo.label}</span></td>
+              <td class="right mono" style="font-weight:700; color:${r.manaloPsi !== null && r.manaloPsi <= ALERT_PSI ? 'var(--red-text)' : 'var(--text-main)'};">${r.manaloPsi !== null ? r.manaloPsi.toFixed(1) + ' PSI' : '—'}</td>
+              <td class="right mono" style="color:var(--text-muted);">${r.distPsi !== null ? r.distPsi.toFixed(1) + ' PSI' : '—'}</td>
+              <td style="font-size:11.5px; color:var(--text-muted); max-width:260px;">${escapeHtml(notes || '—')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+  }
+
+  function exportWaterLevelCsv() {
+    if (!wlLastCorrelatedRows || wlLastCorrelatedRows.length === 0) {
+      alert('No river source water level readings available to export in the current view.');
+      return;
+    }
+    const headers = [
+      'Date_Time_PST', 'River_Source', 'Water_Level', 'Normal_Level', 'Critical_Level', 'Unit',
+      'Variance', 'Pct_of_Normal', 'Status', 'Manalo_MBS_Hourly_Avg_PSI',
+      'City_Dist_Hourly_Avg_PSI', 'Source_Context', 'Reported_By', 'Remarks'
+    ];
+    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const csvRows = [headers.join(',')];
+    wlLastCorrelatedRows.forEach(r => {
+      const dtStr = `${r.pst.dateKey} ${r.pst.timeLabel}`;
+      const dlt = (r.water_level - r.normal_level).toFixed(2);
+      const pct = r.normal_level > 0 ? ((r.water_level / r.normal_level) * 100).toFixed(1) : '';
+      csvRows.push([
+        esc(dtStr), esc(r.station_name), r.water_level.toFixed(2), r.normal_level.toFixed(2),
+        r.effCrit !== null && r.effCrit !== undefined ? Number(r.effCrit).toFixed(2) : '',
+        esc(r.unit || 'm'), dlt, pct, esc(r.statusInfo.label),
+        r.manaloPsi !== null ? r.manaloPsi.toFixed(2) : '',
+        r.distPsi !== null ? r.distPsi.toFixed(2) : '',
+        esc(r.source_context || ''), esc(r.operator_name || ''), esc(r.remarks || '')
+      ].join(','));
+    });
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `PPCWD_River_Source_Water_Levels_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    init();
+    initDashboardTableDragScrolling();
+
+    // Restore collapsed sidebar preference on desktop
+    try {
+      if (window.innerWidth > 820 && localStorage.getItem('ppcwd_dash_sidebar_collapsed') === '1') {
+        document.getElementById('app-sidebar')?.classList.add('collapsed');
+      }
+    } catch(e){}
+
+    // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar, and Escape to close open modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeComprehensiveReportModal();
+        if (typeof closeCrisisRemarksModal === 'function') closeCrisisRemarksModal();
+        if (typeof closeReportModal === 'function') closeReportModal();
+        if (typeof closeCrisisReportModal === 'function') closeCrisisReportModal();
+        if (typeof closeGensetModal === 'function') closeGensetModal();
+        if (typeof closeReportAuthModal === 'function') closeReportAuthModal();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        if (tag !== 'input' && tag !== 'textarea') {
+          e.preventDefault();
+          toggleSidebar();
+        }
+      }
+    });
+  });
+  </script>
+</body>
+</html>
