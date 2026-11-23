@@ -22,15 +22,37 @@ export const DEFAULT_RIVER_STATIONS = [
 ];
 
 export const DEFAULT_WATER_LEVEL_CONFIG = {
-  default_station: "Manalo Booster Station",
+  default_station: "Campo Uno Source (Irawan River)",
   stations: [
     {
-      name: "Manalo Booster Station",
-      unit: "m",
-      normal_level: 3.0,
-      warning_level: 2.2,
-      critical_level: 1.5,
-      pressure_col: 2
+      name: "Campo Uno Source (Irawan River)",
+      river_name: "Irawan River",
+      measuring_point: "Campo Uno Intake Staff Gauge (Normal: 195 cm)",
+      unit: "cm",
+      normal_level: 195,
+      warning_level: 145,   // -50 cm from normal (engineering watch margin)
+      critical_level: 115,  // -80 cm from normal (engineering operating limit)
+      pressure_col: 8
+    },
+    {
+      name: "Lapu-Lapu Source (Lapu-Lapu River)",
+      river_name: "Lapu-Lapu River",
+      measuring_point: "Lapu-Lapu Intake Weir Gauge (Normal: 265 cm)",
+      unit: "cm",
+      normal_level: 265,
+      warning_level: 215,   // -50 cm from normal
+      critical_level: 185,  // -80 cm from normal
+      pressure_col: 8
+    },
+    {
+      name: "Montible Source (Montible River)",
+      river_name: "Montible River",
+      measuring_point: "Montible Intake Gauge (Provisional Design: 15 cm — undeclared)",
+      unit: "cm",
+      normal_level: 15,
+      warning_level: 10,    // Provisional until formal declaration
+      critical_level: 5,    // Provisional until formal declaration
+      pressure_col: 19
     }
   ],
   milestones: [

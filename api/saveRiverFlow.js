@@ -2,7 +2,7 @@
 import crypto from 'crypto';
 import { DEFAULT_RIVER_STATIONS, DEFAULT_WATER_LEVEL_CONFIG, WATER_LEVEL_CONFIG_STATION } from './getRiverFlow.js';
 
-function sanitizeWaterLevelRecord(rec, fallbackStation = 'Manalo Booster Station') {
+function sanitizeWaterLevelRecord(rec, fallbackStation = 'Campo Uno Source (Irawan River)') {
   if (!rec || typeof rec !== 'object') return null;
   const stationName = String(rec.station_name || fallbackStation).trim();
   if (!stationName || stationName === WATER_LEVEL_CONFIG_STATION) return null;
@@ -19,8 +19,8 @@ function sanitizeWaterLevelRecord(rec, fallbackStation = 'Manalo Booster Station
   const warnParsed = rec.warning_level !== undefined && rec.warning_level !== null && rec.warning_level !== '' ? parseFloat(rec.warning_level) : null;
   const critParsed = rec.critical_level !== undefined && rec.critical_level !== null && rec.critical_level !== '' ? parseFloat(rec.critical_level) : null;
 
-  const allowedUnits = ['m', 'ft', 'cm', '%'];
-  const unit = allowedUnits.includes(String(rec.unit || 'm').trim()) ? String(rec.unit || 'm').trim() : 'm';
+  const allowedUnits = ['cm', 'm', 'ft', '%'];
+  const unit = allowedUnits.includes(String(rec.unit || 'cm').trim()) ? String(rec.unit || 'cm').trim() : 'cm';
 
   return {
     station_name: stationName.slice(0, 120),
@@ -97,13 +97,15 @@ export default async function handler(req, res) {
             const warn = parseFloat(s.warning_level);
             const crit = parseFloat(s.critical_level);
             const pCol = parseInt(s.pressure_col, 10);
-            const unit = allowedUnits.includes(String(s.unit || 'm').trim()) ? String(s.unit || 'm').trim() : 'm';
+            const unit = allowedUnits.includes(String(s.unit || 'cm').trim()) ? String(s.unit || 'cm').trim() : 'cm';
             return {
               name: String(s.name).trim().slice(0, 120),
+              river_name: s.river_name ? String(s.river_name).trim().slice(0, 80) : '',
+              measuring_point: s.measuring_point ? String(s.measuring_point).trim().slice(0, 120) : '',
               unit,
-              normal_level: Number.isFinite(norm) && norm > 0 ? Number(norm.toFixed(2)) : 3.0,
-              warning_level: Number.isFinite(warn) && warn >= 0 ? Number(warn.toFixed(2)) : 2.2,
-              critical_level: Number.isFinite(crit) && crit >= 0 ? Number(crit.toFixed(2)) : 1.5,
+              normal_level: Number.isFinite(norm) && norm > 0 ? Number(norm.toFixed(2)) : 195,
+              warning_level: Number.isFinite(warn) && warn >= 0 ? Number(warn.toFixed(2)) : Math.max(0, Number(((Number.isFinite(norm) ? norm : 195) - 50).toFixed(2))),
+              critical_level: Number.isFinite(crit) && crit >= 0 ? Number(crit.toFixed(2)) : Math.max(0, Number(((Number.isFinite(norm) ? norm : 195) - 80).toFixed(2))),
               pressure_col: Number.isFinite(pCol) && pCol >= 2 ? pCol : 2
             };
           });
