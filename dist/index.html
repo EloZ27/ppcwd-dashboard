@@ -46,7 +46,6 @@
         <div class="sidebar-section-label">Monitoring</div>
         <button type="button" class="nav-btn active" aria-current="page" onclick="switchNavTab('overview')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span><span>Dashboard</span></button>
         <button type="button" class="nav-btn" onclick="switchNavTab('pressure')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span><span>Network Pressure</span></button>
-        <button type="button" class="nav-btn" onclick="switchNavTab('waterlevel')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><line x1="8" y1="15" x2="16" y2="15"></line></svg></span><span>Source Water Levels</span></button>
         <button type="button" class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span><span>Crisis Monitor</span></button>
 
         <div class="sidebar-section-label">Production &amp; Hydrology</div>
@@ -57,6 +56,9 @@
         <div class="sidebar-section-label">Service &amp; Operations</div>
         <button type="button" class="nav-btn" onclick="switchNavTab('complaints')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span><span>Customer Reports</span></button>
         <button type="button" class="nav-btn" id="sidebar-btn-gensets-modal" onclick="openGensetModal()"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><span>Generator Fleet Status</span></button>
+
+        <div class="sidebar-section-label">Engineering Diagnostics</div>
+        <button type="button" class="nav-btn" onclick="switchNavTab('waterlevel')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><line x1="8" y1="15" x2="16" y2="15"></line></svg></span><span>Source Water Levels</span></button>
 
         <div class="sidebar-divider"></div>
         <a href="uploader.html" class="nav-btn" title="Open restricted Operations & Asset Data Entry Portal"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></span><span>Operations Portal ↗</span></a>
@@ -357,20 +359,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Dashboard Snapshot: Visual River Water Level Cards -->
-        <div class="card" id="ov-wl-board-card" style="margin-bottom:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-            <div>
-              <h2 class="card-title" style="margin-bottom:2px; font-size:15px;">River Water Levels &bull; Current vs. Normal Water Level</h2>
-              <div style="font-size:11.5px; color:var(--text-muted);">Green: Normal (within -10%) &bull; Yellow: Below Normal (&ge;11% drop) &bull; Red: Almost Critical / Critical</div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <button type="button" class="header-btn" onclick="switchNavTab('waterlevel')" style="font-size:11px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">Full Water Analysis &rarr;</button>
-            </div>
-          </div>
-          <div class="grid-wl-sources" id="ov-wl-visual-grid" style="margin-bottom:0;"></div>
         </div>
 
         <div class="table-container">
@@ -708,8 +696,11 @@
       <div class="page-content" id="page-waterlevel">
 
         <!-- Section Header + Clean River Source Cards -->
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-          <h2 style="font-size:16px; font-weight:800; color:var(--text-main); letter-spacing:-0.01em;">River Sources Status</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <div>
+            <h2 style="font-size:16px; font-weight:800; color:var(--text-main); letter-spacing:-0.01em;">Diversion Weir Water Level Baseline (Engineering)</h2>
+            <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Historical staff-gauge reference log &bull; Weekly/Monthly Production reports remain the official crisis &amp; flowrate trigger.</div>
+          </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <button type="button" class="header-btn" onclick="copyWaterLevelBoardSummary(this)" style="font-size:11.5px; font-weight:700;">Copy Summary</button>
             <button type="button" id="btn-wl-compare-all" class="header-btn" onclick="selectWaterLevelSource('ALL_COMPARE')" style="font-size:11.5px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);">All Sources</button>
@@ -752,6 +743,15 @@
               <div style="font-size:12px; color:var(--text-muted);" id="wl-trend-sub">Reported height vs. Normal &amp; Critical limits</div>
             </div>
             <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div style="display:inline-flex; align-items:center; gap:6px;">
+                <label for="wl-time-filter" style="font-size:11.5px; font-weight:600; color:var(--text-muted);">Hour Window:</label>
+                <select id="wl-time-filter" class="week-dropdown" style="padding:4px 8px; min-height:30px; font-size:11.5px;" onchange="renderWaterLevelDashboard()" title="Separate peak-demand hours from off-peak pressure-management throttling">
+                  <option value="all">All Hours</option>
+                  <option value="am_peak">AM Peak (6–10 AM)</option>
+                  <option value="pm_peak">PM Peak (4–8 PM)</option>
+                  <option value="offpeak">Off-Peak / Night (10 PM–5 AM)</option>
+                </select>
+              </div>
               <div id="wl-normalize-wrap" style="display:none; align-items:center; gap:6px;">
                 <label for="wl-compare-mode" style="font-size:11.5px; font-weight:600; color:var(--text-muted);">View:</label>
                 <select id="wl-compare-mode" class="week-dropdown" style="padding:4px 8px; min-height:30px; font-size:11.5px;" onchange="renderWaterLevelDashboard()">
@@ -2271,7 +2271,6 @@
 
   // ── OVERVIEW ──
   function renderOverview() {
-    if (typeof renderWaterLevelBoardOverview === 'function') renderWaterLevelBoardOverview();
     if (!allProdData || allProdData.length === 0) return;
 
     const weekSelect = document.getElementById("week-select");
@@ -2356,31 +2355,22 @@
     const tbody = document.getElementById("ov-source-tbody");
     if (tbody) {
       const topSources = [
-        { name: "Montible Teruvian Intake", type: "Surface Water Intake", col: 2, isRiver: true, wlKeyword: "montible" },
-        { name: "Lapu-Lapu River Source", type: "Gravity Surface Water", col: 5, isRiver: true, wlKeyword: "lapu" },
-        { name: "Campo Uno Gravity Chamber", type: "Gravity Main Line (Irawan River)", col: 9, isRiver: true, wlKeyword: "campo" },
+        { name: "Montible Teruvian Intake", type: "Surface Water Intake", col: 2, isRiver: true },
+        { name: "Lapu-Lapu River Source", type: "Gravity Surface Water", col: 5, isRiver: true },
+        { name: "Campo Uno Gravity Chamber", type: "Gravity Main Line (Irawan River)", col: 9, isRiver: true },
         { name: "Irawan WTP-1 Facility", type: "Treatment Plant", key: "wtp1" },
         { name: "Baldosano Pumping Station", type: "Groundwater Well", key: "baldosano" },
         { name: "Manalo Booster Station", type: "Booster Transmission & Reporting HQ", col: 2, isPress: true }
       ];
 
       tbody.innerHTML = topSources.map(s => {
-        let flow = "—", status = "Online", statusDot = "dot-green", timeStr = "Recent", wlBadgeHtml = "";
+        let flow = "—", status = "Online", statusDot = "dot-green", timeStr = "Recent";
         if (s.isRiver) {
           const valid = riverRaw.filter(r => r.vals && r.vals[s.col] !== null);
           const last = valid[valid.length - 1];
           if (last) {
             flow = `${fmt(last.vals[s.col], 0)} m³/d`;
             timeStr = last.dt ? last.dt.toLocaleDateString("en-PH") : "—";
-          }
-          if (s.wlKeyword && typeof waterLevelRaw !== 'undefined' && Array.isArray(waterLevelRaw)) {
-            const wlMatches = waterLevelRaw.filter(r => String(r.station_name || '').toLowerCase().includes(s.wlKeyword));
-            if (wlMatches.length > 0) {
-              const latestWl = wlMatches[wlMatches.length - 1];
-              const stWl = wlGetStatusInfo(latestWl.water_level, latestWl.normal_level, latestWl.warning_level, latestWl.critical_level);
-              const u = latestWl.unit || 'cm';
-              wlBadgeHtml = `<div><button type="button" class="ov-wl-chip" data-station="${escapeHtml(latestWl.station_name)}" style="background:${stWl.bg}; color:${stWl.color}; border-color:${stWl.border};" onclick="const st=this.dataset.station; switchNavTab('waterlevel'); setTimeout(() => selectWaterLevelSource(st), 80);" title="Inspect ${escapeHtml(latestWl.station_name)} water level trend">WL: ${wlFmt(latestWl.water_level, u)} / ${wlFmt(latestWl.normal_level, u)} ${escapeHtml(u)} &bull; ${stWl.label}</button></div>`;
-            }
           }
         } else if (s.isPress) {
           const valid = pressureRaw.filter(r => r.vals && r.vals[s.col] !== null);
@@ -2395,7 +2385,7 @@
 
         return `
           <tr>
-            <td style="font-weight:700; color:var(--text-main);">${s.name}${wlBadgeHtml}</td>
+            <td style="font-weight:700; color:var(--text-main);">${s.name}</td>
             <td style="color:var(--text-muted); font-size:11px;">${s.type}</td>
             <td class="right mono" style="font-weight:700; color:var(--blue-text);">${flow}</td>
             <td><span class="status-dot-cell"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> ${status}</span></td>
@@ -8469,10 +8459,7 @@
   }
 
   function renderWaterLevelBoardOverview() {
-    const grid = document.getElementById('ov-wl-visual-grid');
-    if (grid) {
-      grid.innerHTML = wlRenderTankCardsHtml(null, 'overview');
-    }
+    // Source water levels moved cleanly to Engineering Diagnostics (#page-waterlevel)
   }
 
   async function copyWaterLevelBoardSummary(btnEl) {
@@ -8676,6 +8663,7 @@
     const pressSourceLabel = pressSourceSel?.selectedOptions?.[0]?.textContent || 'Manalo Booster Station — MBS (PSI)';
     const showPsi = document.getElementById('wl-toggle-psi-overlay')?.checked === true;
     const compareMode = isAllMode ? (document.getElementById('wl-compare-mode')?.value || 'raw') : 'raw';
+    const timeFilter = document.getElementById('wl-time-filter')?.value || 'all';
 
     if (pressSourceSel) pressSourceSel.style.display = showPsi ? 'inline-block' : 'none';
     const normWrap = document.getElementById('wl-normalize-wrap');
@@ -8693,7 +8681,16 @@
     const rangeDaysMap = { '24h': 1, '7d': 7, '14d': 14, '30d': 30 };
     const cutoffDt = rangeDaysMap[wlActiveRange] ? new Date(anchorMs - rangeDaysMap[wlActiveRange] * 24 * 3600 * 1000) : null;
 
-    const filtered = cutoffDt ? baseRows.filter(r => r.dt >= cutoffDt) : [...baseRows];
+    const rangeRows = cutoffDt ? baseRows.filter(r => r.dt >= cutoffDt) : [...baseRows];
+    const filtered = timeFilter === 'all'
+      ? rangeRows
+      : rangeRows.filter(r => {
+          const hr = wlGetPstParts(r.dt).hour;
+          if (timeFilter === 'am_peak') return hr >= 6 && hr <= 10;
+          if (timeFilter === 'pm_peak') return hr >= 16 && hr <= 20;
+          if (timeFilter === 'offpeak') return hr >= 22 || hr <= 5;
+          return true;
+        });
     const windowStart = filtered.length > 0 ? new Date(filtered[0].dt.getTime() - 3600 * 1000) : cutoffDt;
     const windowEnd = filtered.length > 0 ? new Date(filtered[filtered.length - 1].dt.getTime() + 3600 * 1000) : new Date();
     const pressLookup = buildHourlyPressureLookup(windowStart, windowEnd);
