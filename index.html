@@ -2132,12 +2132,22 @@
     }
     @media (max-width: 1024px) {
       #page-rationing .kpi-row-layout {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
-    @media (max-width: 520px) {
+    @media (max-width: 480px) {
       #page-rationing .kpi-row-layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      #page-rationing .kpi-card-white {
+        padding: 10px 11px;
+      }
+      #page-rationing .kpi-card-num {
+        font-size: 17px;
+      }
+      #page-rationing #rat-kpi-next-time {
+        font-size: 16px !important;
       }
     }
     .rat-board-card {
@@ -2147,6 +2157,7 @@
       box-shadow: var(--card-shadow);
       overflow: hidden;
       margin-bottom: 22px;
+      container-type: inline-size;
     }
     .rat-board-header {
       padding: 13px 18px;
@@ -2157,6 +2168,19 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+    }
+    .rat-mobile-swipe-hint {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--blue-text);
+      background: var(--blue-light);
+      border: 1px solid var(--blue-border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
     }
     .rat-legend-strip {
       display: flex;
@@ -2279,7 +2303,7 @@
       padding: 2px 7px;
       border-radius: 999px;
       white-space: nowrap;
-      z-index: 25;
+      z-index: 14;
       box-shadow: 0 2px 8px rgba(239, 68, 68, 0.45);
       pointer-events: none;
       line-height: 1.25;
@@ -2289,12 +2313,21 @@
       background: #F8FAFC;
       border-top: 1px solid var(--card-border);
       border-bottom: 1px solid #E2E8F0;
+      padding: 0;
+      display: block;
+    }
+    .rat-sys-group-bar-inner {
+      position: sticky;
+      left: 0;
+      width: 100%;
+      max-width: 100cqi;
       padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px 10px;
       flex-wrap: wrap;
+      box-sizing: border-box;
     }
     .rat-sys-meta {
       display: flex;
@@ -2389,7 +2422,7 @@
       box-shadow: 0 0 8px rgba(239, 68, 68, 0.55);
       transform: translateX(-1px);
       pointer-events: none;
-      z-index: 15;
+      z-index: 10;
     }
     .rat-block {
       position: absolute;
@@ -2459,6 +2492,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      min-width: 0;
       transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
     .rat-standby-card:hover {
@@ -2486,6 +2520,35 @@
       padding-top: 8px;
       border-top: 1px solid #F1F5F9;
       font-size: 11px;
+    }
+    .rat-bar-left,
+    .rat-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .rat-clock-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .rat-cycle-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rat-filter-group {
+      display: inline-flex;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #FFFFFF;
     }
     #rationing-admin-modal .comp-modal-grid > div {
       min-width: 0;
@@ -2530,18 +2593,96 @@
       letter-spacing: 0.03em;
       margin-bottom: 3px;
     }
+    @media (max-width: 820px) {
+      .rat-bar-left,
+      .rat-bar-right {
+        width: 100%;
+        gap: 8px;
+      }
+      .rat-clock-pill {
+        max-width: 100%;
+        white-space: normal;
+        font-size: 10.5px;
+        padding: 5px 9px;
+        flex: 1 1 auto;
+        justify-content: center;
+        text-align: center;
+      }
+      .rat-cycle-wrap {
+        display: flex;
+        width: 100%;
+      }
+      #rationing-week-select {
+        flex: 1;
+        min-width: 0;
+      }
+      .rat-filter-group {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+      }
+      .rat-filter-group .header-btn {
+        padding: 6px 4px !important;
+        font-size: 10.5px !important;
+        justify-content: center;
+        text-align: center;
+      }
+      #btn-rat-update-schedule {
+        width: 100%;
+        justify-content: center;
+      }
+    }
     @media (max-width: 768px) {
+      .rat-mobile-swipe-hint {
+        display: inline-flex;
+      }
+      .rat-timeline-inner {
+        min-width: 656px;
+      }
       .rat-grid-row {
-        grid-template-columns: 170px minmax(520px, 1fr);
+        grid-template-columns: 136px minmax(520px, 1fr);
       }
       .rat-col-label {
         position: sticky;
         left: 0;
-        z-index: 12;
-        padding: 7px 10px;
+        z-index: 20;
+        padding: 7px 9px;
+        box-shadow: 2px 0 6px rgba(15, 23, 42, 0.08);
       }
       .rat-ruler-row .rat-col-label {
         z-index: 26;
+        box-shadow: 2px 0 6px rgba(0, 0, 0, 0.28);
+      }
+      .rat-zone-name { font-size: 11px; }
+      .rat-zone-area { font-size: 9.5px; }
+      .rat-zone-live-state { font-size: 9.5px; }
+    }
+    @media (max-width: 640px) {
+      .rat-board-header {
+        padding: 11px 12px;
+        gap: 8px;
+      }
+      .rat-legend-strip {
+        gap: 6px 10px;
+        font-size: 10px;
+      }
+      .rat-sys-group-bar-inner {
+        padding: 9px 12px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .rat-sys-actions {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+    @media (max-width: 380px) {
+      .rat-timeline-inner {
+        min-width: 642px;
+      }
+      .rat-grid-row {
+        grid-template-columns: 122px minmax(520px, 1fr);
       }
     }
     @media (max-width: 560px) {
@@ -2842,25 +2983,25 @@
 
         <!-- 6. Water Rationing Schedule Sticky Bar -->
         <div id="bar-period-rationing" class="period-bar-wrap" style="display:none;">
-          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-            <span class="kpi-badge-pill pill-blue" style="font-family:var(--font-mono); font-size:11px; font-weight:700; padding:5px 11px; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;">
+          <div class="rat-bar-left">
+            <span class="kpi-badge-pill pill-blue rat-clock-pill">
               <span class="telemetry-beacon" aria-hidden="true"></span>
               <span id="rationing-live-clock">PST —</span>
               <span style="opacity:0.55;">&bull;</span>
               <span id="rationing-day-phase" style="font-family:var(--font-sans);">Live Schedule</span>
             </span>
-            <div style="display:inline-flex; align-items:center; gap:6px;">
-              <label for="rationing-week-select" style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Yield Cycle</label>
+            <div class="rat-cycle-wrap">
+              <label for="rationing-week-select" style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted); white-space:nowrap;">Yield Cycle</label>
               <select id="rationing-week-select" class="week-dropdown" aria-label="Select Crisis Yield Reporting Week" onchange="onRationingWeekChange(this.value)"></select>
             </div>
           </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <div style="display:inline-flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#FFFFFF;">
+          <div class="rat-bar-right">
+            <div class="rat-filter-group">
               <button type="button" id="rat-filter-all" class="header-btn active" onclick="setRationingFilter('all')" style="border:none; border-radius:0; padding:6px 11px; font-size:11px; font-weight:700; background:var(--blue-light); color:var(--blue-text);">All (10)</button>
               <button type="button" id="rat-filter-active" class="header-btn" onclick="setRationingFilter('active')" style="border:none; border-radius:0; padding:6px 11px; font-size:11px; font-weight:700;">Rationed (2)</button>
               <button type="button" id="rat-filter-none" class="header-btn" onclick="setRationingFilter('none')" style="border:none; border-radius:0; padding:6px 11px; font-size:11px; font-weight:700;">No Rationing (8)</button>
             </div>
-            <button type="button" class="header-btn btn-secondary-action" onclick="openRationingAdminModal()" style="font-size:11.5px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);" title="Update approved schedules from Social Media or Internal Email">
+            <button type="button" id="btn-rat-update-schedule" class="header-btn btn-secondary-action" onclick="openRationingAdminModal()" style="font-size:11.5px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);" title="Update approved schedules from Social Media or Internal Email">
               Update Schedule
             </button>
           </div>
@@ -3422,7 +3563,10 @@
           <div class="rat-board-card">
             <div class="rat-board-header">
               <div>
-                <h2 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Approved 24-Hour Supply Schedule (PST)</h2>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <h2 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Approved 24-Hour Supply Schedule (PST)</h2>
+                  <span class="rat-mobile-swipe-hint">Swipe 24h timeline &harr;</span>
+                </div>
                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Based on Social Media advisories &amp; internal office updates &bull; Correlated with LWUA Crisis Yield %</div>
               </div>
               <div class="rat-legend-strip">
@@ -4968,6 +5112,9 @@
     if(tab === 'rationing') {
       if (typeof renderRationingSchedule === 'function') renderRationingSchedule();
       if (typeof tickRationingClock === 'function') tickRationingClock();
+      if (typeof centerRationingTimelineOnNow === 'function') {
+        requestAnimationFrame(centerRationingTimelineOnNow);
+      }
     }
     if(tab === 'riverflow') {
       buildRiverLeaderboard();
@@ -12346,17 +12493,19 @@
           return `
             <div class="rat-sys-group">
               <div class="rat-sys-group-bar">
-                <div class="rat-sys-meta">
-                  <span class="rat-sys-title">${escapeHtml(sys.name)}</span>
-                  <span class="kpi-badge-pill ${basisClass}" style="font-size:10px;">${escapeHtml(config.basis)}</span>
-                  <span class="kpi-badge-pill" style="background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; font-size:10px;">${escapeHtml(config.sourceMix)}</span>
-                  <span class="rat-sys-driver">&bull; ${escapeHtml(config.driver)}</span>
-                </div>
-                <div class="rat-sys-actions">
-                  <button type="button" onclick="switchNavTab('crisis')" class="kpi-badge-pill" style="background:${pillBg}; color:${metrics.alert.textColor}; border:1px solid ${metrics.alert.color}; font-family:var(--font-mono); font-size:10.5px; cursor:pointer;" title="Crisis Yield: ${fmt(metrics.actual, 0)} / ${fmt(metrics.target, 0)} m³/wk">
-                    Crisis Yield: ${pctStr} &bull; ${escapeHtml(metrics.alert.name)}
-                  </button>
-                  <button type="button" onclick="openRationingAdminModal('${escapeHtml(sys.id)}')" class="header-btn" style="padding:4px 10px; min-height:28px; font-size:11px; font-weight:700;">Edit</button>
+                <div class="rat-sys-group-bar-inner">
+                  <div class="rat-sys-meta">
+                    <span class="rat-sys-title">${escapeHtml(sys.name)}</span>
+                    <span class="kpi-badge-pill ${basisClass}" style="font-size:10px;">${escapeHtml(config.basis)}</span>
+                    <span class="kpi-badge-pill" style="background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; font-size:10px;">${escapeHtml(config.sourceMix)}</span>
+                    <span class="rat-sys-driver">&bull; ${escapeHtml(config.driver)}</span>
+                  </div>
+                  <div class="rat-sys-actions">
+                    <button type="button" onclick="switchNavTab('crisis')" class="kpi-badge-pill" style="background:${pillBg}; color:${metrics.alert.textColor}; border:1px solid ${metrics.alert.color}; font-family:var(--font-mono); font-size:10.5px; cursor:pointer;" title="Crisis Yield: ${fmt(metrics.actual, 0)} / ${fmt(metrics.target, 0)} m³/wk">
+                      Crisis Yield: ${pctStr} &bull; ${escapeHtml(metrics.alert.name)}
+                    </button>
+                    <button type="button" onclick="openRationingAdminModal('${escapeHtml(sys.id)}')" class="header-btn" style="padding:4px 10px; min-height:28px; font-size:11px; font-weight:700;">Edit</button>
+                  </div>
                 </div>
               </div>
               ${lanesHtml}
@@ -12492,6 +12641,19 @@
     if (!rationingTickInterval) {
       rationingTickInterval = setInterval(tickRationingClock, 1000);
     }
+  }
+
+  function centerRationingTimelineOnNow() {
+    const scrollEl = document.getElementById('rat-timeline-scroll');
+    if (!scrollEl || scrollEl.scrollWidth <= scrollEl.clientWidth) return;
+    const nowParts = getNowPstParts();
+    const firstCol = scrollEl.querySelector('.rat-ruler-row .rat-col-label');
+    const colWidth = firstCol ? firstCol.offsetWidth : 136;
+    const trackWidth = Math.max(1, scrollEl.scrollWidth - colWidth);
+    const visibleTrackWidth = Math.max(80, scrollEl.clientWidth - colWidth);
+    const targetLeft = ((nowParts.pctOfDay / 100) * trackWidth) - (visibleTrackWidth / 2);
+    const maxScroll = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
+    scrollEl.scrollLeft = Math.min(maxScroll, Math.max(0, Math.round(targetLeft)));
   }
 
   async function loadRationingSchedules() {

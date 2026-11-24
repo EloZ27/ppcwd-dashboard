@@ -259,6 +259,26 @@ await test('9. Next Valve Shift countdown & PST moving hand % calculation', () =
   assert.equal(parts.shortClockStr, '12:00 PM');
 });
 
+await test('10. Mobile responsive invariants: sticky group bar, z-index layering, 2x2 KPI grid, and auto-center', () => {
+  assert.ok(indexHtml.includes('container-type: inline-size;'), '.rat-board-card should establish inline container size');
+  assert.ok(indexHtml.includes('.rat-sys-group-bar-inner') && indexHtml.includes('max-width: 100cqi;'), 'System header bar should stick within mobile card width');
+  assert.ok(indexHtml.includes('.rat-mobile-swipe-hint'), 'Mobile swipe hint badge should exist');
+  assert.ok(indexHtml.includes('function centerRationingTimelineOnNow()'), 'Timeline auto-center helper should exist');
+
+  // Verify sticky left column z-index (20 / 26) sits strictly above moving hand line (10) & badge (14)
+  const colZ = indexHtml.match(/@media \(max-width:\s*768px\)[\s\S]*?\.rat-col-label\s*\{[^}]*z-index:\s*(\d+)/);
+  const rulerColZ = indexHtml.match(/@media \(max-width:\s*768px\)[\s\S]*?\.rat-ruler-row \.rat-col-label\s*\{[^}]*z-index:\s*(\d+)/);
+  const lineZ = indexHtml.match(/\.rat-now-line\s*\{[^}]*z-index:\s*(\d+)/);
+  const badgeZ = indexHtml.match(/\.rat-now-badge\s*\{[^}]*z-index:\s*(\d+)/);
+  assert.ok(colZ && rulerColZ && lineZ && badgeZ, 'Z-index rules should be present');
+  assert.ok(Number(colZ[1]) > Number(lineZ[1]), 'Sticky zone column must sit above .rat-now-line');
+  assert.ok(Number(rulerColZ[1]) > Number(badgeZ[1]), 'Sticky ruler header must sit above .rat-now-badge');
+
+  // Verify mobile sticky bar classes & 2x2 KPI layout
+  assert.ok(indexHtml.includes('class="rat-bar-left"') && indexHtml.includes('class="rat-filter-group"'));
+  assert.ok(indexHtml.includes('grid-template-columns: repeat(2, minmax(0, 1fr))'));
+});
+
 console.log('================================================================================');
 console.log(` Total Tests: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`);
 console.log('================================================================================');
