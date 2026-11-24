@@ -1,11 +1,17 @@
 // api/saveRiverFlow.js
 import crypto from 'crypto';
-import { DEFAULT_RIVER_STATIONS, DEFAULT_WATER_LEVEL_CONFIG, WATER_LEVEL_CONFIG_STATION } from './getRiverFlow.js';
+import {
+  DEFAULT_RIVER_STATIONS,
+  DEFAULT_WATER_LEVEL_CONFIG,
+  WATER_LEVEL_CONFIG_STATION,
+  RATIONING_CONFIG_STATION,
+  DEFAULT_RATIONING_CONFIG
+} from './getRiverFlow.js';
 
 function sanitizeWaterLevelRecord(rec, fallbackStation = 'Campo Uno Source (Irawan River)') {
   if (!rec || typeof rec !== 'object') return null;
   const stationName = String(rec.station_name || fallbackStation).trim();
-  if (!stationName || stationName === WATER_LEVEL_CONFIG_STATION) return null;
+  if (!stationName || stationName === WATER_LEVEL_CONFIG_STATION || stationName === RATIONING_CONFIG_STATION) return null;
 
   const rawTime = rec.reading_time;
   const parsedDt = rawTime ? new Date(rawTime) : null;
@@ -80,6 +86,90 @@ export default async function handler(req, res) {
   const requestType = bodyType || req.query?.type;
 
   try {
+    // ── 00. APPROVED WATER RATIONING SCHEDULE CONFIG ──
+    if (requestType === 'rationing_schedule') {
+      const incomingSystems = req.body?.systems;
+      if (!incomingSystems || typeof incomingSystems !== 'object' || Array.isArray(incomingSystems)) {
+        return res.status(400).json({ error: 'systems object is required.' });
+      }
+
+      const allowedStatus = ['active', 'none'];
+      const allowedBasis = ['Social Media', 'Internal Email', 'Monitoring'];
+      const allowedModes = ['scheduled', 'conditional', 'continuous'];
+      const timeRegex = /^([01]\d|2[0-4]):[0-5]\d$/;
+
+      const cleanSystems = {};
+      for (const [sysId, raw] of Object.entries(incomingSystems)) {
+        if (!raw || typeof raw !== 'object') continue;
+        const cleanKey = String(sysId).trim().slice(0, 40);
+        if (!cleanKey) continue;
+
+        const status = allowedStatus.includes(raw.status) ? raw.status : 'none';
+        const basis = allowedBasis.includes(raw.basis) ? raw.basis : (status === 'active' ? 'Internal Email' : 'Monitoring');
+        const sourceMix = String(raw.sourceMix || 'SW Only').trim().slice(0, 40);
+        const driver = String(raw.driver || (status === 'active' ? 'Scheduled water rationing' : 'No Water Rationing')).trim().slice(0, 100);
+        const effectiveDate = String(raw.effectiveDate || '').trim().slice(0, 30);
+
+        const rawZones = Array.isArray(raw.zones) ? raw.zones.slice(0, 10) : [];
+        const cleanZones = status === 'none'
+          ? []
+          : rawZones
+              .filter(z => z && String(z.name || '').trim())
+              .map(z => {
+                const mode = allowedModes.includes(z.mode) ? z.mode : 'scheduled';
+                const start = mode === 'continuous'
+                  ? '00:00'
+                  : (timeRegex.test(String(z.start || '').trim()) ? String(z.start).trim() : '06:00');
+                const end = mode === 'continuous'
+                  ? '24:00'
+                  : (timeRegex.test(String(z.end || '').trim()) ? String(z.end).trim() : '12:00');
+                return {
+                  name: String(z.name).trim().slice(0, 60),
+                  area: String(z.area || '').trim().slice(0, 90),
+                  mode,
+                  start,
+                  end,
+                  label: String(z.label || '').trim().slice(0, 40)
+                };
+              });
+
+        cleanSystems[cleanKey] = {
+          status,
+          basis,
+          sourceMix,
+          driver,
+          effectiveDate,
+          zones: cleanZones
+        };
+      }
+
+      const cleanConfig = {
+        isRationingConfig: true,
+        updatedAt: new Date().toISOString(),
+        systems: { ...DEFAULT_RATIONING_CONFIG.systems, ...cleanSystems }
+      };
+
+      const cfgRow = {
+        station_name: RATIONING_CONFIG_STATION,
+        reading_time: '1970-01-02T00:00:00.000Z',
+        water_level: 0,
+        normal_level: 0,
+        unit: 'cfg',
+        remarks: JSON.stringify(cleanConfig)
+      };
+
+      const upsertRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/water_level_readings?on_conflict=station_name,reading_time`,
+        {
+          method: 'POST',
+          headers: { ...headers, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+          body: JSON.stringify([cfgRow])
+        }
+      );
+      if (!upsertRes.ok) throw new Error(await upsertRes.text());
+      return res.status(200).json({ success: true, config: cleanConfig });
+    }
+
     // ── 0. BOOSTER / RESERVOIR WATER LEVEL OPERATIONS ──
     if (requestType === 'water_level') {
       // A. Save station thresholds & operational milestones config
@@ -161,7 +251,7 @@ export default async function handler(req, res) {
           return res.status(400).json({ error: 'Valid numeric record id is required for deletion.' });
         }
         const delRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/water_level_readings?id=eq.${targetId}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}`,
+          `${SUPABASE_URL}/rest/v1/water_level_readings?id=eq.${targetId}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}&station_name=neq.${encodeURIComponent(RATIONING_CONFIG_STATION)}`,
           { method: 'DELETE', headers }
         );
         if (!delRes.ok) throw new Error(await delRes.text());

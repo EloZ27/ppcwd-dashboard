@@ -2126,6 +2126,431 @@
       color: #475569;
       font-weight: 600;
     }
+    /* ── WATER RATIONING & LIVE 24H SCHEDULE TIMER ── */
+    #page-rationing .kpi-row-layout {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 1024px) {
+      #page-rationing .kpi-row-layout {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 520px) {
+      #page-rationing .kpi-row-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .rat-board-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .rat-board-header {
+      padding: 13px 18px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .rat-legend-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .rat-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .rat-legend-swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .rat-legend-swatch.mode-scheduled { background: linear-gradient(90deg, #0284C7, #0D9488); }
+    .rat-legend-swatch.mode-continuous { background: linear-gradient(90deg, #059669, #0D9488); }
+    .rat-legend-swatch.mode-conditional { background: repeating-linear-gradient(-45deg, #D97706, #D97706 3px, #B45309 3px, #B45309 6px); }
+    .rat-legend-swatch.mode-closed { background: #E2E8F0; border: 1px solid #CBD5E1; }
+    .rat-legend-hand {
+      width: 3px;
+      height: 12px;
+      border-radius: 2px;
+      background: #EF4444;
+      display: inline-block;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+    }
+
+    .rat-timeline-scroll {
+      overflow-x: auto;
+      position: relative;
+      --rat-now-pct: 0%;
+      cursor: grab;
+      -webkit-overflow-scrolling: touch;
+    }
+    .rat-timeline-scroll.is-dragging {
+      cursor: grabbing !important;
+      user-select: none !important;
+    }
+    .rat-timeline-inner {
+      min-width: 820px;
+      position: relative;
+    }
+    .rat-grid-row {
+      display: grid;
+      grid-template-columns: 244px minmax(576px, 1fr);
+      align-items: stretch;
+    }
+    .rat-col-label {
+      padding: 8px 14px;
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      background: #FFFFFF;
+    }
+    .rat-ruler-row {
+      background: #0F172A;
+      color: #CBD5E1;
+      border-bottom: 1px solid #1E293B;
+    }
+    .rat-ruler-row .rat-col-label {
+      background: #0F172A;
+      border-right-color: rgba(255, 255, 255, 0.12);
+      color: #E2E8F0;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .rat-ruler-track {
+      position: relative;
+      height: 36px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      align-items: end;
+    }
+    .rat-tick {
+      position: relative;
+      height: 100%;
+      border-left: 1px solid rgba(148, 163, 184, 0.24);
+      padding: 0 0 5px 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: #94A3B8;
+      display: flex;
+      align-items: flex-end;
+      user-select: none;
+    }
+    .rat-tick-end {
+      position: absolute;
+      right: 5px;
+      bottom: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: #94A3B8;
+      pointer-events: none;
+    }
+    .rat-now-badge {
+      position: absolute;
+      top: 4px;
+      left: var(--rat-now-pct);
+      transform: translateX(-50%);
+      background: #EF4444;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+      z-index: 25;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.45);
+      pointer-events: none;
+      line-height: 1.25;
+    }
+
+    .rat-sys-group-bar {
+      background: #F8FAFC;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid #E2E8F0;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .rat-sys-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .rat-sys-title {
+      font-family: var(--font-display);
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .rat-sys-driver {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .rat-sys-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rat-zone-row {
+      border-bottom: 1px solid #F1F5F9;
+      transition: background-color 0.15s ease;
+    }
+    .rat-zone-row:last-child {
+      border-bottom: none;
+    }
+    .rat-zone-row.is-supplying-row .rat-col-label {
+      background: #F8FAFC;
+    }
+    .rat-zone-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .rat-zone-area {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.25;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .rat-zone-live-state {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .rat-zone-live-state.is-open { color: var(--green-text); }
+    .rat-zone-live-state.is-cond { color: var(--amber-text); }
+    .rat-zone-live-state.is-closed { color: var(--text-subtle); }
+
+    .rat-lane-track {
+      position: relative;
+      min-height: 54px;
+      background-color: #F1F5F9;
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.2) 1px, transparent 1px);
+      background-size: calc(100% / 12) 100%;
+    }
+    .rat-elapsed-shade {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--rat-now-pct);
+      background: rgba(15, 23, 42, 0.035);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .rat-now-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--rat-now-pct);
+      width: 2px;
+      background: #EF4444;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.55);
+      transform: translateX(-1px);
+      pointer-events: none;
+      z-index: 15;
+    }
+    .rat-block {
+      position: absolute;
+      top: 9px;
+      bottom: 9px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 9px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      z-index: 5;
+      transition: box-shadow 0.2s ease, filter 0.15s ease;
+    }
+    .rat-block.mode-scheduled {
+      background: linear-gradient(90deg, #0284C7, #0D9488);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .rat-block.mode-continuous {
+      background: linear-gradient(90deg, #059669, #0D9488);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .rat-block.mode-conditional {
+      background: repeating-linear-gradient(-45deg, #D97706, #D97706 8px, #B45309 8px, #B45309 16px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .rat-block.is-active-now.mode-scheduled {
+      box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #0EA5E9, 0 4px 12px rgba(14, 165, 233, 0.35);
+      z-index: 8;
+    }
+    .rat-block.is-active-now.mode-continuous {
+      box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #10B981, 0 4px 12px rgba(16, 185, 129, 0.3);
+      z-index: 8;
+    }
+    .rat-block.is-active-now.mode-conditional {
+      box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #F59E0B, 0 4px 12px rgba(245, 158, 11, 0.35);
+      z-index: 8;
+    }
+    .rat-block-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(15, 23, 42, 0.35);
+    }
+
+    .rat-standby-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .rat-standby-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 13px 15px 13px 17px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .rat-standby-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: #CBD5E1;
+    }
+    .rat-standby-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+    }
+    .rat-standby-card.lvl-normal::before { background: #0b4f6c; }
+    .rat-standby-card.lvl-1::before { background: var(--green); }
+    .rat-standby-card.lvl-2::before { background: var(--amber); }
+    .rat-standby-card.lvl-3::before { background: var(--red); }
+
+    .rat-standby-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid #F1F5F9;
+      font-size: 11px;
+    }
+    #rationing-admin-modal .comp-modal-grid > div {
+      min-width: 0;
+    }
+    #rationing-admin-modal .form-input,
+    #rationing-admin-modal .week-dropdown {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .rat-zone-edit-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-sizing: border-box;
+      width: 100%;
+      min-width: 0;
+    }
+    .rat-zone-edit-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) auto;
+      gap: 8px;
+      align-items: end;
+    }
+    .rat-zone-edit-bottom {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+      align-items: end;
+    }
+    .rat-zone-field-lbl {
+      display: block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 3px;
+    }
+    @media (max-width: 768px) {
+      .rat-grid-row {
+        grid-template-columns: 170px minmax(520px, 1fr);
+      }
+      .rat-col-label {
+        position: sticky;
+        left: 0;
+        z-index: 12;
+        padding: 7px 10px;
+      }
+      .rat-ruler-row .rat-col-label {
+        z-index: 26;
+      }
+    }
+    @media (max-width: 560px) {
+      .rat-zone-edit-top,
+      .rat-zone-edit-bottom {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media print {
       @page {
         size: A4 portrait;
@@ -2181,6 +2606,7 @@
         <button type="button" class="nav-btn active" aria-current="page" onclick="switchNavTab('overview')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span><span>Dashboard</span></button>
         <button type="button" class="nav-btn" onclick="switchNavTab('pressure')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span><span>Network Pressure</span></button>
         <button type="button" class="nav-btn" onclick="switchNavTab('crisis')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span><span>Crisis Monitor</span></button>
+        <button type="button" class="nav-btn" onclick="switchNavTab('rationing')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15.5 14"></polyline></svg></span><span style="flex:1;">Water Rationing</span><span id="nav-rationing-count" style="font-family:var(--font-mono); font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px; background:rgba(245,158,11,0.22); color:#FCD34D;">2</span></button>
 
         <div class="sidebar-section-label">Production &amp; Hydrology</div>
         <button type="button" class="nav-btn" onclick="switchNavTab('monthly')"><span class="nav-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span><span>Production MONTHLY Report</span></button>
@@ -2411,6 +2837,32 @@
             <a href="uploader.html#waterlevel" class="header-btn btn-secondary-action" style="color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light); font-weight:700; text-decoration:none;">
               Log Report &nearr;
             </a>
+          </div>
+        </div>
+
+        <!-- 6. Water Rationing Schedule Sticky Bar -->
+        <div id="bar-period-rationing" class="period-bar-wrap" style="display:none;">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <span class="kpi-badge-pill pill-blue" style="font-family:var(--font-mono); font-size:11px; font-weight:700; padding:5px 11px; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;">
+              <span class="telemetry-beacon" aria-hidden="true"></span>
+              <span id="rationing-live-clock">PST —</span>
+              <span style="opacity:0.55;">&bull;</span>
+              <span id="rationing-day-phase" style="font-family:var(--font-sans);">Live Schedule</span>
+            </span>
+            <div style="display:inline-flex; align-items:center; gap:6px;">
+              <label for="rationing-week-select" style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Yield Cycle</label>
+              <select id="rationing-week-select" class="week-dropdown" aria-label="Select Crisis Yield Reporting Week" onchange="onRationingWeekChange(this.value)"></select>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div style="display:inline-flex; border:1px solid var(--card-border); border-radius:8px; overflow:hidden; background:#FFFFFF;">
+              <button type="button" id="rat-filter-all" class="header-btn active" onclick="setRationingFilter('all')" style="border:none; border-radius:0; padding:6px 11px; font-size:11px; font-weight:700; background:var(--blue-light); color:var(--blue-text);">All (10)</button>
+              <button type="button" id="rat-filter-active" class="header-btn" onclick="setRationingFilter('active')" style="border:none; border-radius:0; padding:6px 11px; font-size:11px; font-weight:700;">Rationed (2)</button>
+              <button type="button" id="rat-filter-none" class="header-btn" onclick="setRationingFilter('none')" style="border:none; border-radius:0; padding:6px 11px; font-size:11px; font-weight:700;">No Rationing (8)</button>
+            </div>
+            <button type="button" class="header-btn btn-secondary-action" onclick="openRationingAdminModal()" style="font-size:11.5px; font-weight:700; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light);" title="Update approved schedules from Social Media or Internal Email">
+              Update Schedule
+            </button>
           </div>
         </div>
       </div>
@@ -2937,6 +3389,71 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- ── TAB 9: APPROVED WATER RATIONING SCHEDULE ── -->
+      <div class="page-content" id="page-rationing">
+        <!-- Executive KPI Strip (4 Scannable Cards) -->
+        <div class="kpi-row-layout">
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Systems Under Rationing</div>
+            <div class="kpi-card-num" id="rat-kpi-systems">2 <span class="unit">/ 10</span></div>
+            <div class="kpi-card-foot" id="rat-kpi-systems-sub" style="color:var(--text-muted);">Approved standalone schedules</div>
+          </div>
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Zones Supplying Now</div>
+            <div class="kpi-card-num" id="rat-kpi-flowing" style="color:var(--green-text);">—</div>
+            <div class="kpi-card-foot" id="rat-kpi-flowing-sub" style="color:var(--text-muted);">Active PST delivery windows</div>
+          </div>
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Next Valve Shift</div>
+            <div class="kpi-card-num" id="rat-kpi-next-time" style="font-size:20px; color:var(--blue-text);">—</div>
+            <div class="kpi-card-foot" id="rat-kpi-next-sub" style="color:var(--text-muted);">Monitoring valve windows</div>
+          </div>
+          <div class="kpi-card-white">
+            <div class="kpi-card-lbl">Below 90% Target</div>
+            <div class="kpi-card-num" id="rat-kpi-watch" style="color:var(--amber-text);">—</div>
+            <div class="kpi-card-foot" id="rat-kpi-watch-sub" style="color:var(--text-muted);">Correlated with Crisis Monitor</div>
+          </div>
+        </div>
+
+        <!-- Live 24-Hour Timeline Board (gw2timer-style moving PST hand) -->
+        <section id="rat-active-section" aria-label="Approved Water Rationing Schedules">
+          <div class="rat-board-card">
+            <div class="rat-board-header">
+              <div>
+                <h2 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Approved 24-Hour Supply Schedule (PST)</h2>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Based on Social Media advisories &amp; internal office updates &bull; Correlated with LWUA Crisis Yield %</div>
+              </div>
+              <div class="rat-legend-strip">
+                <span class="rat-legend-item"><span class="rat-legend-swatch mode-scheduled"></span>Scheduled Supply</span>
+                <span class="rat-legend-item"><span class="rat-legend-swatch mode-continuous"></span>24h Continuous</span>
+                <span class="rat-legend-item"><span class="rat-legend-swatch mode-conditional"></span>Conditional (Turbidity)</span>
+                <span class="rat-legend-item"><span class="rat-legend-swatch mode-closed"></span>Closed</span>
+                <span class="rat-legend-item"><span class="rat-legend-hand"></span>Current Time</span>
+              </div>
+            </div>
+
+            <div class="rat-timeline-scroll" id="rat-timeline-scroll">
+              <div class="rat-timeline-inner" id="rat-timeline-board">
+                <!-- Populated dynamically by renderRationingSchedule() -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Remaining Monitored Systems (No Water Rationing) -->
+        <section id="rat-standby-section" aria-label="Monitored Systems Without Water Rationing">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <div>
+              <h2 class="section-title-main" style="margin:0;">Monitored Water Systems &middot; No Water Rationing</h2>
+              <div class="section-title-sub">Standalone rural &amp; city systems under continuous LWUA crisis % monitoring</div>
+            </div>
+          </div>
+          <div class="rat-standby-grid" id="rat-standby-grid">
+            <!-- Populated dynamically by renderRationingSchedule() -->
+          </div>
+        </section>
       </div>
 
     </main>
@@ -3501,6 +4018,79 @@
 
     <div style="margin-top:14px; font-size:8.5px; color:#64748B; border-top:1px solid #E2E8F0; padding-top:8px; line-height:1.4;">
       <strong>LWUA Regulatory Benchmark:</strong> Under mandatory guidelines, when aggregate actual monthly supply falls below 5% of the 1,705,700 m³ operational baseline (&lt; 1,620,415 m³), formal notification and drought contingency schedules must be submitted to the Local Water Utilities Administration (LWUA).
+    </div>
+  </div>
+
+  <!-- Water Rationing Schedule Editor Modal (Passkey Protected) -->
+  <div id="rationing-admin-modal" role="dialog" aria-modal="true" aria-labelledby="rat-modal-title" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:2150; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeRationingAdminModal()">
+    <div style="background:#FFFFFF; border-radius:14px; width:720px; max-width:96vw; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.28); border:1px solid var(--card-border);">
+      <div style="padding:16px 22px; border-bottom:1px solid var(--card-border); background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 id="rat-modal-title" style="margin:0; font-size:16px; font-weight:800; color:var(--text-main);">Update Water Rationing Schedule</h2>
+          <p style="margin:2px 0 0 0; font-size:11.5px; color:var(--text-muted);">Publish approved schedules from Social Media advisories or Internal Email</p>
+        </div>
+        <button type="button" onclick="closeRationingAdminModal()" class="modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div style="padding:18px 22px; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; gap:14px; min-width:0; box-sizing:border-box;">
+        <div class="comp-modal-grid">
+          <div>
+            <label for="rat-edit-sys" style="display:block; font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Water System</label>
+            <select id="rat-edit-sys" class="week-dropdown" style="width:100%;" onchange="loadSystemIntoRationingModal(this.value)"></select>
+          </div>
+          <div>
+            <label for="rat-edit-status" style="display:block; font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Rationing Status</label>
+            <select id="rat-edit-status" class="week-dropdown" style="width:100%;" onchange="toggleRationingZoneEditorVisibility()">
+              <option value="active">Active Water Rationing</option>
+              <option value="none">No Water Rationing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="comp-modal-grid">
+          <div>
+            <label for="rat-edit-basis" style="display:block; font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Approval Source</label>
+            <select id="rat-edit-basis" class="week-dropdown" style="width:100%;">
+              <option value="Social Media">Social Media Advisory</option>
+              <option value="Internal Email">Internal Office Email</option>
+              <option value="Monitoring">Routine Monitoring</option>
+            </select>
+          </div>
+          <div>
+            <label for="rat-edit-sourcemix" style="display:block; font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Source Profile</label>
+            <select id="rat-edit-sourcemix" class="week-dropdown" style="width:100%;">
+              <option value="SW Only">SW Only (No GW Backup)</option>
+              <option value="SW + GW">SW + GW</option>
+              <option value="GW Only">GW Only</option>
+              <option value="SW + GW Grid">SW + GW Grid</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="rat-edit-driver" style="display:block; font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Short Status / Operational Driver (1 line)</label>
+          <input id="rat-edit-driver" type="text" maxlength="90" class="form-input" style="width:100%; box-sizing:border-box;" placeholder="e.g., Low surface source level · No GW backup" />
+        </div>
+
+        <div id="rat-edit-zones-wrap" style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; font-weight:700; color:var(--text-main); text-transform:uppercase; letter-spacing:0.4px;">Service Area Time Windows (24h PST)</span>
+            <button type="button" onclick="addRationingZoneEditorRow()" class="header-btn" style="font-size:11px; padding:4px 10px; color:var(--blue-text); border-color:var(--blue-border); background:var(--blue-light); font-weight:700;">+ Add Zone</button>
+          </div>
+          <div style="font-size:10.5px; color:var(--text-muted);">Supports overnight wrap (e.g. 13:00 to 06:00 for 1:00 PM &ndash; 6:00 AM). Continuous mode spans 00:00 &ndash; 24:00.</div>
+          <div id="rat-edit-zones-list" style="display:flex; flex-direction:column; gap:7px;"></div>
+        </div>
+
+        <div id="rat-modal-status" role="status" style="font-size:11.5px; font-weight:600; min-height:16px; color:var(--blue-text);"></div>
+      </div>
+
+      <div style="padding:14px 22px; border-top:1px solid var(--card-border); background:#F8FAFC; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <button type="button" onclick="resetRationingSystemDefault()" class="header-btn" style="font-size:11.5px; color:var(--text-muted);">Reset System Default</button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" onclick="closeRationingAdminModal()" class="header-btn" style="font-size:11.5px;">Cancel</button>
+          <button type="button" id="btn-rat-save" onclick="saveRationingScheduleEdit()" class="header-btn btn-primary-action" style="font-size:11.5px;">Save Schedule</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -4303,6 +4893,7 @@
       overview: "Monitoring Dashboard", production: "Production Yield Analysis",
       pressure: "Distribution Network Pressure", waterlevel: "Surface Water Source Levels & Pressure Correlation",
       crisis: "LWUA Drought & Crisis Monitoring",
+      rationing: "Approved Water Rationing Schedule",
       riverflow: "River Hydrology & Watershed Yield", complaints: "Customer Care Complaints Triage",
       monthly: "Production Monthly Report"
     };
@@ -4315,6 +4906,7 @@
     const pressureBar = document.getElementById("bar-period-pressure");
     const complaintsBar = document.getElementById("bar-period-complaints");
     const waterlevelBar = document.getElementById("bar-period-waterlevel");
+    const rationingBar = document.getElementById("bar-period-rationing");
 
     if (globalPeriodBar) {
       globalPeriodBar.style.display = (tab === 'overview' || tab === 'production' || tab === 'crisis') ? 'flex' : 'none';
@@ -4330,6 +4922,9 @@
     }
     if (waterlevelBar) {
       waterlevelBar.style.display = (tab === 'waterlevel') ? 'flex' : 'none';
+    }
+    if (rationingBar) {
+      rationingBar.style.display = (tab === 'rationing') ? 'flex' : 'none';
     }
 
     if (window.innerWidth <= 820) {
@@ -4369,6 +4964,10 @@
     if(tab === 'crisis') {
       const activeWk = document.getElementById("week-select")?.value || allProdData[allProdData.length-1]?.[COL.week];
       if(activeWk) renderWeek(activeWk);
+    }
+    if(tab === 'rationing') {
+      if (typeof renderRationingSchedule === 'function') renderRationingSchedule();
+      if (typeof tickRationingClock === 'function') tickRationingClock();
     }
     if(tab === 'riverflow') {
       buildRiverLeaderboard();
@@ -4718,7 +5317,10 @@
         <div class="crisis-card ${alert.cls}" tabindex="0" role="button" onclick="openCrisisRemarks('${sys.id}')" title="Tap to view remarks and committee notes">
           <div class="crisis-header">
             <div class="crisis-title">${sys.name}</div>
-            <span class="kpi-badge-pill" style="background:${pillBg}; color:${alert.textColor}; border:1px solid ${alert.color};">${alert.name}</span>
+            <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap; justify-content:flex-end;">
+              ${typeof isSystemRationed === 'function' && isSystemRationed(sys.id) ? `<button type="button" onclick="event.stopPropagation(); switchNavTab('rationing');" class="kpi-badge-pill pill-amber" style="border:1px solid var(--amber-border); font-size:9.5px; cursor:pointer;" title="View active water rationing schedule">Rationing Active ↗</button>` : ''}
+              <span class="kpi-badge-pill" style="background:${pillBg}; color:${alert.textColor}; border:1px solid ${alert.color};">${alert.name}</span>
+            </div>
           </div>
           <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:2px;">
             <div class="crisis-pct" style="color:${alert.textColor}; margin-bottom:0;">${fmt(pct, 1)}%</div>
@@ -4770,6 +5372,9 @@
       renderSourceTable(d);
       renderCapacityTable(d);
       renderCrisisMonitoring(d, 1);
+      const ratWeekSel = document.getElementById("rationing-week-select");
+      if (ratWeekSel && weekVal) ratWeekSel.value = weekVal;
+      if (typeof renderRationingSchedule === 'function') renderRationingSchedule(d);
       renderOverview();
     });
   }
@@ -6126,10 +6731,13 @@
       if (typeof PpcwdCache !== 'undefined') PpcwdCache.set('production', allProdData);
 
       const selectEl = document.getElementById("week-select");
-      selectEl.innerHTML = [...allProdData].reverse().map(row => {
+      const optionsHtml = [...allProdData].reverse().map(row => {
         const wk = row[COL.week];
         return `<option value="${wk}">${wk} &bull; ${row[COL.period] || ''}</option>`;
       }).join("");
+      selectEl.innerHTML = optionsHtml;
+      const ratWeekSel = document.getElementById("rationing-week-select");
+      if (ratWeekSel) ratWeekSel.innerHTML = optionsHtml;
 
       renderWeek(allProdData[allProdData.length - 1][COL.week]);
     } catch(err) { console.error("Production err", err); }
@@ -7206,11 +7814,16 @@
         if (cachedProd && Array.isArray(cachedProd) && cachedProd.length > 0) {
           allProdData = cachedProd;
           const selectEl = document.getElementById("week-select");
+          const optionsHtml = [...allProdData].reverse().map(row => {
+            const wk = row[COL.week];
+            return `<option value="${wk}">${wk} &bull; ${row[COL.period] || ''}</option>`;
+          }).join("");
           if (selectEl) {
-            selectEl.innerHTML = [...allProdData].reverse().map(row => {
-              const wk = row[COL.week];
-              return `<option value="${wk}">${wk} &bull; ${row[COL.period] || ''}</option>`;
-            }).join("");
+            selectEl.innerHTML = optionsHtml;
+          }
+          const ratWeekSel = document.getElementById("rationing-week-select");
+          if (ratWeekSel) {
+            ratWeekSel.innerHTML = optionsHtml;
           }
           renderWeek(allProdData[allProdData.length - 1][COL.week]);
         }
@@ -7244,9 +7857,12 @@
         loadRiverFlow(),
         loadComplaints(),
         loadMonthlyData(),
-        loadWaterLevel()
+        loadWaterLevel(),
+        loadRationingSchedules()
       ]);
       renderOverview();
+      if (typeof renderRationingSchedule === 'function') renderRationingSchedule();
+      if (typeof startRationingClock === 'function') startRationingClock();
       if (typeof checkPressureCooldownStatus === 'function') checkPressureCooldownStatus();
       if (statusNote) statusNote.textContent = "All systems nominal";
     } catch(err) {
@@ -11282,6 +11898,865 @@
     URL.revokeObjectURL(url);
   }
 
+  // ══════════════════════════════════════════════════════════════════
+  // ── APPROVED WATER RATIONING SCHEDULE & LIVE 24H PST TIMER ENGINE ──
+  // ══════════════════════════════════════════════════════════════════
+  const DEFAULT_RATIONING_DATA = {
+    isRationingConfig: true,
+    updatedAt: "2026-11-24T00:00:00.000Z",
+    systems: {
+      binduyan: {
+        status: "active",
+        basis: "Social Media",
+        sourceMix: "SW Only",
+        driver: "Low surface source level · No GW backup",
+        effectiveDate: "In Effect",
+        zones: [
+          {
+            name: "North Binduyan",
+            area: "Toward Roxas, Palawan",
+            mode: "scheduled",
+            start: "06:00",
+            end: "12:00",
+            label: "6:00 AM – 12:00 PM"
+          },
+          {
+            name: "South Binduyan",
+            area: "Toward Puerto Princesa City",
+            mode: "scheduled",
+            start: "13:00",
+            end: "06:00",
+            label: "1:00 PM – 6:00 AM"
+          }
+        ]
+      },
+      maoyon: {
+        status: "active",
+        basis: "Social Media",
+        sourceMix: "SW + GW",
+        driver: "Maoyon River turbidity & upper line repair",
+        effectiveDate: "In Effect",
+        zones: [
+          {
+            name: "Brgy. Maoyon",
+            area: "Main Service Area",
+            mode: "continuous",
+            start: "00:00",
+            end: "24:00",
+            label: "24h Continuous"
+          },
+          {
+            name: "Brgy. Maruyogon",
+            area: "Main Gate Valve closes 10:00 AM",
+            mode: "scheduled",
+            start: "06:00",
+            end: "10:00",
+            label: "6:00 AM – 10:00 AM"
+          },
+          {
+            name: "Brgy. Lucbuan — Puroks",
+            area: "Human, Mandaragat, Teresa, Katumbal",
+            mode: "scheduled",
+            start: "11:00",
+            end: "15:00",
+            label: "11:00 AM – 3:00 PM"
+          },
+          {
+            name: "Brgy. Lucbuan — Hall Area",
+            area: "Subject to gravity source turbidity",
+            mode: "conditional",
+            start: "16:00",
+            end: "21:00",
+            label: "4:00 PM – 9:00 PM"
+          }
+        ]
+      },
+      stalucia:  { status: "none", basis: "Monitoring", sourceMix: "SW Only",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      sabang:    { status: "none", basis: "Monitoring", sourceMix: "SW + GW",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      bacungan:  { status: "none", basis: "Monitoring", sourceMix: "SW Only",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      bahile:    { status: "none", basis: "Monitoring", sourceMix: "SW + GW",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      sanrafael: { status: "none", basis: "Monitoring", sourceMix: "SW Only",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      napsan:    { status: "none", basis: "Monitoring", sourceMix: "SW Only",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      inagawan:  { status: "none", basis: "Monitoring", sourceMix: "GW Only",    driver: "No Water Rationing", effectiveDate: "", zones: [] },
+      city_total:{ status: "none", basis: "Monitoring", sourceMix: "SW + GW Grid", driver: "No Water Rationing", effectiveDate: "", zones: [] }
+    }
+  };
+
+  let rationingData = JSON.parse(JSON.stringify(DEFAULT_RATIONING_DATA));
+  let rationingFilter = 'all';
+  let rationingTickInterval = null;
+  let rationingEditZonesDraft = [];
+
+  function cloneDefaultRationingSystems() {
+    return JSON.parse(JSON.stringify(DEFAULT_RATIONING_DATA.systems));
+  }
+
+  function mergeRationingSystems(incoming) {
+    const base = cloneDefaultRationingSystems();
+    if (!incoming || typeof incoming !== 'object') return base;
+    for (const [k, v] of Object.entries(incoming)) {
+      if (v && typeof v === 'object') {
+        base[k] = {
+          status: v.status === 'active' ? 'active' : 'none',
+          basis: v.basis || (v.status === 'active' ? 'Internal Email' : 'Monitoring'),
+          sourceMix: v.sourceMix || base[k]?.sourceMix || 'SW Only',
+          driver: v.driver || (v.status === 'active' ? 'Scheduled water rationing' : 'No Water Rationing'),
+          effectiveDate: v.effectiveDate || '',
+          zones: Array.isArray(v.zones) ? v.zones : []
+        };
+      }
+    }
+    return base;
+  }
+
+  function isSystemRationed(sysId) {
+    const entry = rationingData?.systems?.[sysId];
+    return !!(entry && entry.status === 'active' && Array.isArray(entry.zones) && entry.zones.length > 0);
+  }
+
+  function getNowPstParts(nowMs = Date.now()) {
+    const pst = new Date(nowMs + 8 * 3600 * 1000);
+    const hours = pst.getUTCHours();
+    const minutes = pst.getUTCMinutes();
+    const seconds = pst.getUTCSeconds();
+    const totalMinutes = hours * 60 + minutes + (seconds / 60);
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    const pctOfDay = (totalSeconds / 86400) * 100;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const h12 = (hours % 12) || 12;
+    const pad = n => String(n).padStart(2, '0');
+    const clockStr = `${h12}:${pad(minutes)}:${pad(seconds)} ${ampm} PST`;
+    const shortClockStr = `${h12}:${pad(minutes)} ${ampm}`;
+    let phaseLabel = 'Daytime Off-Peak';
+    if (hours >= 5 && hours < 8) phaseLabel = 'AM Peak Window';
+    else if (hours >= 17 && hours < 20) phaseLabel = 'PM Peak Window';
+    else if (hours >= 20 || hours < 5) phaseLabel = 'Overnight Window';
+    return { hours, minutes, seconds, totalMinutes, totalSeconds, pctOfDay, clockStr, shortClockStr, phaseLabel };
+  }
+
+  function parseHmToMin(hm) {
+    const parts = String(hm || '00:00').split(':');
+    const h = Math.min(24, Math.max(0, parseInt(parts[0], 10) || 0));
+    const m = Math.min(59, Math.max(0, parseInt(parts[1], 10) || 0));
+    return h === 24 ? 1440 : (h * 60 + m);
+  }
+
+  function fmtMinTo12h(min) {
+    const norm = ((Math.round(min) % 1440) + 1440) % 1440;
+    const h24 = Math.floor(norm / 60);
+    const m = norm % 60;
+    const ampm = h24 >= 12 ? 'PM' : 'AM';
+    const h12 = (h24 % 12) || 12;
+    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+  }
+
+  function fmtDurationShort(mins) {
+    const total = Math.max(1, Math.round(mins));
+    const h = Math.floor(total / 60);
+    const m = total % 60;
+    if (h > 0 && m > 0) return `${h}h ${m}m`;
+    if (h > 0) return `${h}h`;
+    return `${m}m`;
+  }
+
+  function expandZoneSegments(zone) {
+    const s = parseHmToMin(zone.start);
+    const e = parseHmToMin(zone.end);
+    if (zone.mode === 'continuous' || (s === 0 && e === 1440) || s === e) {
+      return [{ startMin: 0, endMin: 1440, wraps: false }];
+    }
+    if (s < e) {
+      return [{ startMin: s, endMin: e, wraps: false }];
+    }
+    const segs = [];
+    if (e > 0) segs.push({ startMin: 0, endMin: e, wraps: true, part: 'overnight' });
+    if (s < 1440) segs.push({ startMin: s, endMin: 1440, wraps: true, part: 'evening' });
+    return segs;
+  }
+
+  function evaluateZoneAtMinute(zone, nowMinFloat) {
+    const s = parseHmToMin(zone.start);
+    const e = parseHmToMin(zone.end);
+    if (zone.mode === 'continuous' || (s === 0 && e === 1440) || s === e) {
+      return {
+        isActive: true,
+        isContinuous: true,
+        minutesRemaining: null,
+        minutesUntilOpen: null,
+        statusText: '24h Continuous',
+        stateClass: 'is-open'
+      };
+    }
+
+    const wraps = s > e;
+    const isActive = wraps
+      ? (nowMinFloat >= s || nowMinFloat < e)
+      : (nowMinFloat >= s && nowMinFloat < e);
+
+    if (isActive) {
+      const rem = wraps
+        ? (nowMinFloat < e ? (e - nowMinFloat) : ((1440 - nowMinFloat) + e))
+        : (e - nowMinFloat);
+      const prefix = zone.mode === 'conditional' ? 'Conditional' : 'Supplying';
+      return {
+        isActive: true,
+        isContinuous: false,
+        minutesRemaining: rem,
+        minutesUntilOpen: null,
+        closesAtLabel: fmtMinTo12h(e),
+        statusText: `${prefix} · ${fmtDurationShort(rem)} left`,
+        stateClass: zone.mode === 'conditional' ? 'is-cond' : 'is-open'
+      };
+    }
+
+    const wait = nowMinFloat < s ? (s - nowMinFloat) : (1440 - nowMinFloat + s);
+    return {
+      isActive: false,
+      isContinuous: false,
+      minutesRemaining: null,
+      minutesUntilOpen: wait,
+      opensAtLabel: fmtMinTo12h(s),
+      statusText: `Closed · Opens ${fmtMinTo12h(s)}`,
+      stateClass: 'is-closed'
+    };
+  }
+
+  function computeNextValveTransition(activeEntries, nowMinFloat) {
+    let best = null;
+    activeEntries.forEach(entry => {
+      (entry.config.zones || []).forEach(z => {
+        const s = parseHmToMin(z.start);
+        const e = parseHmToMin(z.end);
+        if (z.mode === 'continuous' || (s === 0 && e === 1440) || s === e) return;
+
+        const candidates = [
+          { min: s, action: 'opens' },
+          { min: e % 1440, action: 'closes' }
+        ];
+        candidates.forEach(c => {
+          let delta = c.min - nowMinFloat;
+          if (delta <= 0) delta += 1440;
+          if (!best || delta < best.deltaMin) {
+            best = {
+              deltaMin: delta,
+              timeLabel: fmtMinTo12h(c.min),
+              inLabel: fmtDurationShort(delta),
+              desc: `${z.name} ${c.action}`
+            };
+          }
+        });
+      });
+    });
+    return best;
+  }
+
+  function getSystemCrisisMetrics(sysId, prodRowObj) {
+    const sys = CRISIS_SYSTEMS.find(s => s.id === sysId);
+    if (!sys) return { pct: null, actual: 0, target: 0, alert: { lvl: 0, name: 'No Data', cls: 'lvl-normal', color: '#64748B', textColor: '#475569' } };
+    if (!prodRowObj) {
+      return {
+        sys,
+        pct: null,
+        actual: 0,
+        target: sys.weeklyTarget || 0,
+        alert: { lvl: 0, name: 'Pending Sync', cls: 'lvl-normal', color: '#64748B', textColor: '#475569' }
+      };
+    }
+    const actual = sys.keys.reduce((sum, key) => sum + num(prodRowObj[key]), 0);
+    const targetInfo = getSystemTarget(sys.id, prodRowObj);
+    const target = targetInfo.weeklyTarget || (targetInfo.ratedHr * 168);
+    const pct = target > 0 ? (actual / target) * 100 : 0;
+    const alert = getAlertInfo(pct);
+    return { sys, pct, actual, target, alert };
+  }
+
+  function getActiveRationingProdObj(optionalProdObj) {
+    if (optionalProdObj) return optionalProdObj;
+    if (!allProdData || !allProdData.length) return null;
+    const ratSel = document.getElementById('rationing-week-select');
+    const globalSel = document.getElementById('week-select');
+    const wk = ratSel?.value || globalSel?.value || allProdData[allProdData.length - 1][COL.week];
+    const row = allProdData.find(r => r[COL.week] === wk) || allProdData[allProdData.length - 1];
+    return row ? rowToObj(row) : null;
+  }
+
+  function onRationingWeekChange(weekVal) {
+    const globalSel = document.getElementById('week-select');
+    if (globalSel && weekVal && globalSel.value !== weekVal) {
+      globalSel.value = weekVal;
+      renderWeek(weekVal);
+      return;
+    }
+    renderRationingSchedule();
+  }
+
+  function setRationingFilter(filter) {
+    rationingFilter = filter;
+    ['all', 'active', 'none'].forEach(key => {
+      const btn = document.getElementById(`rat-filter-${key}`);
+      if (!btn) return;
+      const isAct = key === filter;
+      btn.classList.toggle('active', isAct);
+      btn.style.background = isAct ? 'var(--blue-light)' : '#FFFFFF';
+      btn.style.color = isAct ? 'var(--blue-text)' : 'var(--text-muted)';
+    });
+    renderRationingSchedule();
+  }
+
+  function getOrderedMonitoredSystems() {
+    return CRISIS_SYSTEMS.filter(s => s.id !== 'overall_system');
+  }
+
+  function updateRationingSidebarAndFilterCounts(activeCount, standbyCount) {
+    const navBadge = document.getElementById('nav-rationing-count');
+    if (navBadge) {
+      navBadge.textContent = String(activeCount);
+      navBadge.style.display = activeCount > 0 ? 'inline-block' : 'none';
+    }
+    const fAll = document.getElementById('rat-filter-all');
+    const fAct = document.getElementById('rat-filter-active');
+    const fNone = document.getElementById('rat-filter-none');
+    if (fAll) fAll.textContent = `All (${activeCount + standbyCount})`;
+    if (fAct) fAct.textContent = `Rationed (${activeCount})`;
+    if (fNone) fNone.textContent = `No Rationing (${standbyCount})`;
+  }
+
+  function renderRationingSchedule(optionalProdObj) {
+    const prodObj = getActiveRationingProdObj(optionalProdObj);
+    const nowParts = getNowPstParts();
+    const systems = getOrderedMonitoredSystems();
+
+    const enriched = systems.map(sys => {
+      const cfg = rationingData.systems[sys.id] || {
+        status: 'none', basis: 'Monitoring', sourceMix: 'SW Only', driver: 'No Water Rationing', zones: []
+      };
+      const metrics = getSystemCrisisMetrics(sys.id, prodObj);
+      const isActive = cfg.status === 'active' && Array.isArray(cfg.zones) && cfg.zones.length > 0;
+      return { sys, config: cfg, metrics, isActive };
+    });
+
+    const activeEntries = enriched.filter(e => e.isActive);
+    const standbyEntries = enriched
+      .filter(e => !e.isActive)
+      .sort((a, b) => {
+        const pa = a.metrics.pct === null ? 999 : a.metrics.pct;
+        const pb = b.metrics.pct === null ? 999 : b.metrics.pct;
+        return pa - pb;
+      });
+
+    updateRationingSidebarAndFilterCounts(activeEntries.length, standbyEntries.length);
+
+    // KPI Card 1 & 4
+    const kpiSys = document.getElementById('rat-kpi-systems');
+    const kpiSysSub = document.getElementById('rat-kpi-systems-sub');
+    if (kpiSys) kpiSys.innerHTML = `${activeEntries.length} <span class="unit">/ ${enriched.length}</span>`;
+    if (kpiSysSub) {
+      kpiSysSub.textContent = activeEntries.length > 0
+        ? activeEntries.map(e => e.sys.name.replace(' Water System', '').replace(' WS', '')).join(' · ')
+        : 'No active rationing schedules';
+    }
+
+    const below90 = enriched.filter(e => e.metrics.pct !== null && e.metrics.pct < 90);
+    const unrationedAlertCount = standbyEntries.filter(e => e.metrics.pct !== null && e.metrics.pct < 90).length;
+    const kpiWatch = document.getElementById('rat-kpi-watch');
+    const kpiWatchSub = document.getElementById('rat-kpi-watch-sub');
+    if (kpiWatch) {
+      kpiWatch.textContent = prodObj ? String(below90.length) : '—';
+      kpiWatch.style.color = below90.length > 0 ? 'var(--amber-text)' : 'var(--green-text)';
+    }
+    if (kpiWatchSub) {
+      kpiWatchSub.textContent = prodObj
+        ? (unrationedAlertCount > 0 ? `${unrationedAlertCount} unrationed under 90%` : 'All unrationed systems ≥ 90%')
+        : 'Awaiting weekly production sync';
+    }
+
+    // Visibility per filter
+    const activeSec = document.getElementById('rat-active-section');
+    const standbySec = document.getElementById('rat-standby-section');
+    if (activeSec) activeSec.style.display = rationingFilter === 'none' ? 'none' : 'block';
+    if (standbySec) standbySec.style.display = rationingFilter === 'active' ? 'none' : 'block';
+
+    // Build 24-Hour Timeline Board
+    const board = document.getElementById('rat-timeline-board');
+    if (board) {
+      const ticks = ['12A', '2A', '4A', '6A', '8A', '10A', '12P', '2P', '4P', '6P', '8P', '10P'];
+      const rulerHtml = `
+        <div class="rat-grid-row rat-ruler-row">
+          <div class="rat-col-label">Zone / Service Area</div>
+          <div class="rat-ruler-track">
+            ${ticks.map(t => `<div class="rat-tick">${t}</div>`).join('')}
+            <span class="rat-tick-end">12A</span>
+            <div class="rat-now-badge" id="rat-now-badge">${escapeHtml(nowParts.shortClockStr)}</div>
+          </div>
+        </div>
+      `;
+
+      let groupsHtml = '';
+      if (activeEntries.length === 0) {
+        groupsHtml = `<div style="padding:28px 18px; text-align:center; color:var(--text-muted); font-size:12px;">No active water rationing schedules posted.</div>`;
+      } else {
+        groupsHtml = activeEntries.map(entry => {
+          const { sys, config, metrics } = entry;
+          const pctStr = metrics.pct !== null ? `${fmt(metrics.pct, 1)}%` : '—';
+          const pillBg = metrics.alert.lvl === 0
+            ? 'rgba(11, 79, 108, 0.12)'
+            : (metrics.alert.lvl === 1 ? 'var(--green-light)' : (metrics.alert.lvl === 2 ? 'var(--amber-light)' : 'var(--red-light)'));
+          const basisClass = config.basis === 'Internal Email' ? 'pill-amber' : 'pill-blue';
+
+          const lanesHtml = config.zones.map((z, zIdx) => {
+            const evalState = evaluateZoneAtMinute(z, nowParts.totalMinutes);
+            const segs = expandZoneSegments(z);
+            const zoneKey = `${sys.id}::${zIdx}`;
+            const modeClass = `mode-${z.mode || 'scheduled'}`;
+            const displayLabel = z.label || (z.mode === 'continuous' ? '24h Continuous' : `${fmtMinTo12h(parseHmToMin(z.start))} – ${fmtMinTo12h(parseHmToMin(z.end))}`);
+
+            const blocksHtml = segs.map(seg => {
+              const leftPct = (seg.startMin / 1440) * 100;
+              const widthPct = ((seg.endMin - seg.startMin) / 1440) * 100;
+              const segActive = z.mode === 'continuous' || (nowParts.totalMinutes >= seg.startMin && nowParts.totalMinutes < seg.endMin);
+              const showText = widthPct >= 14;
+              return `
+                <div class="rat-block ${modeClass} ${segActive ? 'is-active-now' : ''}"
+                     data-rat-seg-start="${seg.startMin}"
+                     data-rat-seg-end="${seg.endMin}"
+                     data-rat-mode="${escapeHtml(z.mode || 'scheduled')}"
+                     style="left:${leftPct.toFixed(4)}%; width:${widthPct.toFixed(4)}%;"
+                     title="${escapeHtml(z.name)}: ${escapeHtml(displayLabel)}${z.area ? ' (' + escapeHtml(z.area) + ')' : ''}">
+                  ${showText ? `<span class="rat-block-text">${escapeHtml(displayLabel)}</span>` : ''}
+                </div>
+              `;
+            }).join('');
+
+            return `
+              <div class="rat-grid-row rat-zone-row ${evalState.isActive ? 'is-supplying-row' : ''}" data-rat-row-key="${escapeHtml(zoneKey)}">
+                <div class="rat-col-label">
+                  <div class="rat-zone-name" title="${escapeHtml(z.name)}">${escapeHtml(z.name)}</div>
+                  ${z.area ? `<div class="rat-zone-area" title="${escapeHtml(z.area)}">${escapeHtml(z.area)}</div>` : ''}
+                  <div class="rat-zone-live-state ${evalState.stateClass}" data-rat-zone-key="${escapeHtml(zoneKey)}">${escapeHtml(evalState.statusText)}</div>
+                </div>
+                <div class="rat-lane-track">
+                  <div class="rat-elapsed-shade"></div>
+                  ${blocksHtml}
+                  <div class="rat-now-line"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="rat-sys-group">
+              <div class="rat-sys-group-bar">
+                <div class="rat-sys-meta">
+                  <span class="rat-sys-title">${escapeHtml(sys.name)}</span>
+                  <span class="kpi-badge-pill ${basisClass}" style="font-size:10px;">${escapeHtml(config.basis)}</span>
+                  <span class="kpi-badge-pill" style="background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; font-size:10px;">${escapeHtml(config.sourceMix)}</span>
+                  <span class="rat-sys-driver">&bull; ${escapeHtml(config.driver)}</span>
+                </div>
+                <div class="rat-sys-actions">
+                  <button type="button" onclick="switchNavTab('crisis')" class="kpi-badge-pill" style="background:${pillBg}; color:${metrics.alert.textColor}; border:1px solid ${metrics.alert.color}; font-family:var(--font-mono); font-size:10.5px; cursor:pointer;" title="Crisis Yield: ${fmt(metrics.actual, 0)} / ${fmt(metrics.target, 0)} m³/wk">
+                    Crisis Yield: ${pctStr} &bull; ${escapeHtml(metrics.alert.name)}
+                  </button>
+                  <button type="button" onclick="openRationingAdminModal('${escapeHtml(sys.id)}')" class="header-btn" style="padding:4px 10px; min-height:28px; font-size:11px; font-weight:700;">Edit</button>
+                </div>
+              </div>
+              ${lanesHtml}
+            </div>
+          `;
+        }).join('');
+      }
+
+      board.innerHTML = rulerHtml + groupsHtml;
+
+      const scrollEl = document.getElementById('rat-timeline-scroll');
+      if (scrollEl && !scrollEl.dataset.dragBound && typeof makeScrollableDrag === 'function') {
+        scrollEl.dataset.dragBound = '1';
+        makeScrollableDrag(scrollEl, { horizontal: true, vertical: false });
+      }
+    }
+
+    // Build Standby Systems Grid (No Water Rationing)
+    const standbyGrid = document.getElementById('rat-standby-grid');
+    if (standbyGrid) {
+      standbyGrid.innerHTML = standbyEntries.map(entry => {
+        const { sys, config, metrics } = entry;
+        const pctStr = metrics.pct !== null ? `${fmt(metrics.pct, 1)}%` : '—';
+        const progWidth = metrics.pct !== null ? Math.min(Math.max(metrics.pct, 0), 100) : 0;
+        const pillBg = metrics.alert.lvl === 0
+          ? 'rgba(11, 79, 108, 0.12)'
+          : (metrics.alert.lvl === 1 ? 'var(--green-light)' : (metrics.alert.lvl === 2 ? 'var(--amber-light)' : 'var(--red-light)'));
+
+        return `
+          <div class="rat-standby-card ${metrics.alert.cls}" tabindex="0" role="button" onclick="openRationingAdminModal('${escapeHtml(sys.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRationingAdminModal('${escapeHtml(sys.id)}');}" title="Click to configure water rationing schedule if approved">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+              <div style="min-width:0;">
+                <div style="font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--text-main); line-height:1.25;">${escapeHtml(sys.name)}</div>
+                <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">${escapeHtml(config.sourceMix)}</div>
+              </div>
+              <span class="kpi-badge-pill" style="background:${pillBg}; color:${metrics.alert.textColor}; border:1px solid ${metrics.alert.color}; white-space:nowrap; font-size:10px;">${escapeHtml(metrics.alert.name)}</span>
+            </div>
+
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px;">
+              <div style="font-family:var(--font-display); font-size:22px; font-weight:800; color:${metrics.alert.textColor}; font-variant-numeric:tabular-nums;">${pctStr}</div>
+              <div style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);">${prodObj ? `${fmt(metrics.actual, 0)} / ${fmt(metrics.target, 0)} m³` : 'Pending sync'}</div>
+            </div>
+
+            <div class="crisis-prog-track" style="margin:0;">
+              <div class="crisis-prog-fill" style="width:${progWidth}%; background:${metrics.alert.color};"></div>
+            </div>
+
+            <div class="rat-standby-foot">
+              <span class="kpi-badge-pill" style="background:#F1F5F9; color:#475569; border:1px solid #CBD5E1; font-size:10px;">No Water Rationing</span>
+              <span style="color:var(--blue-text); font-weight:700; font-size:10.5px;">Set Schedule &rarr;</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    tickRationingClock();
+  }
+
+  function tickRationingClock() {
+    const nowParts = getNowPstParts();
+    const clockEl = document.getElementById('rationing-live-clock');
+    const phaseEl = document.getElementById('rationing-day-phase');
+    if (clockEl) clockEl.textContent = nowParts.clockStr;
+    if (phaseEl) phaseEl.textContent = nowParts.phaseLabel;
+
+    const scrollEl = document.getElementById('rat-timeline-scroll');
+    if (scrollEl) {
+      scrollEl.style.setProperty('--rat-now-pct', `${nowParts.pctOfDay.toFixed(4)}%`);
+    }
+
+    const badgeEl = document.getElementById('rat-now-badge');
+    if (badgeEl) {
+      badgeEl.textContent = nowParts.shortClockStr;
+      if (nowParts.pctOfDay < 6) badgeEl.style.transform = 'translateX(0%)';
+      else if (nowParts.pctOfDay > 94) badgeEl.style.transform = 'translateX(-100%)';
+      else badgeEl.style.transform = 'translateX(-50%)';
+    }
+
+    const systems = getOrderedMonitoredSystems();
+    const activeEntries = [];
+    let totalZones = 0;
+    let activeZones = 0;
+
+    systems.forEach(sys => {
+      const cfg = rationingData.systems[sys.id];
+      if (!cfg || cfg.status !== 'active' || !Array.isArray(cfg.zones) || !cfg.zones.length) return;
+      activeEntries.push({ sys, config: cfg });
+
+      cfg.zones.forEach((z, zIdx) => {
+        totalZones++;
+        const evalState = evaluateZoneAtMinute(z, nowParts.totalMinutes);
+        if (evalState.isActive) activeZones++;
+
+        const key = `${sys.id}::${zIdx}`;
+        const labelEl = document.querySelector(`[data-rat-zone-key="${CSS.escape(key)}"]`);
+        if (labelEl) {
+          labelEl.textContent = evalState.statusText;
+          labelEl.className = `rat-zone-live-state ${evalState.stateClass}`;
+        }
+        const rowEl = document.querySelector(`[data-rat-row-key="${CSS.escape(key)}"]`);
+        if (rowEl) {
+          rowEl.classList.toggle('is-supplying-row', evalState.isActive);
+          rowEl.querySelectorAll('.rat-block').forEach(blk => {
+            const sMin = Number(blk.dataset.ratSegStart);
+            const eMin = Number(blk.dataset.ratSegEnd);
+            const mode = blk.dataset.ratMode;
+            const segOn = mode === 'continuous' || (nowParts.totalMinutes >= sMin && nowParts.totalMinutes < eMin);
+            blk.classList.toggle('is-active-now', segOn);
+          });
+        }
+      });
+    });
+
+    const kpiFlow = document.getElementById('rat-kpi-flowing');
+    const kpiFlowSub = document.getElementById('rat-kpi-flowing-sub');
+    if (kpiFlow) kpiFlow.innerHTML = `${activeZones} <span class="unit">/ ${totalZones}</span>`;
+    if (kpiFlowSub) kpiFlowSub.textContent = `Active at ${nowParts.shortClockStr} PST`;
+
+    const nextShift = computeNextValveTransition(activeEntries, nowParts.totalMinutes);
+    const kpiNext = document.getElementById('rat-kpi-next-time');
+    const kpiNextSub = document.getElementById('rat-kpi-next-sub');
+    if (kpiNext) {
+      kpiNext.textContent = nextShift ? nextShift.timeLabel : '24h Continuous';
+    }
+    if (kpiNextSub) {
+      kpiNextSub.textContent = nextShift ? `In ${nextShift.inLabel} · ${nextShift.desc}` : 'No scheduled valve shift';
+    }
+  }
+
+  function startRationingClock() {
+    tickRationingClock();
+    if (!rationingTickInterval) {
+      rationingTickInterval = setInterval(tickRationingClock, 1000);
+    }
+  }
+
+  async function loadRationingSchedules() {
+    try {
+      const cached = typeof PpcwdCache !== 'undefined' ? PpcwdCache.get('rationing_schedules') : null;
+      if (cached && cached.isRationingConfig === true && cached.systems) {
+        rationingData = {
+          isRationingConfig: true,
+          updatedAt: cached.updatedAt || DEFAULT_RATIONING_DATA.updatedAt,
+          systems: mergeRationingSystems(cached.systems)
+        };
+        renderRationingSchedule();
+      }
+    } catch (e) {}
+
+    try {
+      const res = await fetch('/api/getRiverFlow?type=rationing_schedule', { cache: 'no-store' });
+      if (!res.ok) return;
+      const payload = await res.json();
+      if (payload && payload.isRationingConfig === true && payload.systems && typeof payload.systems === 'object') {
+        rationingData = {
+          isRationingConfig: true,
+          updatedAt: payload.updatedAt || DEFAULT_RATIONING_DATA.updatedAt,
+          systems: mergeRationingSystems(payload.systems)
+        };
+        if (typeof PpcwdCache !== 'undefined') {
+          PpcwdCache.set('rationing_schedules', rationingData);
+        }
+        renderRationingSchedule();
+        const activeWk = document.getElementById('week-select')?.value;
+        if (activeWk && allProdData.length) {
+          const row = allProdData.find(r => r[COL.week] === activeWk) || allProdData[allProdData.length - 1];
+          if (row) renderCrisisMonitoring(rowToObj(row), 1);
+        }
+      }
+    } catch (err) {
+      console.warn('Rationing schedule fetch fallback:', err);
+    }
+  }
+
+  // ── WATER RATIONING SCHEDULE ADMIN MODAL CONTROLLER ──
+  function openRationingAdminModal(preselectSysId = null) {
+    ensureReportAuthorized(() => {
+      _doOpenRationingAdminModal(preselectSysId);
+    }, 'Water Rationing Schedule Update');
+  }
+
+  function _doOpenRationingAdminModal(preselectSysId = null) {
+    const sysSel = document.getElementById('rat-edit-sys');
+    if (sysSel) {
+      const systems = getOrderedMonitoredSystems();
+      sysSel.innerHTML = systems.map(s => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)}</option>`).join('');
+      const targetId = preselectSysId && systems.some(s => s.id === preselectSysId)
+        ? preselectSysId
+        : (systems.find(s => isSystemRationed(s.id))?.id || systems[0]?.id || 'binduyan');
+      sysSel.value = targetId;
+      loadSystemIntoRationingModal(targetId);
+    }
+    const statusEl = document.getElementById('rat-modal-status');
+    if (statusEl) statusEl.textContent = '';
+    openAccessibleModal('rationing-admin-modal', sysSel);
+  }
+
+  function closeRationingAdminModal() {
+    closeAccessibleModal('rationing-admin-modal');
+  }
+
+  function loadSystemIntoRationingModal(sysId) {
+    const cfg = rationingData.systems[sysId] || DEFAULT_RATIONING_DATA.systems[sysId] || {
+      status: 'none', basis: 'Social Media', sourceMix: 'SW Only', driver: '', zones: []
+    };
+    const stEl = document.getElementById('rat-edit-status');
+    const baEl = document.getElementById('rat-edit-basis');
+    const smEl = document.getElementById('rat-edit-sourcemix');
+    const drEl = document.getElementById('rat-edit-driver');
+    if (stEl) stEl.value = cfg.status === 'active' ? 'active' : 'none';
+    if (baEl) baEl.value = cfg.basis || 'Social Media';
+    if (smEl) smEl.value = cfg.sourceMix || 'SW Only';
+    if (drEl) drEl.value = cfg.driver || '';
+
+    rationingEditZonesDraft = Array.isArray(cfg.zones) && cfg.zones.length
+      ? JSON.parse(JSON.stringify(cfg.zones))
+      : [{ name: '', area: '', mode: 'scheduled', start: '06:00', end: '12:00', label: '' }];
+    renderRationingZoneEditorRows();
+    toggleRationingZoneEditorVisibility();
+  }
+
+  function toggleRationingZoneEditorVisibility() {
+    const stVal = document.getElementById('rat-edit-status')?.value || 'none';
+    const wrap = document.getElementById('rat-edit-zones-wrap');
+    if (wrap) wrap.style.display = stVal === 'active' ? 'flex' : 'none';
+
+    const baEl = document.getElementById('rat-edit-basis');
+    const drEl = document.getElementById('rat-edit-driver');
+    if (stVal === 'active') {
+      if (baEl && baEl.value === 'Monitoring') baEl.value = 'Social Media';
+      if (drEl && drEl.value.trim() === 'No Water Rationing') drEl.value = '';
+    } else {
+      if (baEl) baEl.value = 'Monitoring';
+      if (drEl && !drEl.value.trim()) drEl.value = 'No Water Rationing';
+    }
+  }
+
+  function renderRationingZoneEditorRows() {
+    const listEl = document.getElementById('rat-edit-zones-list');
+    if (!listEl) return;
+    listEl.innerHTML = rationingEditZonesDraft.map((z, idx) => `
+      <div class="rat-zone-edit-row" data-zone-idx="${idx}">
+        <div class="rat-zone-edit-top">
+          <div>
+            <label class="rat-zone-field-lbl">Zone / Brgy</label>
+            <input type="text" class="form-input rat-z-name" value="${escapeHtml(z.name || '')}" placeholder="e.g., North Binduyan" maxlength="60" oninput="syncRationingZoneDraft(${idx}, 'name', this.value)" />
+          </div>
+          <div>
+            <label class="rat-zone-field-lbl">Sub-area / Note</label>
+            <input type="text" class="form-input rat-z-area" value="${escapeHtml(z.area || '')}" placeholder="Optional sub-area or valve note" maxlength="90" oninput="syncRationingZoneDraft(${idx}, 'area', this.value)" />
+          </div>
+          <button type="button" onclick="removeRationingZoneEditorRow(${idx})" class="header-btn" style="padding:0 10px; min-height:36px; color:var(--red-text);" title="Remove zone" aria-label="Remove zone">✕</button>
+        </div>
+        <div class="rat-zone-edit-bottom">
+          <div>
+            <label class="rat-zone-field-lbl">Supply Mode</label>
+            <select class="form-input rat-z-mode" onchange="syncRationingZoneDraft(${idx}, 'mode', this.value)">
+              <option value="scheduled" ${z.mode === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+              <option value="conditional" ${z.mode === 'conditional' ? 'selected' : ''}>Conditional</option>
+              <option value="continuous" ${z.mode === 'continuous' ? 'selected' : ''}>24h Continuous</option>
+            </select>
+          </div>
+          <div>
+            <label class="rat-zone-field-lbl">Start (PST)</label>
+            <input type="time" class="form-input rat-z-start" value="${escapeHtml(z.start === '24:00' ? '00:00' : (z.start || '06:00'))}" ${z.mode === 'continuous' ? 'disabled' : ''} oninput="syncRationingZoneDraft(${idx}, 'start', this.value)" />
+          </div>
+          <div>
+            <label class="rat-zone-field-lbl">End (PST)</label>
+            <input type="time" class="form-input rat-z-end" value="${escapeHtml(z.end === '24:00' ? '00:00' : (z.end || '12:00'))}" ${z.mode === 'continuous' ? 'disabled' : ''} oninput="syncRationingZoneDraft(${idx}, 'end', this.value)" />
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function syncRationingZoneDraft(idx, field, val) {
+    if (!rationingEditZonesDraft[idx]) return;
+    rationingEditZonesDraft[idx][field] = val;
+    if (field === 'mode') {
+      if (val === 'continuous') {
+        rationingEditZonesDraft[idx].start = '00:00';
+        rationingEditZonesDraft[idx].end = '24:00';
+      }
+      renderRationingZoneEditorRows();
+    }
+  }
+
+  function addRationingZoneEditorRow() {
+    if (rationingEditZonesDraft.length >= 10) return;
+    rationingEditZonesDraft.push({ name: '', area: '', mode: 'scheduled', start: '06:00', end: '12:00', label: '' });
+    renderRationingZoneEditorRows();
+  }
+
+  function removeRationingZoneEditorRow(idx) {
+    rationingEditZonesDraft.splice(idx, 1);
+    if (rationingEditZonesDraft.length === 0) {
+      rationingEditZonesDraft.push({ name: '', area: '', mode: 'scheduled', start: '06:00', end: '12:00', label: '' });
+    }
+    renderRationingZoneEditorRows();
+  }
+
+  function resetRationingSystemDefault() {
+    const sysId = document.getElementById('rat-edit-sys')?.value;
+    if (!sysId || !DEFAULT_RATIONING_DATA.systems[sysId]) return;
+    rationingData.systems[sysId] = JSON.parse(JSON.stringify(DEFAULT_RATIONING_DATA.systems[sysId]));
+    loadSystemIntoRationingModal(sysId);
+    const statusEl = document.getElementById('rat-modal-status');
+    if (statusEl) {
+      statusEl.textContent = 'Default values loaded. Click "Save Schedule" to publish.';
+      statusEl.style.color = 'var(--blue-text)';
+    }
+  }
+
+  async function saveRationingScheduleEdit() {
+    const sysId = document.getElementById('rat-edit-sys')?.value;
+    const statusVal = document.getElementById('rat-edit-status')?.value || 'none';
+    const basisVal = document.getElementById('rat-edit-basis')?.value || 'Social Media';
+    const sourceMixVal = document.getElementById('rat-edit-sourcemix')?.value || 'SW Only';
+    const driverVal = (document.getElementById('rat-edit-driver')?.value || '').trim();
+    const statusEl = document.getElementById('rat-modal-status');
+    const saveBtn = document.getElementById('btn-rat-save');
+    if (!sysId) return;
+
+    const cleanZones = statusVal === 'active'
+      ? rationingEditZonesDraft
+          .filter(z => String(z.name || '').trim())
+          .map(z => {
+            const mode = ['scheduled', 'conditional', 'continuous'].includes(z.mode) ? z.mode : 'scheduled';
+            const start = mode === 'continuous' ? '00:00' : (z.start || '06:00');
+            const end = mode === 'continuous' ? '24:00' : (z.end || '12:00');
+            const autoLabel = mode === 'continuous'
+              ? '24h Continuous'
+              : `${fmtMinTo12h(parseHmToMin(start))} – ${fmtMinTo12h(parseHmToMin(end))}`;
+            return {
+              name: String(z.name).trim(),
+              area: String(z.area || '').trim(),
+              mode,
+              start,
+              end,
+              label: autoLabel
+            };
+          })
+      : [];
+
+    if (statusVal === 'active' && cleanZones.length === 0) {
+      if (statusEl) {
+        statusEl.textContent = 'Add at least one named service zone for an active rationing schedule.';
+        statusEl.style.color = 'var(--red-text)';
+      }
+      return;
+    }
+
+    const updatedSystems = JSON.parse(JSON.stringify(rationingData.systems));
+    updatedSystems[sysId] = {
+      status: statusVal,
+      basis: statusVal === 'none' ? 'Monitoring' : basisVal,
+      sourceMix: sourceMixVal,
+      driver: driverVal || (statusVal === 'active' ? 'Approved rationing schedule' : 'No Water Rationing'),
+      effectiveDate: statusVal === 'active' ? 'In Effect' : '',
+      zones: cleanZones
+    };
+
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
+    if (statusEl) { statusEl.textContent = 'Saving schedule to Supabase...'; statusEl.style.color = 'var(--blue-text)'; }
+
+    try {
+      const res = await fetch('/api/saveRiverFlow?type=rationing_schedule', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ systems: updatedSystems })
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(out.error || `HTTP ${res.status}`);
+
+      rationingData = {
+        isRationingConfig: true,
+        updatedAt: out.config?.updatedAt || new Date().toISOString(),
+        systems: mergeRationingSystems(out.config?.systems || updatedSystems)
+      };
+      if (typeof PpcwdCache !== 'undefined') {
+        PpcwdCache.set('rationing_schedules', rationingData);
+      }
+
+      renderRationingSchedule();
+      const activeWk = document.getElementById('week-select')?.value;
+      if (activeWk && allProdData.length) {
+        const row = allProdData.find(r => r[COL.week] === activeWk) || allProdData[allProdData.length - 1];
+        if (row) renderCrisisMonitoring(rowToObj(row), 1);
+      }
+
+      if (statusEl) { statusEl.textContent = 'Schedule saved and published!'; statusEl.style.color = 'var(--green-text)'; }
+      setTimeout(() => closeRationingAdminModal(), 750);
+    } catch (err) {
+      if (statusEl) { statusEl.textContent = `Save failed: ${err.message}`; statusEl.style.color = 'var(--red-text)'; }
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Schedule'; }
+    }
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     init();
     initDashboardTableDragScrolling();
@@ -11302,6 +12777,7 @@
         if (typeof closeCrisisReportModal === 'function') closeCrisisReportModal();
         if (typeof closeGensetModal === 'function') closeGensetModal();
         if (typeof closeReportAuthModal === 'function') closeReportAuthModal();
+        if (typeof closeRationingAdminModal === 'function') closeRationingAdminModal();
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
         const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';

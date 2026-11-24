@@ -22,6 +22,8 @@
     { "source": "/api/saveRiverStations", "destination": "/api/saveRiverFlow" },
     { "source": "/api/getWaterLevel", "destination": "/api/getRiverFlow?type=water_level" },
     { "source": "/api/getWaterLevelConfig", "destination": "/api/getRiverFlow?type=water_level_config" },
-    { "source": "/api/saveWaterLevel", "destination": "/api/saveRiverFlow?type=water_level" }
+    { "source": "/api/saveWaterLevel", "destination": "/api/saveRiverFlow?type=water_level" },
+    { "source": "/api/getRationingSchedule", "destination": "/api/getRiverFlow?type=rationing_schedule" },
+    { "source": "/api/saveRationingSchedule", "destination": "/api/saveRiverFlow?type=rationing_schedule" }
   ]
 }

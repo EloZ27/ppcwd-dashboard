@@ -65,6 +65,144 @@ export const DEFAULT_WATER_LEVEL_CONFIG = {
 };
 
 export const WATER_LEVEL_CONFIG_STATION = "__WATER_LEVEL_CONFIG__";
+export const RATIONING_CONFIG_STATION = "__RATIONING_SCHEDULE_CONFIG__";
+
+export const DEFAULT_RATIONING_CONFIG = {
+  isRationingConfig: true,
+  updatedAt: "2026-11-24T00:00:00.000Z",
+  systems: {
+    binduyan: {
+      status: "active",
+      basis: "Social Media",
+      sourceMix: "SW Only",
+      driver: "Low surface source level · No GW backup",
+      effectiveDate: "In Effect",
+      zones: [
+        {
+          name: "North Binduyan",
+          area: "Toward Roxas, Palawan",
+          mode: "scheduled",
+          start: "06:00",
+          end: "12:00",
+          label: "6:00 AM – 12:00 PM"
+        },
+        {
+          name: "South Binduyan",
+          area: "Toward Puerto Princesa City",
+          mode: "scheduled",
+          start: "13:00",
+          end: "06:00",
+          label: "1:00 PM – 6:00 AM"
+        }
+      ]
+    },
+    maoyon: {
+      status: "active",
+      basis: "Social Media",
+      sourceMix: "SW + GW",
+      driver: "Maoyon River turbidity & upper line repair",
+      effectiveDate: "In Effect",
+      zones: [
+        {
+          name: "Brgy. Maoyon",
+          area: "Main Service Area",
+          mode: "continuous",
+          start: "00:00",
+          end: "24:00",
+          label: "24h Continuous"
+        },
+        {
+          name: "Brgy. Maruyogon",
+          area: "Main Gate Valve closes 10:00 AM",
+          mode: "scheduled",
+          start: "06:00",
+          end: "10:00",
+          label: "6:00 AM – 10:00 AM"
+        },
+        {
+          name: "Brgy. Lucbuan — Puroks",
+          area: "Human, Mandaragat, Teresa, Katumbal",
+          mode: "scheduled",
+          start: "11:00",
+          end: "15:00",
+          label: "11:00 AM – 3:00 PM"
+        },
+        {
+          name: "Brgy. Lucbuan — Hall Area",
+          area: "Subject to gravity source turbidity",
+          mode: "conditional",
+          start: "16:00",
+          end: "21:00",
+          label: "4:00 PM – 9:00 PM"
+        }
+      ]
+    },
+    stalucia: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW Only",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    sabang: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW + GW",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    bacungan: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW Only",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    bahile: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW + GW",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    sanrafael: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW Only",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    napsan: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW Only",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    inagawan: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "GW Only",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    },
+    city_total: {
+      status: "none",
+      basis: "Monitoring",
+      sourceMix: "SW + GW Grid",
+      driver: "No Water Rationing",
+      effectiveDate: "",
+      zones: []
+    }
+  }
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -75,6 +213,40 @@ export default async function handler(req, res) {
   const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
   const { type } = req.query;
+
+  // ── 00. APPROVED WATER RATIONING SCHEDULE CONFIG ──
+  if (type === 'rationing_schedule') {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      return res.status(200).json(DEFAULT_RATIONING_CONFIG);
+    }
+
+    const headers = { 'apikey': SUPABASE_KEY, 'Accept': 'application/json' };
+    if (SUPABASE_KEY && SUPABASE_KEY.startsWith('ey')) {
+      headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+    }
+
+    try {
+      const cfgUrl = `${SUPABASE_URL}/rest/v1/water_level_readings?station_name=eq.${encodeURIComponent(RATIONING_CONFIG_STATION)}&select=id,remarks&limit=1`;
+      const cfgRes = await fetch(cfgUrl, { headers });
+      if (cfgRes.ok) {
+        const cfgRows = await cfgRes.json();
+        if (Array.isArray(cfgRows) && cfgRows.length > 0 && cfgRows[0].remarks) {
+          const parsed = JSON.parse(cfgRows[0].remarks);
+          if (parsed && parsed.isRationingConfig === true && parsed.systems && typeof parsed.systems === 'object') {
+            return res.status(200).json({
+              isRationingConfig: true,
+              updatedAt: parsed.updatedAt || DEFAULT_RATIONING_CONFIG.updatedAt,
+              systems: { ...DEFAULT_RATIONING_CONFIG.systems, ...parsed.systems }
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('getRationingSchedule fallback:', e.message);
+    }
+    return res.status(200).json(DEFAULT_RATIONING_CONFIG);
+  }
 
   // ── 0. BOOSTER / RESERVOIR WATER LEVEL CONFIG & READINGS ──
   if (type === 'water_level_config' || type === 'water_level') {
@@ -127,7 +299,7 @@ export default async function handler(req, res) {
       const sortOrder = String(order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
 
       const cols = 'id,station_name,reading_time,water_level,normal_level,unit,warning_level,critical_level,source_context,operator_name,remarks,created_at';
-      let query = `select=${cols}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}`;
+      let query = `select=${cols}&station_name=neq.${encodeURIComponent(WATER_LEVEL_CONFIG_STATION)}&station_name=neq.${encodeURIComponent(RATIONING_CONFIG_STATION)}`;
       if (station && station !== 'ALL') {
         query += `&station_name=eq.${encodeURIComponent(station)}`;
       }
@@ -146,7 +318,9 @@ export default async function handler(req, res) {
         return res.status(response.status).json({ error: `Supabase returned ${response.status}`, details: errText });
       }
       const rows = await response.json();
-      const cleanRows = (Array.isArray(rows) ? rows : []).filter(r => r.station_name !== WATER_LEVEL_CONFIG_STATION);
+      const cleanRows = (Array.isArray(rows) ? rows : []).filter(
+        r => r.station_name !== WATER_LEVEL_CONFIG_STATION && r.station_name !== RATIONING_CONFIG_STATION
+      );
 
       if (include_config === '1' || include_config === 'true') {
         const config = await fetchWaterLevelConfig();
